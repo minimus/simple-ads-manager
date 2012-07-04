@@ -132,7 +132,8 @@ if(!class_exists('SamZoneEditor')) {
           'z_home' => $_POST['z_home'],
           'z_singular' => $_POST['z_singular'],
           'z_single' => $_POST['z_single'],
-          'z_ct' => $_POST['z_ct'],
+          //FIXED 'z_ct' => $_POST['z_ct'],
+          'z_ct' => (isset($_POST['z_ct']) ? $_POST['z_ct'] : -1),
           'z_single_ct' => serialize($uSingleCT),
           'z_page' => $_POST['z_page'],
           'z_attachment' => $_POST['z_attachment'],
@@ -145,12 +146,15 @@ if(!class_exists('SamZoneEditor')) {
           'z_tag' => $_POST['z_tag'],
           'z_author' => $_POST['z_author'],
           'z_authors' => serialize($uAuthors),
-          'z_cts' => $_POST['z_cts'],
+          //FIXED 'z_cts' => $_POST['z_cts'],
+          'z_cts' => (isset($_POST['z_cts']) ? $_POST['z_cts'] : -1),
           'z_archive_ct' => serialize($uArchiveCT),
           'z_date' => $_POST['z_date'],
-          'trash' => ($_POST['trash'] === 'true')
+          //FIXED 'trash' => ($_POST['trash'] === 'true')
+          'trash' => ($_POST['trash'] === 'true' ? 1 : 0)
         );
-        $formatRow = array( '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%s', '%d', '%s', '%d', '%d');
+        //FIXED $formatRow = array( '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%s', '%d', '%s', '%d', '%d');
+        $formatRow = array( '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%s', '%d', '%s', '%d', '%d');
         if($zoneId === __('Undefined', SAM_DOMAIN)) {
           $wpdb->insert($zTable, $updateRow);
           $updated = true;

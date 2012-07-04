@@ -165,9 +165,11 @@ if(!class_exists('SamBlockEditor')) {
           'i_padding' => $_POST['i_padding'],
           'i_background'  => stripcslashes( $_POST['i_background'] ),
           'i_border' => $_POST['i_border'],
-          'trash' => ($_POST['trash'] === 'true')
+          //FIXED 'trash' => ($_POST['trash'] === 'true')
+          'trash' => ($_POST['trash'] === 'true' ? 1 : 0)
         );
-        $formatRow = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d');
+        //FIXED $formatRow = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d');
+        $formatRow = array( '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d');
         if($blockId === __('Undefined', SAM_DOMAIN)) {
           $wpdb->insert($bTable, $updateRow);
           $updated = true;
