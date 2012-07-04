@@ -63,16 +63,16 @@ Installation
 
 Do not upgrade this plugin from Update page! Upgrade it from Plugins page!
 
-Changelog
-=========
+Change log
+==========
 
-### 1.6.54
+1.6.54
 * Error Log is improved.
 * Click Tracker is improved.
 * Ads Block output bug is fixed.
 * Ad Widget bug is fixed
 
-### 1.5.50
+1.5.50
 * Error log is added
 * User interface of *Ads Editor* is improved
 * Categories and Tags identification is changed from *name* to *slug*
@@ -80,28 +80,28 @@ Changelog
 * Limitations of displaying ads to users are added
 * Accessing menu settings are added
 
-### 1.4.44
+1.4.44
 * Minor bug (activity of ad in ads list) is fixed.
 * Auto insertion of ad into the middle of post/page is added.
 * Language pack is updated. Spanish language by **xiaobai_wp** is added.
 
-### 1.3.41
+1.3.41
 * Minor bug fixed. Now you can define all possible limitations for Custom Types Posts too.
 
-### 1.2.40
+1.2.40
 * MultiSite support is added. Thanks to *meermedia*.
 * Major bug is fixed
 
-### 1.1.38
+1.1.38
 * Language pack is updated. Belarusian by Alexander Ovsov is added
 * TinyMCE plugin's button modes (modern, classic) are added
 * Some fixes are made
 
-### 1.0.35
+1.0.35
 * System of Checking Errors is added.
 * Some minor improvements are made.
 
-### 1.0.33
+1.0.33
 * Ads Blocks object is added.
 * Ads Blocks widget is added.
 * Custom Types supporting is added.
@@ -109,49 +109,49 @@ Changelog
 * Some improvements are added.
 * Some fixes are made.
  
-### 0.6.25
+0.6.25
 * Language pack was updated by **Ulrich Simon** (German Language). 
 * Some fixes are made.
 
-### 0.6.23
+0.6.23
 * Click counting bug is fixed.
 
-### 0.5.22
+0.5.22
 * Language pack is updated. German by [Fabian Krenzler](http://www.ktraces.de/) is added.
 
-### 0.5.21
+0.5.21
 * Update bug fixed
 
-### 0.5.20
+0.5.20
 * SQL queries are improved and optimised
 * Ads Zone selector are added
 * New widgets (Ads Zone and Single Ad) are added
 * New limitations are added
 
-### 0.4.16
+0.4.16
 * Ads management bug for Wordpress database with non "wp_" prefix are fixed
 
-### 0.4.15
+0.4.15
 * Detection of Bots and Crawlers with customizable accuracy is added
 * Limitations by hits and clicks are added
 * Pricing by placement, hits and clicks are added
 * Earnings counting is added
 
-### 0.3.10
+0.3.10
 * Supporting of Google DFP codes is added
 * Contextual Help is added
 * Some codes are optimised
 
-### 0.2.6
+0.2.6
 * Restriction of displaying ads by categories is changed
 * Restriction of displaying ads by authors is added
 * Some codes are changed
 
-### 0.1.3
+0.1.3
 * Minor bug (using "drawAdsPlace()" with the attribute "name") are fixed. Thanks to [orangefinch](http://wordpress.org/support/profile/orangefinch).
 
-### 0.1.2
+0.1.2
 * Ads management bug for Wordpress database with non "wp_" prefix are fixed
 
-### 0.1.1
+0.1.1
 * Initial upload
