@@ -1,0 +1,1659 @@
+# Copyright (C) 2010 Simple Ads Manager
+# This file is distributed under the same license as the Simple Ads Manager package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Simple Ads Manager 0.5.21\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2011-06-05 12:16+0200\n"
+"PO-Revision-Date: 2011-06-05 12:17+0200\n"
+"Last-Translator: minimus <minimus@blogcoding.ru>\n"
+"Language-Team: Fabian Krenzler <f.krenzler@ktraces.de>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;__ngettext_noop:1,2;__ngettext;_n:1,2;_nc:1,2;esc_attr__\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: sam-admin-class.php:261
+msgid "General Settings"
+msgstr "Generelle Einstellungen"
+
+#: sam-admin-class.php:262
+msgid "Auto Inserting Settings"
+msgstr "Einstellungen für automatisches Einfügen"
+
+#: sam-admin-class.php:263
+msgid "Google DFP Settings"
+msgstr "Google DFP Einstellungen"
+
+#: sam-admin-class.php:264
+#: sam-admin-class.php:371
+msgid "Statistics Settings"
+msgstr "Statistik Einstellungen"
+
+#: sam-admin-class.php:265
+msgid "Admin Layout"
+msgstr "Admin Ansicht"
+
+#: sam-admin-class.php:266
+msgid "Plugin Deactivating"
+msgstr "Deaktivierung Plugin"
+
+#: sam-admin-class.php:268
+msgid "Views per Cycle"
+msgstr "Anzeigen pro Rotation"
+
+#: sam-admin-class.php:268
+msgid "Number of hits of one ad for a full cycle of rotation (maximal activity)."
+msgstr "Anzahl der Ansichten eines Banners in einer vollen Rotation (maximale Aktivität)"
+
+#: sam-admin-class.php:270
+msgid "Ads Place before content"
+msgstr "Ads Place vor dem Inhalt"
+
+#: sam-admin-class.php:271
+msgid "Allow Ads Place auto inserting before post/page content"
+msgstr "Erlaubt das automatische einsetzen von Ad Places vor Artikeln oder Seiten. "
+
+#: sam-admin-class.php:272
+#: sam-admin-class.php:275
+msgid "Allow using predefined Ads Place HTML codes (before and after codes)"
+msgstr "Erlaubt die Nutzung von vordefinierten Ads Place Html Codes (before und after)"
+
+#: sam-admin-class.php:273
+msgid "Ads Place after content"
+msgstr "Ads Place nach dem Inhalt"
+
+#: sam-admin-class.php:274
+msgid "Allow Ads Place auto inserting after post/page content"
+msgstr "Erlaubt das automatische einsetzen von Ad Places nach Artikeln oder Seiten.)"
+
+#: sam-admin-class.php:277
+msgid "Allow using Google DoubleClick for Publishers (DFP) rotator codes"
+msgstr "Erlaubt die Nutzung von Google DoubleClick für Herausgeber (DFP)\" rotations Codes."
+
+#: sam-admin-class.php:278
+msgid "Google DFP Pub Code"
+msgstr "Google DFP Code"
+
+#: sam-admin-class.php:278
+msgid "Your Google DFP Pub code. i.e:"
+msgstr "Ihr Google DFP Pub Code i.e:"
+
+#: sam-admin-class.php:280
+msgid "Allow Bots and Crawlers detection"
+msgstr "Erlaubt Bots und Crawlern die Erkennung"
+
+#: sam-admin-class.php:281
+msgid "Accuracy of Bots and Crawlers Detection"
+msgstr "Genauigkeit der Bots und Crawler Erkennung"
+
+#: sam-admin-class.php:281
+msgid "If bot is detected hits of ads won't be counted. Use with caution! More exact detection requires more server resources."
+msgstr "Wenn ein bot erkannt wird werden die Klicks auf Banner ignoriert. Vorsicht bei der Beutzung! Eine genauere Erkennung erhöht die Serverlast."
+
+#: sam-admin-class.php:281
+msgid "Inexact detection"
+msgstr "Ungenaue Erkennung"
+
+#: sam-admin-class.php:281
+msgid "Exact detection"
+msgstr "Genaue Erkennung"
+
+#: sam-admin-class.php:281
+msgid "More exact detection"
+msgstr "Ganz genaue Erkennung"
+
+#: sam-admin-class.php:282
+#: sam-admin-class.php:373
+msgid "Display of Currency"
+msgstr "Währung anzeigen"
+
+#: sam-admin-class.php:282
+#: sam-admin-class.php:373
+msgid "Define display of currency. Auto - auto detection of currency from blog settings. USD, EUR - Forcing the display of currency to U.S. dollars or Euro."
+msgstr "Definieren Sie die Anzeigen von Währungen. Auto= Erkennt die Währungseinstellungen des Systems. USD, EUR erzwingt die Anzeige in Dollar oder Euro."
+
+#: sam-admin-class.php:282
+msgid "Auto"
+msgstr "Auto"
+
+#: sam-admin-class.php:282
+msgid "USD"
+msgstr "USD"
+
+#: sam-admin-class.php:282
+msgid "EUR"
+msgstr "EUR"
+
+#: sam-admin-class.php:284
+msgid "Ads Places per Page"
+msgstr "Ads Places pro Seite"
+
+#: sam-admin-class.php:284
+msgid "Ads Places Management grid pagination. How many Ads Places will be shown on one page of grid."
+msgstr "Einstellungen für Ads Place Auflistung pro Seite. Wieviele Ads Places pro Seite aufgelistet werden ."
+
+#: sam-admin-class.php:285
+msgid "Ads per Page"
+msgstr "Banner pro Seite"
+
+#: sam-admin-class.php:285
+msgid "Ads of Ads Place Management grid pagination. How many Ads will be shown on one page of grid."
+msgstr "Einstellungen für Banner die Banner Auflistung pro Seite. Wieviele Banner pro Seite aufgelistet werden."
+
+#: sam-admin-class.php:287
+msgid "Delete plugin options during deactivating plugin"
+msgstr "Löschen der Plugineinstellungen während der Deaktivierung des Plugins"
+
+#: sam-admin-class.php:288
+msgid "Delete database tables of plugin during deactivating plugin"
+msgstr "Löschen der Datenbanktabellen während der Deaktivierung des Plugins"
+
+#: sam-admin-class.php:289
+msgid "Delete custom images folder of plugin during deactivating plugin"
+msgstr "Löschen des Bilderordners während der Deaktivierung des Plugins"
+
+#: sam-admin-class.php:295
+msgid "Ads"
+msgstr "Banner"
+
+#: sam-admin-class.php:296
+msgid "Ads List"
+msgstr "Banner Liste"
+
+#: sam-admin-class.php:296
+msgid "Ads Places"
+msgstr "Ads Places"
+
+#: sam-admin-class.php:298
+msgid "Ad Editor"
+msgstr "Banner Editor"
+
+#: sam-admin-class.php:298
+msgid "New Place"
+msgstr "Neuer Place"
+
+#: sam-admin-class.php:301
+msgid "Ads Zones List"
+msgstr "Banner Zonen Liste"
+
+#: sam-admin-class.php:301
+msgid "Ads Zones"
+msgstr "Banner Zonen"
+
+#: sam-admin-class.php:303
+msgid "Ads Zone Editor"
+msgstr "Banner Zonen Editor"
+
+#: sam-admin-class.php:303
+msgid "New Zone"
+msgstr "Neue Zone"
+
+#: sam-admin-class.php:309
+#: sam-admin-class.php:911
+msgid "Simple Ads Manager Settings"
+msgstr "Einstellungen Simple Ads Manager"
+
+#: sam-admin-class.php:309
+msgid "Settings"
+msgstr "Einstellungen"
+
+#: sam-admin-class.php:317
+msgid "Enter a <strong>name</strong> and a <strong>description</strong> of the advertisement. These parameters are optional, because don’t influence anything, but help in the visual identification of the ad (do not forget which is which)."
+msgstr "Geben Sie <strong>name</strong> und <strong>beschreibung</strong> zu einem Banner ein. Diese Parameter sind optional, da sie nichts beeinflussen, sondern nur der einfacheren Erkennung eines Banner dienen."
+
+#: sam-admin-class.php:318
+msgid "<strong>Ad Code</strong> – code can be defined as a combination of the image URL and target page URL, or as HTML code, javascript code, or PHP code (for PHP-code don’t forget to set the checkbox labeled \"This code of ad contains PHP script\"). If you select the first option (image mode) you can keep statistics of clicks and also tools for uploading/selecting the downloaded image banner becomes available to you."
+msgstr "<strong>Banner Code</strong> – der Code kann als Kombination aus Bild URL und Ziel Url definiert werden, oder als Html Code, javascript code, or PHP code (für PHP-code vergessen Sie nicht die entsprechende Checkbox zu aktivieren . Wenn Sie die erste Option wählen(Bild Modus) können sie die Statistiken der Klicks bewahren und auch die Tools zum uploaden/auswählen und downloaden der Bildbanner werden freigeschaltet"
+
+#: sam-admin-class.php:319
+msgid "<strong>Restrictions of advertisement Showing</strong>"
+msgstr "<strong>Einschränkungen der Banneranzeige</strong>"
+
+#: sam-admin-class.php:320
+msgid "<em>Ad Weight</em> – coefficient of frequency of show of the advertisement for one cycle of advertisements rotation. 0 – ad is inactive, 1 – minimal activity of this advertisement, 10 – maximal activity of this ad."
+msgstr "<em>Banner Gewichtung</em> – Koefizeint für die Frequenz eines Banners innerhalb einer Rotation. 0 - Banner ist inaktiv, 1 - minimale Aktivität des Banners, 10 - maximale Aktivität des Banners."
+
+#: sam-admin-class.php:321
+msgid "<em>Restrictions by the type of pages</em> – select restrictions:"
+msgstr "<em>Einschränkung nach Typ der Seite</em> – Einschränkung auswählen:"
+
+#: sam-admin-class.php:323
+#: sam-admin-class.php:2297
+msgid "Show ad on all pages of blog"
+msgstr "Zeige Banner auf allen Seiten"
+
+#: sam-admin-class.php:324
+msgid "Show ad only on pages of this type – ad will appear only on the pages of selected types"
+msgstr "Zeigt den Banner nur auf Seiten dieses Typs - Der Banner erscheint nur auf Seiten des ausgewählten Typs"
+
+#: sam-admin-class.php:325
+msgid "Show ad only in certain posts – ad will be shown only on single posts pages with the given IDs (ID items separated by commas, no spaces)"
+msgstr "Zeigt den Banner nur auf Artikeln dieses Typs - Der Banner wird nur auf Artikeln angezeigt für die die ID angegeben wurde (ID´s mit Komma getrennt eingeben)"
+
+#: sam-admin-class.php:327
+msgid "<em>Additional restrictions</em>"
+msgstr "<em>Zusätzliche Einschränkungen</em>"
+
+#: sam-admin-class.php:329
+msgid "Show ad only in single posts or categories archives of certain categories – ad will be shown only on single posts pages or category archive pages of the specified categories"
+msgstr "Zeigt den Banner nur auf einzelnen Artikeln oder Kategoriearchiven spezifischer Kategorien "
+
+#: sam-admin-class.php:330
+msgid "Show ad only in single posts or authors archives of certain authors – ad will be shown only on single posts pages or author archive pages of the specified authors"
+msgstr "Zeigt den Banner nur auf einzelnen Artikeln oder Autorenarchiven spzifischer Autoren."
+
+#: sam-admin-class.php:332
+msgid "<em>Use the schedule for this ad</em> – if necessary, select checkbox labeled “Use the schedule for this ad” and set start and finish dates of ad campaign."
+msgstr "<em>Für diesen Banner den Schaltplan beutzen</em> – wenn notwendig, wählen sie die Checkbox mit dem Namen “Schaltplan für diesen Banner nutzen”und setzten Sie das Start und Enddatum der Kampagne."
+
+#: sam-admin-class.php:333
+msgid "<em>Use limitation by hits</em> – if necessary, select checkbox labeled “Use limitation by hits” and set hits limit."
+msgstr "<em>Limitierung nach Anzeigen</em> – wenn notwendig, wählen sie die Checkbox mit dem Namen \"Limietierung nach Anzeigen”und setzen sie das Anzeigenlimit."
+
+#: sam-admin-class.php:334
+msgid "<em>Use limitation by clicks</em> – if necessary, select checkbox labeled “Use limitation by clicks” and set clicks limit."
+msgstr "<em>Use limitation by clicks</em> – wenn notwendig, wählen sie die Checkbox mit dem Namen “Limitierung nach Klicks”und setzen sie das klick Limit."
+
+#: sam-admin-class.php:335
+#: sam-admin-class.php:2472
+msgid "Prices"
+msgstr "Preise"
+
+#: sam-admin-class.php:335
+msgid "Use these parameters to get the statistics of incomes from advertisements placed in your blog. \"Price of ad placement per month\" - parameter used only for calculating statistic of scheduled ads."
+msgstr "Nutzen Sie diese Parameter um Statistiken für Ihr Einkommen durch Bannerschaltungen auf Ihrer Website zu erhalten. \"Preis der Bannerplazierung pro Monat\" - Dieser Parameter wird für die Berechnung der Statistik auf Basis des Schaltplans genutzt."
+
+#: sam-admin-class.php:336
+#: sam-admin-class.php:353
+#: sam-admin-class.php:360
+#: sam-admin-class.php:374
+msgid "Manual"
+msgstr "Manuell"
+
+#: sam-admin-class.php:337
+#: sam-admin-class.php:354
+#: sam-admin-class.php:361
+#: sam-admin-class.php:375
+msgid "Support Forum"
+msgstr "Support Forum"
+
+#: sam-admin-class.php:342
+msgid "Enter a <strong>name</strong> and a <strong>description</strong> of the Ads Place. In principle, it is not mandatory parameters, because these parameters don’t influence anything, but experience suggests that after a while all IDs usually will be forgotten  and such information may be useful."
+msgstr "Geben Sie einen Namen <strong> </ strong> und eine <strong> Beschreibung </ strong> der Anzeigen.Dies ist nicht zwingend hilft aber der besseren Orientierung, da die Auswahl über ID´s erfahrungsgemäß zu verwechslungen führt.\"."
+
+#: sam-admin-class.php:343
+msgid "<strong>Ads Place Size</strong> – in this version is only for informational purposes only, but in future I plan to use this option. It is desirable to expose the real size."
+msgstr "<strong> Anzeigen Größe </ strong> - in dieser Version ist die Angabe nur für Informationszwecke bestimmt, in Zukunft ist geplant, diese Option zu verwenden. Es ist wünschenswert, die wirkliche Größe einzugeben."
+
+#: sam-admin-class.php:344
+msgid "<strong>Ads Place Patch</strong> - it’s an ad that will appear in the event that the logic of basic ads outputing of this Ads Place on the current page will not be able to choose a single basic ad for displaying. For example, if all basic announcements are set to displaying only on archives pages or single pages, in this case the patch ad of Ads Place will be shown on the Home page. Conveniently to use the patch ad of Ads Place where you sell the advertising place for a limited time – after the time expiration of ordered ad will appear patch ad. It may be a banner leading to your page of advertisement publication costs or a banner from AdSense."
+msgstr "<strong>Ads Place Platzhalter</strong> -ist eine Anzeige, die im Falle erscheint, dass die Logik der grundlegenden Anzeigen auf dem vorgesehenen Platz nicht möglich ist. Zum Beispiel, wenn definiert wurde das alle Banner nur auf Archiv Seiten angezeigt werden sollen, wird dieser Platzhalter auf der Homepage auf den dort definierten Plätzen angezeigt. Es macht Sinn für diesen Platzhalter keinen mit spezifischen Abrechnungen verbundenen Banner zu verwenden."
+
+#: sam-admin-class.php:345
+msgid "Patch can be defined"
+msgstr "Pfad kann definiert werden"
+
+#: sam-admin-class.php:347
+msgid "as combination of the image URL and target page URL"
+msgstr "als Kombination der bild Url und der Ziel url"
+
+#: sam-admin-class.php:348
+msgid "as HTML code or javascript code"
+msgstr "als Html oder javascript code"
+
+#: sam-admin-class.php:349
+msgid "as name of Google <a href=\"https://www.google.com/intl/en/dfp/info/welcome.html\" target=\"_blank\">DoubleClick for Publishers</a> (DFP) block"
+msgstr "as name of Google <a href=\"https://www.google.com/intl/en/dfp/info/welcome.html\" target=\"_blank\">DoubleClick for Publishers</a> (DFP) block"
+
+#: sam-admin-class.php:351
+msgid "If you select the first option (image mode), tools to download/choosing of downloaded image banner become available for you."
+msgstr "Wenn Sie die erste Option (Bilder Modus), werden die Tools zum donloaden/auswählen und bereits downgeloadeten Bilder erreichbar"
+
+#: sam-admin-class.php:352
+msgid "<strong>Codes</strong> – as Ads Place can be inserted into the page code not only as widget, but as a short code or by using function, you can use code “before” and “after” for centering or alignment of Ads Place on the place of inserting or for something else you need. Use HTML tags."
+msgstr "<strong> Codes </ strong> - da Ads Places als Code und nicht nur als Widget in die Website eingesetzt werden können, oder auch als Shortcode,dienen  \"vor\" und \"Nachher\" Codes zur Zentrierung oder Ausrichtung der Anzeigen"
+
+#: sam-admin-class.php:366
+msgid "<strong>Views per Cycle</strong> – the number of impressions an ad for one cycle of rotation, provided that this ad has maximum weight (the activity). In other words, if the number of hits in the series is 1000, an ad with a weight of 10 will be shown in 1000, and the ad with a weight of 3 will be shown 300 times."
+msgstr "<strong> Aufrufe pro Rotation </ strong> - die Anzahl der Impressions  einer Anzeige für einen Zyklus der Rotation, vorausgesetzt, dass diese Anzeige eine maximale Gewichtung hat. Mit anderen Worten, wenn die Anzahl der Treffer in der Serie 1000 ist, wird eine Anzeige mit einem Gewicht von 10 in 1000 gezeigt werden, und die Anzeige mit einem Gewicht von 3 wird 300-mal angezeigt"
+
+#: sam-admin-class.php:367
+msgid "Do not set this parameter to a value less than the maximum number of visitors which may simultaneously be on your site – it may violate the logic of rotation."
+msgstr "Setzen Sie diesen Parameter auf einen Wert kleiner als die maximale Anzahl der Besucher, die gleichzeitig auf Ihrer Website sind - kann es  die Logik der Rotation zu verletzen."
+
+#: sam-admin-class.php:368
+msgid "Not worth it, though it has no special meaning, set this parameter to a value greater than the number of hits your web pages during a month. Optimal, perhaps, is the value to the daily shows website pages."
+msgstr "Es lohnt sich nicht, obwohl es keine besondere Bedeutung hat, diesen Parameter auf einen Wert größer als die Anzahl der Treffer Ihre Web-Seiten in einem Monat einzustellen. Optimal wäre der Wert der täglichen Views ihrer Seite."
+
+#: sam-admin-class.php:369
+msgid "<strong>Auto Inserting Settings</strong> - here you can select the Ads Places and allow the display of their ads before and after the  content of single post."
+msgstr "<strong>Einstellungen für automatisches Einsetzen</strong> - hier können Sie die Ads Places auswählen und die Anzeige der Banner vor oder nach dem Content eines Artikels einstellen."
+
+#: sam-admin-class.php:370
+msgid "<strong>Google DFP Settings</strong> - if you want to use codes of Google DFP rotator, you must allow it's using and define your pub-code."
+msgstr "<strong>Google DFP Einstellungen</strong> -Wenn sie Code des  Google DFP Rotators nutzen wollen , müssen Sie zunächst die Erlaubnis erteilen und Ihren pub-code definieren."
+
+#: sam-admin-class.php:372
+msgid "Bots and Crawlers detection"
+msgstr "Bots und Crawler Erkennung"
+
+#: sam-admin-class.php:372
+msgid "For obtaining of more exact indexes of statistics and incomes it is preferable to exclude data about visits of bots and crawlers from the data about all visits of your blog. If enabled and bot or crawler is detected, hits of ads won't be counted. Select accuracy of detection but use with caution - more exact detection requires more server resources."
+msgstr "Zur Erzielung genaueren Indizes bei Statistiken und Einkommen ist es vorzuziehen, Daten über Besuche von Bots und Crawlern aus den Daten aller Besuche von Ihrem Blog ausschließen. Wenn Sie diese Option aktiviert und ein Crawler oder Bot erkannt wird, wird die Anzeige nicht gezählt werden. Vorsicht - genauere Erkennung erfordert mehr Server-Ressourcen."
+
+#: sam-admin-class.php:422
+#: sam-admin-class.php:542
+msgid "Custom sizes"
+msgstr "Benutzerdefinierte Größen"
+
+#: sam-admin-class.php:425
+#: sam-admin-class.php:486
+msgid "Large Leaderboard"
+msgstr "Large Leaderboard"
+
+#: sam-admin-class.php:426
+#: sam-admin-class.php:487
+msgid "Leaderboard"
+msgstr "Leaderboard"
+
+#: sam-admin-class.php:427
+#: sam-admin-class.php:429
+#: sam-admin-class.php:430
+#: sam-admin-class.php:488
+#: sam-admin-class.php:490
+#: sam-admin-class.php:491
+msgid "Small Leaderboard"
+msgstr "Small Leaderboard"
+
+#: sam-admin-class.php:428
+#: sam-admin-class.php:489
+msgid "Mega Unit"
+msgstr "Mega Unit"
+
+#: sam-admin-class.php:431
+#: sam-admin-class.php:432
+#: sam-admin-class.php:433
+#: sam-admin-class.php:435
+#: sam-admin-class.php:436
+#: sam-admin-class.php:437
+#: sam-admin-class.php:492
+#: sam-admin-class.php:493
+#: sam-admin-class.php:494
+#: sam-admin-class.php:496
+#: sam-admin-class.php:497
+#: sam-admin-class.php:498
+msgid "Tall Banner"
+msgstr "Tall Banner"
+
+#: sam-admin-class.php:434
+#: sam-admin-class.php:495
+msgid "Banner"
+msgstr "Banner"
+
+#: sam-admin-class.php:438
+#: sam-admin-class.php:440
+#: sam-admin-class.php:470
+#: sam-admin-class.php:471
+#: sam-admin-class.php:499
+#: sam-admin-class.php:501
+#: sam-admin-class.php:535
+#: sam-admin-class.php:536
+msgid "Half Banner"
+msgstr "Half Banner"
+
+#: sam-admin-class.php:439
+#: sam-admin-class.php:468
+#: sam-admin-class.php:469
+#: sam-admin-class.php:500
+#: sam-admin-class.php:533
+#: sam-admin-class.php:534
+msgid "Tall Half Banner"
+msgstr "Tall Half Banner"
+
+#: sam-admin-class.php:441
+#: sam-admin-class.php:442
+#: sam-admin-class.php:467
+#: sam-admin-class.php:474
+#: sam-admin-class.php:475
+#: sam-admin-class.php:502
+#: sam-admin-class.php:503
+#: sam-admin-class.php:532
+#: sam-admin-class.php:539
+#: sam-admin-class.php:540
+msgid "Button"
+msgstr "Button"
+
+#: sam-admin-class.php:443
+#: sam-admin-class.php:504
+msgid "Micro Bar"
+msgstr "Micro Bar"
+
+#: sam-admin-class.php:444
+#: sam-admin-class.php:445
+#: sam-admin-class.php:446
+#: sam-admin-class.php:447
+#: sam-admin-class.php:505
+#: sam-admin-class.php:506
+#: sam-admin-class.php:507
+#: sam-admin-class.php:508
+msgid "Thin Banner"
+msgstr "Thin Banner"
+
+#: sam-admin-class.php:444
+#: sam-admin-class.php:445
+#: sam-admin-class.php:446
+#: sam-admin-class.php:447
+#: sam-admin-class.php:468
+#: sam-admin-class.php:469
+#: sam-admin-class.php:470
+#: sam-admin-class.php:471
+#: sam-admin-class.php:472
+#: sam-admin-class.php:473
+#: sam-admin-class.php:474
+#: sam-admin-class.php:475
+#: sam-admin-class.php:505
+#: sam-admin-class.php:506
+#: sam-admin-class.php:507
+#: sam-admin-class.php:508
+#: sam-admin-class.php:533
+#: sam-admin-class.php:534
+#: sam-admin-class.php:535
+#: sam-admin-class.php:536
+#: sam-admin-class.php:537
+#: sam-admin-class.php:538
+#: sam-admin-class.php:539
+#: sam-admin-class.php:540
+#, php-format
+msgid "%d Link"
+msgid_plural "%d Links"
+msgstr[0] "%d Link"
+msgstr[1] "%d Links"
+
+#: sam-admin-class.php:448
+#: sam-admin-class.php:511
+msgid "Wide Skyscraper"
+msgstr "Wide Skyscraper"
+
+#: sam-admin-class.php:449
+#: sam-admin-class.php:512
+msgid "Skyscraper"
+msgstr "Skyscraper"
+
+#: sam-admin-class.php:450
+#: sam-admin-class.php:513
+msgid "Wide Half Banner"
+msgstr "Wide Half Banner"
+
+#: sam-admin-class.php:451
+#: sam-admin-class.php:514
+msgid "Vertical Rectangle"
+msgstr "Vertical Rectangle"
+
+#: sam-admin-class.php:452
+#: sam-admin-class.php:453
+#: sam-admin-class.php:515
+#: sam-admin-class.php:516
+msgid "Tall Rectangle"
+msgstr "Tall Rectangle"
+
+#: sam-admin-class.php:454
+#: sam-admin-class.php:517
+msgid "Vertical Banner"
+msgstr "Vertical Banner"
+
+#: sam-admin-class.php:455
+#: sam-admin-class.php:520
+msgid "Large Rectangle"
+msgstr "Large Rectangle"
+
+#: sam-admin-class.php:456
+#: sam-admin-class.php:457
+#: sam-admin-class.php:521
+#: sam-admin-class.php:522
+msgid "Wide Rectangle"
+msgstr "Wide Rectangle"
+
+#: sam-admin-class.php:458
+#: sam-admin-class.php:523
+msgid "Medium Rectangle"
+msgstr "Medium Rectangle"
+
+#: sam-admin-class.php:459
+#: sam-admin-class.php:460
+#: sam-admin-class.php:524
+#: sam-admin-class.php:525
+msgid "Small Wide Rectangle"
+msgstr "Small Wide Rectangle"
+
+#: sam-admin-class.php:461
+#: sam-admin-class.php:526
+msgid "Mini Wide Rectangle"
+msgstr "Mini Wide Rectangle"
+
+#: sam-admin-class.php:462
+#: sam-admin-class.php:527
+#: sam-admin-class.php:547
+msgid "Square"
+msgstr "Square"
+
+#: sam-admin-class.php:463
+#: sam-admin-class.php:466
+#: sam-admin-class.php:528
+#: sam-admin-class.php:531
+msgid "Small Square"
+msgstr "Small Square"
+
+#: sam-admin-class.php:464
+#: sam-admin-class.php:465
+#: sam-admin-class.php:529
+#: sam-admin-class.php:530
+msgid "Small Rectangle"
+msgstr "Small Rectangle"
+
+#: sam-admin-class.php:472
+#: sam-admin-class.php:473
+#: sam-admin-class.php:537
+#: sam-admin-class.php:538
+msgid "Tall Button"
+msgstr "Tall Button"
+
+#: sam-admin-class.php:545
+msgid "Horizontal"
+msgstr "Horizontal"
+
+#: sam-admin-class.php:546
+msgid "Vertical"
+msgstr "Vertical"
+
+#: sam-admin-class.php:548
+msgid "Custom width and height"
+msgstr "Benutzerdefinierte Höhe und Breitet"
+
+#: sam-admin-class.php:578
+msgid "Default"
+msgstr "Default"
+
+#: sam-admin-class.php:579
+msgid "None"
+msgstr "Keine"
+
+#: sam-admin-class.php:732
+msgid "Uploading"
+msgstr "Uploading"
+
+#: sam-admin-class.php:733
+msgid "Uploaded."
+msgstr "Hochgeladen"
+
+#: sam-admin-class.php:734
+msgid "Only JPG, PNG or GIF files are allowed"
+msgstr "Nur JPG,PNG oder GIF Dateien sind erlaubt"
+
+#: sam-admin-class.php:735
+msgid "File"
+msgstr "Datei"
+
+#: sam-admin-class.php:824
+msgid "There are general options."
+msgstr "Es gibt generelle Einstellungen"
+
+#: sam-admin-class.php:828
+msgid "Single post/page auto inserting options. Use these parameters for allowing/defining Ads Places which will be automatically inserted before/after post/page content."
+msgstr "Einstellungen für die automatische Schaltung in Artikeln und Seiten. Nutzen Sie diese Einstellungen um das automatische Schalten von Ads Places vor oder nach einem Post oder Comment zu erlauben"
+
+#: sam-admin-class.php:832
+msgid "Adjust parameters of your Google DFP account."
+msgstr "Einstellen der Parameter Ihres Google DFP Accounts"
+
+#: sam-admin-class.php:836
+msgid "Adjust parameters of plugin statistics."
+msgstr "Einstellen der Parameter für das Statistik Plugin"
+
+#: sam-admin-class.php:840
+msgid "This options define layout for Ads Managin Pages."
+msgstr "Diese Optionen definieren das Admin Layout"
+
+#: sam-admin-class.php:844
+msgid "Are you allow to perform these actions during deactivating plugin?"
+msgstr "Haben Sie die Rechte diese Aktionen während der Deaktivierung des Plugins auzuführen?"
+
+#: sam-admin-class.php:918
+msgid "Simple Ads Manager Settings Updated."
+msgstr "Einstellungen des Simple Ads Manager aktualisiert"
+
+#: sam-admin-class.php:1002
+#: sam-admin-class.php:1181
+#: sam-admin-class.php:1393
+msgid "&laquo;"
+msgstr "&laquo;"
+
+#: sam-admin-class.php:1003
+#: sam-admin-class.php:1182
+#: sam-admin-class.php:1394
+msgid "&raquo;"
+msgstr "&raquo;"
+
+#: sam-admin-class.php:1010
+msgid "Managing Ads Places"
+msgstr "Ads Places verwalten"
+
+#: sam-admin-class.php:1012
+#: sam-admin-class.php:1191
+#: sam-admin-class.php:1403
+msgid "All"
+msgstr "Alle"
+
+#: sam-admin-class.php:1013
+#: sam-admin-class.php:1192
+#: sam-admin-class.php:1404
+msgid "Active"
+msgstr "Aktiv"
+
+#: sam-admin-class.php:1014
+#: sam-admin-class.php:1193
+#: sam-admin-class.php:1405
+msgid "Trash"
+msgstr "Papierkorb"
+
+#: sam-admin-class.php:1019
+#: sam-admin-class.php:1140
+#: sam-admin-class.php:1199
+#: sam-admin-class.php:1332
+#: sam-admin-class.php:1410
+#: sam-admin-class.php:1485
+msgid "Clear Trash"
+msgstr "Papierkorb leeren"
+
+#: sam-admin-class.php:1021
+#: sam-admin-class.php:1142
+msgid "Add New Place"
+msgstr "Neuen Place hinzufügen"
+
+#: sam-admin-class.php:1025
+#: sam-admin-class.php:1146
+msgid "Reset Statistics"
+msgstr "Statistiken zurücksetzen"
+
+#: sam-admin-class.php:1028
+#: sam-admin-class.php:1149
+#: sam-admin-class.php:1209
+#: sam-admin-class.php:1341
+#: sam-admin-class.php:1416
+#: sam-admin-class.php:1491
+#, php-format
+msgid "Displaying %s&#8211;%s of %s"
+msgstr "Displaying %s&#8211;%s of %s"
+
+#: sam-admin-class.php:1040
+#: sam-admin-class.php:1051
+#: sam-admin-class.php:1223
+#: sam-admin-class.php:1233
+#: sam-admin-class.php:1428
+#: sam-admin-class.php:1434
+msgid "ID"
+msgstr "ID"
+
+#: sam-admin-class.php:1041
+#: sam-admin-class.php:1052
+msgid "Place Name"
+msgstr "Place Name"
+
+#: sam-admin-class.php:1042
+#: sam-admin-class.php:1053
+#: sam-admin-class.php:1774
+#: sam-admin-class.php:2155
+msgid "Size"
+msgstr "Größe"
+
+#: sam-admin-class.php:1043
+#: sam-admin-class.php:1054
+#: sam-admin-class.php:1103
+#: sam-admin-class.php:1226
+#: sam-admin-class.php:1236
+#: sam-admin-class.php:1302
+#: sam-admin-class.php:2149
+msgid "Hits"
+msgstr "Anzeigen"
+
+#: sam-admin-class.php:1044
+#: sam-admin-class.php:1055
+msgid "Total Hits"
+msgstr "Gesamtzahl der Anzeigen"
+
+#: sam-admin-class.php:1045
+#: sam-admin-class.php:1056
+msgid "Total Ads"
+msgstr "Anzahl Banner"
+
+#: sam-admin-class.php:1046
+#: sam-admin-class.php:1057
+#: sam-admin-class.php:1228
+#: sam-admin-class.php:1238
+msgid "Earnings"
+msgstr "Einnahmen"
+
+#: sam-admin-class.php:1085
+#: sam-admin-class.php:1281
+#: sam-admin-class.php:1454
+msgid "There are no data ..."
+msgstr "Es existieren keine Einträge"
+
+#: sam-admin-class.php:1102
+#: sam-admin-class.php:1301
+msgid "Placement"
+msgstr "Platzierung"
+
+#: sam-admin-class.php:1104
+#: sam-admin-class.php:1227
+#: sam-admin-class.php:1237
+#: sam-admin-class.php:1303
+#: sam-admin-class.php:2151
+msgid "Clicks"
+msgstr "Clicks"
+
+#: sam-admin-class.php:1105
+#: sam-admin-class.php:1304
+msgid "Total"
+msgstr "Gesamt"
+
+#: sam-admin-class.php:1105
+#: sam-admin-class.php:1304
+msgid "N/A"
+msgstr "N/A"
+
+#: sam-admin-class.php:1110
+#: sam-admin-class.php:1309
+#: sam-admin-class.php:1462
+msgid "in Trash"
+msgstr "im Papierkorb"
+
+#: sam-admin-class.php:1112
+msgid "Edit Place"
+msgstr "Place bearbeiten"
+
+#: sam-admin-class.php:1112
+#: sam-admin-class.php:1311
+#: sam-admin-class.php:1464
+msgid "Edit"
+msgstr "bearbeiten"
+
+#: sam-admin-class.php:1116
+msgid "Restore this Place from the Trash"
+msgstr "Diesen Place aus dem Papierkorb wiederherstellen"
+
+#: sam-admin-class.php:1116
+#: sam-admin-class.php:1315
+#: sam-admin-class.php:1468
+msgid "Restore"
+msgstr "wiederherstellen"
+
+#: sam-admin-class.php:1117
+msgid "Remove this Place permanently"
+msgstr "Diesen Place endgültig löschen"
+
+#: sam-admin-class.php:1117
+#: sam-admin-class.php:1316
+#: sam-admin-class.php:1469
+msgid "Remove permanently"
+msgstr "endgültig löschen"
+
+#: sam-admin-class.php:1122
+msgid "Move this Place to the Trash"
+msgstr "Diesen Place in den Papierkorb schieben"
+
+#: sam-admin-class.php:1122
+#: sam-admin-class.php:1317
+#: sam-admin-class.php:1474
+msgid "Delete"
+msgstr "löschen"
+
+#: sam-admin-class.php:1123
+msgid "View List of Place Ads"
+msgstr "Liste der Ads Places anzeigen"
+
+#: sam-admin-class.php:1123
+msgid "View Ads"
+msgstr "Banner anzeigen"
+
+#: sam-admin-class.php:1124
+msgid "Create New Ad"
+msgstr "Neuen Banner erstellen"
+
+#: sam-admin-class.php:1124
+msgid "New Ad"
+msgstr "Neuer Banner"
+
+#: sam-admin-class.php:1189
+msgid "Managing Items of Ads Place"
+msgstr "Elemente des Adsplace verwalten"
+
+#: sam-admin-class.php:1201
+#: sam-admin-class.php:1334
+msgid "Add New Ad"
+msgstr "Neuen Banner hinzufügen"
+
+#: sam-admin-class.php:1205
+#: sam-admin-class.php:1338
+msgid "Back to Ads Places Management"
+msgstr "Zurück zur Ads Place Verwaltung"
+
+#: sam-admin-class.php:1224
+#: sam-admin-class.php:1234
+msgid "Advertisement"
+msgstr "Banner"
+
+#: sam-admin-class.php:1225
+#: sam-admin-class.php:1235
+#: sam-admin-class.php:2147
+msgid "Activity"
+msgstr "Aktivität"
+
+#: sam-admin-class.php:1295
+msgid "Yes"
+msgstr "Ja"
+
+#: sam-admin-class.php:1296
+msgid "No"
+msgstr "Nein"
+
+#: sam-admin-class.php:1311
+msgid "Edit this Item of Ads Place"
+msgstr "Dieses Element des Ads Place bearbeiten"
+
+#: sam-admin-class.php:1315
+msgid "Restore this Ad from the Trash"
+msgstr "Banner wiederherstellen"
+
+#: sam-admin-class.php:1316
+msgid "Remove this Ad permanently"
+msgstr "Banner endgültig löschen"
+
+#: sam-admin-class.php:1317
+msgid "Move this item to the Trash"
+msgstr "Dieses Element in den Papierkorb schieben"
+
+#: sam-admin-class.php:1401
+msgid "Managing Ads Zones"
+msgstr "Ads Zonen verwalten"
+
+#: sam-admin-class.php:1412
+#: sam-admin-class.php:1487
+msgid "Add New Zone"
+msgstr "Neue Zone hinzufügen"
+
+#: sam-admin-class.php:1429
+#: sam-admin-class.php:1435
+msgid "Zone Name"
+msgstr "Name der Zone"
+
+#: sam-admin-class.php:1464
+msgid "Edit Zone"
+msgstr "Zone bearbeiten"
+
+#: sam-admin-class.php:1468
+msgid "Restore this Zone from the Trash"
+msgstr "Die Zone Wiederherstellen"
+
+#: sam-admin-class.php:1469
+msgid "Remove this Zone permanently"
+msgstr "Die Zone endgültig löschen"
+
+#: sam-admin-class.php:1474
+msgid "Move this Zone to the Trash"
+msgstr "Die Zone in den Papierkorb schieben"
+
+#: sam-admin-class.php:1690
+#: sam-admin-class.php:1722
+#: sam-admin-class.php:1739
+#: sam-admin-class.php:1740
+#: sam-admin-class.php:1741
+#: sam-admin-class.php:1749
+#: sam-admin-class.php:2006
+#: sam-admin-class.php:2072
+#: sam-admin-class.php:2112
+#: sam-admin-class.php:2113
+#: sam-admin-class.php:2114
+#: sam-admin-class.php:2577
+#: sam-admin-class.php:2650
+#: sam-admin-class.php:2677
+msgid "Undefined"
+msgstr "Undefiniert"
+
+#: sam-admin-class.php:1703
+msgid "Ads Place Data Updated."
+msgstr "Ads Place Daten aktualisiert"
+
+#: sam-admin-class.php:1749
+msgid "New Ads Place"
+msgstr "Neuer Ads Place"
+
+#: sam-admin-class.php:1749
+msgid "Edit Ads Place"
+msgstr "Ads Place bearbeiten"
+
+#: sam-admin-class.php:1754
+#: sam-admin-class.php:1812
+#: sam-admin-class.php:1826
+#: sam-admin-class.php:1847
+#: sam-admin-class.php:1924
+#: sam-admin-class.php:2126
+#: sam-admin-class.php:2195
+#: sam-admin-class.php:2210
+#: sam-admin-class.php:2268
+#: sam-admin-class.php:2353
+#: sam-admin-class.php:2471
+#: sam-admin-class.php:2501
+#: sam-admin-class.php:2682
+#: sam-admin-class.php:2732
+#: sam-admin-class.php:2746
+msgid "Click to toggle"
+msgstr "Klick um zu wechseln"
+
+#: sam-admin-class.php:1755
+#: sam-admin-class.php:2127
+#: sam-admin-class.php:2683
+msgid "Status"
+msgstr "Status"
+
+#: sam-admin-class.php:1762
+msgid "Back to Places List"
+msgstr "Zurück zur Places Liste"
+
+#: sam-admin-class.php:1768
+#: js/dialog.php:66
+msgid "Ads Place ID"
+msgstr "Ads Place ID"
+
+#: sam-admin-class.php:1776
+#: sam-admin-class.php:2157
+msgid "Width"
+msgstr "Breite"
+
+#: sam-admin-class.php:1778
+#: sam-admin-class.php:2159
+msgid "Height"
+msgstr "Höhe"
+
+#: sam-admin-class.php:1782
+#: sam-admin-class.php:2702
+msgid "Is Active"
+msgstr "Ist Aktiv"
+
+#: sam-admin-class.php:1783
+#: sam-admin-class.php:2166
+#: sam-admin-class.php:2703
+msgid "Is In Trash"
+msgstr "Ist im Papierkorb"
+
+#: sam-admin-class.php:1790
+#: sam-admin-class.php:2173
+#: sam-admin-class.php:2710
+#: js/dialog.php:89
+msgid "Cancel"
+msgstr "Abbrechen"
+
+#: sam-admin-class.php:1793
+#: sam-admin-class.php:2176
+#: sam-admin-class.php:2713
+msgid "Save"
+msgstr "Speichern"
+
+#: sam-admin-class.php:1806
+#: sam-admin-class.php:2726
+msgid "Name"
+msgstr "Name"
+
+#: sam-admin-class.php:1813
+#: sam-admin-class.php:1817
+#: sam-admin-class.php:2199
+#: sam-admin-class.php:2733
+#: sam-admin-class.php:2737
+msgid "Description"
+msgstr "Beschreibung"
+
+#: sam-admin-class.php:1815
+msgid "Enter description of this Ads Place."
+msgstr "Beschreibung für diesen Ads Place eingeben"
+
+#: sam-admin-class.php:1820
+#: sam-admin-class.php:2203
+#: sam-admin-class.php:2740
+msgid "This description is not used anywhere and is added solely for the convenience of managing advertisements."
+msgstr "Diese Beschreibung wird nirgendwo verwendet und dient nur der besseren Verwaltung"
+
+#: sam-admin-class.php:1827
+msgid "Ads Place Size"
+msgstr "Ads Place Größe"
+
+#: sam-admin-class.php:1829
+msgid "Select size of this Ads Place."
+msgstr "Eine Größe für den Ads Place auswählen"
+
+#: sam-admin-class.php:1834
+msgid "Custom Width"
+msgstr "Benutzerdefinierte Breite"
+
+#: sam-admin-class.php:1838
+msgid "Custom Height"
+msgstr "Benutzerdefinierte Höhe"
+
+#: sam-admin-class.php:1841
+msgid "These values are not used and are added solely for the convenience of advertising management. Will be used in the future..."
+msgstr "Diese Werte werden nirgendwo verwendet und dient nur der besseren Verwaltung "
+
+#: sam-admin-class.php:1848
+msgid "Ads Place Patch"
+msgstr "Ads Place Patch"
+
+#: sam-admin-class.php:1850
+msgid "Select type of the code of a patch and fill data entry fields with the appropriate data."
+msgstr "Selektieren Sie den Typ des Codes und füllen Sie die gewünschten Felder aus."
+
+#: sam-admin-class.php:1852
+#: sam-admin-class.php:1856
+msgid "Image"
+msgstr "Bild"
+
+#: sam-admin-class.php:1860
+msgid "This image is a patch for advertising space. This may be an image with the text \"Place your ad here\"."
+msgstr "Dieses Bild ist ein Platzhalter für Werbeflächen. Dies kann ein Bild mit dem Text \"Werben Sie hier sein\"."
+
+#: sam-admin-class.php:1863
+msgid "Target"
+msgstr "Ziel"
+
+#: sam-admin-class.php:1867
+msgid "This is a link to a page where are your suggestions for advertisers."
+msgstr "Dieser Link führt zu der Seite des von ihnen vorgeschlagenen Inserenten."
+
+#: sam-admin-class.php:1870
+#: sam-admin-class.php:2233
+msgid "Image Tools"
+msgstr "Bild Tools"
+
+#: sam-admin-class.php:1872
+#: sam-admin-class.php:2235
+msgid "Select File"
+msgstr "Datei auswählen"
+
+#: sam-admin-class.php:1876
+#: sam-admin-class.php:2239
+msgid "Apply"
+msgstr "Bestätigen"
+
+#: sam-admin-class.php:1877
+#: sam-admin-class.php:2240
+msgid "Select file from your blog server."
+msgstr "Eine Datei vom Server wählen"
+
+#: sam-admin-class.php:1880
+#: sam-admin-class.php:2243
+msgid "Upload File"
+msgstr "Datei hochladen"
+
+#: sam-admin-class.php:1881
+#: sam-admin-class.php:2244
+msgid "Upload"
+msgstr "hochladen"
+
+#: sam-admin-class.php:1884
+#: sam-admin-class.php:2247
+msgid "Select and upload file from your local computer."
+msgstr "Eine Datei vom Computer auswählen und hochladen"
+
+#: sam-admin-class.php:1890
+msgid "HTML or Javascript Code"
+msgstr "Html oder Javascrip Code"
+
+#: sam-admin-class.php:1894
+msgid "Patch Code"
+msgstr "Patch Code"
+
+#: sam-admin-class.php:1899
+msgid "This is one-block code of third-party AdServer rotator. Selecting this checkbox prevents displaying contained ads."
+msgstr "Hier steht der Ein-Block Code für Rotationen von Drittanbietern. Die Aktivierung der Checkbox unterbindet die beinhalteten Banner."
+
+#: sam-admin-class.php:1902
+msgid "This is a HTML-code patch of advertising space. For example: use the code to display AdSense advertisement. "
+msgstr "Dies ist der Html Code patch für Advertising Plätze. Beispielsweise: Nutzen Sie den Code für die Anzeige von AdSense Anzeigen"
+
+#: sam-admin-class.php:1907
+msgid "Google DFP"
+msgstr "Google DFP"
+
+#: sam-admin-class.php:1911
+msgid "DFP Block Name"
+msgstr "DFP Block Name"
+
+#: sam-admin-class.php:1915
+msgid "This is name of Google DFP block!"
+msgstr "Name des Google DFP Blocks"
+
+#: sam-admin-class.php:1918
+msgid "The patch (default advertisement) will be shown that if the logic of the plugin can not show any contained advertisement on the current page of the document."
+msgstr "Diese Vorlage wird gezeigt, wenn die Logik des Plugins keinen anderen Banner anzeigen kann."
+
+#: sam-admin-class.php:1925
+msgid "Codes"
+msgstr "Codes"
+
+#: sam-admin-class.php:1927
+msgid "Enter the code to output before and after the codes of Ads Place."
+msgstr "geben Sie den Code output vor und nach einem Ads Places ein"
+
+#: sam-admin-class.php:1929
+msgid "Code Before"
+msgstr "Code vorher"
+
+#: sam-admin-class.php:1933
+msgid "Code After"
+msgstr "Code hinteher"
+
+#: sam-admin-class.php:1936
+msgid "You can enter any HTML codes here for the further withdrawal of their before and after the code of Ads Place."
+msgstr "Sie können hier weitere Html Codes eingeben um die before und after Codes nach einem Ads Place zu erweitern."
+
+#: sam-admin-class.php:2017
+msgid "Ad Data Updated."
+msgstr "Banner Daten aktualisiert"
+
+#: sam-admin-class.php:2121
+msgid "New advertisement"
+msgstr "Neuer Banner"
+
+#: sam-admin-class.php:2121
+msgid "Edit advertisement"
+msgstr "Banner bearbeiten"
+
+#: sam-admin-class.php:2134
+msgid "Back to Ads List"
+msgstr "Zurück zur Bannerliste"
+
+#: sam-admin-class.php:2140
+msgid "Advertisement ID"
+msgstr "Banner ID"
+
+#: sam-admin-class.php:2148
+msgid "Ad is Active"
+msgstr "Banner ist aktiv"
+
+#: sam-admin-class.php:2148
+msgid "Ad is Inactive"
+msgstr "Banner ist deaktiviert"
+
+#: sam-admin-class.php:2164
+msgid "Is in Rotation"
+msgstr "Banner in Rotation"
+
+#: sam-admin-class.php:2189
+msgid "Title"
+msgstr "Titel"
+
+#: sam-admin-class.php:2196
+msgid "Advertisement Description"
+msgstr "Beschreibung des Banners"
+
+#: sam-admin-class.php:2211
+#: sam-admin-class.php:2258
+msgid "Ad Code"
+msgstr "Banner Code"
+
+#: sam-admin-class.php:2215
+msgid "Image Mode"
+msgstr "Bilder Modus"
+
+#: sam-admin-class.php:2219
+msgid "Ad Image"
+msgstr "Bild hinzufügen"
+
+#: sam-admin-class.php:2223
+msgid "Ad Target"
+msgstr "Ziel hinzufügen"
+
+#: sam-admin-class.php:2228
+msgid "Count clicks for this advertisement"
+msgstr "Clicks für den Banner zählen"
+
+#: sam-admin-class.php:2230
+msgid "Use carefully!"
+msgstr "Achtung beim benutzen!"
+
+#: sam-admin-class.php:2230
+msgid "Do not use if the wp-admin folder is password protected. In this case the viewer will be prompted to enter a username and password during ajax request. It's not good."
+msgstr "Nutzen Sie diese Option nicht wenn der wp-admin Ordner schreibegschützt ist. In diesem Fall wäre der Betrachter gezwungen Username und Passwort während der Ajax abfrage anzugeben."
+
+#: sam-admin-class.php:2254
+msgid "Code Mode"
+msgstr "Code Modus"
+
+#: sam-admin-class.php:2260
+msgid "This code of ad contains PHP script"
+msgstr "Der Code das Banners enthält php script"
+
+#: sam-admin-class.php:2269
+msgid "Restrictions of advertisements showing"
+msgstr "Einschränkung der Anzeige eines Banners"
+
+#: sam-admin-class.php:2272
+msgid "Ad Weight"
+msgstr "Banner Gewichtung"
+
+#: sam-admin-class.php:2279
+msgid "Inactive"
+msgstr "Inaktiv"
+
+#: sam-admin-class.php:2280
+msgid "Minimal Activity"
+msgstr "Minimale Aktivität"
+
+#: sam-admin-class.php:2281
+msgid "Maximal Activity"
+msgstr "Maximale Aktivität"
+
+#: sam-admin-class.php:2291
+msgid "Ad weight - coefficient of frequency of show of the advertisement for one cycle of advertisements rotation."
+msgstr "Banner Gewichtung - "
+
+#: sam-admin-class.php:2292
+msgid "0 - ad is inactive, 1 - minimal activity of this advertisement, 10 - maximal activity of this ad."
+msgstr "0 - Banner ist inaktiv, 1 - minimale Aktivität des Banners, 10 - maximale Aktivität des Banners"
+
+#: sam-admin-class.php:2301
+msgid "Show ad only on pages of this type"
+msgstr "Zeigt den Banner nur auf Seiten dieses Typs"
+
+#: sam-admin-class.php:2305
+msgid "Home Page (Home or Front Page)"
+msgstr "Homepage (Home oder Startseite)"
+
+#: sam-admin-class.php:2307
+msgid "Singular Pages"
+msgstr "Einzelne Seite"
+
+#: sam-admin-class.php:2310
+msgid "Single Post"
+msgstr "Einzelner Artikel"
+
+#: sam-admin-class.php:2312
+msgid "Page"
+msgstr "Seite"
+
+#: sam-admin-class.php:2314
+msgid "Attachment"
+msgstr "Anhang"
+
+#: sam-admin-class.php:2317
+msgid "Search Page"
+msgstr "Such Seite"
+
+#: sam-admin-class.php:2319
+msgid "\"Not found\" Page (HTTP 404: Not Found)"
+msgstr "\"Not found\" Seite (HTTP 404: Not Found)"
+
+#: sam-admin-class.php:2321
+msgid "Archive Pages"
+msgstr "Archiv Seiten"
+
+#: sam-admin-class.php:2324
+msgid "Taxonomy Archive Pages"
+msgstr "Taxonomy Archiv Seiten"
+
+#: sam-admin-class.php:2326
+msgid "Category Archive Pages"
+msgstr "Kategorien Archiv Seiten"
+
+#: sam-admin-class.php:2328
+msgid "Tag Archive Pages"
+msgstr "Tag Archiv Seiten"
+
+#: sam-admin-class.php:2330
+msgid "Author Archive Pages"
+msgstr "Authoren Archiv Seiten"
+
+#: sam-admin-class.php:2332
+msgid "Date Archive Pages (any date-based archive pages, i.e. a monthly, yearly, daily or time-based archive)"
+msgstr "Datums Archivseiten (alle Datumsbasierten Archivseite, zum Beispiel monatlich jährlich oder tagesbasierte Anzeigen)"
+
+#: sam-admin-class.php:2337
+msgid "Show ad only in certain posts/pages"
+msgstr "Zeigt den Banner nur auf spezifischen Artikeln oder Seiten"
+
+#: sam-admin-class.php:2341
+#: sam-admin-class.php:2362
+msgid "Posts/Pages IDs (comma separated)"
+msgstr "Artikel/Seiten ID´s (Komma getrennt)"
+
+#: sam-admin-class.php:2346
+msgid "Use this setting to display an ad only in certain posts/pages. Enter the IDs of posts/pages, separated by commas."
+msgstr "Anzeige eines Banners nur in spezifischen Seiten/Artikeln. Geben Sie die ID´s der Artikel/Seiten durch Kommas getrennt ein."
+
+#: sam-admin-class.php:2354
+msgid "Extended restrictions of advertisements showing"
+msgstr "Erweitern Sie die Einschränkungen für die Anzeige"
+
+#: sam-admin-class.php:2358
+msgid "Do not show ad on certain posts/pages"
+msgstr "Zeigt den Banner NICHT auf spezifischen Artikeln/Seiten"
+
+#: sam-admin-class.php:2367
+msgid "Use this setting to not display an ad on certain posts/pages. Enter the IDs of posts/pages, separated by commas."
+msgstr "Verhindert die Anzeige eines Banners  in spezifischen Seiten/Artikeln. Geben Sie die ID´s der Artikel/Seiten durch Kommas getrennt ein."
+
+#: sam-admin-class.php:2372
+msgid "Show ad only in single posts or categories archives of certain categories"
+msgstr "Zeigt den Banner nur in Artikeln oder KategorieArchiven einer spezifischen Kategorie"
+
+#: sam-admin-class.php:2375
+#: sam-admin-class.php:2392
+msgid "Categories (comma separated)"
+msgstr "Kategorien (Komma getrennt)"
+
+#: sam-admin-class.php:2379
+msgid "Use this setting to display an ad only in single posts or categories archives of certain categories. Enter the names of categories, separated by commas."
+msgstr "Nutzen Sie die Einstellungen um einen Banner nur in Artikeln oder Kategorie Archiven einer bestimmten Kategorie anzuzeigen. Geben Sie Namen der Kategorien mit Kommas getrennt ein"
+
+#: sam-admin-class.php:2383
+#: sam-admin-class.php:2412
+msgid "This display logic parameter will be applied only when you use the \"Show ad on all pages of blog\" and \"Show your ad only on the pages of this type\" modes. Otherwise, it will be ignored."
+msgstr "Diese Anzeigelogik wird nur verwendet wenn Sie die Modis \"Zeigt Banner auf allen Seiten\" und \"Zeigt den Banner nur auf Seiten dieses Typs\" benutzen. Anderfalls wird es ignoriert."
+
+#: sam-admin-class.php:2389
+msgid "Do not show ad in single posts or categories archives of certain categories"
+msgstr "Zeige diesen Banner nicht in einzelnen Artikeln oder Kategorie Archiven spezifischer Kategorien."
+
+#: sam-admin-class.php:2396
+msgid "Use this setting to not display an ad in single posts or categories archives of certain categories. Enter the names of categories, separated by commas."
+msgstr "Benutzen Sie diese Einstellung um einen Banner NICHT in einzlenen Artikel oder Kategoriearchiven einer bestimmten Kategorie anzuzeigen. Geben Sie die Namen der Kategorien mit Kommas getrennt ein."
+
+#: sam-admin-class.php:2401
+msgid "Show ad only in single posts or authors archives of certain authors"
+msgstr "Zeigt den Banner nur in einzelnen Artikeln oder Autor Archivseiten eines bestimmten Autors"
+
+#: sam-admin-class.php:2404
+#: sam-admin-class.php:2421
+msgid "Authors (comma separated)"
+msgstr "Authoren (durch Kommas getrennt)"
+
+#: sam-admin-class.php:2408
+msgid "Use this setting to display an ad only in single posts or authors archives of certain authors. Enter the names of authors, separated by commas."
+msgstr "Benutzen Sie diese Einstellung um einen Banner nur in einzlenen Artikel oder Autorenarchiven eines bestimmten Autors anzuzeigen. Geben Sie die Namen der Autoren mit Kommas getrennt ein."
+
+#: sam-admin-class.php:2418
+msgid "Do not show ad in single posts or authors archives of certain authors"
+msgstr "Zeigt den Banner NICHT  in einzelnen Artikeln oder Autor Archivseiten eines bestimmten Autors"
+
+#: sam-admin-class.php:2425
+msgid "Use this setting to not display an ad in single posts or authors archives of certain authors. Enter the names of authors, separated by commas."
+msgstr "Einstellungen um den Banner NICHT in einzelnen Artikeln oder Autorenarchiven spezifischer Autoren anzuzeigen"
+
+#: sam-admin-class.php:2430
+msgid "Use the schedule for this ad"
+msgstr "Kaleder für diesen Banner nutzen"
+
+#: sam-admin-class.php:2433
+msgid "Campaign Start Date"
+msgstr "Kampagnen Startdatum"
+
+#: sam-admin-class.php:2437
+msgid "Campaign End Date"
+msgstr "Kampagnen Enddatum"
+
+#: sam-admin-class.php:2441
+msgid "Use these parameters for displaying ad during the certain period of time."
+msgstr "Nutzen Sie diese Parmater um die Anzeige durch eine Zeitspanne einzuschränken"
+
+#: sam-admin-class.php:2446
+msgid "Use limitation by hits"
+msgstr "Limietierung durch Anzahl der Anzeige aktivieren"
+
+#: sam-admin-class.php:2449
+msgid "Hits Limit"
+msgstr "Anzeigen Limit"
+
+#: sam-admin-class.php:2453
+msgid "Use this parameter for limiting displaying of ad by hits."
+msgstr "Nutzen Sie diese Parameter um die Banner durch Anzeigen zu limitieren"
+
+#: sam-admin-class.php:2457
+msgid "Use limitation by clicks"
+msgstr "Limitierung durch klicks aktivieren"
+
+#: sam-admin-class.php:2460
+msgid "Clicks Limit"
+msgstr "Klick Limit"
+
+#: sam-admin-class.php:2464
+msgid "Use this parameter for limiting displaying of ad by clicks."
+msgstr "Nutzen Sie diese Parameter um die Anzeige der Banner durch klicks zu limitieren"
+
+#: sam-admin-class.php:2475
+msgid "Price of ad placement per month"
+msgstr "Preis pro Bannerplazierung im Monat"
+
+#: sam-admin-class.php:2479
+msgid "Tthis parameter used only for scheduled ads."
+msgstr "Diese Parameter werden nur für Banner mit Schaltplan genutzt"
+
+#: sam-admin-class.php:2482
+msgid "Price per Thousand Hits"
+msgstr "Preis pro 1000 Anzeigen"
+
+#: sam-admin-class.php:2486
+msgid "Not only humans visit your blog, bots and crawlers too. In order not to deceive an advertiser, you must enable the detection of bots and crawlers."
+msgstr "Nicht nur Menschen besuchen Ihre Website, auch Bots und Crawler. Um einen Anzeigen Kunden nicht zu verärgern sollte die Erkennung dieser aktiviert sein."
+
+#: sam-admin-class.php:2489
+msgid "Price per Click"
+msgstr "Preis pro Klick"
+
+#: sam-admin-class.php:2493
+msgid "To calculate the earnings on clicks, you must enable counting of clicks for that ad."
+msgstr "Um die EInnahmen auf Basis der Klicks zu berechnen, müssen Sie das Tracking für diesen Banner aktivieren."
+
+#: sam-admin-class.php:2502
+msgid "Ad Preview"
+msgstr "Banner Vorschau"
+
+#: sam-admin-class.php:2588
+msgid "Ads Zone Data Updated."
+msgstr "Ads Zone aktualisiert"
+
+#: sam-admin-class.php:2677
+msgid "New Ads Zone"
+msgstr "Neue Ads Zone"
+
+#: sam-admin-class.php:2677
+msgid "Edit Ads Zone"
+msgstr "Ads Zone bearbeiten"
+
+#: sam-admin-class.php:2690
+msgid "Back to Zones List"
+msgstr "Zurück zur Zonen Liste"
+
+#: sam-admin-class.php:2696
+msgid "Ads Zone ID"
+msgstr "Ads Zonen ID"
+
+#: sam-admin-class.php:2735
+msgid "Enter description of this Ads Zone."
+msgstr "Beschreibung für diese Ads Zone eingeben"
+
+#: sam-admin-class.php:2747
+msgid "Ads Zone Settings"
+msgstr "Ads Zonen Einstellungen"
+
+#: sam-admin-class.php:2750
+msgid "Default Ads Place"
+msgstr "Standard Ads Place"
+
+#: sam-admin-class.php:2756
+msgid "Select the Ads Place by default. This Ads Place will be displayed in the event that for the page of a given type the Ads Place value is set to \"Default\"."
+msgstr "Wählen Sie den Ads Place der als Fallback gezeigt werden soll. Dieser Ads Place wird überall angezeigt wo default ausgewählt wurde."
+
+#: sam-admin-class.php:2760
+msgid "Home Page Ads Place"
+msgstr "Ads Place auf Homepage"
+
+#: sam-admin-class.php:2766
+msgid "Default Ads Place for Singular Pages"
+msgstr "Standard Ads Place für einzelne Seiten"
+
+#: sam-admin-class.php:2773
+msgid "Single Post Ads Place"
+msgstr "Ads Place auf Artikel"
+
+#: sam-admin-class.php:2779
+msgid "Page Ads Place"
+msgstr "Ads Place auf Seite"
+
+#: sam-admin-class.php:2785
+msgid "Attachment Ads Place"
+msgstr "Ads Place für Anhänge"
+
+#: sam-admin-class.php:2792
+msgid "Search Pages Ads Place"
+msgstr "Ads Place auf Suchseite"
+
+#: sam-admin-class.php:2798
+msgid "404 Page Ads Place"
+msgstr "Ads Place auf 404 Seite"
+
+#: sam-admin-class.php:2804
+msgid "Default Ads Place for Archive Pages"
+msgstr "Standard Ads Places für Archiv Pages"
+
+#: sam-admin-class.php:2811
+msgid "Default Ads Place for Taxonomies Pages"
+msgstr "Standard Ads Places für Taxonomie Seiten"
+
+#: sam-admin-class.php:2818
+msgid "Default Ads Place for Category Archive Pages"
+msgstr "Standard Ads Place für Kategorie Archiv Seiten"
+
+#: sam-admin-class.php:2831
+msgid "Ads Place for Category"
+msgstr "Ads Place für Kategorien"
+
+#: sam-admin-class.php:2844
+msgid "Tags Archive Pages Ads Place"
+msgstr "Ads Place auf Tag Archiv Seiten"
+
+#: sam-admin-class.php:2851
+msgid "Default Ads Place for Author Archive Pages"
+msgstr "Standard Ads Place für Author Archiv Seiten"
+
+#: sam-admin-class.php:2860
+msgid "Ads Place for author"
+msgstr "Ads Place für einen Author"
+
+#: sam-admin-class.php:2869
+msgid "Date Archive Pages Ads Place"
+msgstr "Ads Place für Datums Archivseiten"
+
+#: sam-admin-class.php:2876
+#, fuzzy
+msgid "Ads Places for Singular pages, for Pages of Taxonomies and for Archive pages are Ads Places by default for the low level pages of relevant pages."
+msgstr "Ads Places für einzelne Seiten, für Taxonomie Seiten und für Archiv Seiten sind standardmäßige Ads Places für Unterseiten von relevanten (wichtigen) Seiten."
+
+#: sam-widget-class.php:10
+msgid "Ads Place:"
+msgstr "Ads Place:"
+
+#: sam-widget-class.php:13
+msgid "Ads Place rotator serviced by Simple Ads Manager."
+msgstr "Ads Place Rotations Service von Simple Ads Manager"
+
+#: sam-widget-class.php:15
+#: js/dialog.php:48
+msgid "Ads Place"
+msgstr "Ads Place"
+
+#: sam-widget-class.php:101
+#: sam-widget-class.php:240
+#: sam-widget-class.php:375
+msgid "Title:"
+msgstr "Titel:"
+
+#: sam-widget-class.php:124
+#: sam-widget-class.php:263
+#: sam-widget-class.php:398
+msgid "Hide widget style."
+msgstr "Versteckt Widget Style"
+
+#: sam-widget-class.php:133
+#: sam-widget-class.php:272
+#: sam-widget-class.php:407
+msgid "Allow using previously defined \"before\" and \"after\" codes of Ads Place.."
+msgstr "Erlaubt die Verwendung von früher definierten \"before\"\"and\"after\" codes "
+
+#: sam-widget-class.php:149
+#: sam-widget-class.php:154
+msgid "Ads Zone"
+msgstr "Ads Zone"
+
+#: sam-widget-class.php:152
+msgid "Ads Zone selector serviced by Simple Ads Manager."
+msgstr "Zonen Auswahl Service von Ads Manager"
+
+#: sam-widget-class.php:284
+msgid "Ad"
+msgstr "Banner"
+
+#: sam-widget-class.php:287
+msgid "Non-rotating single ad serviced by Simple Ads Manager."
+msgstr "Einfach Banner ohne Rotation aus Simple Ads Manager"
+
+#: sam-widget-class.php:289
+msgid "Single Ad"
+msgstr "Single Banner"
+
+#: js/dialog.php:27
+msgid "Insert Ads Place"
+msgstr "Ads Place hinzufügen"
+
+#: js/dialog.php:41
+msgid "Basic Settings"
+msgstr "Basis Einstellungen"
+
+#: js/dialog.php:69
+msgid "Ads Place Name"
+msgstr "Ads Plce Name"
+
+#: js/dialog.php:79
+msgid "Allow Ads Places predefined codes"
+msgstr "Erlaubt von Ads Place vordefinierte Codes"
+
+#: js/dialog.php:92
+msgid "Insert"
+msgstr "Einfügen"
+
+#~ msgid "Save Changes"
+#~ msgstr "Änderungen speichern"
+
+#~ msgid "Simple Ads Manager"
+#~ msgstr "Simple Ads Manager"
+
+#~ msgid "http://www.simplelib.com/?p=480"
+#~ msgstr "http://www.simplelib.com/?p=480"
+
+#~ msgid ""
+#~ "\"Simple Ads Manager\" is easy to use plugin providing a flexible logic "
+#~ "of displaying advertisements. Visit <a href=\"http://www.simplelib.com/"
+#~ "\">SimpleLib blog</a> for more details."
+#~ msgstr ""
+#~ "\"Simple Ads Manager\" is easy to use plugin providing a flexible logic "
+#~ "of displaying advertisements. Visit <a href=\"http://www.simplelib.com/"
+#~ "\">SimpleLib blog</a> for more details."
+
+#~ msgid "minimus"
+#~ msgstr "minimus"
+
+#~ msgid "http://blogcoding.ru"
+#~ msgstr "http://blogcoding.ru"
