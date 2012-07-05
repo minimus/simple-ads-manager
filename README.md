@@ -66,6 +66,11 @@ Do not upgrade this plugin from Update page! Upgrade it from Plugins page!
 Change log
 ==========
 
+1.7.57
+* Data updating bugs of editors are fixed. Thanks to **Latibro**.
+* Control of Error Log is added.
+* Strange bug ("undefined post ID") is fixed.
+
 1.6.54
 * Error Log is improved.
 * Click Tracker is improved.

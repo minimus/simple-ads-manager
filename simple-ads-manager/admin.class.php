@@ -145,7 +145,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       include_once('updater.class.php');
 
-      $updater = new SamUpdater($dbVersion, $vData);
+      $updater = new SamUpdater($dbVersion, $vData, parent::getSettings());
       $updater->update();
 
       $this->getVersions(true);
@@ -176,6 +176,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_settings_field('apUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'apUseCodes', 'checkbox' => true));
 
       add_settings_field('useSWF', __('I use (plan to use) my own flash (SWF) banners. In other words, allow loading the script "SWFObject" on the pages of the blog.', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_ext_section', array('label_for' => 'useSWF', 'checkbox' => true));
+      add_settings_field('errorlog', __('Turn on/off the error log.', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_ext_section', array('label_for' => 'errorlog', 'checkbox' => true));
+      add_settings_field('errorlogFS', __('Turn on/off the error log for Face Side.', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_ext_section', array('label_for' => 'errorlogFS', 'checkbox' => true));
 
       add_settings_field('useDFP', __("Allow using Google DoubleClick for Publishers (DFP) rotator codes", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_dfp_section', array('label_for' => 'useDFP', 'checkbox' => true));
       add_settings_field('dfpPub', __("Google DFP Pub Code", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_dfp_section', array('description' => __('Your Google DFP Pub code. i.e:', SAM_DOMAIN).' ca-pub-0000000000000000.', 'width' => 200));

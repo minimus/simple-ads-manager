@@ -16,5 +16,14 @@
         $('#access').val(options.values[values[1]]);
       }
     });
+
+    $('#errorlog').click(function() {
+      if($('#errorlog').is(':checked')) $('#errorlogFS').attr('checked', true);
+      if(!$('#errorlog').is(':checked')) $('#errorlogFS').attr('checked', false);
+    });
+
+    $('#errorlogFS').click(function() {
+      if(!$('errorlogFS').is(':checked')) $('#errorlog').attr('checked', true);
+    });
   });
 })(jQuery);

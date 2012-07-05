@@ -207,6 +207,7 @@ if(!class_exists('SamAdPlace')) {
       $settings = $this->getSettings();
       if($settings['adCycle'] == 0) $cycle = 1000;
       else $cycle = $settings['adCycle'];
+      $el = (integer)$settings['errorlogFS'];
       
       global $wpdb, $current_user;
       $pTable = $wpdb->prefix . "sam_places";          
@@ -256,6 +257,7 @@ if(!class_exists('SamAdPlace')) {
           $viewPages |= SAM_IS_SINGLE;
           $categories = get_the_category($post->ID);
           $tags = get_the_tags();
+          $postID = ((!empty($post->ID)) ? $post->ID : 0);
           
           if(!empty($categories)) {
             $wcc_0 = '';
@@ -287,18 +289,19 @@ if(!class_exists('SamAdPlace')) {
             $wcxt .= $wcxt_0.", TRUE)";
           }
           
-          $wci = " OR ($aTable.view_type = 2 AND FIND_IN_SET({$post->ID}, $aTable.view_id))";
-          $wcx = " AND IF($aTable.x_id, NOT FIND_IN_SET({$post->ID}, $aTable.x_view_id), TRUE)";
+          $wci = " OR ($aTable.view_type = 2 AND FIND_IN_SET({$postID}, $aTable.view_id))";
+          $wcx = " AND IF($aTable.x_id, NOT FIND_IN_SET({$postID}, $aTable.x_view_id), TRUE)";
           $author = get_userdata($post->post_author);
           $wca = " AND IF($aTable.view_type < 2 AND $aTable.ad_authors AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"{$author->display_name}\", $aTable.view_authors), TRUE)";
           $wcxa = " AND IF($aTable.view_type < 2 AND $aTable.x_authors AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"{$author->display_name}\", $aTable.x_view_authors), TRUE)";
         }
         if(is_page()) {
           global $post;
+          $postID = ((!empty($post->ID)) ? $post->ID : 0);
           
           $viewPages |= SAM_IS_PAGE;
-          $wci = " OR ($aTable.view_type = 2 AND FIND_IN_SET({$post->ID}, $aTable.view_id))";
-          $wcx = " AND IF($aTable.x_id, NOT FIND_IN_SET({$post->ID}, $aTable.x_view_id), TRUE)";
+          $wci = " OR ($aTable.view_type = 2 AND FIND_IN_SET({$postID}, $aTable.view_id))";
+          $wcx = " AND IF($aTable.x_id, NOT FIND_IN_SET({$postID}, $aTable.x_view_id), TRUE)";
         }
         if(is_attachment()) $viewPages |= SAM_IS_ATTACHMENT;
       }
@@ -379,7 +382,7 @@ if(!class_exists('SamAdPlace')) {
       $place = $wpdb->get_row($pSql, ARRAY_A);
 
       if(!$place) {
-        self::errorWrite($eTable, $pTable, $pSql, $place, $wpdb->last_error);
+        if($el) self::errorWrite($eTable, $pTable, $pSql, $place, $wpdb->last_error);
         return '';
       }
       
@@ -457,7 +460,7 @@ if(!class_exists('SamAdPlace')) {
         $ad = $wpdb->get_row($aSql, ARRAY_A);
 
         if($ad === false) {
-          self::errorWrite($eTable, $aTable, $aSql, $ad, $wpdb->last_error);
+          if($el) self::errorWrite($eTable, $aTable, $aSql, $ad, $wpdb->last_error);
           return '';
         }
 

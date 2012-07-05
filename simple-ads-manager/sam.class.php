@@ -31,11 +31,13 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'dfpBlocks' => array(),
       'editorButtonMode' => 'modern', // modern|classic
       'useSWF' => 0,
-      'access' => 'manage_options'
+      'access' => 'manage_options',
+      'errorlog' => 1,
+      'errorlogFS' => 1
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '1.6.54');
+      define('SAM_VERSION', '1.7.57');
       define('SAM_DB_VERSION', '2.1');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url('/' . str_replace( basename( __FILE__), "", plugin_basename( __FILE__ ) )) );

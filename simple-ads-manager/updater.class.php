@@ -3,10 +3,12 @@ if(!class_exists('SamUpdater')) {
   class SamUpdater {
     private $dbVersion;
     private $versionsData;
+    private $options;
 
-    public function __construct($dbVersion, $versionsData) {
+    public function __construct($dbVersion, $versionsData, $options = null) {
       $this->dbVersion = $dbVersion;
       $this->versionsData = $versionsData;
+      $this->options = $options;
     }
 
     private function errorWrite($eTable, $rTable, $eSql = null, $eResult = null) {
@@ -51,6 +53,9 @@ if(!class_exists('SamUpdater')) {
       $zTable = $wpdb->prefix . "sam_zones";
       $bTable = $wpdb->prefix . "sam_blocks";
       $eTable = $wpdb->prefix . "sam_errors";
+
+      $options = $this->options;
+      $el = (integer)$options['errorlog'];
 
       require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 
@@ -110,8 +115,10 @@ if(!class_exists('SamUpdater')) {
           $dbResult = $wpdb->query($pSql);
         }
 
-        self::errorWrite($eTable, $pTable, $pSql, $dbResult);
-        $dbResult = null;
+        if($el) {
+          self::errorWrite($eTable, $pTable, $pSql, $dbResult);
+          $dbResult = null;
+        }
 
         if($wpdb->get_var("SHOW TABLES LIKE '$aTable'") != $aTable) {
           $aSql = "CREATE TABLE $aTable (
@@ -380,8 +387,10 @@ if(!class_exists('SamUpdater')) {
           $dbResult = $wpdb->query($aSql);
         }
 
-        self::errorWrite($eTable, $aTable, $aSql, $dbResult);
-        $dbResult = null;
+        if($el) {
+          self::errorWrite($eTable, $aTable, $aSql, $dbResult);
+          $dbResult = null;
+        }
 
         if($vData['major'] < 2 || ($vData['major'] == 2 && $vData['minor'] == 0)) {
           $aTerms = array();
@@ -471,8 +480,10 @@ if(!class_exists('SamUpdater')) {
           }
         }
 
-        self::errorWrite($eTable, $aTable, $aSql, $dbResult);
-        $dbResult = null;
+        if($el) {
+          self::errorWrite($eTable, $aTable, $aSql, $dbResult);
+          $dbResult = null;
+        }
 
         if($wpdb->get_var("SHOW TABLES LIKE '$zTable'") != $zTable) {
           $zSql = "CREATE TABLE $zTable (
@@ -518,8 +529,10 @@ if(!class_exists('SamUpdater')) {
           $dbResult = $wpdb->query($zSql);
         }
 
-        self::errorWrite($eTable, $zTable, $zSql, $dbResult);
-        $dbResult = null;
+        if($el) {
+          self::errorWrite($eTable, $zTable, $zSql, $dbResult);
+          $dbResult = null;
+        }
 
         if($wpdb->get_var("SHOW TABLES LIKE '$bTable'") != $bTable) {
           $bSql = "CREATE TABLE $bTable (
@@ -547,7 +560,7 @@ if(!class_exists('SamUpdater')) {
           $dbResult = $wpdb->query($bSql);
         }
 
-        self::errorWrite($eTable, $pTable, $bSql, $dbResult);
+        if($el) self::errorWrite($eTable, $pTable, $bSql, $dbResult);
 
         update_option('sam_db_version', SAM_DB_VERSION);
       }
