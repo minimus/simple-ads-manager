@@ -90,10 +90,10 @@ if(!class_exists('SamPlaceEdit')) {
         '120x90' => sprintf('%1$s x %2$s %3$s', 120, 90, __('Button', SAM_DOMAIN)),
         '120x60' => sprintf('%1$s x %2$s %3$s', 120, 60, __('Button', SAM_DOMAIN)),
         '83x31' => sprintf('%1$s x %2$s %3$s', 83, 31, __('Micro Bar', SAM_DOMAIN)),
-        '728x15x4' => sprintf('%1$s x %2$s %3$s, %4$s', 728, 15, __('Thin Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
-        '728x15x5' => sprintf('%1$s x %2$s %3$s, %4$s', 728, 15, __('Thin Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
-        '468x15x4' => sprintf('%1$s x %2$s %3$s, %4$s', 468, 15, __('Thin Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
-        '468x15x5' => sprintf('%1$s x %2$s %3$s, %4$s', 468, 15, __('Thin Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
+        '728x15x4' => sprintf('%1$s x %2$s %3$s, %4$s', 728, 15, __('Thin Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
+        '728x15x5' => sprintf('%1$s x %2$s %3$s, %4$s', 728, 15, __('Thin Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
+        '468x15x4' => sprintf('%1$s x %2$s %3$s, %4$s', 468, 15, __('Thin Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
+        '468x15x5' => sprintf('%1$s x %2$s %3$s, %4$s', 468, 15, __('Thin Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
         '160x600' => sprintf('%1$s x %2$s %3$s', 160, 600, __('Wide Skyscraper', SAM_DOMAIN)),
         '120x600' => sprintf('%1$s x %2$s %3$s', 120, 600, __('Skyscraper', SAM_DOMAIN)),
         '200x360' => sprintf('%1$s x %2$s %3$s', 200, 360, __('Wide Half Banner', SAM_DOMAIN)),
@@ -114,14 +114,14 @@ if(!class_exists('SamPlaceEdit')) {
         '180x150' => sprintf('%1$s x %2$s %3$s', 180, 150, __('Small Rectangle', SAM_DOMAIN)),
         '160x160' => sprintf('%1$s x %2$s %3$s', 160, 160, __('Small Square', SAM_DOMAIN)),
         '125x125' => sprintf('%1$s x %2$s %3$s', 125, 125, __('Button', SAM_DOMAIN)),
-        '200x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 200, 90, __('Tall Half Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
-        '200x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 200, 90, __('Tall Half Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
-        '180x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 180, 90, __('Half Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
-        '180x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 180, 90, __('Half Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
-        '160x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 160, 90, __('Tall Button', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
-        '160x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 160, 90, __('Tall Button', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
-        '120x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 120, 90, __('Button', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
-        '120x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 120, 90, __('Button', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 5, SAM_DOMAIN), 5))
+        '200x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 200, 90, __('Tall Half Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
+        '200x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 200, 90, __('Tall Half Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
+        '180x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 180, 90, __('Half Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
+        '180x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 180, 90, __('Half Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
+        '160x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 160, 90, __('Tall Button', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
+        '160x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 160, 90, __('Tall Button', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
+        '120x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 120, 90, __('Button', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
+        '120x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 120, 90, __('Button', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 5, SAM_DOMAIN), 5))
       );
 
       $aSize = explode("x", $value);
@@ -151,10 +151,10 @@ if(!class_exists('SamPlaceEdit')) {
           '120x90' => sprintf('%1$s x %2$s %3$s', 120, 90, __('Button', SAM_DOMAIN)),
           '120x60' => sprintf('%1$s x %2$s %3$s', 120, 60, __('Button', SAM_DOMAIN)),
           '83x31' => sprintf('%1$s x %2$s %3$s', 83, 31, __('Micro Bar', SAM_DOMAIN)),
-          '728x15x4' => sprintf('%1$s x %2$s %3$s, %4$s', 728, 15, __('Thin Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
-          '728x15x5' => sprintf('%1$s x %2$s %3$s, %4$s', 728, 15, __('Thin Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
-          '468x15x4' => sprintf('%1$s x %2$s %3$s, %4$s', 468, 15, __('Thin Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
-          '468x15x5' => sprintf('%1$s x %2$s %3$s, %4$s', 468, 15, __('Thin Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 5, SAM_DOMAIN), 5))
+          '728x15x4' => sprintf('%1$s x %2$s %3$s, %4$s', 728, 15, __('Thin Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
+          '728x15x5' => sprintf('%1$s x %2$s %3$s, %4$s', 728, 15, __('Thin Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
+          '468x15x4' => sprintf('%1$s x %2$s %3$s, %4$s', 468, 15, __('Thin Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
+          '468x15x5' => sprintf('%1$s x %2$s %3$s, %4$s', 468, 15, __('Thin Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 5, SAM_DOMAIN), 5))
         ),
         'vertical' => array(
           '160x600' => sprintf('%1$s x %2$s %3$s', 160, 600, __('Wide Skyscraper', SAM_DOMAIN)),
@@ -179,14 +179,14 @@ if(!class_exists('SamPlaceEdit')) {
           '180x150' => sprintf('%1$s x %2$s %3$s', 180, 150, __('Small Rectangle', SAM_DOMAIN)),
           '160x160' => sprintf('%1$s x %2$s %3$s', 160, 160, __('Small Square', SAM_DOMAIN)),
           '125x125' => sprintf('%1$s x %2$s %3$s', 125, 125, __('Button', SAM_DOMAIN)),
-          '200x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 200, 90, __('Tall Half Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
-          '200x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 200, 90, __('Tall Half Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
-          '180x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 180, 90, __('Half Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
-          '180x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 180, 90, __('Half Banner', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
-          '160x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 160, 90, __('Tall Button', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
-          '160x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 160, 90, __('Tall Button', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
-          '120x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 120, 90, __('Button', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
-          '120x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 120, 90, __('Button', SAM_DOMAIN), sprintf(__ngettext('%d Link', '%d Links', 5, SAM_DOMAIN), 5))
+          '200x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 200, 90, __('Tall Half Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
+          '200x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 200, 90, __('Tall Half Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
+          '180x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 180, 90, __('Half Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
+          '180x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 180, 90, __('Half Banner', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
+          '160x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 160, 90, __('Tall Button', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
+          '160x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 160, 90, __('Tall Button', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 5, SAM_DOMAIN), 5)),
+          '120x90x4' => sprintf('%1$s x %2$s %3$s, %4$s', 120, 90, __('Button', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 4, SAM_DOMAIN), 4)),
+          '120x90x5' => sprintf('%1$s x %2$s %3$s, %4$s', 120, 90, __('Button', SAM_DOMAIN), sprintf(_n('%d Link', '%d Links', 5, SAM_DOMAIN), 5))
         ),
         'custom' => array( 'custom' => __('Custom sizes', SAM_DOMAIN) )
       );

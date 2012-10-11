@@ -86,14 +86,19 @@ if(!class_exists('SAMHelp33')) {
     }
 
     public function help() {
-      $samScreens = array($this->listPage, $this->editPage, $this->listZone, $this->editZone, $this->listBlock, $this->editBlock, $this->settingsPage);
+      //$samScreens = array($this->listPage, $this->editPage, $this->listZone, $this->editZone, $this->listBlock, $this->editBlock, $this->settingsPage);
       $screen = get_current_screen();
       $content = '';
+
+      if(isset($_GET["action"])) $action = $_GET['action'];
+      else $action = 'places';
+      if(isset($_GET['mode'])) $mode = $_GET['mode'];
+      else $mode = 'place';
 
       if(!in_array($screen->id, $this->pages['screens'])) return;
 
       if($screen->id == $this->pages['pages']['listPage']) {
-        if($_GET["action"] == 'places' || $_GET["action"] == '') {
+        if($action == 'places') {
           //$content = '<div class="sam-contentual-help">';
           $content .= '<p>'.__('This is list of Ads Places', SAM_DOMAIN).'</p>';
           $content .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
@@ -113,7 +118,7 @@ if(!class_exists('SAMHelp33')) {
       }
 
       if($screen->id == $this->pages['pages']['editPage']) {
-        if($_GET["mode"] == 'place' || $_GET['mode'] == '') {
+        if($mode == 'place') {
           $content = '<p>'.__('The main object of the plugin is “Ads Place“. Each Ads Place is a container for the advertisements and provides the logic of the show and rotation. In addition, one of the parameters of advertising space is “patch ad code”, ie ad to be shown if and only if the logic of ads this Ads Place does not permit to show none of the advertisements contained in this Ads Place. One Ads Place can contain any number of objects “advertisement”.', SAM_DOMAIN).'</p>';
           $content .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
           $content .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
