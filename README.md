@@ -3,6 +3,8 @@ Simple Ads Manager
 
 Simple Ads Manager is easy to use Wordpress plugin providing a flexible logic of displaying advertisements.
 
+[![endorse](https://api.coderwall.com/minimus/endorsecount.png)](https://coderwall.com/minimus)
+
 Features
 --------
 
