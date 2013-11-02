@@ -34,8 +34,8 @@ if(!class_exists('SamBlockList')) {
         elseif($iaction === 'kill') $wpdb->query("DELETE FROM $bTable WHERE id=$item");
       }
       if($iaction === 'kill-em-all') $wpdb->query("DELETE FROM $bTable WHERE trash=true");
-      $trash_num = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $bTable WHERE trash = TRUE"));
-      $active_num = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $bTable WHERE trash = FALSE"));
+      $trash_num = $wpdb->get_var("SELECT COUNT(*) FROM $bTable WHERE trash = TRUE");
+      $active_num = $wpdb->get_var("SELECT COUNT(*) FROM $bTable WHERE trash = FALSE");
       if(is_null($active_num)) $active_num = 0;
       if(is_null($trash_num)) $trash_num = 0;
       $all_num = $trash_num + $active_num;

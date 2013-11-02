@@ -37,8 +37,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '1.7.57');
-      define('SAM_DB_VERSION', '2.1');
+      define('SAM_VERSION', '1.7.63');
+      define('SAM_DB_VERSION', '2.2');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url('/' . str_replace( basename( __FILE__), "", plugin_basename( __FILE__ ) )) );
       define('SAM_IMG_URL', SAM_URL.'images/');
@@ -64,7 +64,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       define('SAM_IS_POST_TYPE_ARCHIVE', 16384);
       
       if(!is_admin()) {
-        add_action('template_redirect', array(&$this, 'headerScripts'));
+        add_action('wp_enqueue_scripts', array(&$this, 'headerScripts'));
         add_action('wp_head', array(&$this, 'headerCodes'));
         
         add_shortcode('sam', array(&$this, 'doShortcode'));
@@ -117,8 +117,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       if($options['useSWF']) wp_enqueue_script('swfobject');
       wp_enqueue_script('samLayout', SAM_URL.'js/sam-layout.js', array('jquery'), SAM_VERSION);
       wp_localize_script('samLayout', 'samAjax', array(
-          'ajaxurl' => admin_url( 'admin-ajax.php' ),
-          '_ajax_nonce' => $this->samNonce)
+          'ajaxurl' => SAM_URL . 'sam-ajax.php',
+          'level' => count(explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) ))))
       );
     }
     

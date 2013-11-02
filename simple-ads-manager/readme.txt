@@ -2,11 +2,11 @@
 Contributors: minimus
 Donate link: https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.com
 Tags: ad, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, yahoo, ypn
-Requires at least: 3.3
-Tested up to: 3.4.1
-Stable tag: 1.7.57
+Requires at least: 3.5
+Tested up to: 3.7
+Stable tag: 1.7.63
 
-Advertisment rotation system with a flexible logic of displaying advertisements.
+Advertisement rotation system with a flexible logic of displaying advertisements.
 
 == Description ==
 
@@ -82,6 +82,14 @@ No questions now...
 
 == Changelog ==
 
+= 1.7.63 =
+* Some bugs (Ads Block style, Click Tracker) are resolved.
+= 1.7.61 =
+* Some bugs are resolved.
+= 1.7.60 =
+* Minor bug is resolved (Ads Places List)
+= 1.7.58 =
+* Major bug is resolved (bug of database creating, not database updating)
 = 1.7.57 =
 * Data updating bugs of editors are fixed. Thanks to **Latibro**
 * Control of Error Log is added
@@ -159,6 +167,14 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 1.7.63 =
+Some bugs (Ads Block style, Click Tracker) are resolved.
+= 1.7.61 =
+Some bugs are resolved.
+= 1.7.60 =
+Minor bug is resolved (Ads Places List)
+= 1.7.58 =
+Major bug is resolved (bug of database creating, not database updating)
 = 1.7.57 =
 Data updating bugs of editors are fixed. Thanks to **Latibro**.
 Control of Error Log is added.

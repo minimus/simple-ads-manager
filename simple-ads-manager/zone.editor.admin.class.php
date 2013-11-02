@@ -154,7 +154,7 @@ if(!class_exists('SamZoneEditor')) {
           'trash' => ($_POST['trash'] === 'true' ? 1 : 0)
         );
         //FIXED $formatRow = array( '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%s', '%d', '%s', '%d', '%d');
-        $formatRow = array( '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%s', '%d', '%s', '%d', '%d');
+        $formatRow = array( '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%s', '%d', '%s', '%d', '%d');
         if($zoneId === __('Undefined', SAM_DOMAIN)) {
           $wpdb->insert($zTable, $updateRow);
           $updated = true;
@@ -231,6 +231,8 @@ if(!class_exists('SamZoneEditor')) {
           $row = $wpdb->get_row($zSql, ARRAY_A);
           $zCats = unserialize($row['z_cats']);          
           $zAuthors = unserialize($row['z_authors']);
+          $zSingleCT = unserialize($row['z_single_ct']);
+          $zArchiveCT = unserialize($row['z_archive_ct']);
           foreach($cats as $cat) {
             $val = (!is_null($zCats[$cat['slug']])) ? $zCats[$cat['slug']] : -1;
             array_push($sCats, array('name' => $cat['name'], 'slug' => $cat['slug'], 'val' => $val));

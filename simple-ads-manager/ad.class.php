@@ -637,7 +637,7 @@ if(!class_exists('SamAdPlaceZone')) {
               }
             }
           }
-          if(is_page()) $id = $zone['z_page'];
+          if(is_page() && !is_front_page()) $id = $zone['z_page'];
           if(is_attachment()) $id = $zone['z_attachment'];
         }
         if(is_search()) $id = $zone['z_search'];
@@ -724,6 +724,7 @@ if(!class_exists('SamAdBlock')) {
         $lines = (integer) $block['b_lines'];
         $cols = (integer) $block['b_cols'];
         $blockDiv = "<div style='margin: ".$block['b_margin']."; padding: ".$block['b_padding']."; background: ".$block['b_background']."; border: ".$block['b_border']."'>";
+        $lineDiv = "<div style='margin: 0px; padding: 0px;'>";
         $itemDiv = "<div style='display: inline-block; margin: ".$block['i_margin']."; padding: ".$block['i_padding']."; background: ".$block['i_background']."; border: ".$block['i_border']."'>";
 
         for($i = 1; $i <= $lines; $i++) {
@@ -752,8 +753,9 @@ if(!class_exists('SamAdBlock')) {
             }
             if(!empty($iDiv)) $lDiv .= $itemDiv.$iDiv."</div>";
           }
-          if(!empty($lDiv)) $output .= $blockDiv.$lDiv."</div>";
+          if(!empty($lDiv)) $output .= $lineDiv.$lDiv."</div>";
         }
+        $output = $blockDiv.$output."</div>";
       }
       else $output = '';
       

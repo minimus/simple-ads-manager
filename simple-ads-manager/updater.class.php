@@ -146,7 +146,7 @@ if(!class_exists('SamUpdater')) {
                   x_view_users varchar(255) DEFAULT NULL,
                   ad_users_adv tinyint(1) DEFAULT 0,
                   view_type INT(11) DEFAULT 1,
-                  view_pages SET('isHome', 'isSingular', 'isSingle', 'isPage', 'isAttachment', 'isSearch', 'is404', 'isArchive', 'isTax', 'isCategory', 'isTag', 'isAuthor', 'isDate') DEFAULT NULL,
+                  view_pages SET('isHome','isSingular','isSingle','isPage','isAttachment','isSearch','is404','isArchive','isTax','isCategory','isTag','isAuthor','isDate','isPostType','isPostTypeArchive') DEFAULT NULL,
                   view_id VARCHAR(255) DEFAULT NULL,
                   ad_cats TINYINT(1) DEFAULT 0,
                   view_cats VARCHAR(255) DEFAULT NULL,
@@ -352,6 +352,7 @@ if(!class_exists('SamUpdater')) {
         elseif($vData['major'] < 2) {
           $aSql = "ALTER TABLE $aTable
                     CONVERT TO $charset_collate,
+                    MODIFY view_pages set('isHome','isSingular','isSingle','isPage','isAttachment','isSearch','is404','isArchive','isTax','isCategory','isTag','isAuthor','isDate','isPostType','isPostTypeArchive') default NULL,
                     ADD COLUMN ad_swf tinyint(1) DEFAULT 0,
                     ADD COLUMN ad_swf_flashvars text,
                     ADD COLUMN ad_swf_params text,
@@ -370,6 +371,7 @@ if(!class_exists('SamUpdater')) {
         }
         elseif($vData['major'] == 2 && $vData['minor'] == 0) {
           $aSql = "ALTER TABLE $aTable
+                    MODIFY view_pages set('isHome','isSingular','isSingle','isPage','isAttachment','isSearch','is404','isArchive','isTax','isCategory','isTag','isAuthor','isDate','isPostType','isPostTypeArchive') default NULL,
                     ADD COLUMN ad_title varchar(255) DEFAULT NULL,
                     ADD COLUMN ad_swf tinyint(1) DEFAULT 0,
                     ADD COLUMN ad_swf_flashvars text,
@@ -384,6 +386,11 @@ if(!class_exists('SamUpdater')) {
                     ADD COLUMN adv_nick varchar(50) DEFAULT NULL,
                     ADD COLUMN adv_name varchar(100) DEFAULT NULL,
                     ADD COLUMN adv_mail varchar(50) DEFAULT NULL;";
+          $dbResult = $wpdb->query($aSql);
+        }
+        elseif($vData['major'] == 2 && $vData['minor'] == 1) {
+          $aSql = "ALTER TABLE $aTable
+                    MODIFY view_pages set('isHome','isSingular','isSingle','isPage','isAttachment','isSearch','is404','isArchive','isTax','isCategory','isTag','isAuthor','isDate','isPostType','isPostTypeArchive') default NULL;";
           $dbResult = $wpdb->query($aSql);
         }
 

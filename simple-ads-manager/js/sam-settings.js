@@ -16,14 +16,16 @@
         $('#access').val(options.values[values[1]]);
       }
     });
+      
+    var el = $('#errorlog'), elfs = $('#errorlogFS');
 
-    $('#errorlog').click(function() {
-      if($('#errorlog').is(':checked')) $('#errorlogFS').attr('checked', true);
-      if(!$('#errorlog').is(':checked')) $('#errorlogFS').attr('checked', false);
+    el.click(function() {
+      if(el.is(':checked')) elfs.attr('checked', true);
+      if(!el.is(':checked')) elfs.attr('checked', false);
     });
 
-    $('#errorlogFS').click(function() {
-      if(!$('errorlogFS').is(':checked')) $('#errorlog').attr('checked', true);
+    elfs.click(function() {
+      if(!elfs.is(':checked')) el.attr('checked', true);
     });
   });
 })(jQuery);

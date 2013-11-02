@@ -35,8 +35,8 @@ if(!class_exists('SamErrorLog')) {
       }
       if($iaction === 'kill-em-all') $wpdb->query("DELETE FROM $eTable");
       if($iaction === 'kill-resolved') $wpdb->query("DELETE FROM $eTable WHERE resolved = TRUE;");
-      $resolved_num = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $eTable WHERE resolved = TRUE"));
-      $active_num = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $eTable WHERE resolved = FALSE"));
+      $resolved_num = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %s WHERE resolved = TRUE", $eTable));
+      $active_num = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %s WHERE resolved = FALSE", $eTable));
       if(is_null($active_num)) $active_num = 0;
       if(is_null($resolved_num)) $resolved_num = 0;
       $all_num = $resolved_num + $active_num;

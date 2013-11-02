@@ -34,8 +34,8 @@ if(!class_exists('SamZoneList')) {
         elseif($iaction === 'kill') $wpdb->query("DELETE FROM $zTable WHERE id=$item");
       }
       if($iaction === 'kill-em-all') $wpdb->query("DELETE FROM $zTable WHERE trash=true");
-      $trash_num = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $zTable WHERE trash = TRUE"));
-      $active_num = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $zTable WHERE trash = FALSE"));
+      $trash_num = $wpdb->get_var("SELECT COUNT(*) FROM $zTable WHERE trash = TRUE");
+      $active_num = $wpdb->get_var("SELECT COUNT(*) FROM $zTable WHERE trash = FALSE");
       if(is_null($active_num)) $active_num = 0;
       if(is_null($trash_num)) $trash_num = 0;
       $all_num = $trash_num + $active_num;
@@ -110,7 +110,7 @@ if(!class_exists('SamZoneList')) {
       if(!is_array($zones) || empty ($zones)) {
       ?>
       <tr id="g0" class="no-items" valign="top">
-        <th class="colspanchange" colspan='2'><?php _e('There are no data ...', SAM_DOMAIN).$pTable; ?></th>
+        <th class="colspanchange" colspan='2'><?php _e('There are no data ...', SAM_DOMAIN); ?></th>
       </tr>
         <?php } else {
           foreach($zones as $row) {            

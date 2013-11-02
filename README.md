@@ -68,6 +68,18 @@ Do not upgrade this plugin from Update page! Upgrade it from Plugins page!
 Change log
 ==========
 
+1.7.63
+* Some bugs (Ads Block style, Click Tracker) are resolved.
+
+1.7.61
+* Some bugs are resolved.
+
+1.7.60
+* Minor bug is resolved (Ads Places List)
+
+1.7.58
+* Major bug is resolved (bug of database creating, not database updating)
+
 1.7.57
 * Data updating bugs of editors are fixed. Thanks to **Latibro**.
 * Control of Error Log is added.

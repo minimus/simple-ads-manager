@@ -11,7 +11,7 @@
         data: {
           action: "sam_click", 
           sam_ad_id: adId,
-          _ajax_nonce: samAjax._ajax_nonce
+          level: samAjax.level
         },
         async: true
       });
