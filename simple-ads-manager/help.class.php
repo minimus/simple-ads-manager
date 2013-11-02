@@ -31,7 +31,7 @@ if(!class_exists('SAMHelp')) {
           $contextualHelp .= '<p>'.__('<em>Use limitation by clicks</em> – if necessary, select checkbox labeled “Use limitation by clicks” and set clicks limit.', SAM_DOMAIN).'</p>';
           $contextualHelp .= '<p>'.'<strong>'.__('Prices', SAM_DOMAIN).'</strong>: '.__('Use these parameters to get the statistics of incomes from advertisements placed in your blog. "Price of ad placement per month" - parameter used only for calculating statistic of scheduled ads.', SAM_DOMAIN).'</p>';
           $contextualHelp .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
-          $contextualHelp .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
+          $contextualHelp .= '<a class="button-secondary" href="http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
           $contextualHelp .= '</div>';
         }
         elseif($_GET['mode'] == 'place') {
@@ -48,14 +48,14 @@ if(!class_exists('SAMHelp')) {
           $contextualHelp .= '<p>'.__('If you select the first option (image mode), tools to download/choosing of downloaded image banner become available for you.', SAM_DOMAIN).'</p>';
           $contextualHelp .= '<p>'.__('<strong>Codes</strong> – as Ads Place can be inserted into the page code not only as widget, but as a short code or by using function, you can use code “before” and “after” for centering or alignment of Ads Place on the place of inserting or for something else you need. Use HTML tags.', SAM_DOMAIN);
           $contextualHelp .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
-          $contextualHelp .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
+          $contextualHelp .= '<a class="button-secondary" href="http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
           $contextualHelp .= '</div>';
         }
       }
       elseif($screenId == $this->pages['listPage']) {
         $contextualHelp = '<div class="sam-contextual-help">';
         $contextualHelp .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
-        $contextualHelp .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
+        $contextualHelp .= '<a class="button-secondary" href="http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
         $contextualHelp .= '</div>';
       }
       elseif($screenId == $this->pages['settingsPage']) {
@@ -69,7 +69,7 @@ if(!class_exists('SAMHelp')) {
         $contextualHelp .= '<p>'.'<em>'.__('Bots and Crawlers detection', SAM_DOMAIN).'</em>: '.__("For obtaining of more exact indexes of statistics and incomes it is preferable to exclude data about visits of bots and crawlers from the data about all visits of your blog. If enabled and bot or crawler is detected, hits of ads won't be counted. Select accuracy of detection but use with caution - more exact detection requires more server resources.", SAM_DOMAIN).'</p>';
         $contextualHelp .= '<p>'.'<em>'.__('Display of Currency', SAM_DOMAIN).'</em>: '.__("Define display of currency. Auto - auto detection of currency from blog settings. USD, EUR - Forcing the display of currency to U.S. dollars or Euro.", SAM_DOMAIN).'</p>';
         $contextualHelp .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
-        $contextualHelp .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
+        $contextualHelp .= '<a class="button-secondary" href="http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
         $contextualHelp .= '</div>';
       }
       return $contextualHelp;
@@ -102,7 +102,7 @@ if(!class_exists('SAMHelp33')) {
           //$content = '<div class="sam-contentual-help">';
           $content .= '<p>'.__('This is list of Ads Places', SAM_DOMAIN).'</p>';
           $content .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
-          $content .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
+          $content .= '<a class="button-secondary" href="http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
           //$content .= '</div>';
           $title = __('Help', SAM_DOMAIN);
         }
@@ -110,7 +110,7 @@ if(!class_exists('SAMHelp33')) {
           //$content = '<div class="sam-contentual-help">';
           $content .= '<p>'.__('This is list of Ads', SAM_DOMAIN).'</p>';
           $content .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
-          $content .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
+          $content .= '<a class="button-secondary" href="http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
           //$content .= '</div>';
           $title = __('Help', SAM_DOMAIN);
         }
@@ -121,7 +121,7 @@ if(!class_exists('SAMHelp33')) {
         if($mode == 'place') {
           $content = '<p>'.__('The main object of the plugin is “Ads Place“. Each Ads Place is a container for the advertisements and provides the logic of the show and rotation. In addition, one of the parameters of advertising space is “patch ad code”, ie ad to be shown if and only if the logic of ads this Ads Place does not permit to show none of the advertisements contained in this Ads Place. One Ads Place can contain any number of objects “advertisement”.', SAM_DOMAIN).'</p>';
           $content .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
-          $content .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
+          $content .= '<a class="button-secondary" href="http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
           $title = __('Ads Place', SAM_DOMAIN);
 
           $screen->add_help_tab(array('id' => 'sam-help', 'title' => $title, 'content' => $content));
@@ -138,7 +138,7 @@ if(!class_exists('SAMHelp33')) {
           $content2 .= '<p>'.__('If you select the first option (image mode), tools to download/choosing of downloaded image banner become available for you.', SAM_DOMAIN).'</p>';
           $content2 .= '<p>'.__('<strong>Codes</strong> – as Ads Place can be inserted into the page code not only as widget, but as a short code or by using function, you can use code “before” and “after” for centering or alignment of Ads Place on the place of inserting or for something else you need. Use HTML tags.', SAM_DOMAIN);
           $content2 .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
-          $content2 .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
+          $content2 .= '<a class="button-secondary" href="http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
           $title2 = __('Parameters', SAM_DOMAIN);
 
           $screen->add_help_tab(array('id' => 'sam-help-place', 'title' => $title2, 'content' => $content2));
@@ -147,7 +147,7 @@ if(!class_exists('SAMHelp33')) {
         else {
           $content = '<p>'.__('Object “advertisement” rigidly attached to his container “Ads Place”. Its parameters determine frequency (weight) of displaying and limiting displaying from “show all pages” to “show the articles with ID … ” and show from date to date (the schedule).', SAM_DOMAIN).'</p>';
           $content .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
-          $content .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
+          $content .= '<a class="button-secondary" href="http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
           $title = __('Advertisement', SAM_DOMAIN);
 
           $screen->add_help_tab(array('id' => 'sam-help', 'title' => $title, 'content' => $content));
@@ -163,7 +163,7 @@ if(!class_exists('SAMHelp33')) {
           $content2 .= '<li>'.__('Show ad only in certain posts – ad will be shown only on single posts pages with the given IDs (ID items separated by commas, no spaces)', SAM_DOMAIN).'</li>';
           $content2 .= '</ul></p>';
           $content2 .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
-          $content2 .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
+          $content2 .= '<a class="button-secondary" href="http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
 
           $title2 = __('Parameters', SAM_DOMAIN);
 
@@ -179,7 +179,7 @@ if(!class_exists('SAMHelp33')) {
           $content3 .= '<p>'.__('<em>Use limitation by clicks</em> – if necessary, select checkbox labeled “Use limitation by clicks” and set clicks limit.', SAM_DOMAIN).'</p>';
           $content3 .= '<p>'.'<strong>'.__('Prices', SAM_DOMAIN).'</strong>: '.__('Use these parameters to get the statistics of incomes from advertisements placed in your blog. "Price of ad placement per month" - parameter used only for calculating statistic of scheduled ads.', SAM_DOMAIN).'</p>';
           $content3 .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
-          $content3 .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
+          $content3 .= '<a class="button-secondary" href="http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
 
           $title3 = __('Additional Parameters', SAM_DOMAIN);
 
@@ -196,7 +196,7 @@ if(!class_exists('SAMHelp33')) {
         $content .= '<p>'.'<em>'.__('Bots and Crawlers detection', SAM_DOMAIN).'</em>: '.__("For obtaining of more exact indexes of statistics and incomes it is preferable to exclude data about visits of bots and crawlers from the data about all visits of your blog. If enabled and bot or crawler is detected, hits of ads won't be counted. Select accuracy of detection but use with caution - more exact detection requires more server resources.", SAM_DOMAIN).'</p>';
         $content .= '<p>'.'<em>'.__('Display of Currency', SAM_DOMAIN).'</em>: '.__("Define display of currency. Auto - auto detection of currency from blog settings. USD, EUR - Forcing the display of currency to U.S. dollars or Euro.", SAM_DOMAIN).'</p>';
         $content .= '<p><a class="button-secondary" href="http://www.simplelib.com/?p=480" target="_blank">'.__('Manual', SAM_DOMAIN).'</a> ';
-        $content .= '<a class="button-secondary" href="http://forum.simplelib.com/index.php?board=10.0" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
+        $content .= '<a class="button-secondary" href="http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager" target="_blank">'.__('Support Forum', SAM_DOMAIN).'</a></p>';
 
         $title = __('Help', SAM_DOMAIN);
 

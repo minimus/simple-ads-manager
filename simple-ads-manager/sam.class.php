@@ -5,6 +5,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
     private $samVersions = array('sam' => null, 'db' => null);
     private $crawler = false;
     public $samNonce;
+    private $whereClauses;
     
     private $defaultSettings = array(
       'adCycle' => 1000,
@@ -37,7 +38,9 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '1.7.63');
+      global $SAM_Query;
+
+      define('SAM_VERSION', '1.8.70');
       define('SAM_DB_VERSION', '2.2');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url('/' . str_replace( basename( __FILE__), "", plugin_basename( __FILE__ ) )) );
@@ -62,8 +65,13 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       define('SAM_IS_DATE', 4096);
       define('SAM_IS_POST_TYPE', 8192);
       define('SAM_IS_POST_TYPE_ARCHIVE', 16384);
+
+      $this->getSettings(true);
+      $this->getVersions(true);
+      $this->crawler = $this->isCrawler();
       
       if(!is_admin()) {
+        //$this->whereClauses = self::buildWhereClause();
         add_action('wp_enqueue_scripts', array(&$this, 'headerScripts'));
         add_action('wp_head', array(&$this, 'headerCodes'));
         
@@ -76,10 +84,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
         add_shortcode('sam-ad', array(&$this, 'doAdShortcode'));
         add_shortcode('sam-zone', array(&$this, 'doZoneShortcode'));
       }
-      
-      $this->getSettings(true);
-      $this->getVersions(true);
-      $this->crawler = $this->isCrawler();
+      else $this->whereClauses = null;
     }
 		
 	  public function getSettings($force = false) {
@@ -108,17 +113,188 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       
       return $versions;
     }
+
+    private function getCustomPostTypes() {
+      $args = array('public' => true, '_builtin' => false);
+      $output = 'names';
+      $operator = 'and';
+      $post_types = get_post_types($args, $output, $operator);
+
+      return $post_types;
+    }
+
+    private function isCustomPostType() {
+      return (in_array(get_post_type(), $this->getCustomPostTypes()));
+    }
+
+    public function buildWhereClause() {
+      $settings = $this->getSettings();
+      if($settings['adCycle'] == 0) $cycle = 1000;
+      else $cycle = $settings['adCycle'];
+      $el = (integer)$settings['errorlogFS'];
+
+      global $wpdb, $current_user;
+      //$pTable = $wpdb->prefix . "sam_places";
+      $aTable = $wpdb->prefix . "sam_ads";
+      //$eTable = $wpdb->prefix . "sam_errors";
+
+      $viewPages = 0;
+      $wcc = '';
+      $wci = '';
+      $wca = '';
+      $wcx = '';
+      $wct = '';
+      $wcxc = '';
+      $wcxa = '';
+      $wcxt = '';
+
+      if(is_user_logged_in()) {
+        get_currentuserinfo();
+        $uSlug = $current_user->user_login;
+        $wcul = "IF($aTable.ad_users_reg = 1, IF($aTable.x_ad_users = 1, NOT FIND_IN_SET(\"$uSlug\", $aTable.x_view_users), TRUE) AND IF($aTable.ad_users_adv = 1, ($aTable.adv_nick <> \"$uSlug\"), TRUE), FALSE)";
+      }
+      else {
+        $wcul = "($aTable.ad_users_unreg = 1)";
+      }
+      $wcu = "(IF($aTable.ad_users = 0, TRUE, $wcul)) AND";
+
+      if(is_home() || is_front_page()) $viewPages += SAM_IS_HOME;
+      if(is_singular()) {
+        $viewPages |= SAM_IS_SINGULAR;
+        if($this->isCustomPostType()) {
+          $viewPages |= SAM_IS_SINGLE;
+          $viewPages |= SAM_IS_POST_TYPE;
+
+          $postType = get_post_type();
+          $wct .= " AND IF($aTable.view_type < 2 AND $aTable.ad_custom AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"$postType\", $aTable.view_custom), TRUE)";
+          $wcxt .= " AND IF($aTable.view_type < 2 AND $aTable.x_custom AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"$postType\", $aTable.x_view_custom), TRUE)";
+        }
+        if(is_single()) {
+          global $post;
+
+          $viewPages |= SAM_IS_SINGLE;
+          $categories = get_the_category($post->ID);
+          $tags = get_the_tags();
+          $postID = ((!empty($post->ID)) ? $post->ID : 0);
+
+          if(!empty($categories)) {
+            $wcc_0 = '';
+            $wcxc_0 = '';
+            $wcc = " AND IF($aTable.view_type < 2 AND $aTable.ad_cats AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE),";
+            $wcxc = " AND IF($aTable.view_type < 2 AND $aTable.x_cats AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE),";
+            foreach($categories as $category) {
+              if(empty($wcc_0)) $wcc_0 = " FIND_IN_SET(\"{$category->category_nicename}\", $aTable.view_cats)";
+              else $wcc_0 .= " OR FIND_IN_SET(\"{$category->category_nicename}\", $aTable.view_cats)";
+              if(empty($wcxc_0)) $wcxc_0 = " (NOT FIND_IN_SET(\"{$category->category_nicename}\", $aTable.x_view_cats))";
+              else $wcxc_0 .= " AND (NOT FIND_IN_SET(\"{$category->category_nicename}\", $aTable.x_view_cats))";
+            }
+            $wcc .= $wcc_0.", TRUE)";
+            $wcxc .= $wcxc_0.", TRUE)";
+          }
+
+          if(!empty($tags)) {
+            $wct_0 = '';
+            $wcxt_0 = '';
+            $wct .= " AND IF($aTable.view_type < 2 AND $aTable.ad_tags AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE),";
+            $wcxt .= " AND IF($aTable.view_type < 2 AND $aTable.x_tags AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE),";
+            foreach($tags as $tag) {
+              if(empty($wct_0)) $wct_0 = " FIND_IN_SET(\"{$tag->slug}\", $aTable.view_tags)";
+              else $wct_0 .= " OR FIND_IN_SET(\"{$tag->slug}\", $aTable.view_tags)";
+              if(empty($wcxt_0)) $wcxt_0 = " (NOT FIND_IN_SET(\"{$tag->slug}\", $aTable.x_view_tags))";
+              else $wcxt_0 .= " AND (NOT FIND_IN_SET(\"{$tag->slug}\", $aTable.x_view_tags))";
+            }
+            $wct .= $wct_0.", TRUE)";
+            $wcxt .= $wcxt_0.", TRUE)";
+          }
+
+          $wci = " OR ($aTable.view_type = 2 AND FIND_IN_SET({$postID}, $aTable.view_id))";
+          $wcx = " AND IF($aTable.x_id, NOT FIND_IN_SET({$postID}, $aTable.x_view_id), TRUE)";
+          $author = get_userdata($post->post_author);
+          $wca = " AND IF($aTable.view_type < 2 AND $aTable.ad_authors AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"{$author->display_name}\", $aTable.view_authors), TRUE)";
+          $wcxa = " AND IF($aTable.view_type < 2 AND $aTable.x_authors AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"{$author->display_name}\", $aTable.x_view_authors), TRUE)";
+        }
+        if(is_page()) {
+          global $post;
+          $postID = ((!empty($post->ID)) ? $post->ID : 0);
+
+          $viewPages |= SAM_IS_PAGE;
+          $wci = " OR ($aTable.view_type = 2 AND FIND_IN_SET({$postID}, $aTable.view_id))";
+          $wcx = " AND IF($aTable.x_id, NOT FIND_IN_SET({$postID}, $aTable.x_view_id), TRUE)";
+        }
+        if(is_attachment()) $viewPages |= SAM_IS_ATTACHMENT;
+      }
+      if(is_search()) $viewPages |= SAM_IS_SEARCH;
+      if(is_404()) $viewPages |= SAM_IS_404;
+      if(is_archive()) {
+        $viewPages |= SAM_IS_ARCHIVE;
+        if(is_tax()) $viewPages |= SAM_IS_TAX;
+        if(is_category()) {
+          $viewPages |= SAM_IS_CATEGORY;
+          $cat = get_category(get_query_var('cat'), false);
+          $wcc = " AND IF($aTable.view_type < 2 AND $aTable.ad_cats AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"{$cat->category_nicename}\", $aTable.view_cats), TRUE)";
+          $wcxc = " AND IF($aTable.view_type < 2 AND $aTable.x_cats AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"{$cat->category_nicename}\", $aTable.x_view_cats), TRUE)";
+        }
+        if(is_tag()) {
+          $viewPages |= SAM_IS_TAG;
+          $tag = get_tag(get_query_var('tag_id'));
+          $wct = " AND IF($aTable.view_type < 2 AND $aTable.ad_tags AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$tag->slug}', $aTable.view_tags), TRUE)";
+          $wcxt = " AND IF($aTable.view_type < 2 AND $aTable.x_tags AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$tag->slug}', $aTable.x_view_tags), TRUE)";
+        }
+        if(is_author()) {
+          global $wp_query;
+
+          $viewPages |= SAM_IS_AUTHOR;
+          $author = $wp_query->get_queried_object();
+          $wca = " AND IF($aTable.view_type < 2 AND $aTable.ad_authors = 1 AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$author->display_name}', $aTable.view_authors), TRUE)";
+          $wcxa = " AND IF($aTable.view_type < 2 AND $aTable.x_authors AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$author->display_name}', $aTable.x_view_authors), TRUE)";
+        }
+        if(is_post_type_archive()) {
+          $viewPages |= SAM_IS_POST_TYPE_ARCHIVE;
+          //$postType = post_type_archive_title( '', false );
+          $postType = get_post_type();
+          $wct = " AND IF($aTable.view_type < 2 AND $aTable.ad_custom AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$postType}', $aTable.view_custom), TRUE)";
+          $wcxt = " AND IF($aTable.view_type < 2 AND $aTable.x_custom AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$postType}', $aTable.x_view_custom), TRUE)";
+        }
+        if(is_date()) $viewPages |= SAM_IS_DATE;
+      }
+
+      if(empty($wcc)) $wcc = " AND ($aTable.ad_cats = 0)";
+      if(empty($wca)) $wca = " AND ($aTable.ad_authors = 0)";
+
+      $whereClause  = "$wcu (($aTable.view_type = 1)";
+      $whereClause .= " OR ($aTable.view_type = 0 AND ($aTable.view_pages+0 & $viewPages))";
+      $whereClause .= "$wci)";
+      $whereClause .= "$wcc $wca $wct $wcx $wcxc $wcxa $wcxt";
+      $whereClauseT = " AND IF($aTable.ad_schedule, CURDATE() BETWEEN $aTable.ad_start_date AND $aTable.ad_end_date, TRUE)";
+      $whereClauseT .= " AND IF($aTable.limit_hits, $aTable.hits_limit > $aTable.ad_hits, TRUE)";
+      $whereClauseT .= " AND IF($aTable.limit_clicks, $aTable.clicks_limit > $aTable.ad_clicks, TRUE)";
+
+      $whereClauseW = " AND IF($aTable.ad_weight > 0, ($aTable.ad_weight_hits*10/($aTable.ad_weight*$cycle)) < 1, FALSE)";
+      $whereClause2W = "AND ($aTable.ad_weight > 0)";
+
+      return array('WC' => $whereClause, 'WCT' => $whereClauseT, 'WCW' => $whereClauseW, 'WC2W' => $whereClause2W);
+    }
     
     public function headerScripts() {
+      global $SAM_Query;
+
       $this->samNonce = wp_create_nonce('samNonce');
       $options = self::getSettings();
+      $this->whereClauses = self::buildWhereClause();
+
+      $SAM_Query = array('clauses' => $this->whereClauses);
+      $clauses64 = base64_encode(serialize($SAM_Query['clauses']));
+      //$dClauses64 = unserialize(base64_decode($clauses64));
       
       wp_enqueue_script('jquery');
       if($options['useSWF']) wp_enqueue_script('swfobject');
       wp_enqueue_script('samLayout', SAM_URL.'js/sam-layout.js', array('jquery'), SAM_VERSION);
       wp_localize_script('samLayout', 'samAjax', array(
           'ajaxurl' => SAM_URL . 'sam-ajax.php',
-          'level' => count(explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) ))))
+          'level' => count(explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) ))),
+          //'queries' => $dClauses64,
+          'clauses' => $clauses64 //$this->whereClauses
+        )
       );
     }
     

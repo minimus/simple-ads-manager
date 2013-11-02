@@ -266,8 +266,8 @@ if(!class_exists('SamBlockEditor')) {
                     <div class="misc-pub-section">
                       <label for="place_id_stat"><?php echo __('Ads Block ID', SAM_DOMAIN).':'; ?></label>
                       <span id="place_id_stat" class="post-status-display"><?php echo $row['id']; ?></span>
-                      <input type="hidden" id="block_id" name="block_id" value="<?php echo $row['id']; ?>" />
-                      <input type='hidden' name='editor_mode' id='editor_mode' value='zone'>
+                      <input type="hidden" id="block_id" name="block_id" value="<?php echo $row['id']; ?>">
+                      <input type='hidden' name='editor_mode' id='editor_mode' value='block'>
                     </div>
                     <div class="misc-pub-section">
                       <label for="trash_no"><input type="radio" id="trash_no" value="false" name="trash" <?php if (!$row['trash']) { echo 'checked="checked"'; }?> >  <?php _e('Is Active', SAM_DOMAIN); ?></label><br/>
@@ -295,7 +295,7 @@ if(!class_exists('SamBlockEditor')) {
           <div id="titlediv">
             <div id="titlewrap">
               <label class="screen-reader-text" for="title"><?php _e('Name', SAM_DOMAIN); ?></label>
-              <input id="title" type="text" autocomplete="off" tabindex="1" size="30" name="block_name" value="<?php echo $row['name']; ?>" />
+              <input id="title" type="text" autocomplete="off" tabindex="1" size="30" name="block_name" value="<?php echo $row['name']; ?>" title="<?php echo __('Name of Ads Block', SAM_DOMAIN).'. '.__('Required for SAM widgets.', SAM_DOMAIN); ?>" />
             </div>
           </div>
           <div class="meta-box-sortables ui-sortable">

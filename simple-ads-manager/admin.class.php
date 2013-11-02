@@ -10,6 +10,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     private $listBlock;
     private $eLogPage;
     private $cmsVer;
+    private $samPointerOptions = array('places' => true, 'ads' => true, 'zones' => true, 'blocks' => true);
     
     public function __construct() {
       parent::__construct();
@@ -52,6 +53,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_action('wp_ajax_upload_ad_image', array(&$this, 'uploadHandler'));
       add_action('wp_ajax_get_strings', array(&$this, 'getStringsHandler'));
       add_action('wp_ajax_get_combo_data', array(&$this, 'getComboDataHandler'));
+      add_action('wp_ajax_close_pointer', array(&$this, 'closePointerHandler'));
 			add_action('admin_init', array(&$this, 'initSettings'));
 			add_action('admin_menu', array(&$this, 'regAdminPage'));
       add_filter('tiny_mce_version', array(&$this, 'tinyMCEVersion'));
@@ -70,6 +72,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         else $this->cmsVer = 'low';
       }
       else $this->cmsVer = 'not supported';
+      self::getPointerOptions(true);
     }
     
     public function onActivate() {
@@ -102,6 +105,20 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       if($settings['deleteFolder'] == 1) {
         if(is_dir(SAM_AD_IMG)) rmdir(SAM_AD_IMG);
       }
+    }
+
+    public function  getPointerOptions($force = false) {
+      if($force) {
+        $pointers = get_option('sam_pointers', '');
+        if($pointers == '') {
+          $pointers = get_option('sam_pointers', $this->samPointerOptions);
+          update_option('sam_pointers', $pointers);
+        }
+        $this->samPointerOptions = $pointers;
+      }
+      else $pointers = $this->samPointerOptions;
+
+      return $pointers;
     }
     
     private function getVersionData($version) {
@@ -210,10 +227,12 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_action('admin_print_styles-'.$this->listZone, array(&$this, 'adminListStyles'));
       $this->editZone = add_submenu_page('sam-list', __('Ads Zone Editor', SAM_DOMAIN), __('New Zone', SAM_DOMAIN), SAM_ACCESS, 'sam-zone-edit', array(&$this, 'samZoneEditPage'));
       add_action('admin_print_styles-'.$this->editZone, array(&$this, 'adminEditStyles'));
+      add_action('admin_print_scripts-'.$this->editZone, array(&$this, 'adminEditZBScripts'));
       $this->listBlock = add_submenu_page('sam-list', __('Ads Blocks List', SAM_DOMAIN), __('Ads Blocks', SAM_DOMAIN), SAM_ACCESS, 'sam-block-list', array(&$this, 'samBlockListPage'));
       add_action('admin_print_styles-'.$this->listBlock, array(&$this, 'adminListStyles'));
       $this->editBlock = add_submenu_page('sam-list', __('Ads Block Editor', SAM_DOMAIN), __('New Block', SAM_DOMAIN), SAM_ACCESS, 'sam-block-edit', array(&$this, 'samBlockEditPage'));
       add_action('admin_print_styles-'.$this->editBlock, array(&$this, 'adminEditStyles'));
+      add_action('admin_print_scripts-'.$this->editBlock, array(&$this, 'adminEditZBScripts'));
 			$this->settingsPage = add_submenu_page('sam-list', __('Simple Ads Manager Settings', SAM_DOMAIN), __('Settings', SAM_DOMAIN), 'manage_options', 'sam-settings', array(&$this, 'samAdminPage'));
       add_action('admin_print_styles-'.$this->settingsPage, array(&$this, 'adminSettingsStyles'));
       add_action('admin_print_scripts-'.$this->settingsPage, array(&$this, 'adminSettingsScripts'));
@@ -258,10 +277,12 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     
     public function adminEditStyles() {
       wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
-      wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-1.8.9.custom.css', false, '1.8.9');
+      wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui.css', false, '1.10.3');
       wp_enqueue_style('ColorPickerCSS', SAM_URL.'css/colorpicker.css');
       wp_enqueue_style('slick', SAM_URL.'css/slick.grid.css', false, '2.0');
       wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.2');
+      wp_enqueue_style('wp-pointer');
+      wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.min.css', false, SAM_VERSION);
     }
     
     public function adminSettingsStyles() {
@@ -273,11 +294,12 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     
     public function adminListStyles() {
       wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-admin-list.css', false, SAM_VERSION);
-      wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-1.8.9.custom.css', false, '1.8.9');
+      wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui.css', false, '1.10.3');
     }
     
     public function adminEditScripts() {
       $options = parent::getSettings();
+      $pointers = self::getPointerOptions();
       $loc = get_locale();
       if(in_array($loc, array('en_GB', 'fr_CH', 'pt_BR', 'sr_SR', 'zh_CN', 'zh_HK', 'zh_TW')))
         $lc = str_replace('_', '-', $loc);
@@ -300,6 +322,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       wp_enqueue_script('jquery-ui-tabs');
       wp_enqueue_script('jquery-effects-blind');
       wp_enqueue_script('jquery-ui-datepicker');
+      wp_enqueue_script('jquery-ui-tooltip');
       /*wp_enqueue_script('jquery-ui', SAM_URL.'js/jquery-ui-1.8.9.custom.min.js', array('jquery'), '1.8.9');*/
       if(file_exists(SAM_PATH.'/js/i18n/jquery.ui.datepicker-'.$lc.'.js'))
         wp_enqueue_script('jquery-ui-locale', SAM_URL.'js/i18n/jquery.ui.datepicker-'.$lc.'.js', array('jquery'), '1.8.9');
@@ -320,9 +343,38 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       wp_enqueue_script('slick-grid', SAM_URL.'js/slick/slick.grid.js', array('jquery', 'jquery-ui-core'), '2.0');
 
       //wp_enqueue_script('cg-props', SAM_URL.'js/jquery.i18n.properties-1.0.9.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), '1.0.9');
-      wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.2.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.2');
+      wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.3.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.2');
 
-      wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+      wp_enqueue_script('wp-pointer');
+      wp_localize_script('wp-pointer', 'samPointer', array(
+        'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
+        'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
+        'zones' => array('enabled' => $pointers['zones'], 'title' => __('Name of Ads Zone', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
+        'blocks' => array('enabled' => $pointers['blocks'], 'title' => __('Name of Ads Block', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use plugin\'s widgets.', SAM_DOMAIN))
+      ));
+      wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+    }
+
+    public function adminEditZBScripts() {
+      $pointers = self::getPointerOptions();
+
+      wp_enqueue_script('jquery');
+      wp_enqueue_script('jquery-ui-core');
+      wp_enqueue_script('jquery-effects-core');
+      wp_enqueue_script('jquery-ui-widget');
+      wp_enqueue_script('jquery-ui-sortable');
+      wp_enqueue_script('jquery-ui-position');
+      wp_enqueue_script('jquery-effects-blind');
+      wp_enqueue_script('jquery-ui-tooltip');
+
+      wp_enqueue_script('wp-pointer');
+      wp_localize_script('wp-pointer', 'samPointer', array(
+        'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
+        'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
+        'zones' => array('enabled' => $pointers['zones'], 'title' => __('Name of Ads Zone', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
+        'blocks' => array('enabled' => $pointers['blocks'], 'title' => __('Name of Ads Block', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use plugin\'s widgets.', SAM_DOMAIN))
+      ));
+      wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-zb.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
     }
 
     public function errorsListScripts() {
@@ -412,6 +464,19 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       } else {
         exit("error");  
       }
+    }
+
+    public function closePointerHandler() {
+      $options = self::getPointerOptions();
+      $charset = get_bloginfo('charset');
+      @header("Content-Type: application/json; charset=$charset");
+      if(isset($_REQUEST['pointer'])) {
+        $pointer =  $_REQUEST['pointer'];
+        $options[$pointer] = false;
+        update_option('sam_pointers', $options);
+        wp_send_json_success(array('pointer' => $pointer, 'options' => $options));
+      }
+      else wp_send_json_error();
     }
 
     public function getComboDataHandler() {

@@ -338,7 +338,7 @@ if(!class_exists('SamZoneEditor')) {
           <div id="titlediv">
             <div id="titlewrap">
               <label class="screen-reader-text" for="title"><?php _e('Name', SAM_DOMAIN); ?></label>
-              <input id="title" type="text" autocomplete="off" tabindex="1" size="30" name="zone_name" value="<?php echo $row['name']; ?>" />
+              <input id="title" type="text" autocomplete="off" tabindex="1" size="30" name="zone_name" value="<?php echo $row['name']; ?>" title="<?php echo __('Name of Ads Zone', SAM_DOMAIN).'. '.__('Required for SAM widgets.', SAM_DOMAIN); ?>" />
             </div>
           </div>
           <div class="meta-box-sortables ui-sortable">

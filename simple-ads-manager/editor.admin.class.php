@@ -385,7 +385,7 @@ if(!class_exists('SamPlaceEdit')) {
           <div id="titlediv">
             <div id="titlewrap">
               <label class="screen-reader-text" for="title"><?php _e('Name', SAM_DOMAIN); ?></label>
-              <input id="title" type="text" autocomplete="off" tabindex="1" size="30" name="place_name" value="<?php echo $row['name']; ?>" />
+              <input id="title" type="text" autocomplete="off" tabindex="1" size="30" name="place_name" value="<?php echo $row['name']; ?>" title="<?php echo __('Name of Ads Place', SAM_DOMAIN).'. '.__('Required for SAM widgets and settings.', SAM_DOMAIN); ?>" />
             </div>
           </div>
           <div class="meta-box-sortables ui-sortable">
@@ -871,7 +871,7 @@ if(!class_exists('SamPlaceEdit')) {
           <div id="titlediv">
             <div id="titlewrap">
               <label class="screen-reader-text" for="title"><?php _e('Title', SAM_DOMAIN); ?></label>
-              <input id="title" type="text" autocomplete="off" tabindex="1" size="30" name="item_name" value="<?php echo $row['name']; ?>" />
+              <input id="title" type="text" autocomplete="off" tabindex="1" size="30" name="item_name" value="<?php echo $row['name']; ?>" title="<?php echo __('Name of Ad', SAM_DOMAIN).'. '.__('Required for SAM widgets.', SAM_DOMAIN); ?>" />
             </div>
           </div>
           <div id="normal-sortables" class="meta-box-sortables ui-sortable">
@@ -922,7 +922,7 @@ if(!class_exists('SamPlaceEdit')) {
                         <input type='checkbox' name='count_clicks' id='count_clicks' value='1' <?php checked(1, $row['count_clicks']); ?> />
                         <label for='count_clicks'><?php _e('Count clicks for this advertisement', SAM_DOMAIN); ?></label>
                       </p>
-                      <p><strong><?php _e('Use carefully!', SAM_DOMAIN) ?></strong> <?php _e("Do not use if the wp-admin folder is password protected. In this case the viewer will be prompted to enter a username and password during ajax request. It's not good.", SAM_DOMAIN) ?></p>
+                      <!--<p><strong><?php _e('Use carefully!', SAM_DOMAIN) ?></strong> <?php _e("Do not use if the wp-admin folder is password protected. In this case the viewer will be prompted to enter a username and password during ajax request. It's not good.", SAM_DOMAIN) ?></p>-->
                       <p>
                         <input type="checkbox" name="ad_swf" id="ad_swf" value="1" <?php checked(1, $row['ad_swf']); ?> />
                         <label for="ad_swf"><?php _e('This is flash (SWF) banner', SAM_DOMAIN); ?></label>
