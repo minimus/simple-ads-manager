@@ -6,7 +6,7 @@
 
 
   $(document).ready(function () {
-    $(document).tooltip({
+    $("#title").tooltip({
       track: true
     });
 

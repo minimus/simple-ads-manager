@@ -202,7 +202,7 @@ if(!class_exists('SamAdPlace')) {
       else $cycle = $settings['adCycle'];
       $el = (integer)$settings['errorlogFS'];
       
-      global $wpdb/*, $current_user*/;
+      global $wpdb;
       $pTable = $wpdb->prefix . "sam_places";          
       $aTable = $wpdb->prefix . "sam_ads";
       $eTable = $wpdb->prefix . "sam_errors";

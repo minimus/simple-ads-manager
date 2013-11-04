@@ -258,7 +258,10 @@ if(!class_exists('SamBlockEditor')) {
                   <div id="minor-publishing-actions">
                     <div id="save-action"> </div>
                     <div id="preview-action">
-                      <a id="post-preview" class="preview button" href='<?php echo admin_url('admin.php'); ?>?page=sam-block-list'><?php _e('Back to Blocks List', SAM_DOMAIN) ?></a>
+                      <a id="back-button" class="color-btn color-btn-left" href='<?php echo admin_url('admin.php'); ?>?page=sam-block-list'>
+                        <b style="background-color: #bcbcbc"></b>
+                        <?php _e('Back to Blocks List', SAM_DOMAIN) ?>
+                      </a>
                     </div>
                     <div class="clear"></div>
                   </div>
@@ -278,10 +281,18 @@ if(!class_exists('SamBlockEditor')) {
                 </div>
                 <div id="major-publishing-actions">
                   <div id="delete-action">
-                    <a class="submitdelete deletion" href='<?php echo admin_url('admin.php'); ?>?page=sam-block-list'><?php _e('Cancel', SAM_DOMAIN) ?></a>
+                    <!--<a class="submitdelete deletion" href='<?php echo admin_url('admin.php'); ?>?page=sam-block-list'><?php _e('Cancel', SAM_DOMAIN) ?></a>-->
                   </div>
                   <div id="publishing-action">
-                    <input type="submit" class='button-primary' name="update_block" value="<?php _e('Save', SAM_DOMAIN) ?>" />
+                    <a id="cancel-button" class="color-btn color-btn-left" href='<?php echo admin_url('admin.php'); ?>?page=sam-block-list'>
+                      <b style="background-color: #E5584A"></b>
+                      <?php _e('Cancel', SAM_DOMAIN) ?>
+                    </a>
+                    <button id="submit-button" class="color-btn color-btn-left" name="update_block" type="submit">
+                      <b style="background-color: #21759b"></b>
+                      <?php _e('Save', SAM_DOMAIN) ?>
+                    </button>
+                    <!--<input type="submit" class='button-primary' name="update_block" value="<?php _e('Save', SAM_DOMAIN) ?>" />-->
                   </div>
                   <div class="clear"></div>
                 </div>

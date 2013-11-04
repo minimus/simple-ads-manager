@@ -282,7 +282,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       wp_enqueue_style('slick', SAM_URL.'css/slick.grid.css', false, '2.0');
       wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.2');
       wp_enqueue_style('wp-pointer');
-      wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.min.css', false, SAM_VERSION);
+      wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
     }
     
     public function adminSettingsStyles() {

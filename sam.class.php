@@ -38,8 +38,6 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      global $SAM_Query;
-
       define('SAM_VERSION', '1.8.70');
       define('SAM_DB_VERSION', '2.2');
       define('SAM_PATH', dirname( __FILE__ ));
@@ -71,7 +69,6 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $this->crawler = $this->isCrawler();
       
       if(!is_admin()) {
-        //$this->whereClauses = self::buildWhereClause();
         add_action('wp_enqueue_scripts', array(&$this, 'headerScripts'));
         add_action('wp_head', array(&$this, 'headerCodes'));
         
@@ -134,9 +131,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $el = (integer)$settings['errorlogFS'];
 
       global $wpdb, $current_user;
-      //$pTable = $wpdb->prefix . "sam_places";
       $aTable = $wpdb->prefix . "sam_ads";
-      //$eTable = $wpdb->prefix . "sam_errors";
 
       $viewPages = 0;
       $wcc = '';

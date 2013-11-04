@@ -6,7 +6,7 @@
   $(document).ready(function() {
     var sPointer;
 
-    $(document).tooltip({
+    $('#title').tooltip({
       track: true
     });
 
