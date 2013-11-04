@@ -18,7 +18,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       global $wp_version;
       
 			if ( function_exists( 'load_plugin_textdomain' ) )
-				load_plugin_textdomain( SAM_DOMAIN, false, basename( SAM_PATH ) );
+				load_plugin_textdomain( SAM_DOMAIN, false, basename( SAM_PATH ) . '/lang' );
       
       if(!is_dir(SAM_AD_IMG)) mkdir(SAM_AD_IMG);
 				
