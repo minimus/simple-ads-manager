@@ -149,7 +149,8 @@ input.button-primary, input.button-secondary,
 #auth-grid, #x-auth-grid,
 #tags-grid, #x-tags-grid,
 #cust-grid, #x-cust-grid,
-#users-grid, #ctt-grid {
+#users-grid, #ctt-grid,
+#x-ctt-grid {
   width: 100%;
   height: 197px;
 }

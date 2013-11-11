@@ -4,6 +4,8 @@
  */
 (function ($) {
   $(document).ready(function () {
+    var em = $('#editor_mode').val();
+
     $("#title").tooltip({
       track: true
     });
@@ -48,8 +50,8 @@
             .fadeOut(1000, function () {
               $(this).remove();
             });
-          if ($('#editor_mode').val() == 'item') $("#ad_img").val(options.url + file);
-          if ($('#editor_mode').val() == 'place') $("#patch_img").val(options.url + file);
+          if (em == 'item') $("#ad_img").val(options.url + file);
+          else if (em == 'place') $("#patch_img").val(options.url + file);
         }
         else {
           $('#files').text(file + ' ' + response)
@@ -62,7 +64,7 @@
       }
     });
 
-    if ($('#editor_mode').val() == 'item') {
+    if (em == 'item') {
       sPointer = samPointer.ads;
       sPointer.pointer = 'ads';
 
@@ -140,6 +142,10 @@
       var cttGrid = $('#ctt-grid'), cttIn = $('#view-custom-tax-terms');
       buildGrid('ctt-grid', cttGrid, 'view-custom-tax-terms', cttIn, 'slug', options.custom_taxes.columns, options.custom_taxes.taxes);
 
+      //
+      var xcttGrid = $('#x-ctt-grid'), xcttIn = $('#x-view-custom-tax-terms');
+      buildGrid('x-ctt-grid', xcttGrid, 'x-view-custom-tax-terms', xcttIn, 'slug', options.custom_taxes.columns, options.custom_taxes.taxes);
+
       // Posts Grid
       var postsGrid = $('#posts-grid'), postsIn = $('#view_id');
       buildGrid('posts-grid', postsGrid, 'view_id', postsIn, 'id', options.posts.columns, options.posts.posts);
@@ -192,6 +198,7 @@
           }
           if(el == 'tabs-2') {
             if($('#rc-ctt').is(':visible')) cttGrid.w2render('ctt-grid');
+            if($('#rc-xct').is(':visible')) xcttGrid.w2render('x-ctt-grid');
             if($('#rc-xid').is(':visible')) xpostsGrid.w2render('x-posts-grid');
             if($('#x-view-users').is(':visible')) usersGrid.w2render('users-grid');
             if($('#rc-ac').is(':visible')) catsGrid.w2render('cats-grid');
@@ -222,25 +229,60 @@
         $("#rc-cmt").show('blind', {direction:'vertical'}, 500);
       });
 
+      var
+        rcvt0 = $('#rc-vt0'),
+        rcvt2 = $('#rc-vt2'),
+        xId = $('#x_id'),
+        rcxid = $('#rc-xid');
+
+      if(2 == $('input:radio[name=view_type]:checked').val()) {
+        if(xId.is(':checked')) {
+          xId.attr('checked', false);
+          rcxid.hide('blind', {direction:'vertical'}, 500);
+        }
+        xId.attr('disabled', true);
+      }
+
       $("input:radio[name=view_type]").click(function () {
         var cval = $('input:radio[name=view_type]:checked').val();
         switch (cval) {
           case '0':
-            if ($('#rc-vt0').is(':hidden')) $("#rc-vt0").show('blind', {direction:'vertical'}, 500);
-            if ($('#rc-vt2').is(':visible')) $("#rc-vt2").hide('blind', {direction:'vertical'}, 500);
+            if (rcvt0.is(':hidden')) rcvt0.show('blind', {direction:'vertical'}, 500);
+            if (rcvt2.is(':visible')) rcvt2.hide('blind', {direction:'vertical'}, 500);
+            xId.attr('disabled', false);
             break;
           case '1':
-            if ($('#rc-vt0').is(':visible')) $("#rc-vt0").hide('blind', {direction:'vertical'}, 500);
-            if ($('#rc-vt2').is(':visible')) $("#rc-vt2").hide('blind', {direction:'vertical'}, 500);
+            if (rcvt0.is(':visible')) rcvt0.hide('blind', {direction:'vertical'}, 500);
+            if (rcvt2.is(':visible')) rcvt2.hide('blind', {direction:'vertical'}, 500);
+            xId.attr('disabled', false);
             break;
           case '2':
-            if ($('#rc-vt0').is(':visible')) $("#rc-vt0").hide('blind', {direction:'vertical'}, 500);
-            if ($('#rc-vt2').is(':hidden')) {
-              $("#rc-vt2").show('blind', {direction:'vertical'}, 500, function() {
+            if (rcvt0.is(':visible')) rcvt0.hide('blind', {direction:'vertical'}, 500);
+            if (rcvt2.is(':hidden')) {
+              rcvt2.show('blind', {direction:'vertical'}, 500, function() {
                 postsGrid.w2render('posts-grid');
               });
+              if(xId.is(':checked')) {
+                xId.attr('checked', false);
+                rcxid.hide('blind', {direction:'vertical'}, 500);
+              }
             }
+            xId.attr('disabled', true);
+            break;
         }
+      });
+
+      xId.click(function () {
+        if (xId.is(':checked')) {
+          if(2 == $('input:radio[name=view_type]:checked').val()) {
+            xId.attr('checked', false);
+          }
+          else
+            rcxid.show('blind', {direction:'vertical'}, 500, function() {
+              xpostsGrid.w2render('x-posts-grid');
+            });
+        }
+        else rcxid.hide('blind', {direction:'vertical'}, 500);
       });
 
       $("input:radio[name=ad_users]").click(function() {
@@ -277,105 +319,219 @@
         else $('#swf-params').hide('blind', {direction:'vertical'}, 500);
       });
 
-      $('#x_id').click(function () {
-        if ($('#x_id').is(':checked')) {
-          $('#rc-xid').show('blind', {direction:'vertical'}, 500, function() {
-            xpostsGrid.w2render('x-posts-grid');
-          });
-        }
-        else $('#rc-xid').hide('blind', {direction:'vertical'}, 500);
-      });
+      var
+        adCats = $('#ad_cats'),
+        rcac = $('#rc-ac'),
+        acw = $('#acw'),
+        xCats = $('#x_cats'),
+        rcxc = $('#rc-xc');
 
-      $('#ad_cats').click(function () {
-        if ($('#ad_cats').is(':checked')) {
-          $('#rc-ac').show('blind', {direction:'vertical'}, 500, function() {
+      if(adCats.is(':checked') && xCats.is(':checked')) {
+        xCats.attr('checked', false);
+        rcxc.hide('blind', {direction:'vertical'}, 500);
+      }
+
+      adCats.click(function () {
+        if (adCats.is(':checked')) {
+          rcac.show('blind', {direction:'vertical'}, 500, function() {
             catsGrid.w2render('cats-grid');
           });
-          $('#acw').show('blind', {direction:'vertical'}, 500);
+          acw.show('blind', {direction:'vertical'}, 500);
+          if(xCats.is(':checked')) {
+            xCats.attr('checked', false);
+            rcxc.hide('blind', {direction:'vertical'}, 500);
+          }
         }
         else {
-          $('#rc-ac').hide('blind', {direction:'vertical'}, 500);
-          $('#acw').hide('blind', {direction:'vertical'}, 500);
+          rcac.hide('blind', {direction:'vertical'}, 500);
+          acw.hide('blind', {direction:'vertical'}, 500);
         }
       });
 
-      $('#x_cats').click(function () {
-        if ($('#x_cats').is(':checked'))
-          $('#rc-xc').show('blind', {direction:'vertical'}, 500, function() {
+      xCats.click(function () {
+        if (xCats.is(':checked')) {
+          rcxc.show('blind', {direction:'vertical'}, 500, function() {
             xcatsGrid.w2render('x-cats-grid');
           });
-        else $('#rc-xc').hide('blind', {direction:'vertical'}, 500);
+          if(adCats.is(':checked')) {
+            adCats.attr('checked', false);
+            rcac.hide('blind', {direction:'vertical'}, 500);
+            acw.hide('blind', {direction:'vertical'}, 500);
+          }
+        }
+        else rcxc.hide('blind', {direction:'vertical'}, 500);
       });
 
-      $('#ad_custom_tax_terms').click(function() {
-        if($('#ad_custom_tax_terms').is(':checked'))
-          $('#rc-ctt').show('blind', {direction: 'vertical'}, 500, function() {
+      var
+        actt = $('#ad_custom_tax_terms'),
+        rcctt = $('#rc-ctt'),
+        cttw = $('#cttw'),
+        xacct = $('#x_ad_custom_tax_terms'),
+        rcxct = $('#rc-xct');
+
+      if(actt.is(':checked') && xacct.is(':checked')) {
+        xacct.attr('checked', false);
+        rcxct.hide('blind', {direction:'vertical'}, 500);
+      }
+
+      actt.click(function() {
+        if(actt.is(':checked')) {
+          rcctt.show('blind', {direction: 'vertical'}, 500, function() {
             cttGrid.w2render('ctt-grid');
           });
-        else $('#rc-ctt').hide('blind', {direction:'vertical'}, 500);
+          cttw.show('blind', {direction:'vertical'}, 500);
+          if(xacct.is(':checked')) {
+            xacct.attr('checked', false);
+            rcxct.hide('blind', {direction:'vertical'}, 500);
+          }
+        }
+        else {
+          rcctt.hide('blind', {direction:'vertical'}, 500);
+          cttw.hide('blind', {direction:'vertical'}, 500);
+        }
       });
 
-      $('#ad_authors').click(function () {
-        if ($('#ad_authors').is(':checked')) {
-          $('#rc-au').show('blind', {direction:'vertical'}, 500, function() {
+      xacct.click(function() {
+        if(xacct.is(':checked')) {
+          rcxct.show('blind', {direction: 'vertical'}, 500, function() {
+            xcttGrid.w2render('x-ctt-grid');
+          });
+          if(actt.is(':checked')) {
+            actt.attr('checked', false);
+            rcctt.hide('blind', {direction:'vertical'}, 500);
+            cttw.hide('blind', {direction:'vertical'}, 500);
+          }
+        }
+        else rcxct.hide('blind', {direction: 'vertical'}, 500);
+      });
+
+      var
+        adAuth = $('#ad_authors'),
+        rcau = $('#rc-au'),
+        aaw = $('#aaw'),
+        xAuth = $('#x_authors'),
+        rcxa = $('#rc-xa');
+
+      if(adAuth.is(':checked') && xAuth.is(':checked')) {
+        xAuth.attr('checked', false);
+        rcxa.hide('blind', {direction:'vertical'}, 500);
+      }
+
+      adAuth.click(function () {
+        if (adAuth.is(':checked')) {
+          rcau.show('blind', {direction:'vertical'}, 500, function() {
             authGrid.w2render('auth-grid');
           });
-          $('#aaw').show('blind', {direction:'vertical'}, 500);
+          aaw.show('blind', {direction:'vertical'}, 500);
+          if(xAuth.is(':checked')) {
+            xAuth.attr('checked', false);
+            rcxa.hide('blind', {direction:'vertical'}, 500);
+          }
         }
         else {
-          $('#rc-au').hide('blind', {direction:'vertical'}, 500);
-          $('#aaw').hide('blind', {direction:'vertical'}, 500);
+          rcau.hide('blind', {direction:'vertical'}, 500);
+          aaw.hide('blind', {direction:'vertical'}, 500);
         }
       });
 
-      $('#x_authors').click(function () {
-        if ($('#x_authors').is(':checked'))
-          $('#rc-xa').show('blind', {direction:'vertical'}, 500, function() {
+      xAuth.click(function () {
+        if (xAuth.is(':checked')) {
+          rcxa.show('blind', {direction:'vertical'}, 500, function() {
             xauthGrid.w2render('x-auth-grid');
           });
-        else $('#rc-xa').hide('blind', {direction:'vertical'}, 500);
+          if(adAuth.is(':checked')) {
+            adAuth.attr('checked', false);
+            rcau.hide('blind', {direction:'vertical'}, 500);
+            aaw.hide('blind', {direction:'vertical'}, 500);
+          }
+        }
+        else rcxa.hide('blind', {direction:'vertical'}, 500);
       });
 
-      $('#ad_tags').click(function () {
-        if ($('#ad_tags').is(':checked')) {
-          $('#rc-at').show('blind', {direction:'vertical'}, 500, function() {
+      var
+        adTags = $('#ad_tags'),
+        rcat = $('#rc-at'),
+        atw = $('#atw'),
+        xTags = $('#x_tags'),
+        rcxt = $('#rc-xt');
+
+      if(adTags.is(':checked') && xTags.is(':checked')) {
+        xTags.attr('checked', false);
+        rcxt.hide('blind', {direction:'vertical'}, 500);
+      }
+
+      adTags.click(function () {
+        if (adTags.is(':checked')) {
+          rcat.show('blind', {direction:'vertical'}, 500, function() {
             tagsGrid.w2render('tags-grid');
           });
-          $('#atw').show('blind', {direction:'vertical'}, 500);
+          atw.show('blind', {direction:'vertical'}, 500);
+          if(xTags.is(':checked')) {
+            xTags.attr('checked', false);
+            rcxt.hide('blind', {direction:'vertical'}, 500);
+          }
         }
         else {
-          $('#rc-at').hide('blind', {direction:'vertical'}, 500);
-          $('#atw').hide('blind', {direction:'vertical'}, 500);
+          rcat.hide('blind', {direction:'vertical'}, 500);
+          atw.hide('blind', {direction:'vertical'}, 500);
         }
       });
 
-      $('#x_tags').click(function () {
-        if ($('#x_tags').is(':checked'))
-          $('#rc-xt').show('blind', {direction:'vertical'}, 500, function() {
+      xTags.click(function () {
+        if (xTags.is(':checked')) {
+          rcxt.show('blind', {direction:'vertical'}, 500, function() {
             xtagsGrid.w2render('x-tags-grid');
           });
-        else $('#rc-xt').hide('blind', {direction:'vertical'}, 500);
+          if(adTags.is(':checked')) {
+            adTags.attr('checked', false);
+            rcat.hide('blind', {direction:'vertical'}, 500);
+            atw.hide('blind', {direction:'vertical'}, 500);
+          }
+        }
+        else rcxt.hide('blind', {direction:'vertical'}, 500);
       });
 
-      $('#ad_custom').click(function () {
-        if ($('#ad_custom').is(':checked')) {
-          $('#rc-cu').show('blind', {direction:'vertical'}, 500, function() {
+      var
+        adCust = $('#ad_custom'),
+        rccu = $('#rc-cu'),
+        cuw = $('#cuw'),
+        xCust = $('#x_custom'),
+        rcxu = $('#rc-xu');
+
+      if(adCust.is(':checked') && xCust.is(':checked')) {
+        xCust.attr('checked', false);
+        rcxu.hide('blind', {direction:'vertical'}, 500);
+      }
+
+      adCust.click(function () {
+        if (adCust.is(':checked')) {
+          rccu.show('blind', {direction:'vertical'}, 500, function() {
             custGrid.w2render('cust-grid');
           });
-          $('#cuw').show('blind', {direction:'vertical'}, 500);
+          cuw.show('blind', {direction:'vertical'}, 500);
+          if(xCust.is(':checked')) {
+            xCust.attr('checked', false);
+            rcxu.hide('blind', {direction:'vertical'}, 500);
+          }
         }
         else {
-          $('#rc-cu').hide('blind', {direction:'vertical'}, 500);
-          $('#cuw').hide('blind', {direction:'vertical'}, 500);
+          rccu.hide('blind', {direction:'vertical'}, 500);
+          cuw.hide('blind', {direction:'vertical'}, 500);
         }
       });
 
-      $('#x_custom').click(function () {
-        if ($('#x_custom').is(':checked'))
-          $('#rc-xu').show('blind', {direction:'vertical'}, 500, function() {
+      xCust.click(function () {
+        if (xCust.is(':checked')) {
+          rcxu.show('blind', {direction:'vertical'}, 500, function() {
             xcustGrid.w2render('x-cust-grid');
           });
-        else $('#rc-xu').hide('blind', {direction:'vertical'}, 500);
+          if(adCust.is(':checked')) {
+            adCust.attr('checked', false);
+            rccu.hide('blind', {direction:'vertical'}, 500);
+            cuw.hide('blind', {direction:'vertical'}, 500);
+          }
+        }
+        else rcxu.hide('blind', {direction:'vertical'}, 500);
       });
 
       $('#ad_schedule').click(function () {
@@ -394,7 +550,7 @@
       });
     }
 
-    if ($('#editor_mode').val() == 'place') {
+    if (em == 'place') {
       sPointer = samPointer.places;
       sPointer.pointer = 'places';
 

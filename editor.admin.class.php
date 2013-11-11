@@ -1205,7 +1205,7 @@ if(!class_exists('SamPlaceEdit')) {
                     <div class='clear-line'></div>
                     <p>
                       <input type="checkbox" name="ad_custom_tax_terms" id="ad_custom_tax_terms" value="1"  <?php checked(1, $row['ad_custom_tax_terms']); ?>>
-                      <label for="ad_custom_tax_terms"><strong><?php _e('Show ad only in single posts or archives of certain Custom Taxonomies Terms', SAM_DOMAIN); ?></strong></label>
+                      <label for="ad_custom_tax_terms"><strong><?php echo __('Show ad only in single posts or archives of certain Custom Taxonomies Terms', SAM_DOMAIN).':'; ?></strong></label>
                     </p>
                     <div id="rc-ctt" class="radio-content" style="<?php if((int)$row['ad_custom_tax_terms'] != 1) echo 'display: none;'; ?>">
                       <input type="hidden" id="view-custom-tax-terms" name="view-custom-tax-terms" value="<?php echo $row['view-custom-tax-terms']; ?>">
@@ -1215,6 +1215,25 @@ if(!class_exists('SamPlaceEdit')) {
                     </div>
                     <p>
                       <?php _e('Use this setting to display an ad only in single posts or archives of certain Custom Taxonomies Terms.', SAM_DOMAIN); ?>
+                    </p>
+                    <div id="cttw" class='sam-warning' style="<?php if((int)$row['ad_custom_tax_terms'] != 1) echo 'display: none;'; ?>">
+                      <p>
+                        <?php _e('This display logic parameter will be applied only when you use the "Show ad on all pages of blog" and "Show your ad only on the pages of this type" modes. Otherwise, it will be ignored.', SAM_DOMAIN); ?>
+                      </p>
+                    </div>
+                    <div class='clear-line'></div>
+                    <p>
+                      <input type="checkbox" name="x_ad_custom_tax_terms" id="x_ad_custom_tax_terms" value="1"  <?php checked(1, $row['x_ad_custom_tax_terms']); ?>>
+                      <label for="x_ad_custom_tax_terms"><strong><?php echo __('Do not show ad in single posts or archives of certain Custom Taxonomies Terms', SAM_DOMAIN).':'; ?></strong></label>
+                    </p>
+                    <div id="rc-xct" class="radio-content" style="<?php if((int)$row['x_ad_custom_tax_terms'] != 1) echo 'display: none;'; ?>">
+                      <input type="hidden" id="x-view-custom-tax-terms" name="x-view-custom-tax-terms" value="<?php echo $row['x-view-custom-tax-terms']; ?>">
+                      <div>
+                        <div id="x-ctt-grid"></div>
+                      </div>
+                    </div>
+                    <p>
+                      <?php _e('Use this setting to not display an ad only in single posts or archives of certain Custom Taxonomies Terms.', SAM_DOMAIN); ?>
                     </p>
                     <div class='clear-line'></div>
                     <p>
