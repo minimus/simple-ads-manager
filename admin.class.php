@@ -18,7 +18,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       global $wp_version;
       
 			if ( function_exists( 'load_plugin_textdomain' ) )
-				load_plugin_textdomain( SAM_DOMAIN, false, basename( SAM_PATH ) . '/lang' );
+				load_plugin_textdomain( SAM_DOMAIN, false, basename( SAM_PATH ) . '/lang/' );
       
       if(!is_dir(SAM_AD_IMG)) mkdir(SAM_AD_IMG);
 				
@@ -278,11 +278,12 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     public function adminEditStyles() {
       wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
       wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui.css', false, '1.10.3');
-      wp_enqueue_style('ColorPickerCSS', SAM_URL.'css/colorpicker.css');
-      wp_enqueue_style('slick', SAM_URL.'css/slick.grid.css', false, '2.0');
+      //wp_enqueue_style('ColorPickerCSS', SAM_URL.'css/colorpicker.css');
+      //wp_enqueue_style('slick', SAM_URL.'css/slick.grid.css', false, '2.0');
       wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.2');
       wp_enqueue_style('wp-pointer');
       wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
+      wp_enqueue_style('W2UI', SAM_URL . 'css/w2ui.min.css', false, '1.3');
     }
     
     public function adminSettingsStyles() {
@@ -312,6 +313,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       if($options['useSWF']) wp_enqueue_script('swfobject');
       wp_enqueue_script('jquery');
+      wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.3');
       wp_enqueue_script('jquery-ui-core');
       wp_enqueue_script('jquery-effects-core');
       //wp_enqueue_script('jquery-ui-mouse');
@@ -323,24 +325,23 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       wp_enqueue_script('jquery-effects-blind');
       wp_enqueue_script('jquery-ui-datepicker');
       wp_enqueue_script('jquery-ui-tooltip');
-      /*wp_enqueue_script('jquery-ui', SAM_URL.'js/jquery-ui-1.8.9.custom.min.js', array('jquery'), '1.8.9');*/
       if(file_exists(SAM_PATH.'/js/i18n/jquery.ui.datepicker-'.$lc.'.js'))
         wp_enqueue_script('jquery-ui-locale', SAM_URL.'js/i18n/jquery.ui.datepicker-'.$lc.'.js', array('jquery'), '1.8.9');
-      wp_enqueue_script('ColorPicker', SAM_URL.'js/colorpicker.js', array('jquery'));
+      //wp_enqueue_script('ColorPicker', SAM_URL.'js/colorpicker.js', array('jquery'));
       wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
 
-      wp_enqueue_script('jquery-event-drag', SAM_URL.'js/slick/jquery.event.drag-2.0.min.js', array('jquery'), '2.0');
-      wp_enqueue_script('slick-core', SAM_URL.'js/slick/slick.core.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-checkboxes', SAM_URL.'js/slick/slick.checkboxselectcolumn.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-tooltips', SAM_URL.'js/slick/slick.autotooltips.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-cell-rd', SAM_URL.'js/slick/slick.cellrangedecorator.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-cell-rs', SAM_URL.'js/slick/slick.cellrangeselector.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-cell-cm', SAM_URL.'js/slick/slick.cellcopymanager.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-cell-sm', SAM_URL.'js/slick/slick.cellselectionmodel.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-row-sm', SAM_URL.'js/slick/slick.rowselectionmodel.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-formatters', SAM_URL.'js/slick/slick.formatters.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-editors', SAM_URL.'js/slick/slick.editors.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-grid', SAM_URL.'js/slick/slick.grid.js', array('jquery', 'jquery-ui-core'), '2.0');
+      //('jquery-event-drag', SAM_URL.'js/slick/jquery.event.drag-2.0.min.js', array('jquery'), '2.0');
+      //wp_enqueue_script('slick-core', SAM_URL.'js/slick/slick.core.js', array('jquery', 'jquery-ui-core'), '2.0');
+      //wp_enqueue_script('slick-checkboxes', SAM_URL.'js/slick/slick.checkboxselectcolumn.js', array('jquery', 'jquery-ui-core'), '2.0');
+      //wp_enqueue_script('slick-tooltips', SAM_URL.'js/slick/slick.autotooltips.js', array('jquery', 'jquery-ui-core'), '2.0');
+      //wp_enqueue_script('slick-cell-rd', SAM_URL.'js/slick/slick.cellrangedecorator.js', array('jquery', 'jquery-ui-core'), '2.0');
+      //wp_enqueue_script('slick-cell-rs', SAM_URL.'js/slick/slick.cellrangeselector.js', array('jquery', 'jquery-ui-core'), '2.0');
+      //wp_enqueue_script('slick-cell-cm', SAM_URL.'js/slick/slick.cellcopymanager.js', array('jquery', 'jquery-ui-core'), '2.0');
+      //wp_enqueue_script('slick-cell-sm', SAM_URL.'js/slick/slick.cellselectionmodel.js', array('jquery', 'jquery-ui-core'), '2.0');
+      //wp_enqueue_script('slick-row-sm', SAM_URL.'js/slick/slick.rowselectionmodel.js', array('jquery', 'jquery-ui-core'), '2.0');
+      //wp_enqueue_script('slick-formatters', SAM_URL.'js/slick/slick.formatters.js', array('jquery', 'jquery-ui-core'), '2.0');
+      //wp_enqueue_script('slick-editors', SAM_URL.'js/slick/slick.editors.js', array('jquery', 'jquery-ui-core'), '2.0');
+      //wp_enqueue_script('slick-grid', SAM_URL.'js/slick/slick.grid.js', array('jquery', 'jquery-ui-core'), '2.0');
 
       //wp_enqueue_script('cg-props', SAM_URL.'js/jquery.i18n.properties-1.0.9.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), '1.0.9');
       wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.3.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.2');
@@ -352,7 +353,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'zones' => array('enabled' => $pointers['zones'], 'title' => __('Name of Ads Zone', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
         'blocks' => array('enabled' => $pointers['blocks'], 'title' => __('Name of Ads Block', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use plugin\'s widgets.', SAM_DOMAIN))
       ));
-      wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+      wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
     }
 
     public function adminEditZBScripts() {
@@ -519,66 +520,113 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     }
     
     public function getStringsHandler() {
-      global $wpdb;
+      global $wpdb, $wp_taxonomies;
       $tTable = $wpdb->prefix . "terms";
       $ttTable = $wpdb->prefix . "term_taxonomy";
       $uTable = $wpdb->prefix . "users";
       $umTable = $wpdb->prefix . "usermeta";
       $postTable = $wpdb->prefix . "posts";
       
-      $sql = "SELECT $tTable.term_id AS id, $tTable.name AS title, $tTable.slug
-              FROM $tTable
-              INNER JOIN $ttTable
-                ON $tTable.term_id = $ttTable.term_id
-              WHERE $ttTable.taxonomy = 'category'
-              ORDER BY $tTable.name;";
+      $sql = "SELECT wt.term_id AS id, wt.name AS title, wt.slug
+              FROM $tTable wt
+              INNER JOIN $ttTable wtt
+                ON wt.term_id = wtt.term_id
+              WHERE wtt.taxonomy = 'category'
+              ORDER BY wt.name;";
                 
       $cats = $wpdb->get_results($sql, ARRAY_A);
+      $k = 0;
+      foreach($cats as &$val) {
+        $k++;
+        $val['recid'] = $k;
+      }
       
-      $sql = "SELECT $tTable.term_id AS id, $tTable.name AS title, $tTable.slug
-              FROM $tTable
-              INNER JOIN $ttTable
-                ON $tTable.term_id = $ttTable.term_id
-              WHERE $ttTable.taxonomy = 'post_tag'
-              ORDER BY $tTable.name;";
+      $sql = "SELECT wt.term_id AS id, wt.name AS title, wt.slug
+              FROM $tTable wt
+              INNER JOIN $ttTable wtt
+                ON wt.term_id = wtt.term_id
+              WHERE wtt.taxonomy = 'post_tag'
+              ORDER BY wt.name;";
                 
       $tags = $wpdb->get_results($sql, ARRAY_A);
+      $k = 0;
+      foreach($tags as &$val) {
+        $k++;
+        $val['recid'] = $k;
+      }
+
+      $sql = "SELECT wtt.taxonomy
+              FROM wp_term_taxonomy wtt
+              WHERE NOT FIND_IN_SET(wtt.taxonomy, 'category,post_tag,nav_menu,link_category,post_format')
+              GROUP BY wtt.taxonomy;";
+
+      $sql = "SELECT wt.term_id, wt.name, wt.slug, wtt.taxonomy
+              FROM $tTable wt
+              INNER JOIN $ttTable wtt
+              ON wt.term_id = wtt.term_id
+              WHERE NOT FIND_IN_SET(wtt.taxonomy, 'category,post_tag,nav_menu,link_category,post_format');";
+
+      $cTax = $wpdb->get_results($sql, ARRAY_A);
+      $k = 0;
+      foreach($cTax as &$val) {
+        if(isset($wp_taxonomies[$val['taxonomy']])) $val['ctax_name'] = urldecode($wp_taxonomies[$val['taxonomy']]->labels->name);
+        else $val['ctax_name'] = '';
+        $k++;
+        $val['recid'] = $k;
+      }
       
       $sql = "SELECT
-                $uTable.id,
-                $uTable.display_name AS title,
-                $uTable.user_nicename AS slug
+                wu.id,
+                wu.display_name AS title,
+                wu.user_nicename AS slug
               FROM
-                $uTable
-              INNER JOIN $umTable
-                ON $uTable.id = $umTable.user_id
+                $uTable wu
+              INNER JOIN $umTable wum
+                ON wu.id = wum.user_id
               WHERE
-                $umTable.meta_key = 'wp_user_level' AND
-                $umTable.meta_value > 1
-              ORDER BY $uTable.id;";
+                wum.meta_key = 'wp_user_level' AND
+                wum.meta_value > 1
+              ORDER BY wu.id;";
                 
       $auth = $wpdb->get_results($sql, ARRAY_A);
+      $k = 0;
+      foreach($auth as &$val) {
+        $k++;
+        $val['recid'] = $k;
+      }
 
+      $roleSubscriber = __('Subscriber', SAM_DOMAIN);
+      $roleContributor = __('Contributor', SAM_DOMAIN);
+      $roleAuthor = __('Author', SAM_DOMAIN);
+      $roleEditor = __('Editor', SAM_DOMAIN);
+      $roleAdministrator = __('Administrator', SAM_DOMAIN);
+      $roleSuperAdmin = __('Super Admin', SAM_DOMAIN);
       $sql = "SELECT
-                $uTable.id,
-                $uTable.display_name AS title,
-                $uTable.user_nicename AS slug,
-                (CASE $umTable.meta_value
-                  WHEN 0 THEN '".__('Subscriber', SAM_DOMAIN)."'
-                  WHEN 1 THEN '".__('Contributor', SAM_DOMAIN)."'
-                  WHEN 2 THEN '".__('Author', SAM_DOMAIN)."'
+                wu.id,
+                wu.display_name AS title,
+                wu.user_nicename AS slug,
+                (CASE wum.meta_value
+                  WHEN 0 THEN '$roleSubscriber'
+                  WHEN 1 THEN '$roleContributor'
+                  WHEN 2 THEN '$roleAuthor'
                   ELSE
-                    IF($umTable.meta_value > 2 AND $umTable.meta_value <= 7, '".__('Editor', SAM_DOMAIN)."',
-                      IF($umTable.meta_value > 7 AND $umTable.meta_value <= 10, '".__('Administrator', SAM_DOMAIN)."',
-                        IF($umTable.meta_value > 10, '".__('Super Admin', SAM_DOMAIN)."', NULL)
+                    IF(wum.meta_value > 2 AND wum.meta_value <= 7, '$roleEditor',
+                      IF(wum.meta_value > 7 AND wum.meta_value <= 10, '$roleAdministrator',
+                        IF(wum.meta_value > 10, '$roleSuperAdmin', NULL)
                       )
                     )
                 END) AS role
-              FROM $uTable
-              INNER JOIN $umTable
-                ON $uTable.id = $umTable.user_id AND $umTable.meta_key = 'wp_user_level'
-              ORDER BY $uTable.id;";
+              FROM $uTable wu
+              INNER JOIN $umTable wum
+                ON wu.id = wum.user_id AND wum.meta_key = 'wp_user_level'
+              ORDER BY wu.id;";
       $users = $wpdb->get_results($sql, ARRAY_A);
+
+      $k = 0;
+      foreach($users as &$val) {
+        $k++;
+        $val['recid'] = $k;
+      }
       
       $args = array('public' => true, '_builtin' => false);
       $output = 'objects';
@@ -591,34 +639,43 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         array_push($customs, array('title' => $post_type->labels->name, 'slug' => $post_type->name));
         array_push($sCustoms, $post_type->name);
       }
+      $k = 0;
+      foreach($customs as &$val) {
+        $k++;
+        $val['recid'] = $k;
+      }
 
       if(!empty($sCustoms)) $custs = ',' . implode(',', $sCustoms);
       else $custs = '';
       
       $sql = "SELECT
-                $postTable.id,
-                $postTable.post_title AS title,
-                $postTable.post_type AS type
+                wp.id,
+                wp.post_title AS title,
+                wp.post_type AS type
               FROM
-                $postTable
+                $postTable wp
               WHERE
-                $postTable.post_status = 'publish' AND
-                FIND_IN_SET($postTable.post_type, 'post,page".$custs."')
-              ORDER BY $postTable.id;";
+                wp.post_status = 'publish' AND
+                FIND_IN_SET(wp.post_type, 'post,page{$custs}')
+              ORDER BY wp.id;";
 
       $posts = $wpdb->get_results($sql, ARRAY_A);
-      for($i = 0; $i < sizeof($posts); $i++) {
-        switch($posts[$i]['type']) {
+
+      $k = 0;
+      foreach($posts as &$val) {
+        switch($val['type']) {
           case 'post':
-            $posts[$i]['type'] = __('Post', SAM_DOMAIN);
+            $val['type'] = __('Post', SAM_DOMAIN);
             break;
           case 'page':
-            $posts[$i]['type'] = __('Page', SAM_DOMAIN);
+            $val['type'] = __('Page', SAM_DOMAIN);
             break;
           default:
-            $posts[$i]['type'] = __('Post:', SAM_DOMAIN).' '.$posts[$i]['type'];
+            $val['type'] = __('Post:', SAM_DOMAIN).' '.$val['type'];
             break;
         }
+        $k++;
+        $val['recid'] = $k;
       }
 
       $output = array(
@@ -630,40 +687,51 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'url' => SAM_AD_URL,
         'cats' => array(
           'columns' => array(
-            array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
+            /*array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
             array('id' => "title", 'name' => __("Category Title", SAM_DOMAIN), 'field' => "title", 'width' => 500),
-            array('id' => "slug", 'name' => __("Category Slug", SAM_DOMAIN), 'field' => "slug", 'width' => 200)
+            array('id' => "slug", 'name' => __("Category Slug", SAM_DOMAIN), 'field' => "slug", 'width' => 200)*/
+            array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+            array('field' => 'title', 'caption' => __("Category Title", SAM_DOMAIN), 'size' => '50%'),
+            array('field' => 'slug', 'caption' => __("Category Slug", SAM_DOMAIN), 'size' => '40%')
           ),
           'cats' => $cats
         ),
         'authors' => array(
           'columns' => array(
-            array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
+            /*array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
             array('id' => "title", 'name' => __("Display Name", SAM_DOMAIN), 'field' => "title", 'width' => 500),
-            array('id' => "slug", 'name' => __("User Name", SAM_DOMAIN), 'field' => "slug", 'width' => 200)
+            array('id' => "slug", 'name' => __("User Name", SAM_DOMAIN), 'field' => "slug", 'width' => 200)*/
+            array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+            array('field' => 'title', 'caption' => __("Display Name", SAM_DOMAIN), 'size' => '50%'),
+            array('field' => 'slug', 'caption' => __("User Name", SAM_DOMAIN), 'size' => '40%')
           ),
           'authors' => $auth
         ),
         'tags' => array(
           'columns' => array(
-            array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
+            /*array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
             array('id' => "title", 'name' => __("Tag Title", SAM_DOMAIN), 'field' => "title", 'width' => 500),
-            array('id' => "slug", 'name' => __("Tag Slug", SAM_DOMAIN), 'field' => "slug", 'width' => 200)
+            array('id' => "slug", 'name' => __("Tag Slug", SAM_DOMAIN), 'field' => "slug", 'width' => 200)*/
+            array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+            array('field' => 'title', 'caption' => __("Tag Title", SAM_DOMAIN), 'size' => '50%'),
+            array('field' => 'slug', 'caption' => __("Tag Slug", SAM_DOMAIN), 'size' => '40%')
           ),
           'tags' => $tags
         ),
         'customs' => array(
           'columns' => array(
-            array('id' => "title", 'name' => __("Custom Type Title", SAM_DOMAIN), 'field' => "title", 'width' => 550),
-            array('id' => "slug", 'name' => __("Custom Type Slug", SAM_DOMAIN), 'field' => "slug", 'width' => 200)
+            /*array('id' => "title", 'name' => __("Custom Type Title", SAM_DOMAIN), 'field' => "title", 'width' => 550),
+            array('id' => "slug", 'name' => __("Custom Type Slug", SAM_DOMAIN), 'field' => "slug", 'width' => 200)*/
+            array('field' => 'title', 'caption' => __("Custom Type Title", SAM_DOMAIN), 'size' => '50%'),
+            array('field' => 'slug', 'caption' => __("Custom Type Slug", SAM_DOMAIN), 'size' => '50%')
           ),
           'customs' => $customs
         ),
         'posts' => array(
           'columns' => array(
-            array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
-            array('id' => "title", 'name' => __("Publication Title", SAM_DOMAIN), 'field' => "title", 'width' => 500),
-            array('id' => "type", 'name' => __("Publication Type", SAM_DOMAIN), 'field' => "type", 'width' => 200)
+            array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+            array('field' => 'title', 'caption' => __("Publication Title", SAM_DOMAIN), 'size' => '50%'),
+            array('field' => 'type', 'caption' => __("Publication Type", SAM_DOMAIN), 'size' => '40%')
           ),
           'posts' => $posts
         ),
@@ -675,12 +743,25 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
             array('columnName' => 'email', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser e-mail', SAM_DOMAIN))
           ),
           'columns' => array(
-            array('id' => 'id', 'name' => 'ID', 'field' => 'id', 'width' => 50),
+            /*array('id' => 'id', 'name' => 'ID', 'field' => 'id', 'width' => 50),
             array('id' => "title", 'name' => __("Display Name", SAM_DOMAIN), 'field' => "title", 'width' => 250),
             array('id' => "slug", 'name' => __("User Name", SAM_DOMAIN), 'field' => "slug", 'width' => 200),
-            array('id' => 'role', 'name' => __("Role", SAM_DOMAIN), 'field' => 'role', 'width' => 200)
+            array('id' => 'role', 'name' => __("Role", SAM_DOMAIN), 'field' => 'role', 'width' => 200)*/
+            array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+            array('field' => 'title', 'caption' => __("Display Name", SAM_DOMAIN), 'size' => '40%'),
+            array('field' => 'slug', 'caption' => __("User Name", SAM_DOMAIN), 'size' => '25%'),
+            array('field' => 'role', 'caption' => __("Role", SAM_DOMAIN), 'size' => '25%')
           ),
           'users' => $users
+        ),
+        'custom_taxes' => array(
+          'taxes' => $cTax,
+          'columns' => array(
+            //array('field' => 'recid', 'caption' => 'Record ID', 'size' => '30px'),
+            array('field' => 'term_id', 'caption' => __('ID', SAM_DOMAIN), 'size' => '30px'),
+            array('field' => 'name', 'caption' => __('Term Name', SAM_DOMAIN), 'size' => '50%'),
+            array('field' => 'ctax_name', 'caption' => __('Custom Taxonomy Name', SAM_DOMAIN), 'size' => '40%')
+          )
         )
       );
       $charset = get_bloginfo('charset');

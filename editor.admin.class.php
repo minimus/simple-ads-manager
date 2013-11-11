@@ -1092,7 +1092,7 @@ if(!class_exists('SamPlaceEdit')) {
                         <input type='hidden' name='view_id' id='view_id' value='<?php echo $row['view_id']; ?>'/>
                       </p>
                       <div>
-                        <div id="posts-grid" style="width: 100%; height:200px;"></div>
+                        <div id="posts-grid"></div>
                       </div>
                       <p>
                         <?php _e('Use this setting to display an ad only in certain posts/pages. Select posts/pages.', SAM_DOMAIN); ?>
@@ -1136,7 +1136,7 @@ if(!class_exists('SamPlaceEdit')) {
                           <strong><?php echo __('Registered Users', SAM_DOMAIN).':'; ?></strong>
                           <input type="hidden" name="x_view_users" id="x_view_users" value="<?php echo $row['x_view_users'] ?>" />
                           <div>
-                            <div id="users-grid" style="width: 100%; height:200px;"></div>
+                            <div id="users-grid"></div>
                           </div>
                         </div>
                         <p>
@@ -1161,7 +1161,7 @@ if(!class_exists('SamPlaceEdit')) {
                         <input type='hidden' name='x_view_id' id='x_view_id' value="<?php echo $row['x_view_id']; ?>" />
                       </p>
                       <div>
-                        <div id="x-posts-grid" style="width: 100%; height:200px;"></div>
+                        <div id="x-posts-grid"></div>
                       </div>
                     </div>
                     <p>
@@ -1176,7 +1176,7 @@ if(!class_exists('SamPlaceEdit')) {
                       <p><strong><?php echo __('Categories', SAM_DOMAIN).':'; ?></strong></p>
                       <input type='hidden' name='view_cats' id='view_cats' value="<?php echo $row['view_cats']; ?>" />
                       <div>
-                        <div id="cats-grid" style="width: 100%; height:200px;"></div>
+                        <div id="cats-grid"></div>
                       </div>
                     </div>
                     <p>
@@ -1196,11 +1196,25 @@ if(!class_exists('SamPlaceEdit')) {
                       <p><strong><?php echo __('Categories', SAM_DOMAIN).':'; ?></strong></p>
                       <input type='hidden' name='x_view_cats' id='x_view_cats' value="<?php echo $row['x_view_cats']; ?>" />
                       <div>
-                        <div id="x-cats-grid" style="width: 100%; height:200px;"></div>
+                        <div id="x-cats-grid"></div>
                       </div>
                     </div>
                     <p>
                       <?php _e('Use this setting to not display an ad in single posts or categories archives of certain categories.', SAM_DOMAIN); ?>
+                    </p>
+                    <div class='clear-line'></div>
+                    <p>
+                      <input type="checkbox" name="ad_custom_tax_terms" id="ad_custom_tax_terms" value="1"  <?php checked(1, $row['ad_custom_tax_terms']); ?>>
+                      <label for="ad_custom_tax_terms"><strong><?php _e('Show ad only in single posts or archives of certain Custom Taxonomies Terms', SAM_DOMAIN); ?></strong></label>
+                    </p>
+                    <div id="rc-ctt" class="radio-content" style="<?php if((int)$row['ad_custom_tax_terms'] != 1) echo 'display: none;'; ?>">
+                      <input type="hidden" id="view-custom-tax-terms" name="view-custom-tax-terms" value="<?php echo $row['view-custom-tax-terms']; ?>">
+                      <div>
+                        <div id="ctt-grid"></div>
+                      </div>
+                    </div>
+                    <p>
+                      <?php _e('Use this setting to display an ad only in single posts or archives of certain Custom Taxonomies Terms.', SAM_DOMAIN); ?>
                     </p>
                     <div class='clear-line'></div>
                     <p>
@@ -1211,7 +1225,7 @@ if(!class_exists('SamPlaceEdit')) {
                       <p><strong><?php echo __('Authors', SAM_DOMAIN).':'; ?></strong></p>
                       <input type='hidden' name='view_authors' id='view_authors' value="<?php echo $row['view_authors']; ?>" />
                       <div>
-                        <div id="auth-grid" style="width: 100%; height:200px;"></div>
+                        <div id="auth-grid"></div>
                       </div>
                     </div>
                     <p>
@@ -1231,7 +1245,7 @@ if(!class_exists('SamPlaceEdit')) {
                       <p><strong><?php echo __('Authors', SAM_DOMAIN).':'; ?></strong></p>
                       <input type='hidden' name='x_view_authors' id='x_view_authors' value="<?php echo $row['x_view_authors']; ?>" />
                       <div>
-                        <div id="x-auth-grid" style="width: 100%; height:200px;"></div>
+                        <div id="x-auth-grid"></div>
                       </div>
                     </div>
                     <p>
@@ -1246,7 +1260,7 @@ if(!class_exists('SamPlaceEdit')) {
                       <p><strong><?php echo __('Tags', SAM_DOMAIN).':'; ?></strong></p>
                       <input type='hidden' name='view_tags' id='view_tags' value="<?php echo $row['view_tags']; ?>" />
                       <div>
-                        <div id="tags-grid" style="width: 100%; height:200px;"></div>
+                        <div id="tags-grid"></div>
                       </div>
                     </div>
                     <p>
@@ -1266,7 +1280,7 @@ if(!class_exists('SamPlaceEdit')) {
                       <p><strong><?php echo __('Tags', SAM_DOMAIN).':'; ?></strong></p>
                       <input type='hidden' name='x_view_tags' id='x_view_tags' value="<?php echo $row['x_view_tags']; ?>" />
                       <div>
-                        <div id="x-tags-grid" style="width: 100%; height:200px;"></div>
+                        <div id="x-tags-grid"></div>
                       </div>
                     </div>
                     <p>
@@ -1281,7 +1295,7 @@ if(!class_exists('SamPlaceEdit')) {
                       <p><strong><?php echo __('Custom post types', SAM_DOMAIN).':'; ?></strong></p>
                       <input type='hidden' name='view_custom' id='view_custom' value="<?php echo $row['view_custom']; ?>" />
                       <div>
-                        <div id="cust-grid" style="width: 100%; height:200px;"></div>
+                        <div id="cust-grid"></div>
                       </div>
                     </div>
                     <p>
@@ -1301,7 +1315,7 @@ if(!class_exists('SamPlaceEdit')) {
                       <p><strong><?php echo __('Custom post types', SAM_DOMAIN).':'; ?></strong></p>
                       <input type='hidden' name='x_view_custom' id='x_view_custom' value="<?php echo $row['x_view_custom']; ?>" />
                       <div>
-                        <div id="x-cust-grid" style="width: 100%; height:200px;"></div>
+                        <div id="x-cust-grid"></div>
                       </div>
                     </div>
                     <p>

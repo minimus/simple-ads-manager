@@ -5,12 +5,16 @@ Tags: ad, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, ads
 Requires at least: 3.5
 Tested up to: 3.7.1
 Stable tag: 1.8.70-SE
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Advertisement rotation system with a flexible logic of displaying advertisements.
 
 == Description ==
 
 Simple Ads Manager is easy to use plugin providing a flexible logic of displaying advertisements.
+
+[![endorse](https://api.coderwall.com/minimus/endorsecount.png)](https://coderwall.com/minimus)
 
 = Features =
 * Flexible logic of advertisements rotation based on defined weight of each advertisement in group (Ads Place)

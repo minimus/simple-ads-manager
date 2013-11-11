@@ -3,8 +3,6 @@
  * @copyright 2010
  */
 (function ($) {
-
-
   $(document).ready(function () {
     $("#title").tooltip({
       track: true
@@ -73,11 +71,6 @@
         showButtonPanel:true
       });
 
-      /*var availableCats = options.cats;
-      var availableAuthors = options.authors;
-      var availableTags = options.tags;
-      var availableCustoms = options.customs;*/
-
       // Advertiser ComboGrid
       $('#adv_nick').combogrid({
         url: ajaxurl+'?action=get_combo_data',
@@ -93,418 +86,125 @@
         }
       });
 
-      // Posts Grid
-      var
-        postsGrid,
-        pgData = options.posts.posts,
-        pgOptions = {
-          editable:true,
-          enableCellNavigation:true,
-          asyncEditorLoading:false,
-          autoEdit:false
-        },
-        pgColumns = [],
-        pgCheckboxSelector = new Slick.CheckboxSelectColumn({cssClass:"slick-cell-checkboxsel"});
+      function buildGrid(name, grig, vn, vi, field, gc, gr) {
+        //grig = $('#' + name);
+        //vi = $('#' + vn);
+        var iVal = vi.val();
+        grig.w2grid({
+          name: name,
+          show: {selectColumn: true},
+          multiSelect: true,
+          columns: gc,
+          records: gr,
+          onSelect: function(event) {
+            event.onComplete = function() {
+              var out = '', recs = this.getSelection(), data;
+              for(var i = 0; i < recs.length; i++) {
+                var rec = this.get(recs[i]);
+                data = (field == 'id') ? rec.id : rec.slug;
+                out += (i == recs.length - 1) ? data : (data + ',');
+              }
+              vi.val(out);
+            }
+          },
+          onUnselect: function(event) {
+            event.onComplete = function() {
+              var out = '', recs = this.getSelection(), data;
+              for(var i = 0; i < recs.length; i++) {
+                var rec = this.get(recs[i]);
+                data = (field == 'id') ? rec.id : rec.slug;
+                out += (i == recs.length - 1) ? data : (data + ',');
+              }
+              vi.val(out);
+            }
+          }
+        });
 
-      pgColumns.push(pgCheckboxSelector.getColumnDefinition());
-      for (var i = 0; i < options.posts.columns.length; i++) {
-        options.posts.columns[i].editor = Slick.Editors.Text;
-        pgColumns.push(options.posts.columns[i]);
-      }
+        if(null != iVal && '' != iVal) {
+          var arr = iVal.split(',');
 
-      postsGrid = new Slick.Grid("#posts-grid", pgData, pgColumns, pgOptions);
-      postsGrid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow:false}));
-      postsGrid.registerPlugin(pgCheckboxSelector);
-
-      var postsSelectedItems = $('#view_id').val();
-      if (postsSelectedItems != '') {
-        var psi = postsSelectedItems.split(','), pgSI = [];
-        $.each(pgData, function (i, pd) {
-          $.each(psi, function (j, ed) {
-            if (ed == pd.id) pgSI.push(i);
+          $.each(arr, function(i, val) {
+            $.each(gr, function(index, value) {
+              var iData = (field == 'id') ? value.id : value.slug;
+              if(iData == val) {
+                w2ui[name].select(value.recid);
+                return false;
+              }
+              else return true;
+            });
           });
-        });
-        postsGrid.setSelectedRows(pgSI);
+        }
       }
 
-      postsGrid.onSelectedRowsChanged.subscribe(function (e) {
-        var items = [], sr = postsGrid.getSelectedRows();
-        $.each(sr, function (i, row) {
-          items.push(pgData[row].id);
-        });
-        $('#view_id').val(items.join(','));
-      });
+      // Custom Taxonomies Terms Grid
+      var cttGrid = $('#ctt-grid'), cttIn = $('#view-custom-tax-terms');
+      buildGrid('ctt-grid', cttGrid, 'view-custom-tax-terms', cttIn, 'slug', options.custom_taxes.columns, options.custom_taxes.taxes);
+
+      // Posts Grid
+      var postsGrid = $('#posts-grid'), postsIn = $('#view_id');
+      buildGrid('posts-grid', postsGrid, 'view_id', postsIn, 'id', options.posts.columns, options.posts.posts);
 
       // Users Grid
-      var
-        usersGrid,
-        ugData = options.users.users,
-        ugOptions = {
-          editable:true,
-          enableCellNavigation:true,
-          asyncEditorLoading:false,
-          autoEdit:false
-        },
-        ugColumns = [],
-        ugCheckboxSelector = new Slick.CheckboxSelectColumn({cssClass:"slick-cell-checkboxsel"});
-
-      ugColumns.push(ugCheckboxSelector.getColumnDefinition());
-      for(i = 0; i < options.users.columns.length; i++) ugColumns.push(options.users.columns[i]);
-
-      usersGrid = new Slick.Grid('#users-grid', ugData, ugColumns, ugOptions);
-      usersGrid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow:false}));
-      usersGrid.registerPlugin(ugCheckboxSelector);
-
-      var usersSelectedItems = $('#x_view_users').val();
-      if(usersSelectedItems != '') {
-        var usi = usersSelectedItems.split(','), ugSI = [];
-        $.each(ugData, function(i, ud) {
-          $.each(usi, function(j, ed) {
-            if(ed == ud.slug) ugSI.push(i);
-          });
-        });
-        usersGrid.setSelectedRows(ugSI);
-      }
-
-      usersGrid.onSelectedRowsChanged.subscribe(function (e) {
-        var items = [], sr = usersGrid.getSelectedRows();
-        $.each(sr, function(i, row) {
-          items.push(ugData[row].slug);
-        });
-        $('#x_view_users').val(items.join(','));
-        return false;
-      });
+      var usersGrid = $('#users-grid'), usersIn = $('#x_view_users');
+      buildGrid('users-grid', usersGrid, 'x_view_users', usersIn, 'slug', options.users.columns, options.users.users);
 
       // xPosts Grid
-      var
-        xpostsGrid,
-        xpgColumns = [],
-        xpgCheckboxSelector = new Slick.CheckboxSelectColumn({cssClass:"slick-cell-checkboxsel"});
-
-      xpgColumns.push(xpgCheckboxSelector.getColumnDefinition());
-      for (i = 0; i < options.posts.columns.length; i++) xpgColumns.push(options.posts.columns[i]);
-
-      xpostsGrid = new Slick.Grid("#x-posts-grid", pgData, xpgColumns, pgOptions);
-      xpostsGrid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow:false}));
-      xpostsGrid.registerPlugin(xpgCheckboxSelector);
-
-      var xpostsSelectedItems = $('#x_view_id').val();
-      if (xpostsSelectedItems != '') {
-        var xpsi = xpostsSelectedItems.split(','), xpgSI = [];
-        $.each(pgData, function (i, pd) {
-          $.each(xpsi, function (j, ed) {
-            if (ed == pd.id) xpgSI.push(i);
-          });
-        });
-        xpostsGrid.setSelectedRows(xpgSI);
-      }
-
-      xpostsGrid.onSelectedRowsChanged.subscribe(function (e) {
-        var items = [], sr = xpostsGrid.getSelectedRows();
-        $.each(sr, function (i, row) {
-          items.push(pgData[row].id);
-        });
-        $('#x_view_id').val(items.join(','));
-      });
+      var xpostsGrid = $('#x-posts-grid'), xpostsIn = $('#x_view_id');
+      buildGrid('x-posts-grid', xpostsGrid, 'x_view_id', xpostsIn, 'id', options.posts.columns, options.posts.posts);
 
       // Categories Grid
-      var
-        catsGrid,
-        cgData = options.cats.cats,
-        cgOptions = {
-          editable:true,
-          enableCellNavigation:true,
-          asyncEditorLoading:false,
-          autoEdit:false
-        },
-        cgColumns = [],
-        cgCheckboxSelector = new Slick.CheckboxSelectColumn({cssClass:"slick-cell-checkboxsel"});
-
-      cgColumns.push(cgCheckboxSelector.getColumnDefinition());
-      for (i = 0; i < options.cats.columns.length; i++) {
-        options.cats.columns[i].editor = Slick.Editors.Text;
-        cgColumns.push(options.cats.columns[i]);
-      }
-
-      catsGrid = new Slick.Grid("#cats-grid", cgData, cgColumns, cgOptions);
-      catsGrid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow:false}));
-      catsGrid.registerPlugin(cgCheckboxSelector);
-
-      var catsSelectedItems = $('#view_cats').val();
-      if (catsSelectedItems != '') {
-        var csi = catsSelectedItems.split(','), cgSI = [];
-        $.each(cgData, function (i, cd) {
-          $.each(csi, function (j, ed) {
-            if (ed == cd.slug) cgSI.push(i);
-          });
-        });
-        catsGrid.setSelectedRows(cgSI);
-      }
-
-      catsGrid.onSelectedRowsChanged.subscribe(function (e) {
-        var items = [], sr = catsGrid.getSelectedRows();
-        $.each(sr, function (i, row) {
-          items.push(cgData[row].slug);
-        });
-        $('#view_cats').val(items.join(','));
-      });
+      var catsGrid = $('#cats-grid'), catsIn = $('#view_cats');
+      buildGrid('cats-grid', catsGrid, 'view_cats', catsIn, 'slug', options.cats.columns, options.cats.cats);
 
       // xCats Grid
-      var
-        xcatsGrid,
-        xcgColumns = [],
-        xcgCheckboxSelector = new Slick.CheckboxSelectColumn({cssClass:"slick-cell-checkboxsel"});
-
-      xcgColumns.push(xcgCheckboxSelector.getColumnDefinition());
-      for (i = 0; i < options.cats.columns.length; i++) xcgColumns.push(options.cats.columns[i]);
-
-      xcatsGrid = new Slick.Grid("#x-cats-grid", cgData, xcgColumns, cgOptions);
-      xcatsGrid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow:false}));
-      xcatsGrid.registerPlugin(xcgCheckboxSelector);
-
-      var xcatsSelectedItems = $('#x_view_cats').val();
-      if (xcatsSelectedItems != '') {
-        var xcsi = xcatsSelectedItems.split(','), xcgSI = [];
-        $.each(cgData, function (i, cd) {
-          $.each(xcsi, function (j, ed) {
-            if (ed == cd.slug) xcgSI.push(i);
-          });
-        });
-        xcatsGrid.setSelectedRows(xcgSI);
-      }
-
-      xcatsGrid.onSelectedRowsChanged.subscribe(function (e) {
-        var items = [], sr = xcatsGrid.getSelectedRows();
-        $.each(sr, function (i, row) {
-          items.push(cgData[row].slug);
-        });
-        $('#x_view_cats').val(items.join(','));
-      });
+      var xcatsGrid = $('#x-cats-grid'), xcatsIn = $('#x_view_cats');
+      buildGrid('x-cats-grid', xcatsGrid, 'x_view_cats', xcatsIn, 'slug', options.cats.columns, options.cats.cats);
 
       // Auth Grid
-      var
-        authGrid,
-        agData = options.authors.authors,
-        agOptions = {
-          editable:true,
-          enableCellNavigation:true,
-          asyncEditorLoading:false,
-          autoEdit:false
-        },
-        agColumns = [],
-        agCheckboxSelector = new Slick.CheckboxSelectColumn({cssClass:"slick-cell-checkboxsel"});
-
-      agColumns.push(agCheckboxSelector.getColumnDefinition());
-      for (i = 0; i < options.authors.columns.length; i++) {
-        options.authors.columns[i].editor = Slick.Editors.Text;
-        agColumns.push(options.authors.columns[i]);
-      }
-
-      authGrid = new Slick.Grid("#auth-grid", agData, agColumns, agOptions);
-      authGrid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow:false}));
-      authGrid.registerPlugin(agCheckboxSelector);
-
-      var authSelectedItems = $('#view_authors').val();
-      if (authSelectedItems != '') {
-        var asi = authSelectedItems.split(','), agSI = [];
-        $.each(agData, function (i, cd) {
-          $.each(asi, function (j, ed) {
-            if (ed == cd.slug) agSI.push(i);
-          });
-        });
-        authGrid.setSelectedRows(agSI);
-      }
-
-      authGrid.onSelectedRowsChanged.subscribe(function (e) {
-        var items = [], sr = authGrid.getSelectedRows();
-        $.each(sr, function (i, row) {
-          items.push(agData[row].slug);
-        });
-        $('#view_authors').val(items.join(','));
-      });
+      var authGrid = $('#auth-grid'), authIn = $('#view_authors');
+      buildGrid('auth-grid', authGrid, 'view_authors', authIn, 'slug', options.authors.columns, options.authors.authors);
 
       // xauth Grid
-      var
-        xauthGrid,
-        xagColumns = [],
-        xagCheckboxSelector = new Slick.CheckboxSelectColumn({cssClass:"slick-cell-checkboxsel"});
-
-      xagColumns.push(xagCheckboxSelector.getColumnDefinition());
-      for (i = 0; i < options.authors.columns.length; i++) xagColumns.push(options.authors.columns[i]);
-
-      xauthGrid = new Slick.Grid("#x-auth-grid", agData, xagColumns, agOptions);
-      xauthGrid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow:false}));
-      xauthGrid.registerPlugin(xagCheckboxSelector);
-
-      var xauthSelectedItems = $('#x_view_authors').val();
-      if (xauthSelectedItems != '') {
-        var xasi = xauthSelectedItems.split(','), xagSI = [];
-        $.each(agData, function (i, cd) {
-          $.each(xasi, function (j, ed) {
-            if (ed == cd.slug) xagSI.push(i);
-          });
-        });
-        xauthGrid.setSelectedRows(xagSI);
-      }
-
-      xauthGrid.onSelectedRowsChanged.subscribe(function (e) {
-        var items = [], sr = xauthGrid.getSelectedRows();
-        $.each(sr, function (i, row) {
-          items.push(agData[row].slug);
-        });
-        $('#x_view_authors').val(items.join(','));
-      });
+      var xauthGrid = $('#x-auth-grid'), xauthIn = $('#x_view_authors');
+      buildGrid('x-auth-grid', xauthGrid, 'x_view_authors', xauthIn, 'slug', options.authors.columns, options.authors.authors);
 
       // Tags Grid
-      var
-        tagsGrid,
-        tgData = options.tags.tags,
-        tgOptions = {
-          editable:true,
-          enableCellNavigation:true,
-          asyncEditorLoading:false,
-          autoEdit:false
-        },
-        tgColumns = [],
-        tgCheckboxSelector = new Slick.CheckboxSelectColumn({cssClass:"slick-cell-checkboxsel"});
-
-      tgColumns.push(tgCheckboxSelector.getColumnDefinition());
-      for (i = 0; i < options.tags.columns.length; i++) {
-        options.tags.columns[i].editor = Slick.Editors.Text;
-        tgColumns.push(options.tags.columns[i]);
-      }
-
-      tagsGrid = new Slick.Grid("#tags-grid", tgData, tgColumns, tgOptions);
-      tagsGrid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow:false}));
-      tagsGrid.registerPlugin(tgCheckboxSelector);
-
-      var tagsSelectedItems = $('#view_tags').val();
-      if (tagsSelectedItems != '') {
-        var tsi = tagsSelectedItems.split(','), tgSI = [];
-        $.each(tgData, function (i, cd) {
-          $.each(tsi, function (j, ed) {
-            if (ed == cd.slug) tgSI.push(i);
-          });
-        });
-        tagsGrid.setSelectedRows(tgSI);
-      }
-
-      tagsGrid.onSelectedRowsChanged.subscribe(function (e) {
-        var items = [], sr = tagsGrid.getSelectedRows();
-        $.each(sr, function (i, row) {
-          items.push(tgData[row].slug);
-        });
-        $('#view_tags').val(items.join(','));
-      });
+      var tagsGrid = $('#tags-grid'), tagsIn = $('#view_tags');
+      buildGrid('tags-grid', tagsGrid, 'view_tags', tagsIn, 'slug', options.tags.columns, options.tags.tags);
 
       // xTags Grid
-      var
-        xtagsGrid,
-        xtgColumns = [],
-        xtgCheckboxSelector = new Slick.CheckboxSelectColumn({cssClass:"slick-cell-checkboxsel"});
-
-      xtgColumns.push(xtgCheckboxSelector.getColumnDefinition());
-      for (i = 0; i < options.tags.columns.length; i++) xtgColumns.push(options.tags.columns[i]);
-
-      xtagsGrid = new Slick.Grid("#x-tags-grid", tgData, xtgColumns, tgOptions);
-      xtagsGrid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow:false}));
-      xtagsGrid.registerPlugin(xtgCheckboxSelector);
-
-      var xtagsSelectedItems = $('#x_view_tags').val();
-      if (xtagsSelectedItems != '') {
-        var xtsi = xtagsSelectedItems.split(','), xtgSI = [];
-        $.each(tgData, function (i, cd) {
-          $.each(xtsi, function (j, ed) {
-            if (ed == cd.slug) xtgSI.push(i);
-          });
-        });
-        xtagsGrid.setSelectedRows(xtgSI);
-      }
-
-      xtagsGrid.onSelectedRowsChanged.subscribe(function (e) {
-        var items = [], sr = xtagsGrid.getSelectedRows();
-        $.each(sr, function (i, row) {
-          items.push(tgData[row].slug);
-        });
-        $('#x_view_tags').val(items.join(','));
-      });
+      var xtagsGrid = $('#x-tags-grid'), xtagsIn = $('#x_view_tags');
+      buildGrid('x-tags-grid', xtagsGrid, 'x_view_tags', xtagsIn, 'slug', options.tags.columns, options.tags.tags);
 
       // Customs Grid
-      var
-        custGrid,
-        cugData = options.customs.customs,
-        cugOptions = {
-          editable:true,
-          enableCellNavigation:true,
-          asyncEditorLoading:false,
-          autoEdit:false
-        },
-        cugColumns = [],
-        cugCheckboxSelector = new Slick.CheckboxSelectColumn({cssClass:"slick-cell-checkboxsel"});
-
-      cugColumns.push(cugCheckboxSelector.getColumnDefinition());
-      for (i = 0; i < options.customs.columns.length; i++) {
-        options.customs.columns[i].editor = Slick.Editors.Text;
-        cugColumns.push(options.customs.columns[i]);
-      }
-
-      custGrid = new Slick.Grid("#cust-grid", cugData, cugColumns, cugOptions);
-      custGrid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow:false}));
-      custGrid.registerPlugin(cugCheckboxSelector);
-
-      var custSelectedItems = $('#view_custom').val();
-      if (custSelectedItems != '') {
-        var cusi = custSelectedItems.split(','), cugSI = [];
-        $.each(cugData, function (i, cd) {
-          $.each(cusi, function (j, ed) {
-            if (ed == cd.slug) cugSI.push(i);
-          });
-        });
-        custGrid.setSelectedRows(cugSI);
-      }
-
-      custGrid.onSelectedRowsChanged.subscribe(function (e) {
-        var items = [], sr = custGrid.getSelectedRows();
-        $.each(sr, function (i, row) {
-          items.push(cugData[row].slug);
-        });
-        $('#view_custom').val(items.join(','));
-      });
+      var custGrid = $('#cust-grid'), custIn = $('#view_custom');
+      buildGrid('cust-grid', custGrid, 'view_custom', custIn, 'slug', options.customs.columns, options.customs.customs);
 
       // xCustoms Grid
-      var
-        xcustGrid,
-        xcugColumns = [],
-        xcugCheckboxSelector = new Slick.CheckboxSelectColumn({cssClass:"slick-cell-checkboxsel"});
+      var xcustGrid = $('#x-cust-grid'), xcustIn = $('#x_view_custom');
+      buildGrid('x-cust-grid', xcustGrid, 'x_view_custom', xcustIn, 'slug', options.customs.columns, options.customs.customs);
 
-      xcugColumns.push(xcugCheckboxSelector.getColumnDefinition());
-      for (i = 0; i < options.customs.columns.length; i++) xcugColumns.push(options.customs.columns[i]);
-
-      xcustGrid = new Slick.Grid("#x-cust-grid", cugData, xcugColumns, cugOptions);
-      xcustGrid.setSelectionModel(new Slick.RowSelectionModel({selectActiveRow:false}));
-      xcustGrid.registerPlugin(xcugCheckboxSelector);
-
-      var xcustSelectedItems = $('#x_view_custom').val();
-      if (xcustSelectedItems != '') {
-        var xcusi = xcustSelectedItems.split(','), xcugSI = [];
-        $.each(cugData, function (i, cd) {
-          $.each(xcusi, function (j, ed) {
-            if (ed == cd.slug) xcugSI.push(i);
-          });
-        });
-        xcustGrid.setSelectedRows(xcugSI);
-      }
-
-      xcustGrid.onSelectedRowsChanged.subscribe(function (e) {
-        var items = [], sr = xcustGrid.getSelectedRows();
-        $.each(sr, function (i, row) {
-          items.push(cugData[row].slug);
-        });
-        $('#x_view_custom').val(items.join(','));
+      $('#tabs').tabs({
+        activate: function( event, ui ) {
+          var el = ui.newPanel[0].id;
+          if(el == 'tabs-1') {
+            postsGrid.w2render('posts-grid');
+          }
+          if(el == 'tabs-2') {
+            if($('#rc-ctt').is(':visible')) cttGrid.w2render('ctt-grid');
+            if($('#rc-xid').is(':visible')) xpostsGrid.w2render('x-posts-grid');
+            if($('#x-view-users').is(':visible')) usersGrid.w2render('users-grid');
+            if($('#rc-ac').is(':visible')) catsGrid.w2render('cats-grid');
+            if($('#rc-xc').is(':visible')) xcatsGrid.w2render('x-cats-grid');
+            if($('#rc-au').is(':visible')) authGrid.w2render('auth-grid');
+            if($('#rc-xa').is(':visible')) xauthGrid.w2render('x-auth-grid');
+            if($('#rc-at').is(':visible')) tagsGrid.w2render('tags-grid');
+            if($('#rc-xt').is(':visible')) xtagsGrid.w2render('x-tags-grid');
+            if($('#rc-cu').is(':visible')) custGrid.w2render('cust-grid');
+            if($('#rc-xu').is(':visible')) xcustGrid.w2render('x-cust-grid');
+          }
+        }
       });
-
-
-      $('#tabs').tabs();
 
       $("#add-file-button").click(function () {
         var curFile = options.url + $("select#files_list option:selected").val();
@@ -536,8 +236,9 @@
           case '2':
             if ($('#rc-vt0').is(':visible')) $("#rc-vt0").hide('blind', {direction:'vertical'}, 500);
             if ($('#rc-vt2').is(':hidden')) {
-              $("#rc-vt2").show('blind', {direction:'vertical'}, 500);
-              postsGrid.invalidate();
+              $("#rc-vt2").show('blind', {direction:'vertical'}, 500, function() {
+                postsGrid.w2render('posts-grid');
+              });
             }
         }
       });
@@ -548,17 +249,26 @@
           if($('#custom-users').is(':visible')) $('#custom-users').hide('blind', {direction:'vertical'}, 500);
         }
         else {
-          if($('#custom-users').is(':hidden')) $('#custom-users').show('blind', {direction:'vertical'}, 500);
+          if($('#custom-users').is(':hidden'))
+            $('#custom-users').show('blind', {direction:'vertical'}, 500, function() {
+              if($('#x-view-users').is(':visible')) usersGrid.w2render('users-grid');
+            });
         }
       });
 
       $("#ad_users_reg").click(function() {
-        if($('#ad_users_reg').is(':checked')) $('#x-reg-users').show('blind', {direction:'vertical'}, 500);
+        if($('#ad_users_reg').is(':checked'))
+          $('#x-reg-users').show('blind', {direction:'vertical'}, 500, function() {
+            if($('#x-view-users').is(':visible')) usersGrid.w2render('users-grid');
+          });
         else $('#x-reg-users').hide('blind', {direction:'vertical'}, 500);
       });
 
       $('#x_ad_users').click(function() {
-        if($('#x_ad_users').is(':checked')) $('#x-view-users').show('blind', {direction:'vertical'}, 500);
+        if($('#x_ad_users').is(':checked'))
+          $('#x-view-users').show('blind', {direction:'vertical'}, 500, function() {
+            usersGrid.w2render('users-grid');
+          });
         else $('#x-view-users').hide('blind', {direction:'vertical'}, 500);
       });
 
@@ -569,15 +279,18 @@
 
       $('#x_id').click(function () {
         if ($('#x_id').is(':checked')) {
-          $('#rc-xid').show('blind', {direction:'vertical'}, 500);
-          xpostsGrid.invalidate();
+          $('#rc-xid').show('blind', {direction:'vertical'}, 500, function() {
+            xpostsGrid.w2render('x-posts-grid');
+          });
         }
         else $('#rc-xid').hide('blind', {direction:'vertical'}, 500);
       });
 
       $('#ad_cats').click(function () {
         if ($('#ad_cats').is(':checked')) {
-          $('#rc-ac').show('blind', {direction:'vertical'}, 500);
+          $('#rc-ac').show('blind', {direction:'vertical'}, 500, function() {
+            catsGrid.w2render('cats-grid');
+          });
           $('#acw').show('blind', {direction:'vertical'}, 500);
         }
         else {
@@ -587,13 +300,26 @@
       });
 
       $('#x_cats').click(function () {
-        if ($('#x_cats').is(':checked')) $('#rc-xc').show('blind', {direction:'vertical'}, 500);
+        if ($('#x_cats').is(':checked'))
+          $('#rc-xc').show('blind', {direction:'vertical'}, 500, function() {
+            xcatsGrid.w2render('x-cats-grid');
+          });
         else $('#rc-xc').hide('blind', {direction:'vertical'}, 500);
+      });
+
+      $('#ad_custom_tax_terms').click(function() {
+        if($('#ad_custom_tax_terms').is(':checked'))
+          $('#rc-ctt').show('blind', {direction: 'vertical'}, 500, function() {
+            cttGrid.w2render('ctt-grid');
+          });
+        else $('#rc-ctt').hide('blind', {direction:'vertical'}, 500);
       });
 
       $('#ad_authors').click(function () {
         if ($('#ad_authors').is(':checked')) {
-          $('#rc-au').show('blind', {direction:'vertical'}, 500);
+          $('#rc-au').show('blind', {direction:'vertical'}, 500, function() {
+            authGrid.w2render('auth-grid');
+          });
           $('#aaw').show('blind', {direction:'vertical'}, 500);
         }
         else {
@@ -603,13 +329,18 @@
       });
 
       $('#x_authors').click(function () {
-        if ($('#x_authors').is(':checked')) $('#rc-xa').show('blind', {direction:'vertical'}, 500);
+        if ($('#x_authors').is(':checked'))
+          $('#rc-xa').show('blind', {direction:'vertical'}, 500, function() {
+            xauthGrid.w2render('x-auth-grid');
+          });
         else $('#rc-xa').hide('blind', {direction:'vertical'}, 500);
       });
 
       $('#ad_tags').click(function () {
         if ($('#ad_tags').is(':checked')) {
-          $('#rc-at').show('blind', {direction:'vertical'}, 500);
+          $('#rc-at').show('blind', {direction:'vertical'}, 500, function() {
+            tagsGrid.w2render('tags-grid');
+          });
           $('#atw').show('blind', {direction:'vertical'}, 500);
         }
         else {
@@ -619,13 +350,18 @@
       });
 
       $('#x_tags').click(function () {
-        if ($('#x_tags').is(':checked')) $('#rc-xt').show('blind', {direction:'vertical'}, 500);
+        if ($('#x_tags').is(':checked'))
+          $('#rc-xt').show('blind', {direction:'vertical'}, 500, function() {
+            xtagsGrid.w2render('x-tags-grid');
+          });
         else $('#rc-xt').hide('blind', {direction:'vertical'}, 500);
       });
 
       $('#ad_custom').click(function () {
         if ($('#ad_custom').is(':checked')) {
-          $('#rc-cu').show('blind', {direction:'vertical'}, 500);
+          $('#rc-cu').show('blind', {direction:'vertical'}, 500, function() {
+            custGrid.w2render('cust-grid');
+          });
           $('#cuw').show('blind', {direction:'vertical'}, 500);
         }
         else {
@@ -635,7 +371,10 @@
       });
 
       $('#x_custom').click(function () {
-        if ($('#x_custom').is(':checked')) $('#rc-xu').show('blind', {direction:'vertical'}, 500);
+        if ($('#x_custom').is(':checked'))
+          $('#rc-xu').show('blind', {direction:'vertical'}, 500, function() {
+            xcustGrid.w2render('x-cust-grid');
+          });
         else $('#rc-xu').hide('blind', {direction:'vertical'}, 500);
       });
 
