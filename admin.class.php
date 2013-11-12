@@ -987,6 +987,14 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               <div class='postbox opened'>
                 <h3><?php _e('Donations', SAM_DOMAIN) ?></h3>
                 <div class="inside">
+                  <div style="text-align: center; margin-top: 10px;">
+                    <script type="text/javascript">
+                      /* <![CDATA[ */
+                      function affiliateLink(str){ str = unescape(str); var r = ''; for(var i = 0; i < str.length; i++) r += String.fromCharCode(8^str.charCodeAt(i)); document.write(r); }
+                      affiliateLink('4i%28%60zmn5*%60%7C%7Cx2%27%27%7F%7F%7F%26%7Cmp%7C%25dafc%25il%7B%26kge%277zmn5%3B%3A9%3E%3F0*64aeo%28%7Bzk5*%60%7C%7Cx2%27%27%7F%7F%7F%26%7Cmp%7C%25dafc%25il%7B%26kge%27aeiom%7B%27jiffmz%7B%27%7Bfgzm%25908p%3E8%26oan*%28jgzlmz5*8*%28id%7C5*%5Cmp%7C%28Dafc%28Il%7B*%2764%27i6');
+                      /* ]]> */
+                    </script>
+                  </div>
                   <p>
                     <?php 
                       $format = __('If you have found this plugin useful, please consider making a %s to help support future development. Your support will be much appreciated. Thank you!', SAM_DOMAIN);
@@ -994,20 +1002,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
                       printf($format, $str); 
                     ?>
                   </p>
-                  <p style="color: #777777"><strong><?php _e('Donate via', SAM_DOMAIN); ?> Payoneer:</strong></p>
-                  <div style="text-align: center; margin: 10px;">
-                    <a title="Donate Now!" href="https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.com" target="_blank">
-                      <img  title="<?php _e('Donate Now!', SAM_DOMAIN); ?>" src="<?php echo SAM_IMG_URL.'donate-now.png' ?>" alt="" width="100" height="34" style='margin-right: 5px;' />
-                    </a>
-                  </div>
-                  <p style='margin: 3px; font-size: 0.7em'>
-                    <?php 
-                      $format = __("Warning! The default value of donation is %s. Don't worry! This is not my appetite, this is default value defined by Payoneer service.", SAM_DOMAIN).'<strong>'.__(' You can change it to any value you want!', SAM_DOMAIN).'</strong>';
-                      $str = '<strong>$200</strong>';
-                      printf($format, $str);
-                    ?>
-                  </p>
-                  <p style="color: #777777"><strong><?php _e('Donate via', SAM_DOMAIN); ?> PayPal:</strong></p>
                   <div style="text-align: center; margin: 10px;">
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
                       <input type="hidden" name="cmd" value="_s-xclick">
