@@ -180,6 +180,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 			
       add_settings_field('adCycle', __("Views per Cycle", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_general_section', array('description' => __('Number of hits of one ad for a full cycle of rotation (maximal activity).', SAM_DOMAIN)));
       add_settings_field('access', __('Minimum Level for access to menu', SAM_DOMAIN), array(&$this, 'drawJSliderOption'), 'sam-settings', 'sam_general_section', array('description' => __('Who can use menu of plugin - Minimum User Level needed for access to menu of plugin. In any case only Super Admin and Administrator can use Settings Menu of SAM Plugin.', SAM_DOMAIN), 'options' => array('manage_network' => __('Super Admin', SAM_DOMAIN), 'manage_options' => __('Administrator', SAM_DOMAIN), 'edit_others_posts' => __('Editor', SAM_DOMAIN), 'publish_posts' => __('Author', SAM_DOMAIN), 'edit_posts' => __('Contributor', SAM_DOMAIN)), 'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')));
+      add_settings_field('adShow', __("Ad Output Mode", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Standard (PHP) mode is more faster but is not compatible with caching plugins. If your blog use caching plugin (i.e WP Super Cache or Hyper Cache) select "Caching Compatible (Javascript)" mode.', SAM_DOMAIN), 'options' => array('php' => __('Standard (PHP)', SAM_DOMAIN), 'js' => __('Caching Compatible (Javascript)', SAM_DOMAIN))));
       add_settings_field('adDisplay', __("Display Ad Source in", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Target wintow (tab) for advetisement source.', SAM_DOMAIN), 'options' => array('blank' => __('New Window (Tab)', SAM_DOMAIN), 'self' => __('Current Window (Tab)', SAM_DOMAIN))));
       
       add_settings_field('bpAdsId', __("Ads Place before content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
@@ -278,8 +279,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     public function adminEditStyles() {
       wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
       wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui.css', false, '1.10.3');
-      //wp_enqueue_style('ColorPickerCSS', SAM_URL.'css/colorpicker.css');
-      //wp_enqueue_style('slick', SAM_URL.'css/slick.grid.css', false, '2.0');
       wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.2');
       wp_enqueue_style('wp-pointer');
       wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
@@ -291,6 +290,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       //wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-1.8.9.custom.css', false, '1.8.9');
       wp_enqueue_style('jSlider', SAM_URL.'css/jslider.css', false, '1.1.0');
       wp_enqueue_style('jSlider-plastic', SAM_URL.'css/jslider.round.plastic.css', false, '1.1.0');
+      wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
     }
     
     public function adminListStyles() {
@@ -327,21 +327,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       wp_enqueue_script('jquery-ui-tooltip');
       if(file_exists(SAM_PATH.'/js/i18n/jquery.ui.datepicker-'.$lc.'.js'))
         wp_enqueue_script('jquery-ui-locale', SAM_URL.'js/i18n/jquery.ui.datepicker-'.$lc.'.js', array('jquery'), '1.8.9');
-      //wp_enqueue_script('ColorPicker', SAM_URL.'js/colorpicker.js', array('jquery'));
       wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
-
-      //('jquery-event-drag', SAM_URL.'js/slick/jquery.event.drag-2.0.min.js', array('jquery'), '2.0');
-      //wp_enqueue_script('slick-core', SAM_URL.'js/slick/slick.core.js', array('jquery', 'jquery-ui-core'), '2.0');
-      //wp_enqueue_script('slick-checkboxes', SAM_URL.'js/slick/slick.checkboxselectcolumn.js', array('jquery', 'jquery-ui-core'), '2.0');
-      //wp_enqueue_script('slick-tooltips', SAM_URL.'js/slick/slick.autotooltips.js', array('jquery', 'jquery-ui-core'), '2.0');
-      //wp_enqueue_script('slick-cell-rd', SAM_URL.'js/slick/slick.cellrangedecorator.js', array('jquery', 'jquery-ui-core'), '2.0');
-      //wp_enqueue_script('slick-cell-rs', SAM_URL.'js/slick/slick.cellrangeselector.js', array('jquery', 'jquery-ui-core'), '2.0');
-      //wp_enqueue_script('slick-cell-cm', SAM_URL.'js/slick/slick.cellcopymanager.js', array('jquery', 'jquery-ui-core'), '2.0');
-      //wp_enqueue_script('slick-cell-sm', SAM_URL.'js/slick/slick.cellselectionmodel.js', array('jquery', 'jquery-ui-core'), '2.0');
-      //wp_enqueue_script('slick-row-sm', SAM_URL.'js/slick/slick.rowselectionmodel.js', array('jquery', 'jquery-ui-core'), '2.0');
-      //wp_enqueue_script('slick-formatters', SAM_URL.'js/slick/slick.formatters.js', array('jquery', 'jquery-ui-core'), '2.0');
-      //wp_enqueue_script('slick-editors', SAM_URL.'js/slick/slick.editors.js', array('jquery', 'jquery-ui-core'), '2.0');
-      //wp_enqueue_script('slick-grid', SAM_URL.'js/slick/slick.grid.js', array('jquery', 'jquery-ui-core'), '2.0');
 
       //wp_enqueue_script('cg-props', SAM_URL.'js/jquery.i18n.properties-1.0.9.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), '1.0.9');
       wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.3.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.2');
@@ -349,9 +335,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       wp_enqueue_script('wp-pointer');
       wp_localize_script('wp-pointer', 'samPointer', array(
         'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
-        'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
-        'zones' => array('enabled' => $pointers['zones'], 'title' => __('Name of Ads Zone', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
-        'blocks' => array('enabled' => $pointers['blocks'], 'title' => __('Name of Ads Block', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use plugin\'s widgets.', SAM_DOMAIN))
+        'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN))
       ));
       wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
     }
@@ -370,8 +354,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       wp_enqueue_script('wp-pointer');
       wp_localize_script('wp-pointer', 'samPointer', array(
-        'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
-        'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
         'zones' => array('enabled' => $pointers['zones'], 'title' => __('Name of Ads Zone', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
         'blocks' => array('enabled' => $pointers['blocks'], 'title' => __('Name of Ads Block', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use plugin\'s widgets.', SAM_DOMAIN))
       ));
@@ -687,9 +669,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'url' => SAM_AD_URL,
         'cats' => array(
           'columns' => array(
-            /*array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
-            array('id' => "title", 'name' => __("Category Title", SAM_DOMAIN), 'field' => "title", 'width' => 500),
-            array('id' => "slug", 'name' => __("Category Slug", SAM_DOMAIN), 'field' => "slug", 'width' => 200)*/
             array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
             array('field' => 'title', 'caption' => __("Category Title", SAM_DOMAIN), 'size' => '50%'),
             array('field' => 'slug', 'caption' => __("Category Slug", SAM_DOMAIN), 'size' => '40%')
@@ -698,9 +677,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         ),
         'authors' => array(
           'columns' => array(
-            /*array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
-            array('id' => "title", 'name' => __("Display Name", SAM_DOMAIN), 'field' => "title", 'width' => 500),
-            array('id' => "slug", 'name' => __("User Name", SAM_DOMAIN), 'field' => "slug", 'width' => 200)*/
             array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
             array('field' => 'title', 'caption' => __("Display Name", SAM_DOMAIN), 'size' => '50%'),
             array('field' => 'slug', 'caption' => __("User Name", SAM_DOMAIN), 'size' => '40%')
@@ -709,9 +685,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         ),
         'tags' => array(
           'columns' => array(
-            /*array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
-            array('id' => "title", 'name' => __("Tag Title", SAM_DOMAIN), 'field' => "title", 'width' => 500),
-            array('id' => "slug", 'name' => __("Tag Slug", SAM_DOMAIN), 'field' => "slug", 'width' => 200)*/
             array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
             array('field' => 'title', 'caption' => __("Tag Title", SAM_DOMAIN), 'size' => '50%'),
             array('field' => 'slug', 'caption' => __("Tag Slug", SAM_DOMAIN), 'size' => '40%')
@@ -720,8 +693,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         ),
         'customs' => array(
           'columns' => array(
-            /*array('id' => "title", 'name' => __("Custom Type Title", SAM_DOMAIN), 'field' => "title", 'width' => 550),
-            array('id' => "slug", 'name' => __("Custom Type Slug", SAM_DOMAIN), 'field' => "slug", 'width' => 200)*/
             array('field' => 'title', 'caption' => __("Custom Type Title", SAM_DOMAIN), 'size' => '50%'),
             array('field' => 'slug', 'caption' => __("Custom Type Slug", SAM_DOMAIN), 'size' => '50%')
           ),
@@ -743,10 +714,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
             array('columnName' => 'email', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser e-mail', SAM_DOMAIN))
           ),
           'columns' => array(
-            /*array('id' => 'id', 'name' => 'ID', 'field' => 'id', 'width' => 50),
-            array('id' => "title", 'name' => __("Display Name", SAM_DOMAIN), 'field' => "title", 'width' => 250),
-            array('id' => "slug", 'name' => __("User Name", SAM_DOMAIN), 'field' => "slug", 'width' => 200),
-            array('id' => 'role', 'name' => __("Role", SAM_DOMAIN), 'field' => 'role', 'width' => 200)*/
             array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
             array('field' => 'title', 'caption' => __("Display Name", SAM_DOMAIN), 'size' => '40%'),
             array('field' => 'slug', 'caption' => __("User Name", SAM_DOMAIN), 'size' => '25%'),
@@ -757,7 +724,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'custom_taxes' => array(
           'taxes' => $cTax,
           'columns' => array(
-            //array('field' => 'recid', 'caption' => 'Record ID', 'size' => '30px'),
             array('field' => 'term_id', 'caption' => __('ID', SAM_DOMAIN), 'size' => '30px'),
             array('field' => 'name', 'caption' => __('Term Name', SAM_DOMAIN), 'size' => '50%'),
             array('field' => 'ctax_name', 'caption' => __('Custom Taxonomy Name', SAM_DOMAIN), 'size' => '40%')
@@ -1076,9 +1042,13 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
                 <?php settings_fields('samOptions'); ?>
                 <?php $this->doSettingsSections('sam-settings'); ?>
                 <p class="submit">
-                  <input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
+                  <!--<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />-->
+                  <button id="submit-button" class="color-btn color-btn-left" name="Submit" type="submit">
+                    <b style="background-color: #21759b"></b>
+                    <?php esc_attr_e('Save Changes'); ?>
+                  </button>
                 </p>
-                <p style='color: #777777; font-size: 12px; font-style: italic;'>Simple Ads Manager plugin for Wordpress. Copyright &copy; 2010 - 2011, <a href='http://www.simplelib.com/'>minimus</a>. All rights reserved.</p>
+                <p style='color: #777777; font-size: 12px; font-style: italic;'><?php _ex('Simple Ads Manager plugin for Wordpress.', 'Copyright String', SAM_DOMAIN); ?> Copyright &copy; 2010 - 2014, <a href='http://www.simplelib.com/'>minimus</a>. <?php _ex('All rights reserved.', 'Copyright String', SAM_DOMAIN); ?></p>
               </div>
             </div>
           </div>

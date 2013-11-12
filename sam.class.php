@@ -9,6 +9,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
     
     private $defaultSettings = array(
       'adCycle' => 1000,
+      'adShow' => 'php', // php|js
       'adDisplay' => 'blank',
       'placesPerPage' => 10,
       'itemsPerPage' => 10,

@@ -132,8 +132,9 @@ if(!class_exists('SamAdPlace')) {
     private $crawler = false;
     public $ad = '';
     private $clauses;
+    private $force;
     
-    public function __construct($args = null, $useCodes = false, $crawler = false, $clauses = null) {
+    public function __construct($args = null, $useCodes = false, $crawler = false, $clauses = null, $ajax = false) {
       global $SAM_Query;
 
       $this->args = $args;
@@ -141,6 +142,8 @@ if(!class_exists('SamAdPlace')) {
       $this->crawler = $crawler;
       if(is_null( $clauses )) $this->clauses = $SAM_Query['clauses'];
       else $this->clauses = $clauses;
+      $this->force = $ajax;
+
       $this->ad = $this->buildAd($this->args, $this->useCodes);
     }
     
