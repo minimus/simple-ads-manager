@@ -68,6 +68,8 @@
       sPointer = samPointer.ads;
       sPointer.pointer = 'ads';
 
+      var samUploader, mediaTexts = samPointer.media;
+
       $("#ad_start_date, #ad_end_date").datepicker({
         dateFormat:'yy-mm-dd',
         showButtonPanel:true
@@ -86,6 +88,38 @@
           $('#adv_mail').val(ui.item.email);
           return false;
         }
+      });
+
+      $('#banner-media').click(function(e) {
+        e.preventDefault();
+
+        if(samUploader) {
+          samUploader.open();
+          return;
+        }
+
+        samUploader = wp.media.frames.samBanner = wp.media({
+          title: mediaTexts.title,
+          button: {text: mediaTexts.button},
+          library: {type: 'image'},
+          multiple: false
+        });
+
+        samUploader.on('select', function() {
+          var
+            adImg = $('#ad_img'),
+            adName = $('#title'),
+            adDesc = $('#item_description'),
+            adAlt = $('#ad_alt');
+
+          attachment = samUploader.state().get('selection').first().toJSON();
+          adImg.val(attachment.url); // alt, caption, title, description
+          if('' == adName.val() && '' != attachment.caption) adName.val(attachment.caption);
+          if('' == adDesc.val() && '' != attachment.description) adDesc.val(attachment.description);
+          if('' == adAlt.val() && '' != attachment.alt) adAlt.val(attachment.alt);
+        });
+
+        samUploader.open();
       });
 
       function buildGrid(name, grig, vn, vi, field, gc, gr) {

@@ -18,42 +18,25 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       global $wp_version;
       
 			if ( function_exists( 'load_plugin_textdomain' ) )
-				load_plugin_textdomain( SAM_DOMAIN, false, basename( SAM_PATH ) . '/lang/' );
+				load_plugin_textdomain( SAM_DOMAIN, false, basename( SAM_PATH ) . '/langs/' );
       
       if(!is_dir(SAM_AD_IMG)) mkdir(SAM_AD_IMG);
 				
       register_activation_hook(SAM_MAIN_FILE, array(&$this, 'onActivate'));
       register_deactivation_hook(SAM_MAIN_FILE, array(&$this, 'onDeactivate'));
+      register_uninstall_hook(SAM_MAIN_FILE, array(&$this, 'onUninstall'));
 
       $options = parent::getSettings(false);
       if(!empty($options['access'])) $access = $options['access'];
       else $access = 'manage_options';
-      /*switch($options) {
-        case 'SuperAdmin':
-          $access = 'manage_network';
-          break;
-        case 'Administrator':
-          $access = 'Plugin menu access by user role';
-          break;
-        case 'Editor':
-          $access = 'edit_others_posts';
-          break;
-        case 'Author':
-          $access = 'publish_posts';
-          break;
-        case 'Contributor':
-          $access = 'edit_posts';
-          break;
-        default:
-          $access = 'manage_options';
-          break;
-      }*/
+
       define('SAM_ACCESS', $access);
       
       add_action('wp_ajax_upload_ad_image', array(&$this, 'uploadHandler'));
       add_action('wp_ajax_get_strings', array(&$this, 'getStringsHandler'));
       add_action('wp_ajax_get_combo_data', array(&$this, 'getComboDataHandler'));
       add_action('wp_ajax_close_pointer', array(&$this, 'closePointerHandler'));
+      add_action('wp_ajax_get_error', array(&$this, 'getErrorDataHandler'));
 			add_action('admin_init', array(&$this, 'initSettings'));
 			add_action('admin_menu', array(&$this, 'regAdminPage'));
       add_filter('tiny_mce_version', array(&$this, 'tinyMCEVersion'));
@@ -105,6 +88,26 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       if($settings['deleteFolder'] == 1) {
         if(is_dir(SAM_AD_IMG)) rmdir(SAM_AD_IMG);
       }
+    }
+
+    public function onUninstall() {
+      global $wpdb;
+      $zTable = $wpdb->prefix . "sam_zones";
+      $pTable = $wpdb->prefix . "sam_places";
+      $aTable = $wpdb->prefix . "sam_ads";
+      $bTable = $wpdb->prefix . "sam_blocks";
+
+      delete_option( SAM_OPTIONS_NAME );
+      delete_option('sam_version');
+      delete_option('sam_db_version');
+
+      $sql = 'DROP TABLE IF EXISTS ';
+      $wpdb->query($sql.$zTable);
+      $wpdb->query($sql.$pTable);
+      $wpdb->query($sql.$aTable);
+      $wpdb->query($sql.$bTable);
+
+      if(is_dir(SAM_AD_IMG)) rmdir(SAM_AD_IMG);
     }
 
     public function  getPointerOptions($force = false) {
@@ -220,26 +223,16 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       $menuPage = add_object_page(__('Ads', SAM_DOMAIN), __('Ads', SAM_DOMAIN), SAM_ACCESS, 'sam-list', array(&$this, 'samTablePage'), WP_PLUGIN_URL.'/simple-ads-manager/images/sam-icon.png');
 			$this->listPage = add_submenu_page('sam-list', __('Ads List', SAM_DOMAIN), __('Ads Places', SAM_DOMAIN), SAM_ACCESS, 'sam-list', array(&$this, 'samTablePage'));
-			add_action('admin_print_styles-'.$this->listPage, array(&$this, 'adminListStyles'));
-      $this->editPage = add_submenu_page('sam-list', __('Ad Editor', SAM_DOMAIN), __('New Place', SAM_DOMAIN), SAM_ACCESS, 'sam-edit', array(&$this, 'samEditPage'));
-      add_action('admin_print_styles-'.$this->editPage, array(&$this, 'adminEditStyles'));
-      add_action('admin_print_scripts-'.$this->editPage, array(&$this, 'adminEditScripts'));
+			$this->editPage = add_submenu_page('sam-list', __('Ad Editor', SAM_DOMAIN), __('New Place', SAM_DOMAIN), SAM_ACCESS, 'sam-edit', array(&$this, 'samEditPage'));
       $this->listZone = add_submenu_page('sam-list', __('Ads Zones List', SAM_DOMAIN), __('Ads Zones', SAM_DOMAIN), SAM_ACCESS, 'sam-zone-list', array(&$this, 'samZoneListPage'));
-      add_action('admin_print_styles-'.$this->listZone, array(&$this, 'adminListStyles'));
       $this->editZone = add_submenu_page('sam-list', __('Ads Zone Editor', SAM_DOMAIN), __('New Zone', SAM_DOMAIN), SAM_ACCESS, 'sam-zone-edit', array(&$this, 'samZoneEditPage'));
-      add_action('admin_print_styles-'.$this->editZone, array(&$this, 'adminEditStyles'));
-      add_action('admin_print_scripts-'.$this->editZone, array(&$this, 'adminEditZBScripts'));
       $this->listBlock = add_submenu_page('sam-list', __('Ads Blocks List', SAM_DOMAIN), __('Ads Blocks', SAM_DOMAIN), SAM_ACCESS, 'sam-block-list', array(&$this, 'samBlockListPage'));
-      add_action('admin_print_styles-'.$this->listBlock, array(&$this, 'adminListStyles'));
       $this->editBlock = add_submenu_page('sam-list', __('Ads Block Editor', SAM_DOMAIN), __('New Block', SAM_DOMAIN), SAM_ACCESS, 'sam-block-edit', array(&$this, 'samBlockEditPage'));
-      add_action('admin_print_styles-'.$this->editBlock, array(&$this, 'adminEditStyles'));
-      add_action('admin_print_scripts-'.$this->editBlock, array(&$this, 'adminEditZBScripts'));
-			$this->settingsPage = add_submenu_page('sam-list', __('Simple Ads Manager Settings', SAM_DOMAIN), __('Settings', SAM_DOMAIN), 'manage_options', 'sam-settings', array(&$this, 'samAdminPage'));
-      add_action('admin_print_styles-'.$this->settingsPage, array(&$this, 'adminSettingsStyles'));
-      add_action('admin_print_scripts-'.$this->settingsPage, array(&$this, 'adminSettingsScripts'));
+      $this->settingsPage = add_submenu_page('sam-list', __('Simple Ads Manager Settings', SAM_DOMAIN), __('Settings', SAM_DOMAIN), 'manage_options', 'sam-settings', array(&$this, 'samAdminPage'));
       $this->eLogPage = add_submenu_page('sam-list', __('Simple Ads Manager Error Log', SAM_DOMAIN), __('Error Log', SAM_DOMAIN), SAM_ACCESS, 'sam-errors', array(&$this, 'samErrorLog'));
-      add_action('admin_print_styles-'.$this->eLogPage, array(&$this, 'adminListStyles'));
-      add_action('admin_print_scripts-'.$this->eLogPage, array(&$this, 'errorsListScripts'));
+
+      add_action('admin_enqueue_scripts', array(&$this, 'loadScripts'));
+
       if(version_compare($wp_version, '3.3', '>=')) {
         add_action('load-'.$this->listPage, array(&$this, 'samHelp'));
         add_action('load-'.$this->editPage, array(&$this, 'samHelp'));
@@ -275,139 +268,174 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       return $help->help($contextualHelp, $screenId, $screen);
     }
-    
-    public function adminEditStyles() {
-      wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
-      wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui.css', false, '1.10.3');
-      wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.2');
-      wp_enqueue_style('wp-pointer');
-      wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
-      wp_enqueue_style('W2UI', SAM_URL . 'css/w2ui.min.css', false, '1.3');
-    }
-    
-    public function adminSettingsStyles() {
-      wp_enqueue_style('adminSettingsLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
-      //wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-1.8.9.custom.css', false, '1.8.9');
-      wp_enqueue_style('jSlider', SAM_URL.'css/jslider.css', false, '1.1.0');
-      wp_enqueue_style('jSlider-plastic', SAM_URL.'css/jslider.round.plastic.css', false, '1.1.0');
-      wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
-    }
-    
-    public function adminListStyles() {
-      wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-admin-list.css', false, SAM_VERSION);
-      wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui.css', false, '1.10.3');
-    }
-    
-    public function adminEditScripts() {
-      $options = parent::getSettings();
-      $pointers = self::getPointerOptions();
-      $loc = get_locale();
-      if(in_array($loc, array('en_GB', 'fr_CH', 'pt_BR', 'sr_SR', 'zh_CN', 'zh_HK', 'zh_TW')))
-        $lc = str_replace('_', '-', $loc);
-      else $lc = substr($loc, 0, 2);
 
-      if($this->cmsVer === 'low') {
-        wp_register_script('jquery-effects-core', SAM_URL.'js/jquery.effects.core.min.js', array('jquery'), '1.8.16');
-        wp_register_script('jquery-effects-blind', SAM_URL.'js/jquery.effects.blind.min.js', array('jquery', 'jquery-effects-core'), '1.8.16');
+    public function loadScripts($hook) {
+      if($hook == $this->settingsPage) {
+        wp_enqueue_style('adminSettingsLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
+        wp_enqueue_style('jSlider', SAM_URL.'css/jslider.css', false, '1.1.0');
+        wp_enqueue_style('jSlider-plastic', SAM_URL.'css/jslider.round.plastic.css', false, '1.1.0');
+        wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
+
+        wp_enqueue_script('jquery');
+        wp_enqueue_script('hash-table', SAM_URL.'js/slider/jshashtable-2.1_src.js', array('jquery'), '2.1');
+        wp_enqueue_script('number-formatter', SAM_URL.'js/slider/jquery.numberformatter-1.2.3.js', array('jquery'), '1.2.3');
+        wp_enqueue_script('templates', SAM_URL.'js/slider/tmpl.js', array('jquery'));
+        wp_enqueue_script('depend-class', SAM_URL.'js/slider/jquery.dependClass-0.1.js', array('jquery'), '0.1');
+        wp_enqueue_script('draggable', SAM_URL.'js/slider/draggable-0.1.js', array('jquery'), '0.1');
+        wp_enqueue_script('jSlider', SAM_URL.'js/slider/jquery.slider.js', array('jquery', 'draggable'), '1.1.0');
+
+        wp_enqueue_script('sam-settings', SAM_URL.'js/sam-settings.js', array('jquery', 'draggable'), SAM_VERSION);
+        wp_localize_script('sam-settings', 'options', array(
+          'roles' => array(
+            __('Super Admin', SAM_DOMAIN),
+            __('Administrator', SAM_DOMAIN),
+            __('Editor', SAM_DOMAIN),
+            __('Author', SAM_DOMAIN),
+            __('Contributor', SAM_DOMAIN)
+          ),
+          'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')
+        ));
       }
+      elseif($hook == $this->listPage || $hook == $this->listZone || $hook == $this->listBlock) {
+        wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-admin-list.css', false, SAM_VERSION);
+        wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui.css', false, '1.10.3');
+      }
+      elseif($hook == $this->editPage) {
+        $mode = (isset($_GET['mode'])) ? $_GET['mode'] : 'place';
+        $pointers = self::getPointerOptions();
+        if($mode == 'place') {
+          wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
+          wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-sam.css', false, '1.10.3');
+          wp_enqueue_style('wp-pointer');
+          wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
 
-      if($options['useSWF']) wp_enqueue_script('swfobject');
-      wp_enqueue_script('jquery');
-      wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.3');
-      wp_enqueue_script('jquery-ui-core');
-      wp_enqueue_script('jquery-effects-core');
-      //wp_enqueue_script('jquery-ui-mouse');
-      wp_enqueue_script('jquery-ui-widget');
-      wp_enqueue_script('jquery-ui-sortable');
-      wp_enqueue_script('jquery-ui-position');
-      //wp_enqueue_script('jquery-ui-autocomplete');
-      wp_enqueue_script('jquery-ui-tabs');
-      wp_enqueue_script('jquery-effects-blind');
-      wp_enqueue_script('jquery-ui-datepicker');
-      wp_enqueue_script('jquery-ui-tooltip');
-      if(file_exists(SAM_PATH.'/js/i18n/jquery.ui.datepicker-'.$lc.'.js'))
-        wp_enqueue_script('jquery-ui-locale', SAM_URL.'js/i18n/jquery.ui.datepicker-'.$lc.'.js', array('jquery'), '1.8.9');
-      wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
+          if($this->cmsVer === 'low') {
+            wp_register_script('jquery-effects-core', SAM_URL.'js/jquery.effects.core.min.js', array('jquery'), '1.8.16');
+            wp_register_script('jquery-effects-blind', SAM_URL.'js/jquery.effects.blind.min.js', array('jquery', 'jquery-effects-core'), '1.8.16');
+          }
 
-      //wp_enqueue_script('cg-props', SAM_URL.'js/jquery.i18n.properties-1.0.9.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), '1.0.9');
-      wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.3.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.2');
+          wp_enqueue_script('jquery');
+          wp_enqueue_media();
+          wp_enqueue_script('jquery-ui-core');
+          wp_enqueue_script('jquery-effects-core');
+          wp_enqueue_script('jquery-ui-widget');
+          wp_enqueue_script('jquery-ui-sortable');
+          wp_enqueue_script('jquery-ui-position');
+          wp_enqueue_script('jquery-ui-tabs');
+          wp_enqueue_script('jquery-effects-blind');
+          wp_enqueue_script('jquery-ui-tooltip');
+          wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
 
-      wp_enqueue_script('wp-pointer');
-      wp_localize_script('wp-pointer', 'samPointer', array(
-        'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
-        'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN))
-      ));
-      wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
-    }
+          wp_enqueue_script('wp-pointer');
+          wp_localize_script('wp-pointer', 'samPointer', array(
+            'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
+            'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
+            'media' => array('title' => __('Select Banner Image', SAM_DOMAIN), 'button' => __('Select', SAM_DOMAIN))
+          ));
+          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-place.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+        }
+        if($mode == 'item') {
+          wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
+          wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-sam.css', false, '1.10.3');
+          wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.2');
+          wp_enqueue_style('wp-pointer');
+          wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
+          wp_enqueue_style('W2UI', SAM_URL . 'css/w2ui.min.css', false, '1.3');
 
-    public function adminEditZBScripts() {
-      $pointers = self::getPointerOptions();
+          $options = parent::getSettings();
+          $loc = get_locale();
+          if(in_array($loc, array('en_GB', 'fr_CH', 'pt_BR', 'sr_SR', 'zh_CN', 'zh_HK', 'zh_TW')))
+            $lc = str_replace('_', '-', $loc);
+          else $lc = substr($loc, 0, 2);
 
-      wp_enqueue_script('jquery');
-      wp_enqueue_script('jquery-ui-core');
-      wp_enqueue_script('jquery-effects-core');
-      wp_enqueue_script('jquery-ui-widget');
-      wp_enqueue_script('jquery-ui-sortable');
-      wp_enqueue_script('jquery-ui-position');
-      wp_enqueue_script('jquery-effects-blind');
-      wp_enqueue_script('jquery-ui-tooltip');
+          if($this->cmsVer === 'low') {
+            wp_register_script('jquery-effects-core', SAM_URL.'js/jquery.effects.core.min.js', array('jquery'), '1.8.16');
+            wp_register_script('jquery-effects-blind', SAM_URL.'js/jquery.effects.blind.min.js', array('jquery', 'jquery-effects-core'), '1.8.16');
+          }
 
-      wp_enqueue_script('wp-pointer');
-      wp_localize_script('wp-pointer', 'samPointer', array(
-        'zones' => array('enabled' => $pointers['zones'], 'title' => __('Name of Ads Zone', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
-        'blocks' => array('enabled' => $pointers['blocks'], 'title' => __('Name of Ads Block', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use plugin\'s widgets.', SAM_DOMAIN))
-      ));
-      wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-zb.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
-    }
+          if($options['useSWF']) wp_enqueue_script('swfobject');
+          wp_enqueue_script('jquery');
+          wp_enqueue_media();
+          wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.3');
+          wp_enqueue_script('jquery-ui-core');
+          wp_enqueue_script('jquery-effects-core');
+          //wp_enqueue_script('jquery-ui-mouse');
+          wp_enqueue_script('jquery-ui-widget');
+          wp_enqueue_script('jquery-ui-sortable');
+          wp_enqueue_script('jquery-ui-position');
+          //wp_enqueue_script('jquery-ui-autocomplete');
+          wp_enqueue_script('jquery-ui-tabs');
+          wp_enqueue_script('jquery-effects-blind');
+          wp_enqueue_script('jquery-ui-datepicker');
+          wp_enqueue_script('jquery-ui-tooltip');
+          if(file_exists(SAM_PATH.'/js/i18n/jquery.ui.datepicker-'.$lc.'.js'))
+            wp_enqueue_script('jquery-ui-locale', SAM_URL.'js/i18n/jquery.ui.datepicker-'.$lc.'.js', array('jquery'), '1.8.9');
+          wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
 
-    public function errorsListScripts() {
-      wp_enqueue_script('jquery');
-      wp_enqueue_script('jquery-ui-core');
-      wp_enqueue_script('jquery-ui-widget');
-      wp_enqueue_script('jquery-ui-button');
-      wp_enqueue_script('jquery-ui-draggable');
-      wp_enqueue_script('jquery-ui-mouse');
-      wp_enqueue_script('jquery-ui-position');
-      wp_enqueue_script('jquery-ui-resizable');
-      wp_enqueue_script('jquery-ui-dialog');
-      wp_enqueue_script('errorsListScript', SAM_URL.'js/sam-errors-list.js', array('jquery', 'jquery-ui-core'), SAM_VERSION);
-      wp_localize_script('errorsListScript', 'options', array(
-        'id' => __('Error ID', SAM_DOMAIN),
-        'date' => __('Error Date', SAM_DOMAIN),
-        'table' => __('Table', SAM_DOMAIN),
-        'msg' => __('Error Message', SAM_DOMAIN),
-        'sql' => __('Error SQL', SAM_DOMAIN),
-        'etype' => __('Type', SAM_DOMAIN),
-        'close' => __('Close', SAM_DOMAIN),
-        'imgURL' => SAM_IMG_URL,
-        'alts' => array(__('Warning', SAM_DOMAIN), __('Ok', SAM_DOMAIN))
-      ));
-    }
+          //wp_enqueue_script('cg-props', SAM_URL.'js/jquery.i18n.properties-1.0.9.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), '1.0.9');
+          wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.3.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.2');
 
-    public function adminSettingsScripts() {
-      wp_enqueue_script('jquery');
-      //wp_enqueue_script('jquery-ui-core');
-      //wp_enqueue_script('jquery-ui-widget');
-      //wp_enqueue_script('jquery-ui-mouse');
-      //wp_enqueue_script('jquery-ui-slider');
-      wp_enqueue_script('hash-table', SAM_URL.'js/slider/jshashtable-2.1_src.js', array('jquery'), '2.1');
-      wp_enqueue_script('number-formatter', SAM_URL.'js/slider/jquery.numberformatter-1.2.3.js', array('jquery'), '1.2.3');
-      wp_enqueue_script('templates', SAM_URL.'js/slider/tmpl.js', array('jquery'));
-      wp_enqueue_script('depend-class', SAM_URL.'js/slider/jquery.dependClass-0.1.js', array('jquery'), '0.1');
-      wp_enqueue_script('draggable', SAM_URL.'js/slider/draggable-0.1.js', array('jquery'), '0.1');
-      wp_enqueue_script('jSlider', SAM_URL.'js/slider/jquery.slider.js', array('jquery', 'draggable'), '1.1.0');
+          wp_enqueue_script('wp-pointer');
+          wp_localize_script('wp-pointer', 'samPointer', array(
+            'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
+            'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
+            'media' => array('title' => __('Select Banner Image', SAM_DOMAIN), 'button' => __('Select', SAM_DOMAIN))
+          ));
+          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+        }
+      }
+      elseif($hook == $this->editZone || $hook == $this->editBlock) {
+        $pointers = self::getPointerOptions();
 
-      wp_enqueue_script('sam-settings', SAM_URL.'js/sam-settings.js', array('jquery', 'draggable'), SAM_VERSION);
-      wp_localize_script('sam-settings', 'options', array(
-        'roles' => array(
-          __('Super Admin', SAM_DOMAIN),
-          __('Administrator', SAM_DOMAIN),
-          __('Editor', SAM_DOMAIN),
-          __('Author', SAM_DOMAIN),
-          __('Contributor', SAM_DOMAIN)
-        ),
-        'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')
-      ));
+        wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
+        wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-sam.css', false, '1.10.3');
+        //wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.2');
+        wp_enqueue_style('wp-pointer');
+        wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
+        //wp_enqueue_style('W2UI', SAM_URL . 'css/w2ui.min.css', false, '1.3');
+
+        wp_enqueue_script('jquery');
+        wp_enqueue_script('jquery-ui-core');
+        wp_enqueue_script('jquery-effects-core');
+        wp_enqueue_script('jquery-ui-widget');
+        wp_enqueue_script('jquery-ui-sortable');
+        wp_enqueue_script('jquery-ui-position');
+        wp_enqueue_script('jquery-effects-blind');
+        wp_enqueue_script('jquery-ui-tooltip');
+
+        wp_enqueue_script('wp-pointer');
+        wp_localize_script('wp-pointer', 'samPointer', array(
+          'zones' => array('enabled' => $pointers['zones'], 'title' => __('Name of Ads Zone', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
+          'blocks' => array('enabled' => $pointers['blocks'], 'title' => __('Name of Ads Block', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use plugin\'s widgets.', SAM_DOMAIN))
+        ));
+        wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-zb.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+      }
+      elseif($hook == $this->eLogPage) {
+        wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-admin-list.css', false, SAM_VERSION);
+        wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-sam.css', false, '1.10.3');
+
+        wp_enqueue_script('jquery');
+        wp_enqueue_script('jquery-ui-core');
+        wp_enqueue_script('jquery-ui-widget');
+        wp_enqueue_script('jquery-ui-button');
+        wp_enqueue_script('jquery-ui-draggable');
+        wp_enqueue_script('jquery-ui-mouse');
+        wp_enqueue_script('jquery-ui-position');
+        wp_enqueue_script('jquery-ui-resizable');
+        wp_enqueue_script('jquery-ui-dialog');
+        wp_enqueue_script('errorsListScript', SAM_URL.'js/sam-errors-list.js', array('jquery', 'jquery-ui-core'), SAM_VERSION);
+        wp_localize_script('errorsListScript', 'options', array(
+          'id' => __('Error ID', SAM_DOMAIN),
+          'date' => __('Error Date', SAM_DOMAIN),
+          'table' => __('Table', SAM_DOMAIN),
+          'msg' => __('Error Message', SAM_DOMAIN),
+          'sql' => __('Error SQL', SAM_DOMAIN),
+          'etype' => __('Type', SAM_DOMAIN),
+          'close' => __('Close', SAM_DOMAIN),
+          'imgURL' => SAM_IMG_URL,
+          'alts' => array(__('Warning', SAM_DOMAIN), __('Ok', SAM_DOMAIN))
+        ));
+      }
     }
 
     public function getCategories($valueType = 'array') {
@@ -458,6 +486,32 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         $options[$pointer] = false;
         update_option('sam_pointers', $options);
         wp_send_json_success(array('pointer' => $pointer, 'options' => $options));
+      }
+      else wp_send_json_error();
+    }
+
+    public function getErrorDataHandler() {
+      global $wpdb;
+      $eTable = $wpdb->prefix . 'sam_errors';
+      $charset = get_bloginfo('charset');
+      $eTypes = array(__('Warning', SAM_DOMAIN), __('Update Error', SAM_DOMAIN), __('Output Error', SAM_DOMAIN));
+      @header("Content-Type: application/json; charset=$charset");
+      if(isset($_REQUEST['id'])) {
+        $id = $_REQUEST['id'];
+        $eSql = "SELECT
+                  se.id,
+                  se.error_date,
+                  UNIX_TIMESTAMP(se.error_date) as date,
+                  se.table_name as name,
+                  se.error_type,
+                  se.error_msg as msg,
+                  se.error_sql as es,
+                  se.resolved
+                FROM $eTable se WHERE se.id = %d";
+        $out = $wpdb->get_row($wpdb->prepare($eSql, $id), ARRAY_A);
+        if(!empty($out['date'])) $out['date'] = date_i18n(get_option('date_format').' '.get_option('time_format'), $out['date']);
+        $out['type'] = $eTypes[$out['error_type']];
+        wp_send_json_success($out);
       }
       else wp_send_json_error();
     }
@@ -788,7 +842,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       global $wpdb;
       
       $pTable = $wpdb->prefix . "sam_places";
-      $sql = "SELECT $pTable.patch_dfp FROM $pTable WHERE $pTable.patch_source = 2";
+      $sql = "SELECT sp.patch_dfp FROM $pTable sp WHERE sp.patch_source = 2";
       $rows = $wpdb->get_results($sql, ARRAY_A);
       $blocks = array();      
       foreach($rows as $value) array_push($blocks, $value['patch_dfp']);

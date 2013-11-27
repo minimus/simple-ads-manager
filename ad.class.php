@@ -35,34 +35,34 @@ if(!class_exists('SamAd')) {
       $aTable = $wpdb->prefix . "sam_ads";
       
       $settings = $this->getSettings();
-      if(!empty($args['id'])) $wid = "$aTable.id = {$args['id']}";
-      else $wid = "$aTable.name = '{$args['name']}'";
+      if(!empty($args['id'])) $wid = "sa.id = {$args['id']}";
+      else $wid = "sa.name = '{$args['name']}'";
       
       $output = '';
       
       $aSql = "SELECT
-                  $aTable.id,
-                  $aTable.pid,
-                  $aTable.code_mode,
-                  $aTable.ad_code,
-                  $aTable.ad_img,
-                  $aTable.ad_alt,
-                  $aTable.ad_no,
-                  $aTable.ad_target,
-                  $aTable.ad_swf,
-                  $aTable.ad_swf_flashvars,
-                  $aTable.ad_swf_params,
-                  $aTable.ad_swf_attributes,
-                  $aTable.count_clicks,
-                  $aTable.code_type,
-                  $pTable.code_before,
-                  $pTable.code_after,
-                  $pTable.place_size,
-                  $pTable.place_custom_width,
-                  $pTable.place_custom_height
-                FROM $aTable
-                  INNER JOIN $pTable
-                    ON $aTable.pid = $pTable.id
+                  sa.id,
+                  sa.pid,
+                  sa.code_mode,
+                  sa.ad_code,
+                  sa.ad_img,
+                  sa.ad_alt,
+                  sa.ad_no,
+                  sa.ad_target,
+                  sa.ad_swf,
+                  sa.ad_swf_flashvars,
+                  sa.ad_swf_params,
+                  sa.ad_swf_attributes,
+                  sa.count_clicks,
+                  sa.code_type,
+                  sp.code_before,
+                  sp.code_after,
+                  sp.place_size,
+                  sp.place_custom_width,
+                  sp.place_custom_height
+                FROM $aTable sa
+                  INNER JOIN $pTable sp
+                    ON sa.pid = sp.id
                 WHERE $wid;";
       $ad = $wpdb->get_row($aSql, ARRAY_A);
       if($ad['code_mode'] == 0) {
@@ -215,30 +215,30 @@ if(!class_exists('SamAdPlace')) {
       $whereClauseW = $this->clauses['WCW'];
       $whereClause2W = $this->clauses['WC2W'];
       
-      if(!empty($args['id'])) $pId = "$pTable.id = {$args['id']}";
-      else $pId = "$pTable.name = '{$args['name']}'";
+      if(!empty($args['id'])) $pId = "sp.id = {$args['id']}";
+      else $pId = "sp.name = '{$args['name']}'";
       
       $pSql = "SELECT
-                  $pTable.id,
-                  $pTable.name,                  
-                  $pTable.description,
-                  $pTable.code_before,
-                  $pTable.code_after,
-                  $pTable.place_size,
-                  $pTable.place_custom_width,
-                  $pTable.place_custom_height,
-                  $pTable.patch_img,
-                  $pTable.patch_link,
-                  $pTable.patch_code,
-                  $pTable.patch_adserver,
-                  $pTable.patch_dfp,                  
-                  $pTable.patch_source,
-                  $pTable.trash,
-                  (SELECT COUNT(*) FROM $aTable WHERE $aTable.pid = $pTable.id AND $aTable.trash IS FALSE) AS ad_count,
-                  (SELECT COUNT(*) FROM $aTable WHERE $aTable.pid = $pTable.id AND $aTable.trash IS FALSE AND $whereClause $whereClauseT $whereClause2W) AS ad_logic_count,
-                  (SELECT COUNT(*) FROM $aTable WHERE $aTable.pid = $pTable.id AND $aTable.trash IS FALSE AND $whereClause $whereClauseT $whereClauseW) AS ad_full_count
-                FROM $pTable
-                WHERE $pId AND $pTable.trash IS FALSE;";
+                  sp.id,
+                  sp.name,
+                  sp.description,
+                  sp.code_before,
+                  sp.code_after,
+                  sp.place_size,
+                  sp.place_custom_width,
+                  sp.place_custom_height,
+                  sp.patch_img,
+                  sp.patch_link,
+                  sp.patch_code,
+                  sp.patch_adserver,
+                  sp.patch_dfp,
+                  sp.patch_source,
+                  sp.trash,
+                  (SELECT COUNT(*) FROM $aTable sa WHERE sa.pid = sp.id AND sa.trash IS FALSE) AS ad_count,
+                  (SELECT COUNT(*) FROM $aTable sa WHERE sa.pid = sp.id AND sa.trash IS FALSE AND $whereClause $whereClauseT $whereClause2W) AS ad_logic_count,
+                  (SELECT COUNT(*) FROM $aTable sa WHERE sa.pid = sp.id AND sa.trash IS FALSE AND $whereClause $whereClauseT $whereClauseW) AS ad_full_count
+                FROM $pTable sp
+                WHERE $pId AND sp.trash IS FALSE;";
       
       $place = $wpdb->get_row($pSql, ARRAY_A);
 
@@ -295,25 +295,25 @@ if(!class_exists('SamAdPlace')) {
       }
       
       $aSql = "SELECT
-                  $aTable.id,
-                  $aTable.pid,
-                  $aTable.code_mode,
-                  $aTable.ad_code,
-                  $aTable.ad_img,
-                  $aTable.ad_alt,
-                  $aTable.ad_no,
-                  $aTable.ad_target,
-                  $aTable.ad_swf,
-                  $aTable.ad_swf_flashvars,
-                  $aTable.ad_swf_params,
-                  $aTable.ad_swf_attributes,
-                  $aTable.count_clicks,
-                  $aTable.code_type,
-                  $aTable.ad_hits,
-                  $aTable.ad_weight_hits,
-                  IF($aTable.ad_weight, ($aTable.ad_weight_hits*10/($aTable.ad_weight*$cycle)), 0) AS ad_cycle
-                FROM $aTable
-                WHERE $aTable.pid = {$place['id']} AND $aTable.trash IS FALSE AND $whereClause $whereClauseT $whereClauseW
+                  sa.id,
+                  sa.pid,
+                  sa.code_mode,
+                  sa.ad_code,
+                  sa.ad_img,
+                  sa.ad_alt,
+                  sa.ad_no,
+                  sa.ad_target,
+                  sa.ad_swf,
+                  sa.ad_swf_flashvars,
+                  sa.ad_swf_params,
+                  sa.ad_swf_attributes,
+                  sa.count_clicks,
+                  sa.code_type,
+                  sa.ad_hits,
+                  sa.ad_weight_hits,
+                  IF(sa.ad_weight, (sa.ad_weight_hits*10/(sa.ad_weight*$cycle)), 0) AS ad_cycle
+                FROM $aTable sa
+                WHERE sa.pid = {$place['id']} AND sa.trash IS FALSE AND $whereClause $whereClauseT $whereClauseW
                 ORDER BY ad_cycle
                 LIMIT 1;";
 
@@ -423,34 +423,34 @@ if(!class_exists('SamAdPlaceZone')) {
       $id = 0; // None
       $output = '';
       
-      if(!empty($args['id'])) $zId = "$zTable.id = {$args['id']}";
-      else $zId = "$zTable.name = '{$args['name']}'";
+      if(!empty($args['id'])) $zId = "sz.id = {$args['id']}";
+      else $zId = "sz.name = '{$args['name']}'";
       
       $zSql = "SELECT
-                  $zTable.id,
-                  $zTable.name,
-                  $zTable.z_default,
-                  $zTable.z_home,
-                  $zTable.z_singular,
-                  $zTable.z_single,
-                  $zTable.z_ct,
-                  $zTable.z_single_ct,
-                  $zTable.z_page,
-                  $zTable.z_attachment,
-                  $zTable.z_search,
-                  $zTable.z_404,
-                  $zTable.z_archive,
-                  $zTable.z_tax,
-                  $zTable.z_category,
-                  $zTable.z_cats,
-                  $zTable.z_tag,
-                  $zTable.z_author,
-                  $zTable.z_authors,
-                  $zTable.z_cts,
-                  $zTable.z_archive_ct,
-                  $zTable.z_date
-                FROM $zTable
-                WHERE $zId AND $zTable.trash IS FALSE;";
+                  sz.id,
+                  sz.name,
+                  sz.z_default,
+                  sz.z_home,
+                  sz.z_singular,
+                  sz.z_single,
+                  sz.z_ct,
+                  sz.z_single_ct,
+                  sz.z_page,
+                  sz.z_attachment,
+                  sz.z_search,
+                  sz.z_404,
+                  sz.z_archive,
+                  sz.z_tax,
+                  sz.z_category,
+                  sz.z_cats,
+                  sz.z_tag,
+                  sz.z_author,
+                  sz.z_authors,
+                  sz.z_cts,
+                  sz.z_archive_ct,
+                  sz.z_date
+                FROM $zTable sz
+                WHERE $zId AND sz.trash IS FALSE;";
       $zone = $wpdb->get_row($zSql, ARRAY_A);
       if(!empty($zone)) {
         $cats = unserialize($zone['z_cats']);
@@ -558,26 +558,26 @@ if(!class_exists('SamAdBlock')) {
       $bTable = $wpdb->prefix . "sam_blocks";
       $output = '';
       
-      if(!empty($args['id'])) $bId = "$bTable.id = {$args['id']}";
-      else $bId = "$bTable.name = '{$args['name']}'";
+      if(!empty($args['id'])) $bId = "sb.id = {$args['id']}";
+      else $bId = "sb.name = '{$args['name']}'";
       
       $bSql = "SELECT
-                 $bTable.id, 
-                 $bTable.name,
-                 $bTable.b_lines,
-                 $bTable.b_cols,
-                 $bTable.block_data,
-                 $bTable.b_margin,
-                 $bTable.b_padding,
-                 $bTable.b_background,
-                 $bTable.b_border,
-                 $bTable.i_margin,
-                 $bTable.i_padding,
-                 $bTable.i_background,
-                 $bTable.i_border,
-                 $bTable.trash
-               FROM $bTable
-               WHERE $bId AND $bTable.trash IS FALSE;";
+                 sb.id,
+                 sb.name,
+                 sb.b_lines,
+                 sb.b_cols,
+                 sb.block_data,
+                 sb.b_margin,
+                 sb.b_padding,
+                 sb.b_background,
+                 sb.b_border,
+                 sb.i_margin,
+                 sb.i_padding,
+                 sb.i_background,
+                 sb.i_border,
+                 sb.trash
+               FROM $bTable sb
+               WHERE $bId AND sb.trash IS FALSE;";
                
       $block = $wpdb->get_row($bSql, ARRAY_A);
       if(!empty($block)) {

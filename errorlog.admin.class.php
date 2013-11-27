@@ -35,8 +35,8 @@ if(!class_exists('SamErrorLog')) {
       }
       if($iaction === 'kill-em-all') $wpdb->query("DELETE FROM $eTable");
       if($iaction === 'kill-resolved') $wpdb->query("DELETE FROM $eTable WHERE resolved = TRUE;");
-      $resolved_num = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %s WHERE resolved = TRUE", $eTable));
-      $active_num = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM %s WHERE resolved = FALSE", $eTable));
+      $resolved_num = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $eTable WHERE resolved = %d", 1));
+      $active_num = $wpdb->get_var($wpdb->prepare("SELECT COUNT(*) FROM $eTable WHERE resolved = %d", 0));
       if(is_null($active_num)) $active_num = 0;
       if(is_null($resolved_num)) $resolved_num = 0;
       $all_num = $resolved_num + $active_num;
@@ -101,16 +101,16 @@ if(!class_exists('SamErrorLog')) {
     <tbody>
       <?php
       $eSql = "SELECT
-                  $eTable.id,
-                  $eTable.error_date,
-                  UNIX_TIMESTAMP($eTable.error_date) as unix_error_date,
-                  $eTable.table_name,
-                  $eTable.error_type,
-                  $eTable.error_msg,
-                  $eTable.error_sql,
-                  $eTable.resolved
-                FROM $eTable".
-                (($mode !== 'all') ? " WHERE $eTable.resolved = ".(($mode === 'resolved') ? 'TRUE' : 'FALSE') : '').
+                  se.id,
+                  se.error_date,
+                  UNIX_TIMESTAMP(se.error_date) as unix_error_date,
+                  se.table_name,
+                  se.error_type,
+                  se.error_msg,
+                  se.error_sql,
+                  se.resolved
+                FROM $eTable se".
+                (($mode !== 'all') ? " WHERE se.resolved = ".(($mode === 'resolved') ? 'TRUE' : 'FALSE') : '').
                 " LIMIT $offset, $places_per_page";
       $eData = $wpdb->get_results($eSql, ARRAY_A);
       $eTypes = array(__('Warning', SAM_DOMAIN), __('Update Error', SAM_DOMAIN), __('Output Error', SAM_DOMAIN));
@@ -156,12 +156,6 @@ if(!class_exists('SamErrorLog')) {
               ?>
               <span class="untrash"><a href="<?php echo admin_url('admin.php'); ?>?page=sam-errors&action=errors&mode=<?php echo $mode ?>&iaction=delete&item=<?php echo $row['id'] ?>" title="<?php _e('Move this Block to the Trash', SAM_DOMAIN) ?>"><?php _e('Resolved', SAM_DOMAIN); ?></a></span>
             <?php } ?>
-            <input id="dt-<?php echo $row['id']; ?>" type="hidden" value="<?php echo date_i18n(get_option('date_format').' '.get_option('time_format'), $row['unix_error_date']); ?>" />
-            <input id="tn-<?php echo $row['id']; ?>" type="hidden" value="<?php echo $row['table_name']; ?>" />
-            <input id="et-<?php echo $row['id']; ?>" type="hidden" value="<?php echo $eTypes[$row['error_type']]; ?>" />
-            <input id="em-<?php echo $row['id']; ?>" type="hidden" value="<?php echo $row['error_msg']; ?>" />
-            <input id="es-<?php echo $row['id']; ?>" type="hidden" value='<?php echo $row['error_sql']; ?>' />
-            <input id="rs-<?php echo $row['id']; ?>" type="hidden" value="<?php echo $row['resolved']; ?>" />
           </div>
         </td>
       </tr>
@@ -187,6 +181,11 @@ if(!class_exists('SamErrorLog')) {
 </div>
 <div id="dialog" style="display: none;" title="<?php _e('Error Info', SAM_DOMAIN); ?>"></div>
       <?php
+      /*$struct = $wpdb->get_results('DESCRIBE wp_sam_blocks;', ARRAY_A);
+      foreach($struct as $var) {
+        $out = " '{$var['Field']}' => array('Type' => \"{$var['Type']}\", 'Null' => '{$var['Null']}', 'Key' => '{$var['Key']}', 'Default' => '{$var['Default']}', 'Extra' => '{$var['Extra']}'),";
+        echo $out."<br>";
+      }*/
     }
   }
 }

@@ -68,6 +68,15 @@ Do not upgrade this plugin from Update page! Upgrade it from Plugins page!
 Change log
 ==========
 
+1.8.70
+* Javascript output of ads (for caching compatibility) is added
+* Custom Taxonomies restrictions are added
+* Building query for SQL request is optimised
+* Admin interface is improved
+* Loading/Selecting banners (Image Mode) from Wordpress Media Library is added
+* Updater is fixed and improved.
+* Language pack folder is added.
+
 1.7.63
 * Some bugs (Ads Block style, Click Tracker) are resolved.
 

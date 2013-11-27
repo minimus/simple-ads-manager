@@ -11,7 +11,7 @@ if(!class_exists('SamPlaceEdit')) {
       global $wpdb;
       
       $pTable = $wpdb->prefix . "sam_places";
-      $sql = "SELECT $pTable.patch_dfp FROM $pTable WHERE $pTable.patch_source = 2";
+      $sql = "SELECT sp.patch_dfp FROM $pTable sp WHERE sp.patch_source = 2";
       $rows = $wpdb->get_results($sql, ARRAY_A);
       $blocks = array();      
       foreach($rows as $value) array_push($blocks, $value['patch_dfp']);
@@ -972,21 +972,45 @@ if(!class_exists('SamPlaceEdit')) {
                       <div class="clear"></div>
                       <div id="source_tools" >
                         <p><strong><?php _e('Image Tools', SAM_DOMAIN); ?></strong></p>
-                        <p>
-                          <label for="files_list"><strong><?php echo (__('Select File', SAM_DOMAIN).':'); ?></strong></label>
-                          <select id="files_list" name="files_list" size="1"  dir="ltr" style="width: auto;">
-                            <?php $this->getFilesList(SAM_AD_IMG); ?>
-                          </select>&nbsp;&nbsp;
-                          <input id="add-file-button" type="button" class="button-secondary" value="<?php _e('Apply', SAM_DOMAIN);?>" />  <br/>
-                          <?php _e("Select file from your blog server.", SAM_DOMAIN); ?>
-                        </p>
-                        <p>
-                          <label for="upload-file-button"><strong><?php echo (__('Upload File', SAM_DOMAIN).':'); ?></strong></label>
-                          <input id="upload-file-button" type="button" class="button-secondary" name="upload_media" value="<?php _e('Upload', SAM_DOMAIN);?>" />
+                        <div id="image_tools">
+                          <ul>
+                            <li><a href="#tab1"><?php _e('Media Library', SAM_DOMAIN); ?></a></li>
+                            <li><a href="#tab2"><?php _e('Server', SAM_DOMAIN); ?></a></li>
+                            <li><a href="#tab3"><?php _e('Local Computer', SAM_DOMAIN); ?></a></li>
+                          </ul>
+                        <div id="tab1">
+                          <p>
+                            <strong><?php _e('Select Image from Media Library', SAM_DOMAIN); ?></strong>
+                          </p>
+                          <button id="banner-media" class="color-btn color-btn-left"><b style="background-color: #a915d1;"></b><?php _e('Select or Upload', SAM_DOMAIN); ?></button>
+                          <p>
+                            <?php _e('You can upload your banners to Wordpress Media Gallery or select banner image from this one.', SAM_DOMAIN); ?>
+                          </p>
+                        </div>
+                        <div id="tab2">
+                          <p>
+                            <label for="files_list"><strong><?php echo (__('Select File', SAM_DOMAIN).':'); ?></strong></label>
+                            <select id="files_list" name="files_list" size="1"  dir="ltr" style="width: auto;">
+                              <?php $this->getFilesList(SAM_AD_IMG); ?>
+                            </select>&nbsp;&nbsp;
+                          </p>
+                          <button id="add-file-button" class="color-btn color-btn-left"><b style="background-color: #0cc77a"></b><?php _e('Apply', SAM_DOMAIN);?></button>
+                          <p>
+                            <?php _e("Select file from your blog server.", SAM_DOMAIN); ?>
+                          </p>
+                        </div>
+                        <div id="tab3">
+                          <p>
+                            <strong><?php _e('Upload File', SAM_DOMAIN); ?></strong>
+                          </p>
+                          <button id="upload-file-button" class="color-btn color-btn-left"><b style="background-color: #21759b"></b><?php _e('Upload', SAM_DOMAIN);?></button>
                           <img id='load_img' src='<?php echo SAM_IMG_URL ?>loader.gif' style='display: none;'>
-                          <span id="uploading"></span><br/>
-                          <span id="uploading-help"><?php _e("Select and upload file from your local computer.", SAM_DOMAIN); ?></span>
-                        </p>
+                          <span id="uploading"></span>
+                          <p>
+                            <span id="uploading-help"><?php _e("Select and upload file from your local computer.", SAM_DOMAIN); ?></span>
+                          </p>
+                        </div>
+                        </div>
                       </div>
                     </div>
                     <div class='clear-line' ></div>

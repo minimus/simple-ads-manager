@@ -125,14 +125,31 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       return (in_array(get_post_type(), $this->getCustomPostTypes()));
     }
 
+    private function customTaxonomiesTerms($id) {
+      $post = get_post($id);
+      $postType = $post->post_type;
+      $taxonomies = get_object_taxonomies($postType, 'objects');
+
+      $out = array();
+      foreach ($taxonomies as $tax_slug => $taxonomy) {
+        $terms = get_the_terms($id, $tax_slug);
+        if(!empty($terms)) {
+          foreach($terms as $term) {
+            $out[] = $term->slug;
+          }
+        }
+      }
+      return implode(',', $out);
+    }
+
     public function buildWhereClause() {
       $settings = $this->getSettings();
       if($settings['adCycle'] == 0) $cycle = 1000;
       else $cycle = $settings['adCycle'];
-      $el = (integer)$settings['errorlogFS'];
+      //$el = (integer)$settings['errorlogFS'];
 
-      global $wpdb, $current_user;
-      $aTable = $wpdb->prefix . "sam_ads";
+      global /*$wpdb,*/ $current_user;
+      //$aTable = $wpdb->prefix . "sam_ads";
 
       $viewPages = 0;
       $wcc = '';
@@ -147,12 +164,12 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       if(is_user_logged_in()) {
         get_currentuserinfo();
         $uSlug = $current_user->user_login;
-        $wcul = "IF($aTable.ad_users_reg = 1, IF($aTable.x_ad_users = 1, NOT FIND_IN_SET(\"$uSlug\", $aTable.x_view_users), TRUE) AND IF($aTable.ad_users_adv = 1, ($aTable.adv_nick <> \"$uSlug\"), TRUE), FALSE)";
+        $wcul = "IF(sa.ad_users_reg = 1, IF(sa.x_ad_users = 1, NOT FIND_IN_SET(\"$uSlug\", sa.x_view_users), TRUE) AND IF(sa.ad_users_adv = 1, (sa.adv_nick <> \"$uSlug\"), TRUE), FALSE)";
       }
       else {
-        $wcul = "($aTable.ad_users_unreg = 1)";
+        $wcul = "(sa.ad_users_unreg = 1)";
       }
-      $wcu = "(IF($aTable.ad_users = 0, TRUE, $wcul)) AND";
+      $wcu = "(IF(sa.ad_users = 0, TRUE, $wcul)) AND";
 
       if(is_home() || is_front_page()) $viewPages += SAM_IS_HOME;
       if(is_singular()) {
@@ -162,8 +179,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           $viewPages |= SAM_IS_POST_TYPE;
 
           $postType = get_post_type();
-          $wct .= " AND IF($aTable.view_type < 2 AND $aTable.ad_custom AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"$postType\", $aTable.view_custom), TRUE)";
-          $wcxt .= " AND IF($aTable.view_type < 2 AND $aTable.x_custom AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"$postType\", $aTable.x_view_custom), TRUE)";
+          $wct .= " AND IF(sa.view_type < 2 AND sa.ad_custom AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"$postType\", sa.view_custom), TRUE)";
+          $wcxt .= " AND IF(sa.view_type < 2 AND sa.x_custom AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"$postType\", sa.x_view_custom), TRUE)";
         }
         if(is_single()) {
           global $post;
@@ -172,17 +189,18 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           $categories = get_the_category($post->ID);
           $tags = get_the_tags();
           $postID = ((!empty($post->ID)) ? $post->ID : 0);
+          $customTerms = self::customTaxonomiesTerms($postID);
 
           if(!empty($categories)) {
             $wcc_0 = '';
             $wcxc_0 = '';
-            $wcc = " AND IF($aTable.view_type < 2 AND $aTable.ad_cats AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE),";
-            $wcxc = " AND IF($aTable.view_type < 2 AND $aTable.x_cats AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE),";
+            $wcc = " AND IF(sa.view_type < 2 AND sa.ad_cats AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE),";
+            $wcxc = " AND IF(sa.view_type < 2 AND sa.x_cats AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE),";
             foreach($categories as $category) {
-              if(empty($wcc_0)) $wcc_0 = " FIND_IN_SET(\"{$category->category_nicename}\", $aTable.view_cats)";
-              else $wcc_0 .= " OR FIND_IN_SET(\"{$category->category_nicename}\", $aTable.view_cats)";
-              if(empty($wcxc_0)) $wcxc_0 = " (NOT FIND_IN_SET(\"{$category->category_nicename}\", $aTable.x_view_cats))";
-              else $wcxc_0 .= " AND (NOT FIND_IN_SET(\"{$category->category_nicename}\", $aTable.x_view_cats))";
+              if(empty($wcc_0)) $wcc_0 = " FIND_IN_SET(\"{$category->category_nicename}\", sa.view_cats)";
+              else $wcc_0 .= " OR FIND_IN_SET(\"{$category->category_nicename}\", sa.view_cats)";
+              if(empty($wcxc_0)) $wcxc_0 = " (NOT FIND_IN_SET(\"{$category->category_nicename}\", sa.x_view_cats))";
+              else $wcxc_0 .= " AND (NOT FIND_IN_SET(\"{$category->category_nicename}\", sa.x_view_cats))";
             }
             $wcc .= $wcc_0.", TRUE)";
             $wcxc .= $wcxc_0.", TRUE)";
@@ -191,31 +209,31 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           if(!empty($tags)) {
             $wct_0 = '';
             $wcxt_0 = '';
-            $wct .= " AND IF($aTable.view_type < 2 AND $aTable.ad_tags AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE),";
-            $wcxt .= " AND IF($aTable.view_type < 2 AND $aTable.x_tags AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE),";
+            $wct .= " AND IF(sa.view_type < 2 AND sa.ad_tags AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE),";
+            $wcxt .= " AND IF(sa.view_type < 2 AND sa.x_tags AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE),";
             foreach($tags as $tag) {
-              if(empty($wct_0)) $wct_0 = " FIND_IN_SET(\"{$tag->slug}\", $aTable.view_tags)";
-              else $wct_0 .= " OR FIND_IN_SET(\"{$tag->slug}\", $aTable.view_tags)";
-              if(empty($wcxt_0)) $wcxt_0 = " (NOT FIND_IN_SET(\"{$tag->slug}\", $aTable.x_view_tags))";
-              else $wcxt_0 .= " AND (NOT FIND_IN_SET(\"{$tag->slug}\", $aTable.x_view_tags))";
+              if(empty($wct_0)) $wct_0 = " FIND_IN_SET(\"{$tag->slug}\", sa.view_tags)";
+              else $wct_0 .= " OR FIND_IN_SET(\"{$tag->slug}\", sa.view_tags)";
+              if(empty($wcxt_0)) $wcxt_0 = " (NOT FIND_IN_SET(\"{$tag->slug}\", sa.x_view_tags))";
+              else $wcxt_0 .= " AND (NOT FIND_IN_SET(\"{$tag->slug}\", sa.x_view_tags))";
             }
             $wct .= $wct_0.", TRUE)";
             $wcxt .= $wcxt_0.", TRUE)";
           }
 
-          $wci = " OR ($aTable.view_type = 2 AND FIND_IN_SET({$postID}, $aTable.view_id))";
-          $wcx = " AND IF($aTable.x_id, NOT FIND_IN_SET({$postID}, $aTable.x_view_id), TRUE)";
+          $wci = " OR (sa.view_type = 2 AND FIND_IN_SET({$postID}, sa.view_id))";
+          $wcx = " AND IF(sa.x_id, NOT FIND_IN_SET({$postID}, sa.x_view_id), TRUE)";
           $author = get_userdata($post->post_author);
-          $wca = " AND IF($aTable.view_type < 2 AND $aTable.ad_authors AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"{$author->display_name}\", $aTable.view_authors), TRUE)";
-          $wcxa = " AND IF($aTable.view_type < 2 AND $aTable.x_authors AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"{$author->display_name}\", $aTable.x_view_authors), TRUE)";
+          $wca = " AND IF(sa.view_type < 2 AND sa.ad_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"{$author->display_name}\", sa.view_authors), TRUE)";
+          $wcxa = " AND IF(sa.view_type < 2 AND sa.x_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"{$author->display_name}\", sa.x_view_authors), TRUE)";
         }
         if(is_page()) {
           global $post;
           $postID = ((!empty($post->ID)) ? $post->ID : 0);
 
           $viewPages |= SAM_IS_PAGE;
-          $wci = " OR ($aTable.view_type = 2 AND FIND_IN_SET({$postID}, $aTable.view_id))";
-          $wcx = " AND IF($aTable.x_id, NOT FIND_IN_SET({$postID}, $aTable.x_view_id), TRUE)";
+          $wci = " OR (sa.view_type = 2 AND FIND_IN_SET({$postID}, sa.view_id))";
+          $wcx = " AND IF(sa.x_id, NOT FIND_IN_SET({$postID}, sa.x_view_id), TRUE)";
         }
         if(is_attachment()) $viewPages |= SAM_IS_ATTACHMENT;
       }
@@ -227,46 +245,46 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
         if(is_category()) {
           $viewPages |= SAM_IS_CATEGORY;
           $cat = get_category(get_query_var('cat'), false);
-          $wcc = " AND IF($aTable.view_type < 2 AND $aTable.ad_cats AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"{$cat->category_nicename}\", $aTable.view_cats), TRUE)";
-          $wcxc = " AND IF($aTable.view_type < 2 AND $aTable.x_cats AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"{$cat->category_nicename}\", $aTable.x_view_cats), TRUE)";
+          $wcc = " AND IF(sa.view_type < 2 AND sa.ad_cats AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"{$cat->category_nicename}\", sa.view_cats), TRUE)";
+          $wcxc = " AND IF(sa.view_type < 2 AND sa.x_cats AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"{$cat->category_nicename}\", sa.x_view_cats), TRUE)";
         }
         if(is_tag()) {
           $viewPages |= SAM_IS_TAG;
           $tag = get_tag(get_query_var('tag_id'));
-          $wct = " AND IF($aTable.view_type < 2 AND $aTable.ad_tags AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$tag->slug}', $aTable.view_tags), TRUE)";
-          $wcxt = " AND IF($aTable.view_type < 2 AND $aTable.x_tags AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$tag->slug}', $aTable.x_view_tags), TRUE)";
+          $wct = " AND IF(sa.view_type < 2 AND sa.ad_tags AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$tag->slug}', sa.view_tags), TRUE)";
+          $wcxt = " AND IF(sa.view_type < 2 AND sa.x_tags AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$tag->slug}', sa.x_view_tags), TRUE)";
         }
         if(is_author()) {
           global $wp_query;
 
           $viewPages |= SAM_IS_AUTHOR;
           $author = $wp_query->get_queried_object();
-          $wca = " AND IF($aTable.view_type < 2 AND $aTable.ad_authors = 1 AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$author->display_name}', $aTable.view_authors), TRUE)";
-          $wcxa = " AND IF($aTable.view_type < 2 AND $aTable.x_authors AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$author->display_name}', $aTable.x_view_authors), TRUE)";
+          $wca = " AND IF(sa.view_type < 2 AND sa.ad_authors = 1 AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$author->display_name}', sa.view_authors), TRUE)";
+          $wcxa = " AND IF(sa.view_type < 2 AND sa.x_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$author->display_name}', sa.x_view_authors), TRUE)";
         }
         if(is_post_type_archive()) {
           $viewPages |= SAM_IS_POST_TYPE_ARCHIVE;
           //$postType = post_type_archive_title( '', false );
           $postType = get_post_type();
-          $wct = " AND IF($aTable.view_type < 2 AND $aTable.ad_custom AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$postType}', $aTable.view_custom), TRUE)";
-          $wcxt = " AND IF($aTable.view_type < 2 AND $aTable.x_custom AND IF($aTable.view_type = 0, $aTable.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$postType}', $aTable.x_view_custom), TRUE)";
+          $wct = " AND IF(sa.view_type < 2 AND sa.ad_custom AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$postType}', sa.view_custom), TRUE)";
+          $wcxt = " AND IF(sa.view_type < 2 AND sa.x_custom AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$postType}', sa.x_view_custom), TRUE)";
         }
         if(is_date()) $viewPages |= SAM_IS_DATE;
       }
 
-      if(empty($wcc)) $wcc = " AND ($aTable.ad_cats = 0)";
-      if(empty($wca)) $wca = " AND ($aTable.ad_authors = 0)";
+      if(empty($wcc)) $wcc = " AND (sa.ad_cats = 0)";
+      if(empty($wca)) $wca = " AND (sa.ad_authors = 0)";
 
-      $whereClause  = "$wcu (($aTable.view_type = 1)";
-      $whereClause .= " OR ($aTable.view_type = 0 AND ($aTable.view_pages+0 & $viewPages))";
+      $whereClause  = "$wcu ((sa.view_type = 1)";
+      $whereClause .= " OR (sa.view_type = 0 AND (sa.view_pages+0 & $viewPages))";
       $whereClause .= "$wci)";
       $whereClause .= "$wcc $wca $wct $wcx $wcxc $wcxa $wcxt";
-      $whereClauseT = " AND IF($aTable.ad_schedule, CURDATE() BETWEEN $aTable.ad_start_date AND $aTable.ad_end_date, TRUE)";
-      $whereClauseT .= " AND IF($aTable.limit_hits, $aTable.hits_limit > $aTable.ad_hits, TRUE)";
-      $whereClauseT .= " AND IF($aTable.limit_clicks, $aTable.clicks_limit > $aTable.ad_clicks, TRUE)";
+      $whereClauseT = " AND IF(sa.ad_schedule, CURDATE() BETWEEN sa.ad_start_date AND sa.ad_end_date, TRUE)";
+      $whereClauseT .= " AND IF(sa.limit_hits, sa.hits_limit > sa.ad_hits, TRUE)";
+      $whereClauseT .= " AND IF(sa.limit_clicks, sa.clicks_limit > sa.ad_clicks, TRUE)";
 
-      $whereClauseW = " AND IF($aTable.ad_weight > 0, ($aTable.ad_weight_hits*10/($aTable.ad_weight*$cycle)) < 1, FALSE)";
-      $whereClause2W = "AND ($aTable.ad_weight > 0)";
+      $whereClauseW = " AND IF(sa.ad_weight > 0, (sa.ad_weight_hits*10/(sa.ad_weight*$cycle)) < 1, FALSE)";
+      $whereClause2W = "AND (sa.ad_weight > 0)";
 
       return array('WC' => $whereClause, 'WCT' => $whereClauseT, 'WCW' => $whereClauseW, 'WC2W' => $whereClause2W);
     }

@@ -91,6 +91,8 @@ No questions now...
 * Custom Taxonomies restrictions are added
 * Building query for SQL request is optimised
 * Admin interface is improved
+* Loading/Selecting banners from Wordpress Media Library is added
+* Updater is fixed and improved.
 * Language pack folder is added.
 = 1.7.63 =
 * Some bugs (Ads Block style, Click Tracker) are resolved.
