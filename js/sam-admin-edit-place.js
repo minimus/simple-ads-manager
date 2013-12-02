@@ -1,21 +1,71 @@
 /**
  * Created by minimus on 17.11.13.
  */
-
+var sam = sam || {};
 (function ($) {
+  var media, mediaTexts = samEditorOptions.media;
+
+  sam.media = media = {
+    buttonId: '#banner-media',
+    adUrl: '#patch_img',
+    adImgId: '#patch_img_id',
+    adName: '#title',
+    adDesc: '#description',
+    //adAlt: '#ad_alt',
+
+    init: function() {
+      $(this.buttonId).on( 'click', this.openMediaDialog );
+    },
+
+    openMediaDialog: function( e ) {
+      e.preventDefault();
+
+      if ( this._frame ) {
+        this._frame.open();
+        return;
+      }
+
+      var Attachment = wp.media.model.Attachment;
+
+      this._frame = media.frame = wp.media({
+        title: mediaTexts.title,
+        button: {
+          text: mediaTexts.button
+        },
+        multiple: false,
+        library: {
+          type: 'image'
+        }/*,
+         selection: [ Attachment.get( $(this.adImgId).val() ) ]*/
+      });
+
+      this._frame.on('ready', function() {
+        //
+      });
+
+      this._frame.state( 'library' ).on('select', function() {
+        var attachment = this.get( 'selection' ).single();
+        media.handleMediaAttachment( attachment );
+      });
+
+      this._frame.open();
+    },
+
+    handleMediaAttachment: function(a) {
+      var attechment = a.toJSON();
+      $(this.adUrl).val(attechment.url);
+      $(this.adImgId).val(attechment.id);
+      if('' == $(this.adName).val() && '' != attechment.title) $(this.adName).val(attechment.title);
+      if('' == $(this.adDesc).val() && '' != attechment.caption) $(this.adDesc).val(attechment.caption);
+      if('' == $(this.adAlt).val() && '' != attechment.alt) $(this.adAlt).val(attechment.alt);
+    }
+  };
+
   $(document).ready(function () {
-    var em = $('#editor_mode').val();
+    var em = $('#editor_mode').val(), fu;
 
-    $("#title").tooltip({
-      track: true
-    });
-
-    var options = $.parseJSON($.ajax({
-      url:ajaxurl,
-      data:{action:'get_strings'},
-      async:false,
-      dataType:'jsonp'
-    }).responseText);
+    var
+      rcpsi = $('#rc-psi'), rcpsc = $('#rc-psc'), rcpsd = $('#rc-psd'), title = $("#title");
 
     var
       btnUpload = $("#upload-file-button"),
@@ -25,7 +75,25 @@
       sPointer,
       fileExt = '';
 
-    var fu = new AjaxUpload(btnUpload, {
+    sPointer = samEditorOptions.places;
+    sPointer.pointer = 'places';
+
+    /*var samUploader, mediaTexts = samEditorOptions.media;*/
+
+    media.init();
+
+    title.tooltip({
+      track: true
+    });
+
+    var options = samEditorOptions.options/*$.parseJSON($.ajax({
+      url:ajaxurl,
+      data:{action:'get_strings'},
+      async:false,
+      dataType:'jsonp'
+    }).responseText)*/;
+
+    fu = new AjaxUpload(btnUpload, {
       action:ajaxurl,
       name:'uploadfile',
       data:{
@@ -64,8 +132,7 @@
       }
     });
 
-    sPointer = samPointer.places;
-    sPointer.pointer = 'places';
+    $('#image_tools').tabs();
 
     $("#add-file-button").click(function () {
       var curFile = options.url + $("select#files_list option:selected").val();
@@ -74,24 +141,24 @@
     });
 
     $('#patch_source_image').click(function () {
-      if ($('#rc-psi').is(':hidden')) $('#rc-psi').show('blind', {direction:'vertical'}, 500);
-      if ($('#rc-psc').is(':visible')) $('#rc-psc').hide('blind', {direction:'vertical'}, 500);
-      if ($('#rc-psd').is(':visible')) $('#rc-psd').hide('blind', {direction:'vertical'}, 500);
+      if (rcpsi.is(':hidden')) rcpsi.show('blind', {direction:'vertical'}, 500);
+      if (rcpsc.is(':visible')) rcpsc.hide('blind', {direction:'vertical'}, 500);
+      if (rcpsd.is(':visible')) rcpsd.hide('blind', {direction:'vertical'}, 500);
     });
 
     $('#patch_source_code').click(function () {
-      if ($('#rc-psi').is(':visible')) $('#rc-psi').hide('blind', {direction:'vertical'}, 500);
-      if ($('#rc-psc').is(':hidden')) $('#rc-psc').show('blind', {direction:'vertical'}, 500);
-      if ($('#rc-psd').is(':visible')) $('#rc-psd').hide('blind', {direction:'vertical'}, 500);
+      if (rcpsi.is(':visible')) rcpsi.hide('blind', {direction:'vertical'}, 500);
+      if (rcpsc.is(':hidden')) rcpsc.show('blind', {direction:'vertical'}, 500);
+      if (rcpsd.is(':visible')) rcpsd.hide('blind', {direction:'vertical'}, 500);
     });
 
     $('#patch_source_dfp').click(function () {
-      if ($('#rc-psi').is(':visible')) $('#rc-psi').hide('blind', {direction:'vertical'}, 500);
-      if ($('#rc-psc').is(':visible')) $('#rc-psc').hide('blind', {direction:'vertical'}, 500);
-      if ($('#rc-psd').is(':hidden')) $('#rc-psd').show('blind', {direction:'vertical'}, 500);
+      if (rcpsi.is(':visible')) rcpsi.hide('blind', {direction:'vertical'}, 500);
+      if (rcpsc.is(':visible')) rcpsc.hide('blind', {direction:'vertical'}, 500);
+      if (rcpsd.is(':hidden')) rcpsd.show('blind', {direction:'vertical'}, 500);
     });
 
-    if(sPointer.enabled || '' == $('#title').val()) {
+    if(sPointer.enabled || '' == title.val()) {
       $('#title').pointer({
         content: '<h3>' + sPointer.title + '</h3><p>' + sPointer.content + '</p>',
         position: 'top',

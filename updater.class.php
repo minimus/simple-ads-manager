@@ -5,135 +5,6 @@ if(!class_exists('SamUpdater')) {
     private $versionsData;
     private $options;
 
-    private $pTableDef = array(
-      'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
-      'name' => array('Type' => "varchar(255)", 'Null' => 'NO', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'description' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'code_before' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'code_after' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'place_size' => array('Type' => "varchar(25)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'place_custom_width' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'place_custom_height' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'patch_img' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'patch_link' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'patch_code' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'patch_adserver' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'patch_dfp' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'patch_source' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'patch_hits' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'trash' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => '')
-    );
-
-    private $aTableDef = array(
-      'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
-      'pid' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => ''),
-      'name' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'description' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'code_type' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'code_mode' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '1', 'Extra' => ''),
-      'ad_code' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_img' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_alt' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_title' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_no' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'ad_target' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_swf' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'ad_swf_flashvars' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_swf_params' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_swf_attributes' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'count_clicks' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'view_type' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '1', 'Extra' => ''),
-      'view_pages' => array('Type' => "set('isHome','isSingular','isSingle','isPage','isAttachment','isSearch','is404','isArchive','isTax','isCategory','isTag','isAuthor','isDate','isPostType','isPostTypeArchive')", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'view_id' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_users' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_users_unreg' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_users_reg' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'x_ad_users' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'x_view_users' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_users_adv' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_cats' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'view_cats' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_authors' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'view_authors' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_tags' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'view_tags' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_custom' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'view_custom' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'x_id' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'x_view_id' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'x_cats' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'x_view_cats' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'x_authors' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'x_view_authors' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'x_tags' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'x_view_tags' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'x_custom' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'x_view_custom' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_schedule' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'ad_start_date' => array('Type' => "date", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'ad_end_date' => array('Type' => "date", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'limit_hits' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'hits_limit' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'limit_clicks' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'clicks_limit' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'ad_hits' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'ad_clicks' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'ad_weight' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '10', 'Extra' => ''),
-      'ad_weight_hits' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'adv_nick' => array('Type' => "varchar(50)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'adv_name' => array('Type' => "varchar(100)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'adv_mail' => array('Type' => "varchar(50)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'cpm' => array('Type' => "decimal(10,2) unsigned", 'Null' => 'YES', 'Key' => '', 'Default' => '0.00', 'Extra' => ''),
-      'cpc' => array('Type' => "decimal(10,2) unsigned", 'Null' => 'YES', 'Key' => '', 'Default' => '0.00', 'Extra' => ''),
-      'per_month' => array('Type' => "decimal(10,2) unsigned", 'Null' => 'YES', 'Key' => '', 'Default' => '0.00', 'Extra' => ''),
-      'trash' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => '')
-    );
-
-    private $zTableDef = array(
-      'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
-      'name' => array('Type' => "varchar(255)", 'Null' => 'NO', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'description' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'z_default' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_home' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_singular' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_single' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_ct' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_single_ct' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'z_page' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_attachment' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_search' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_404' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_archive' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_tax' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_category' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_cats' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'z_tag' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_author' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_authors' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'z_date' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_cts' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-      'z_archive_ct' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'trash' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => '')
-    );
-
-    private $bTableDef = array(
-      'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
-      'name' => array('Type' => "varchar(255)", 'Null' => 'NO', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'description' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'b_lines' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '2', 'Extra' => ''),
-      'b_cols' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '2', 'Extra' => ''),
-      'block_data' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-      'b_margin' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '5px 5px 5px 5px', 'Extra' => 'str'),
-      'b_padding' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '5px 5px 5px 5px', 'Extra' => 'str'),
-      'b_background' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '#FFFFFF', 'Extra' => 'str'),
-      'b_border' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '0px solid #333333', 'Extra' => 'str'),
-      'i_margin' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '5px 5px 5px 5px', 'Extra' => 'str'),
-      'i_padding' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '5px 5px 5px 5px', 'Extra' => 'str'),
-      'i_background' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '#FFFFFF', 'Extra' => 'str'),
-      'i_border' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '0px solid #333333', 'Extra' => 'str'),
-      'trash' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => '')
-    );
-
     public function __construct($dbVersion, $versionsData, $options = null) {
       $this->dbVersion = $dbVersion;
       $this->versionsData = $versionsData;
@@ -336,7 +207,7 @@ if(!class_exists('SamUpdater')) {
     }
 
     public function update() {
-      global $wpdb, $charset_collate;
+      global $wpdb, $charset_collate, $sam_tables_defs;
       $pTable = $wpdb->prefix . "sam_places";
       $aTable = $wpdb->prefix . "sam_ads";
       $zTable = $wpdb->prefix . "sam_zones";
@@ -391,7 +262,7 @@ if(!class_exists('SamUpdater')) {
           dbDelta($pSql);
         }
         else {
-          $pSql = self::getUpdateSql($pTable, $this->pTableDef);
+          $pSql = self::getUpdateSql($pTable, $sam_tables_defs['places']);
           $dbResult = $wpdb->query($pSql);
         }
 
@@ -470,7 +341,7 @@ if(!class_exists('SamUpdater')) {
           dbDelta($aSql);
         }
         else {
-          $aSql = self::getUpdateSql($aTable, $this->aTableDef);
+          $aSql = self::getUpdateSql($aTable, $sam_tables_defs['ads']);
           $dbResult = $wpdb->query($aSql);
         }
 
@@ -513,7 +384,7 @@ if(!class_exists('SamUpdater')) {
           dbDelta($zSql);
         }
         else {
-          $zSql = self::getUpdateSql($zTable, $this->zTableDef);
+          $zSql = self::getUpdateSql($zTable, $sam_tables_defs['zones']);
           $dbResult = $wpdb->query($zSql);
         }
 
@@ -545,7 +416,7 @@ if(!class_exists('SamUpdater')) {
           dbDelta($bSql);
         }
         else {
-          $bSql = self::getUpdateSql($bTable, $this->bTableDef);
+          $bSql = self::getUpdateSql($bTable, $sam_tables_defs['blocks']);
           $dbResult = $wpdb->query($bSql);
         }
 

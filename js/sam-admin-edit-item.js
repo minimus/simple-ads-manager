@@ -1,156 +1,161 @@
 /**
  * Created by minimus on 17.11.13.
  */
-
+var sam = sam || {};
 (function ($) {
-  $(document).ready(function () {
-    var em = $('#editor_mode').val();
+  var media, mediaTexts = samEditorOptions.media;
 
-    $("#title").tooltip({
-      track: true
-    });
+  sam.media = media = {
+    buttonId: '#banner-media',
+    adUrl: '#ad_img',
+    adImgId: '#ad_img_id',
+    adName: '#title',
+    adDesc: '#item_description',
+    adAlt: '#ad_alt',
 
-    var options = $.parseJSON($.ajax({
-      url:ajaxurl,
-      data:{action:'get_strings'},
-      async:false,
-      dataType:'jsonp'
-    }).responseText);
+    init: function() {
+      $(this.buttonId).on( 'click', this.openMediaDialog );
+    },
 
-    var
-      btnUpload = $("#upload-file-button"),
-      status = $("#uploading"),
-      srcHelp = $("#uploading-help"),
-      loadImg = $('#load_img'),
-      sPointer,
-      fileExt = '';
-
-    var fu = new AjaxUpload(btnUpload, {
-      action:ajaxurl,
-      name:'uploadfile',
-      data:{
-        action:'upload_ad_image'
-      },
-      onSubmit:function (file, ext) {
-        if (!(ext && /^(jpg|png|jpeg|gif|swf)$/.test(ext))) {
-          status.text(options.status);
-          return false;
-        }
-        loadImg.show();
-        status.text(options.uploading);
-      },
-      onComplete:function (file, response) {
-        status.text('');
-        loadImg.hide();
-        $('<div id="files"></div>').appendTo(srcHelp);
-        if (response == "success") {
-          $("#files").text(options.file + ' ' + file + ' ' + options.uploaded)
-            .addClass('updated')
-            .delay(3000)
-            .fadeOut(1000, function () {
-              $(this).remove();
-            });
-          if (em == 'item') $("#ad_img").val(options.url + file);
-          else if (em == 'place') $("#patch_img").val(options.url + file);
-        }
-        else {
-          $('#files').text(file + ' ' + response)
-            .addClass('error')
-            .delay(3000)
-            .fadeOut(1000, function () {
-              $(this).remove();
-            });
-        }
-      }
-    });
-
-    $('#image_tools').tabs();
-
-    $('#tabs').tabs({
-      activate: function( event, ui ) {
-        var el = ui.newPanel[0].id;
-        if(el == 'tabs-1') {
-          postsGrid.w2render('posts-grid');
-        }
-        if(el == 'tabs-2') {
-          if($('#rc-ctt').is(':visible')) cttGrid.w2render('ctt-grid');
-          if($('#rc-xct').is(':visible')) xcttGrid.w2render('x-ctt-grid');
-          if($('#rc-xid').is(':visible')) xpostsGrid.w2render('x-posts-grid');
-          if($('#x-view-users').is(':visible')) usersGrid.w2render('users-grid');
-          if($('#rc-ac').is(':visible')) catsGrid.w2render('cats-grid');
-          if($('#rc-xc').is(':visible')) xcatsGrid.w2render('x-cats-grid');
-          if($('#rc-au').is(':visible')) authGrid.w2render('auth-grid');
-          if($('#rc-xa').is(':visible')) xauthGrid.w2render('x-auth-grid');
-          if($('#rc-at').is(':visible')) tagsGrid.w2render('tags-grid');
-          if($('#rc-xt').is(':visible')) xtagsGrid.w2render('x-tags-grid');
-          if($('#rc-cu').is(':visible')) custGrid.w2render('cust-grid');
-          if($('#rc-xu').is(':visible')) xcustGrid.w2render('x-cust-grid');
-        }
-      }
-    });
-
-    sPointer = samPointer.ads;
-    sPointer.pointer = 'ads';
-
-    var samUploader, mediaTexts = samPointer.media;
-
-    $("#ad_start_date, #ad_end_date").datepicker({
-      dateFormat:'yy-mm-dd',
-      showButtonPanel:true
-    });
-
-    // Advertiser ComboGrid
-    $('#adv_nick').combogrid({
-      url: ajaxurl+'?action=get_combo_data',
-      datatype: "json",
-      munit: 'px',
-      alternate: true,
-      colModel: options.users.colModel,
-      select: function(event, ui) {
-        $('#adv_nick').val(ui.item.slug);
-        $('#adv_name').val(ui.item.title);
-        $('#adv_mail').val(ui.item.email);
-        return false;
-      }
-    });
-
-    $('#banner-media').click(function(e) {
+    openMediaDialog: function( e ) {
       e.preventDefault();
 
-      if(samUploader) {
-        samUploader.open();
+      if ( this._frame ) {
+        this._frame.open();
         return;
       }
 
-      samUploader = wp.media.frames.samBanner = wp.media({
+      var Attachment = wp.media.model.Attachment;
+
+      this._frame = media.frame = wp.media({
         title: mediaTexts.title,
-        button: {text: mediaTexts.button},
-        library: {type: 'image'},
-        multiple: false
+        button: {
+          text: mediaTexts.button
+        },
+        multiple: false,
+        library: {
+          type: 'image'
+        }/*,
+         selection: [ Attachment.get( $(this.adImgId).val() ) ]*/
       });
 
-      samUploader.on('select', function() {
-        var
-          adImg = $('#ad_img'),
-          adName = $('#title'),
-          adDesc = $('#item_description'),
-          adAlt = $('#ad_alt');
-
-        attachment = samUploader.state().get('selection').first().toJSON();
-        adImg.val(attachment.url); // alt, caption, title, description
-        if('' == adName.val() && '' != attachment.caption) adName.val(attachment.caption);
-        if('' == adDesc.val() && '' != attachment.description) adDesc.val(attachment.description);
-        if('' == adAlt.val() && '' != attachment.alt) adAlt.val(attachment.alt);
+      this._frame.on('ready', function() {
+        //
       });
 
-      samUploader.open();
-    });
+      this._frame.state( 'library' ).on('select', function() {
+        var attachment = this.get( 'selection' ).single();
+        media.handleMediaAttachment( attachment );
+      });
 
-    function buildGrid(name, grig, vn, vi, field, gc, gr) {
-      //grig = $('#' + name);
+      this._frame.open();
+    },
+
+    handleMediaAttachment: function(a) {
+      var attechment = a.toJSON();
+      $(this.adUrl).val(attechment.url);
+      $(this.adImgId).val(attechment.id);
+      if('' == $(this.adName).val() && '' != attechment.title) $(this.adName).val(attechment.title);
+      if('' == $(this.adDesc).val() && '' != attechment.caption) $(this.adDesc).val(attechment.caption);
+      if('' == $(this.adAlt).val() && '' != attechment.alt) $(this.adAlt).val(attechment.alt);
+    }
+  };
+
+  $(document).ready(function () {
+    var em = $('#editor_mode').val(), options, fu, title = $('#title');
+
+    var
+      rcvt0 = $('#rc-vt0'), rcvt2 = $('#rc-vt2'), xId = $('#x_id'), rcxid = $('#rc-xid'),
+      adCats = $('#ad_cats'), rcac = $('#rc-ac'), acw = $('#acw'), xCats = $('#x_cats'), rcxc = $('#rc-xc'),
+      actt = $('#ad_custom_tax_terms'), rcctt = $('#rc-ctt'), cttw = $('#cttw'), xacct = $('#x_ad_custom_tax_terms'), rcxct = $('#rc-xct'),
+      adAuth = $('#ad_authors'), rcau = $('#rc-au'), aaw = $('#aaw'), xAuth = $('#x_authors'), rcxa = $('#rc-xa'),
+      adTags = $('#ad_tags'), rcat = $('#rc-at'), atw = $('#atw'), xTags = $('#x_tags'), rcxt = $('#rc-xt'),
+      adCust = $('#ad_custom'), rccu = $('#rc-cu'), cuw = $('#cuw'), xCust = $('#x_custom'), rcxu = $('#rc-xu'),
+      xViewUsers = $('#x-view-users'), custUsers = $('#custom-users'),
+
+      adUsersReg = $("#ad_users_reg"), xRegUsers = $('#x-reg-users'), xAdUsers = $('#x_ad_users'),
+
+      btnUpload = $("#upload-file-button"), status = $("#uploading"), srcHelp = $("#uploading-help"),
+      loadImg = $('#load_img'), sPointer,
+
+      cttGrid = $('#ctt-grid'), cttIn = $('#view-custom-tax-terms'),
+      xcttGrid = $('#x-ctt-grid'), xcttIn = $('#x-view-custom-tax-terms'),
+      postsGrid = $('#posts-grid'), postsIn = $('#view_id'),
+      usersGrid = $('#users-grid'), usersIn = $('#x_view_users'),
+      xpostsGrid = $('#x-posts-grid'), xpostsIn = $('#x_view_id'),
+      catsGrid = $('#cats-grid'), catsIn = $('#view_cats'),
+      xcatsGrid = $('#x-cats-grid'), xcatsIn = $('#x_view_cats'),
+      authGrid = $('#auth-grid'), authIn = $('#view_authors'),
+      xauthGrid = $('#x-auth-grid'), xauthIn = $('#x_view_authors'),
+      tagsGrid = $('#tags-grid'), tagsIn = $('#view_tags'),
+      xtagsGrid = $('#x-tags-grid'), xtagsIn = $('#x_view_tags'),
+      custGrid = $('#cust-grid'), custIn = $('#view_custom'),
+      xcustGrid = $('#x-cust-grid'), xcustIn = $('#x_view_custom');
+
+    var
+      samUploader, mediaTexts = samEditorOptions.media,
+      samAjaxUrl = samEditorOptions.samAjaxUrl,
+      models = samEditorOptions.models,
+      gData = samEditorOptions.data,
+      samStrs = samEditorOptions.strings,
+      sPost = encodeURI(samStrs.posts), sPage = encodeURI(samStrs.page);
+
+    function buildLGrid(name, grid, vi, field, gc, url) {
+      var iVal = vi.val();
+      grid.w2grid({
+        name: name,
+        show: {selectColumn: true},
+        multiSelect: true,
+        columns: gc,
+        url: url,
+        onSelect: function(event) {
+          event.onComplete = function() {
+            var out = '', recs = this.getSelection(), data;
+            for(var i = 0; i < recs.length; i++) {
+              var rec = this.get(recs[i]);
+              data = (field == 'id') ? rec.id : rec.slug;
+              out += (i == recs.length - 1) ? data : (data + ',');
+            }
+            vi.val(out);
+          }
+        },
+        onUnselect: function(event) {
+          event.onComplete = function() {
+            var out = '', recs = this.getSelection(), data;
+            for(var i = 0; i < recs.length; i++) {
+              var rec = this.get(recs[i]);
+              data = (field == 'id') ? rec.id : rec.slug;
+              out += (i == recs.length - 1) ? data : (data + ',');
+            }
+            vi.val(out);
+          }
+        },
+        onLoad: function(event) {
+          event.onComplete = function() {
+            if(null != iVal && '' != iVal) {
+              var arr = iVal.split(',');
+
+              $.each(arr, function(i, val) {
+                $.each(w2ui[name].records, function(index, value) {
+                  var iData = (field == 'id') ? value.id : value.slug;
+                  if(iData == val) {
+                    w2ui[name].select(value.recid);
+                    return false;
+                  }
+                  else return true;
+                });
+              });
+            }
+          }
+        }
+      });
+    }
+
+    function buildGrid(name, grid, vi, field, gc, gr) {
+      //grid = $('#' + name);
       //vi = $('#' + vn);
       var iVal = vi.val();
-      grig.w2grid({
+      grid.w2grid({
         name: name,
         show: {selectColumn: true},
         multiSelect: true,
@@ -196,62 +201,108 @@
       }
     }
 
-    // Custom Taxonomies Terms Grid
-    var cttGrid = $('#ctt-grid'), cttIn = $('#view-custom-tax-terms');
-    buildGrid('ctt-grid', cttGrid, 'view-custom-tax-terms', cttIn, 'slug', options.custom_taxes.columns, options.custom_taxes.taxes);
+    title.tooltip({
+      track: true
+    });
+    $('#image_tools').tabs();
 
-    //
-    var xcttGrid = $('#x-ctt-grid'), xcttIn = $('#x-view-custom-tax-terms');
-    buildGrid('x-ctt-grid', xcttGrid, 'x-view-custom-tax-terms', xcttIn, 'slug', options.custom_taxes.columns, options.custom_taxes.taxes);
+    media.init();
 
-    // Posts Grid
-    var postsGrid = $('#posts-grid'), postsIn = $('#view_id');
-    buildGrid('posts-grid', postsGrid, 'view_id', postsIn, 'id', options.posts.columns, options.posts.posts);
+    fu = new AjaxUpload(btnUpload, {
+      action:ajaxurl,
+      name:'uploadfile',
+      data:{
+        action:'upload_ad_image'
+      },
+      onSubmit:function (file, ext) {
+        if (!(ext && /^(jpg|png|jpeg|gif|swf)$/.test(ext))) {
+          status.text(samStrs.status);
+          return false;
+        }
+        loadImg.show();
+        status.text(samStrs.uploading);
+        return false;
+      },
+      onComplete:function (file, response) {
+        status.text('');
+        loadImg.hide();
+        $('<div id="files"></div>').appendTo(srcHelp);
+        if (response == "success") {
+          $("#files").text(samStrs.file + ' ' + file + ' ' + samStrs.uploaded)
+            .addClass('updated')
+            .delay(3000)
+            .fadeOut(1000, function () {
+              $(this).remove();
+            });
+          if (em == 'item') $("#ad_img").val(samStrs.url + file);
+          else if (em == 'place') $("#patch_img").val(samStrs.url + file);
+        }
+        else {
+          $('#files').text(file + ' ' + response)
+            .addClass('error')
+            .delay(3000)
+            .fadeOut(1000, function () {
+              $(this).remove();
+            });
+        }
+      }
+    });
 
-    // Users Grid
-    var usersGrid = $('#users-grid'), usersIn = $('#x_view_users');
-    buildGrid('users-grid', usersGrid, 'x_view_users', usersIn, 'slug', options.users.columns, options.users.users);
-
-    // xPosts Grid
-    var xpostsGrid = $('#x-posts-grid'), xpostsIn = $('#x_view_id');
-    buildGrid('x-posts-grid', xpostsGrid, 'x_view_id', xpostsIn, 'id', options.posts.columns, options.posts.posts);
-
-    // Categories Grid
-    var catsGrid = $('#cats-grid'), catsIn = $('#view_cats');
-    buildGrid('cats-grid', catsGrid, 'view_cats', catsIn, 'slug', options.cats.columns, options.cats.cats);
-
-    // xCats Grid
-    var xcatsGrid = $('#x-cats-grid'), xcatsIn = $('#x_view_cats');
-    buildGrid('x-cats-grid', xcatsGrid, 'x_view_cats', xcatsIn, 'slug', options.cats.columns, options.cats.cats);
-
-    // Auth Grid
-    var authGrid = $('#auth-grid'), authIn = $('#view_authors');
-    buildGrid('auth-grid', authGrid, 'view_authors', authIn, 'slug', options.authors.columns, options.authors.authors);
-
-    // xauth Grid
-    var xauthGrid = $('#x-auth-grid'), xauthIn = $('#x_view_authors');
-    buildGrid('x-auth-grid', xauthGrid, 'x_view_authors', xauthIn, 'slug', options.authors.columns, options.authors.authors);
-
-    // Tags Grid
-    var tagsGrid = $('#tags-grid'), tagsIn = $('#view_tags');
-    buildGrid('tags-grid', tagsGrid, 'view_tags', tagsIn, 'slug', options.tags.columns, options.tags.tags);
-
-    // xTags Grid
-    var xtagsGrid = $('#x-tags-grid'), xtagsIn = $('#x_view_tags');
-    buildGrid('x-tags-grid', xtagsGrid, 'x_view_tags', xtagsIn, 'slug', options.tags.columns, options.tags.tags);
-
-    // Customs Grid
-    var custGrid = $('#cust-grid'), custIn = $('#view_custom');
-    buildGrid('cust-grid', custGrid, 'view_custom', custIn, 'slug', options.customs.columns, options.customs.customs);
-
-    // xCustoms Grid
-    var xcustGrid = $('#x-cust-grid'), xcustIn = $('#x_view_custom');
-    buildGrid('x-cust-grid', xcustGrid, 'x_view_custom', xcustIn, 'slug', options.customs.columns, options.customs.customs);
+    // Advertiser ComboGrid
+    $('#adv_nick').combogrid({
+      url: samAjaxUrl + '?action=load_combo_data',
+      datatype: "json",
+      munit: 'px',
+      alternate: true,
+      colModel: models.comboGrid,
+      select: function(event, ui) {
+        $('#adv_nick').val(ui.item.slug);
+        $('#adv_name').val(ui.item.title);
+        $('#adv_mail').val(ui.item.email);
+        return false;
+      }
+    });
 
     $("#add-file-button").click(function () {
-      var curFile = options.url + $("select#files_list option:selected").val();
+      var curFile = samStrs.url + $("select#files_list option:selected").val();
       $("#ad_img").val(curFile);
       return false;
+    });
+
+    buildGrid('ctt-grid', cttGrid, cttIn, 'slug', models.customTaxes, gData.cTax);
+    buildGrid('x-ctt-grid', xcttGrid, xcttIn, 'slug', models.customTaxes, gData.cTax);
+    buildGrid('cust-grid', custGrid, custIn, 'slug', models.customs, gData.customs);
+    buildGrid('x-cust-grid', xcustGrid, xcustIn, 'slug', models.customs, gData.customs);
+
+    var
+      postAjax =
+        samAjaxUrl +
+        '?action=load_posts&cstr=' + samEditorOptions.data.custList +
+          '&sp=' + sPost + '&spg=' + sPage;
+    buildLGrid('posts-grid', postsGrid, postsIn, 'id', models.posts, postAjax);
+    buildLGrid('x-posts-grid', xpostsGrid, xpostsIn, 'id', models.posts, postAjax);
+
+    $('#tabs').tabs({
+      activate: function( event, ui ) {
+        var el = ui.newPanel[0].id;
+        if(el == 'tabs-1') {
+          if(w2ui['posts-grid']) postsGrid.w2render('posts-grid');
+        }
+        if(el == 'tabs-2') {
+          if(rcctt.is(':visible') && w2ui['ctt-grid']) cttGrid.w2render('ctt-grid');
+          if(rcxct.is(':visible') && w2ui['x-ctt-grid']) xcttGrid.w2render('x-ctt-grid');
+          if(rcxid.is(':visible') && w2ui['x-posts-grid']) xpostsGrid.w2render('x-posts-grid');
+          if(xViewUsers.is(':visible') && w2ui['users-grid']) usersGrid.w2render('users-grid');
+          if(rcac.is(':visible') && w2ui['cats-grid']) catsGrid.w2render('cats-grid');
+          if(rcxc.is(':visible') && w2ui['x-cats-grid']) xcatsGrid.w2render('x-cats-grid');
+          if(rcau.is(':visible') && w2ui['auth-grid']) authGrid.w2render('auth-grid');
+          if(rcxa.is(':visible') && w2ui['x-auth-grid']) xauthGrid.w2render('x-auth-grid');
+          if(rcat.is(':visible') && w2ui['tags-grid']) tagsGrid.w2render('tags-grid');
+          if(rcxt.is(':visible') && w2ui['x-tags-grid']) xtagsGrid.w2render('x-tags-grid');
+          if(rccu.is(':visible') && w2ui['cust-grid']) custGrid.w2render('cust-grid');
+          if(rcxu.is(':visible') && w2ui['xcust-grid']) xcustGrid.w2render('x-cust-grid');
+        }
+      }
     });
 
     $('#code_mode_false').click(function () {
@@ -263,12 +314,6 @@
       $("#rc-cmf").hide('blind', {direction:'vertical'}, 500);
       $("#rc-cmt").show('blind', {direction:'vertical'}, 500);
     });
-
-    var
-      rcvt0 = $('#rc-vt0'),
-      rcvt2 = $('#rc-vt2'),
-      xId = $('#x_id'),
-      rcxid = $('#rc-xid');
 
     if(2 == $('input:radio[name=view_type]:checked').val()) {
       if(xId.is(':checked')) {
@@ -295,7 +340,7 @@
           if (rcvt0.is(':visible')) rcvt0.hide('blind', {direction:'vertical'}, 500);
           if (rcvt2.is(':hidden')) {
             rcvt2.show('blind', {direction:'vertical'}, 500, function() {
-              postsGrid.w2render('posts-grid');
+              if(w2ui['posts-grid']) postsGrid.w2render('posts-grid');
             });
             if(xId.is(':checked')) {
               xId.attr('checked', false);
@@ -307,6 +352,70 @@
       }
     });
 
+    var authRequest = $.ajax({
+      url:samAjaxUrl,
+      data: {
+        action: 'load_authors',
+        level: 3
+      },
+      type: 'POST'
+    }), authData;
+
+    authRequest.done(function(data) {
+      authData = data;
+      buildGrid('auth-grid', authGrid, authIn, 'slug', models.authors, authData);
+      buildGrid('x-auth-grid', xauthGrid, xauthIn, 'slug', models.authors, authData);
+    });
+
+    var usersRequest = $.ajax({
+      url: samAjaxUrl,
+      data: {
+        action: 'load_users',
+        subscriber: encodeURI(samStrs.subscriber),
+        contributor: encodeURI(samStrs.contributor),
+        author: encodeURI(samStrs.author),
+        editor: encodeURI(samStrs.editor),
+        admin: encodeURI(samStrs.admin),
+        sadmin: encodeURI(samStrs.superAdmin)
+      },
+      type: 'POST'
+    }), usersData;
+
+    usersRequest.done(function(data) {
+      usersData = data;
+      buildGrid('users-grid', usersGrid, usersIn, 'slug', models.users, usersData);
+    });
+
+    var catsRequest = $.ajax({
+      url: samAjaxUrl,
+      data: {
+        action: 'load_cats',
+        level: 3
+      },
+      type: 'POST'
+    }), catsData;
+
+    catsRequest.done(function(data) {
+      catsData = data;
+      buildGrid('cats-grid', catsGrid, catsIn, 'slug', models.cats, catsData);
+      buildGrid('x-cats-grid', xcatsGrid, xcatsIn, 'slug', models.cats, catsData);
+    });
+
+    var tagsRequest = $.ajax({
+      url: samAjaxUrl,
+      data: {
+        action: 'load_tags',
+        level: 3
+      },
+      type: 'POST'
+    }), tagsData;
+
+    tagsRequest.done(function(data) {
+      tagsData = data;
+      buildGrid('tags-grid', tagsGrid, tagsIn, 'slug', models.tags, tagsData);
+      buildGrid('x-tags-grid', xtagsGrid, xtagsIn, 'slug', models.tags, tagsData);
+    });
+
     xId.click(function () {
       if (xId.is(':checked')) {
         if(2 == $('input:radio[name=view_type]:checked').val()) {
@@ -314,7 +423,7 @@
         }
         else
           rcxid.show('blind', {direction:'vertical'}, 500, function() {
-            xpostsGrid.w2render('x-posts-grid');
+            if(w2ui['x-posts-grid']) xpostsGrid.w2render('x-posts-grid');
           });
       }
       else rcxid.hide('blind', {direction:'vertical'}, 500);
@@ -323,43 +432,36 @@
     $("input:radio[name=ad_users]").click(function() {
       var uval = $('input:radio[name=ad_users]:checked').val();
       if(uval == '0') {
-        if($('#custom-users').is(':visible')) $('#custom-users').hide('blind', {direction:'vertical'}, 500);
+        if(custUsers.is(':visible')) custUsers.hide('blind', {direction:'vertical'}, 500);
       }
       else {
-        if($('#custom-users').is(':hidden'))
-          $('#custom-users').show('blind', {direction:'vertical'}, 500, function() {
-            if($('#x-view-users').is(':visible')) usersGrid.w2render('users-grid');
+        if(custUsers.is(':hidden'))
+          custUsers.show('blind', {direction:'vertical'}, 500, function() {
+            if(xViewUsers.is(':visible') && w2ui['users-grid']) usersGrid.w2render('users-grid');
           });
       }
     });
 
-    $("#ad_users_reg").click(function() {
-      if($('#ad_users_reg').is(':checked'))
-        $('#x-reg-users').show('blind', {direction:'vertical'}, 500, function() {
-          if($('#x-view-users').is(':visible')) usersGrid.w2render('users-grid');
+    adUsersReg.click(function() {
+      if(adUsersReg.is(':checked'))
+        xRegUsers.show('blind', {direction:'vertical'}, 500, function() {
+          if(xViewUsers.is(':visible') && w2ui['users-grid']) usersGrid.w2render('users-grid');
         });
-      else $('#x-reg-users').hide('blind', {direction:'vertical'}, 500);
+      else xRegUsers.hide('blind', {direction:'vertical'}, 500);
     });
 
-    $('#x_ad_users').click(function() {
-      if($('#x_ad_users').is(':checked'))
-        $('#x-view-users').show('blind', {direction:'vertical'}, 500, function() {
-          usersGrid.w2render('users-grid');
+    xAdUsers.click(function() {
+      if(xAdUsers.is(':checked'))
+        xViewUsers.show('blind', {direction:'vertical'}, 500, function() {
+          if(w2ui['users-grid']) usersGrid.w2render('users-grid');
         });
-      else $('#x-view-users').hide('blind', {direction:'vertical'}, 500);
+      else xViewUsers.hide('blind', {direction:'vertical'}, 500);
     });
 
     $('#ad_swf').click(function() {
       if($('#ad_swf').is(':checked')) $('#swf-params').show('blind', {direction:'vertical'}, 500);
       else $('#swf-params').hide('blind', {direction:'vertical'}, 500);
     });
-
-    var
-      adCats = $('#ad_cats'),
-      rcac = $('#rc-ac'),
-      acw = $('#acw'),
-      xCats = $('#x_cats'),
-      rcxc = $('#rc-xc');
 
     if(adCats.is(':checked') && xCats.is(':checked')) {
       xCats.attr('checked', false);
@@ -369,7 +471,7 @@
     adCats.click(function () {
       if (adCats.is(':checked')) {
         rcac.show('blind', {direction:'vertical'}, 500, function() {
-          catsGrid.w2render('cats-grid');
+          if(w2ui['cats-grid']) catsGrid.w2render('cats-grid');
         });
         acw.show('blind', {direction:'vertical'}, 500);
         if(xCats.is(':checked')) {
@@ -386,7 +488,7 @@
     xCats.click(function () {
       if (xCats.is(':checked')) {
         rcxc.show('blind', {direction:'vertical'}, 500, function() {
-          xcatsGrid.w2render('x-cats-grid');
+          if(w2ui['x-cats-grid']) xcatsGrid.w2render('x-cats-grid');
         });
         if(adCats.is(':checked')) {
           adCats.attr('checked', false);
@@ -397,13 +499,6 @@
       else rcxc.hide('blind', {direction:'vertical'}, 500);
     });
 
-    var
-      actt = $('#ad_custom_tax_terms'),
-      rcctt = $('#rc-ctt'),
-      cttw = $('#cttw'),
-      xacct = $('#x_ad_custom_tax_terms'),
-      rcxct = $('#rc-xct');
-
     if(actt.is(':checked') && xacct.is(':checked')) {
       xacct.attr('checked', false);
       rcxct.hide('blind', {direction:'vertical'}, 500);
@@ -412,7 +507,7 @@
     actt.click(function() {
       if(actt.is(':checked')) {
         rcctt.show('blind', {direction: 'vertical'}, 500, function() {
-          cttGrid.w2render('ctt-grid');
+          if(w2ui['ctt-grid']) cttGrid.w2render('ctt-grid');
         });
         cttw.show('blind', {direction:'vertical'}, 500);
         if(xacct.is(':checked')) {
@@ -429,7 +524,7 @@
     xacct.click(function() {
       if(xacct.is(':checked')) {
         rcxct.show('blind', {direction: 'vertical'}, 500, function() {
-          xcttGrid.w2render('x-ctt-grid');
+          if(w2ui['x-ctt-grid']) xcttGrid.w2render('x-ctt-grid');
         });
         if(actt.is(':checked')) {
           actt.attr('checked', false);
@@ -440,13 +535,6 @@
       else rcxct.hide('blind', {direction: 'vertical'}, 500);
     });
 
-    var
-      adAuth = $('#ad_authors'),
-      rcau = $('#rc-au'),
-      aaw = $('#aaw'),
-      xAuth = $('#x_authors'),
-      rcxa = $('#rc-xa');
-
     if(adAuth.is(':checked') && xAuth.is(':checked')) {
       xAuth.attr('checked', false);
       rcxa.hide('blind', {direction:'vertical'}, 500);
@@ -455,7 +543,7 @@
     adAuth.click(function () {
       if (adAuth.is(':checked')) {
         rcau.show('blind', {direction:'vertical'}, 500, function() {
-          authGrid.w2render('auth-grid');
+          if(w2ui['auth-grid']) authGrid.w2render('auth-grid');
         });
         aaw.show('blind', {direction:'vertical'}, 500);
         if(xAuth.is(':checked')) {
@@ -472,7 +560,7 @@
     xAuth.click(function () {
       if (xAuth.is(':checked')) {
         rcxa.show('blind', {direction:'vertical'}, 500, function() {
-          xauthGrid.w2render('x-auth-grid');
+          if(w2ui['x-auth-grid']) xauthGrid.w2render('x-auth-grid');
         });
         if(adAuth.is(':checked')) {
           adAuth.attr('checked', false);
@@ -483,13 +571,6 @@
       else rcxa.hide('blind', {direction:'vertical'}, 500);
     });
 
-    var
-      adTags = $('#ad_tags'),
-      rcat = $('#rc-at'),
-      atw = $('#atw'),
-      xTags = $('#x_tags'),
-      rcxt = $('#rc-xt');
-
     if(adTags.is(':checked') && xTags.is(':checked')) {
       xTags.attr('checked', false);
       rcxt.hide('blind', {direction:'vertical'}, 500);
@@ -498,7 +579,7 @@
     adTags.click(function () {
       if (adTags.is(':checked')) {
         rcat.show('blind', {direction:'vertical'}, 500, function() {
-          tagsGrid.w2render('tags-grid');
+          if(w2ui['tags-grid']) tagsGrid.w2render('tags-grid');
         });
         atw.show('blind', {direction:'vertical'}, 500);
         if(xTags.is(':checked')) {
@@ -515,7 +596,7 @@
     xTags.click(function () {
       if (xTags.is(':checked')) {
         rcxt.show('blind', {direction:'vertical'}, 500, function() {
-          xtagsGrid.w2render('x-tags-grid');
+          if(w2ui['x-tags-grid']) xtagsGrid.w2render('x-tags-grid');
         });
         if(adTags.is(':checked')) {
           adTags.attr('checked', false);
@@ -526,13 +607,6 @@
       else rcxt.hide('blind', {direction:'vertical'}, 500);
     });
 
-    var
-      adCust = $('#ad_custom'),
-      rccu = $('#rc-cu'),
-      cuw = $('#cuw'),
-      xCust = $('#x_custom'),
-      rcxu = $('#rc-xu');
-
     if(adCust.is(':checked') && xCust.is(':checked')) {
       xCust.attr('checked', false);
       rcxu.hide('blind', {direction:'vertical'}, 500);
@@ -541,7 +615,7 @@
     adCust.click(function () {
       if (adCust.is(':checked')) {
         rccu.show('blind', {direction:'vertical'}, 500, function() {
-          custGrid.w2render('cust-grid');
+          if(w2ui['cust-grid']) custGrid.w2render('cust-grid');
         });
         cuw.show('blind', {direction:'vertical'}, 500);
         if(xCust.is(':checked')) {
@@ -558,7 +632,7 @@
     xCust.click(function () {
       if (xCust.is(':checked')) {
         rcxu.show('blind', {direction:'vertical'}, 500, function() {
-          xcustGrid.w2render('x-cust-grid');
+          if(w2ui['x-cust-grid']) xcustGrid.w2render('x-cust-grid');
         });
         if(adCust.is(':checked')) {
           adCust.attr('checked', false);
@@ -568,6 +642,49 @@
       }
       else rcxu.hide('blind', {direction:'vertical'}, 500);
     });
+
+    $("#ad_start_date, #ad_end_date").datepicker({
+      dateFormat:'yy-mm-dd',
+      showButtonPanel:true
+    });
+
+    /*var
+      samAttachment = wp.media.model.Attachment,
+      adImgId = $('#ad_img_id');
+
+    $('#banner-media').click(function(e) {
+      e.preventDefault();
+
+      if(samUploader) {
+        samUploader.open();
+        return;
+      }
+
+      samUploader = wp.media.frames.samBanner = wp.media({
+        title: mediaTexts.title,
+        button: {text: mediaTexts.button},
+        library: {type: 'image'},
+        multiple: false,
+        selection: [samAttachment.get( adImgId.val() )]
+      });
+
+      samUploader.on('select', function() {
+        var
+          adImg = $('#ad_img'),
+          adName = $('#title'),
+          adDesc = $('#item_description'),
+          adAlt = $('#ad_alt');
+
+        var attachment = samUploader.state().get('selection').first().toJSON();
+        adImg.val(attachment.url); // alt, caption, title, description
+        adImgId.val(attachment.id);
+        if('' == adName.val() && '' != attachment.caption) adName.val(attachment.caption);
+        if('' == adDesc.val() && '' != attachment.description) adDesc.val(attachment.description);
+        if('' == adAlt.val() && '' != attachment.alt) adAlt.val(attachment.alt);
+      });
+
+      samUploader.open();
+    });*/
 
     $('#ad_schedule').click(function () {
       if ($('#ad_schedule').is(':checked')) $('#rc-sc').show('blind', {direction:'vertical'}, 500);
@@ -584,9 +701,11 @@
       else $('#rc-cl').hide('blind', {direction:'vertical'}, 500);
     });
 
+    sPointer = samEditorOptions.ads;
+    sPointer.pointer = 'ads';
 
-    if(sPointer.enabled || '' == $('#title').val()) {
-      $('#title').pointer({
+    if(sPointer.enabled || '' == title.val()) {
+      title.pointer({
         content: '<h3>' + sPointer.title + '</h3><p>' + sPointer.content + '</p>',
         position: 'top',
         close: function() {
@@ -602,53 +721,60 @@
       }).pointer('open');
     }
 
-    $('#is_singular').click(function () {
-      if ($('#is_singular').is(':checked'))
+    var
+      isSing = $('#is_singular'), isSingle = $('#is_single'), isPage = $('#is_page'), isAttach = $('#is_attachment'), isPostType = $('#is_posttype');
+
+    isSing.click(function () {
+      if (isSing.is(':checked'))
         $('#is_single, #is_page, #is_attachment, #is_posttype').attr('checked', true);
     });
 
     $('#is_single, #is_page, #is_attachment, #is_posttype').click(function () {
-      if ($('#is_singular').is(':checked') &&
-        (!$('#is_single').is(':checked') ||
-          !$('#is_page').is(':checked') ||
-          !$('#is_attachment').is(':checked') ||
-          !$('#is_posttype').is(':checked') )) {
-        $('#is_singular').attr('checked', false);
+      if (isSing.is(':checked') &&
+        (!isSingle.is(':checked') ||
+          !isPage.is(':checked') ||
+          !isAttach.is(':checked') ||
+          !isPostType.is(':checked') )) {
+        isSing.attr('checked', false);
       }
       else {
-        if (!$('#is_singular').is(':checked') &&
-          $('#is_single').is(':checked') &&
-          $('#is_posttype').is(':checked') &&
-          $('#is_page').is(':checked') &&
-          $('#is_attachment').is(':checked'))
-          $('#is_singular').attr('checked', true);
+        if (!isSing.is(':checked') &&
+          isSingle.is(':checked') &&
+          isPostType.is(':checked') &&
+          isPage.is(':checked') &&
+          isAttach.is(':checked'))
+          isSing.attr('checked', true);
       }
     });
 
-    $('#is_archive').click(function () {
-      if ($('#is_archive').is(':checked'))
-        $('#is_tax, #is_category, #is_tag, #is_author, #is_date, #is_posttype_archive').attr('checked', true);
+    var
+      isArc = $('#is_archive'), isTax = $('#is_tax'), isCat = $('#is_category'), isTag = $('#is_tag'),
+      isAuthor = $('#is_author'), isDate = $('#is_date'), isPostTypeArc = $('#is_posttype_archive'),
+      archives = $('#is_tax, #is_category, #is_tag, #is_author, #is_date, #is_posttype_archive');
+
+    isArc.click(function () {
+      if (isArc.is(':checked')) archives.attr('checked', true);
     });
 
-    $('#is_tax, #is_category, #is_tag, #is_author, #is_date, #is_posttype_archive').click(function () {
-      if ($('#is_archive').is(':checked') &&
-        (!$('#is_tax').is(':checked') ||
-          !$('#is_category').is(':checked') ||
-          !$('#is_posttype_archive').is(':checked') ||
-          !$('#is_tag').is(':checked') ||
-          !$('#is_author').is(':checked') ||
-          !$('#is_date').is(':checked'))) {
-        $('#is_archive').attr('checked', false);
+    archives.click(function () {
+      if (isArc.is(':checked') &&
+        (!isTax.is(':checked') ||
+          !isCat.is(':checked') ||
+          !isPostTypeArc.is(':checked') ||
+          !isTag.is(':checked') ||
+          !isAuthor.is(':checked') ||
+          !isDate.is(':checked'))) {
+        isArc.attr('checked', false);
       }
       else {
-        if (!$('#is_archive').is(':checked') &&
-          $('#is_tax').is(':checked') &&
-          $('#is_category').is(':checked') &&
-          $('#is_posttype_archive').is(':checked') &&
-          $('#is_tag').is(':checked') &&
-          $('#is_author').is(':checked') &&
-          $('#is_date').is(':checked')) {
-          $('#is_archive').attr('checked', true);
+        if (!isArc.is(':checked') &&
+          isTax.is(':checked') &&
+          isCat.is(':checked') &&
+          isPostTypeArc.is(':checked') &&
+          isTag.is(':checked') &&
+          isAuthor.is(':checked') &&
+          isDate.is(':checked')) {
+          isArc.attr('checked', true);
         }
       }
     });

@@ -33,12 +33,12 @@
       }).responseText);
 
       var
-        eType = wOpts.data.type, //$('#et-'+idn).val(),
-        eDate = wOpts.data.date, //$('#dt-'+idn).val(),
-        eTable = wOpts.data.name, //$('#tn-'+idn).val(),
-        eMsg = wOpts.data.msg, //$('#em-'+idn).val(),
-        eSql = wOpts.data.es, //$('#es-'+idn).val(),
-        eResolved = wOpts.data.resolved, //$('#rs-'+idn).val(),
+        eType = wOpts.data.type,
+        eDate = wOpts.data.date,
+        eTable = wOpts.data.name,
+        eMsg = wOpts.data.msg,
+        eSql = wOpts.data.es,
+        eResolved = wOpts.data.resolved,
         img = options.imgURL + ((eResolved-0) ? 'ok.png' : 'warning.png'),
         alt = options.alts[eResolved-0],
         dHTML = '<img style="float: left; margin: 5px" src="'+img+'" alt="'+alt+'" />' +

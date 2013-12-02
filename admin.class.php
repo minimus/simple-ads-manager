@@ -15,12 +15,14 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     public function __construct() {
       parent::__construct();
 
-      global $wp_version;
+      global $wp_version, $sam_tables_defs;
       
 			if ( function_exists( 'load_plugin_textdomain' ) )
 				load_plugin_textdomain( SAM_DOMAIN, false, basename( SAM_PATH ) . '/langs/' );
       
       if(!is_dir(SAM_AD_IMG)) mkdir(SAM_AD_IMG);
+
+      $sam_tables_defs = self::getTablesDefs();
 				
       register_activation_hook(SAM_MAIN_FILE, array(&$this, 'onActivate'));
       register_deactivation_hook(SAM_MAIN_FILE, array(&$this, 'onDeactivate'));
@@ -33,14 +35,13 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       define('SAM_ACCESS', $access);
       
       add_action('wp_ajax_upload_ad_image', array(&$this, 'uploadHandler'));
-      add_action('wp_ajax_get_strings', array(&$this, 'getStringsHandler'));
-      add_action('wp_ajax_get_combo_data', array(&$this, 'getComboDataHandler'));
       add_action('wp_ajax_close_pointer', array(&$this, 'closePointerHandler'));
       add_action('wp_ajax_get_error', array(&$this, 'getErrorDataHandler'));
 			add_action('admin_init', array(&$this, 'initSettings'));
 			add_action('admin_menu', array(&$this, 'regAdminPage'));
       add_filter('tiny_mce_version', array(&$this, 'tinyMCEVersion'));
       add_action('init', array(&$this, 'addButtons'));
+      add_filter('image_size_names_choose', array(&$this, 'sizeNamesChoose'));
       if(version_compare($wp_version, '3.3', '<'))
         add_filter('contextual_help', array(&$this, 'help'), 10, 3);
       
@@ -169,6 +170,238 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $updater->update();
 
       $this->getVersions(true);
+    }
+
+    public function getTablesDefs() {
+      $pTableDef = array(
+        'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
+        'name' => array('Type' => "varchar(255)", 'Null' => 'NO', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'description' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'code_before' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'code_after' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'place_size' => array('Type' => "varchar(25)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'place_custom_width' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'place_custom_height' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'patch_img' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'patch_link' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'patch_code' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'patch_adserver' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'patch_dfp' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'patch_source' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'patch_hits' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'trash' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => '')
+      );
+
+      $aTableDef = array(
+        'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
+        'pid' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => ''),
+        'name' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'description' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'code_type' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'code_mode' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '1', 'Extra' => ''),
+        'ad_code' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_img' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_alt' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_title' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_no' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_target' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_swf' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_swf_flashvars' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_swf_params' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_swf_attributes' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'count_clicks' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'view_type' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '1', 'Extra' => ''),
+        'view_pages' => array('Type' => "set('isHome','isSingular','isSingle','isPage','isAttachment','isSearch','is404','isArchive','isTax','isCategory','isTag','isAuthor','isDate','isPostType','isPostTypeArchive')", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'view_id' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_users' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_users_unreg' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_users_reg' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_ad_users' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_view_users' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_users_adv' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_cats' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'view_cats' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_authors' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'view_authors' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_tags' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'view_tags' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_custom' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'view_custom' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_id' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'x_view_id' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_cats' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'x_view_cats' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_authors' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'x_view_authors' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_tags' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'x_view_tags' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_custom' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'x_view_custom' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_schedule' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_start_date' => array('Type' => "date", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_end_date' => array('Type' => "date", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'limit_hits' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'hits_limit' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'limit_clicks' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'clicks_limit' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_hits' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_clicks' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_weight' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '10', 'Extra' => ''),
+        'ad_weight_hits' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'adv_nick' => array('Type' => "varchar(50)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'adv_name' => array('Type' => "varchar(100)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'adv_mail' => array('Type' => "varchar(50)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'cpm' => array('Type' => "decimal(10,2) unsigned", 'Null' => 'YES', 'Key' => '', 'Default' => '0.00', 'Extra' => ''),
+        'cpc' => array('Type' => "decimal(10,2) unsigned", 'Null' => 'YES', 'Key' => '', 'Default' => '0.00', 'Extra' => ''),
+        'per_month' => array('Type' => "decimal(10,2) unsigned", 'Null' => 'YES', 'Key' => '', 'Default' => '0.00', 'Extra' => ''),
+        'trash' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => '')
+      );
+
+      $zTableDef = array(
+        'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
+        'name' => array('Type' => "varchar(255)", 'Null' => 'NO', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'description' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'z_default' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_home' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_singular' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_single' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_ct' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_single_ct' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'z_page' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_attachment' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_search' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_404' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_archive' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_tax' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_category' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_cats' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'z_tag' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_author' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_authors' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'z_date' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_cts' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_archive_ct' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'trash' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => '')
+      );
+
+      $bTableDef = array(
+        'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
+        'name' => array('Type' => "varchar(255)", 'Null' => 'NO', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'description' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'b_lines' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '2', 'Extra' => ''),
+        'b_cols' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '2', 'Extra' => ''),
+        'block_data' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'b_margin' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '5px 5px 5px 5px', 'Extra' => 'str'),
+        'b_padding' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '5px 5px 5px 5px', 'Extra' => 'str'),
+        'b_background' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '#FFFFFF', 'Extra' => 'str'),
+        'b_border' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '0px solid #333333', 'Extra' => 'str'),
+        'i_margin' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '5px 5px 5px 5px', 'Extra' => 'str'),
+        'i_padding' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '5px 5px 5px 5px', 'Extra' => 'str'),
+        'i_background' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '#FFFFFF', 'Extra' => 'str'),
+        'i_border' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '0px solid #333333', 'Extra' => 'str'),
+        'trash' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => '')
+      );
+
+      return array('places' => $pTableDef, 'ads' => $aTableDef, 'zones' => $zTableDef, 'blocks' => $bTableDef);
+    }
+
+    private function getColumnsModels() {
+      return array(
+        'comboGrid' => array(
+          array('columnName' => 'id', 'width' => '15', 'hidden' => true, 'align' => 'right', 'label' => 'Id'),
+          array('columnName' => 'title', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser Name', SAM_DOMAIN)),
+          array('columnName' => 'slug', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser Nick', SAM_DOMAIN)),
+          array('columnName' => 'email', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser e-mail', SAM_DOMAIN))
+        ),
+        'cats' => array(
+          array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+          array('field' => 'title', 'caption' => __("Category Title", SAM_DOMAIN), 'size' => '50%'),
+          array('field' => 'slug', 'caption' => __("Category Slug", SAM_DOMAIN), 'size' => '40%')
+        ),
+        'authors' => array(
+          array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+          array('field' => 'title', 'caption' => __("Display Name", SAM_DOMAIN), 'size' => '50%'),
+          array('field' => 'slug', 'caption' => __("User Name", SAM_DOMAIN), 'size' => '40%')
+        ),
+        'tags' => array(
+          array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+          array('field' => 'title', 'caption' => __("Tag Title", SAM_DOMAIN), 'size' => '50%'),
+          array('field' => 'slug', 'caption' => __("Tag Slug", SAM_DOMAIN), 'size' => '40%')
+        ),
+        'customs' => array(
+          array('field' => 'title', 'caption' => __("Custom Type Title", SAM_DOMAIN), 'size' => '50%'),
+          array('field' => 'slug', 'caption' => __("Custom Type Slug", SAM_DOMAIN), 'size' => '50%')
+        ),
+        'posts' => array(
+          array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+          array('field' => 'title', 'caption' => __("Publication Title", SAM_DOMAIN), 'size' => '50%'),
+          array('field' => 'type', 'caption' => __("Publication Type", SAM_DOMAIN), 'size' => '40%')
+        ),
+        'users' => array(
+          array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+          array('field' => 'title', 'caption' => __("Display Name", SAM_DOMAIN), 'size' => '40%'),
+          array('field' => 'slug', 'caption' => __("User Name", SAM_DOMAIN), 'size' => '25%'),
+          array('field' => 'role', 'caption' => __("Role", SAM_DOMAIN), 'size' => '25%')
+        ),
+        'customTaxes' => array(
+          array('field' => 'term_id', 'caption' => __('ID', SAM_DOMAIN), 'size' => '30px'),
+          array('field' => 'name', 'caption' => __('Term Name', SAM_DOMAIN), 'size' => '50%'),
+          array('field' => 'ctax_name', 'caption' => __('Custom Taxonomy Name', SAM_DOMAIN), 'size' => '40%')
+        )
+      );
+    }
+
+    public function sizeNamesChoose() {
+      return array('full' => __('Full Size'));
+    }
+
+    private function getGridsData() {
+      global $wpdb, $wp_taxonomies;
+
+      $tTable = $wpdb->prefix . "terms";
+      $ttTable = $wpdb->prefix . "term_taxonomy";
+
+      //Custom Post Types
+      $args = array('public' => true, '_builtin' => false);
+      $output = 'objects';
+      $operator = 'and';
+      $post_types = get_post_types($args, $output, $operator);
+      $customs = array();
+      $sCustoms = array();
+
+      foreach($post_types as $post_type) {
+        array_push($customs, array('title' => $post_type->labels->name, 'slug' => $post_type->name));
+        array_push($sCustoms, $post_type->name);
+      }
+      $k = 0;
+      foreach($customs as &$val) {
+        $k++;
+        $val['recid'] = $k;
+      }
+      if(!empty($sCustoms)) $custs = ',' . implode(',', $sCustoms);
+      else $custs = '';
+
+      // Custom Taxonomies Terms
+      $sql = "SELECT wt.term_id, wt.name, wt.slug, wtt.taxonomy
+              FROM $tTable wt
+              INNER JOIN $ttTable wtt
+              ON wt.term_id = wtt.term_id
+              WHERE NOT FIND_IN_SET(wtt.taxonomy, 'category,post_tag,nav_menu,link_category,post_format');";
+
+      $cTax = $wpdb->get_results($sql, ARRAY_A);
+      $k = 0;
+      foreach($cTax as &$val) {
+        if(isset($wp_taxonomies[$val['taxonomy']])) $val['ctax_name'] = urldecode($wp_taxonomies[$val['taxonomy']]->labels->name);
+        else $val['ctax_name'] = '';
+        $k++;
+        $val['recid'] = $k;
+      }
+
+      return array(
+        'customs' => $customs,
+        'custList' => $custs,
+        'cTax' => $cTax
+      );
     }
 		
 		public function initSettings() {
@@ -315,7 +548,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           }
 
           wp_enqueue_script('jquery');
-          wp_enqueue_media();
+          wp_enqueue_media( array('post' => 999999) );
           wp_enqueue_script('jquery-ui-core');
           wp_enqueue_script('jquery-effects-core');
           wp_enqueue_script('jquery-ui-widget');
@@ -327,17 +560,25 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
 
           wp_enqueue_script('wp-pointer');
-          wp_localize_script('wp-pointer', 'samPointer', array(
+          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-place.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+          wp_localize_script('adminEditScript', 'samEditorOptions', array(
             'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
             'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
-            'media' => array('title' => __('Select Banner Image', SAM_DOMAIN), 'button' => __('Select', SAM_DOMAIN))
+            'media' => array('title' => __('Select Banner Image', SAM_DOMAIN), 'button' => __('Select', SAM_DOMAIN)),
+            'options' => array(
+              'uploading' => __('Uploading', SAM_DOMAIN).' ...',
+              'uploaded' => __('Uploaded.', SAM_DOMAIN),
+              'status' => __('Only JPG, PNG or GIF files are allowed', SAM_DOMAIN),
+              'file' => __('File', SAM_DOMAIN),
+              'path' => SAM_AD_IMG,
+              'url' => SAM_AD_URL
+            )
           ));
-          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-place.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
         }
         if($mode == 'item') {
           wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
           wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-sam.css', false, '1.10.3');
-          wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.2');
+          wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.3');
           wp_enqueue_style('wp-pointer');
           wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
           wp_enqueue_style('W2UI', SAM_URL . 'css/w2ui.min.css', false, '1.3');
@@ -373,15 +614,35 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
 
           //wp_enqueue_script('cg-props', SAM_URL.'js/jquery.i18n.properties-1.0.9.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), '1.0.9');
-          wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.3.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.2');
+          wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.3.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.3');
 
           wp_enqueue_script('wp-pointer');
-          wp_localize_script('wp-pointer', 'samPointer', array(
+          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+          wp_localize_script('adminEditScript', 'samEditorOptions', array(
             'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
             'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
-            'media' => array('title' => __('Select Banner Image', SAM_DOMAIN), 'button' => __('Select', SAM_DOMAIN))
+            'media' => array('title' => __('Select Banner Image', SAM_DOMAIN), 'button' => __('Select', SAM_DOMAIN)),
+            'samAjaxUrl' => SAM_URL . 'sam-ajax-admin.php',
+            'models' => self::getColumnsModels(),
+            'data' => self::getGridsData(),
+            'strings' => array(
+              'uploading' => __('Uploading', SAM_DOMAIN).' ...',
+              'uploaded' => __('Uploaded.', SAM_DOMAIN),
+              'status' => __('Only JPG, PNG or GIF files are allowed', SAM_DOMAIN),
+              'file' => __('File', SAM_DOMAIN),
+              'path' => SAM_AD_IMG,
+              'url' => SAM_AD_URL,
+              'posts' => __('Post', SAM_DOMAIN),
+              'page' => __('Page', SAM_DOMAIN),
+              'subscriber' => __('Subscriber', SAM_DOMAIN),
+              'contributor' => __('Contributor', SAM_DOMAIN),
+              'author' => __('Author', SAM_DOMAIN),
+              'editor' => __('Editor', SAM_DOMAIN),
+              'admin' => __('Administrator', SAM_DOMAIN),
+              'superAdmin' => __('Super Admin', SAM_DOMAIN)
+            )
           ));
-          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+          //wp_enqueue_script('samMedia', SAM_URL . 'js/sam-media.js', array('jquery'), SAM_VERSION, true);
         }
       }
       elseif($hook == $this->editZone || $hook == $this->editBlock) {
@@ -444,15 +705,15 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $ttTable = $wpdb->prefix . "term_taxonomy";
       
       $sql = "SELECT
-                $tTable.term_id,
-                $tTable.name,
-                $ttTable.taxonomy
+                wt.term_id,
+                wt.name,
+                wtt.taxonomy
               FROM
-                $tTable
-              INNER JOIN $ttTable
-                ON $tTable.term_id = $ttTable.term_id
+                $tTable wt
+              INNER JOIN $ttTable wtt
+                ON wt.term_id = wtt.term_id
               WHERE
-                $ttTable.taxonomy = 'category'";
+                wtt.taxonomy = 'category'";
                 
       $cats = $wpdb->get_results($sql, ARRAY_A);
       if($valueType == 'array') $output = $cats;
@@ -514,280 +775,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         wp_send_json_success($out);
       }
       else wp_send_json_error();
-    }
-
-    public function getComboDataHandler() {
-      global $wpdb;
-      $uTable = $wpdb->prefix . "users";
-      $page = $_GET['page'];
-      $rows = $_GET['rows'];
-      $searchTerm = $_GET['searchTerm'];
-      $offset = ((int)$page - 1) * (int)$rows;
-
-      $sql = "SELECT
-                $uTable.id,
-                $uTable.display_name AS title,
-                $uTable.user_nicename AS slug,
-                $uTable.user_email AS email
-              FROM
-                $uTable
-              WHERE $uTable.user_nicename LIKE '".$searchTerm."%'
-              ORDER BY $uTable.id
-              LIMIT $offset, $rows;";
-      $users = $wpdb->get_results($sql, ARRAY_A);
-
-      $sql = "SELECT
-      	        COUNT(*)
-              FROM $uTable
-              WHERE $uTable.user_nicename LIKE '".$searchTerm."%';";
-      $rTotal = $wpdb->get_var($wpdb->prepare($sql));
-      $total = ceil((int)$rTotal/(int)$rows);
-
-      $charset = get_bloginfo('charset');
-
-      header("Content-type: application/json; charset=$charset");
-      exit(json_encode(array(
-        'page' => $page,
-        'records' => count($users),
-        'rows' => $users,
-        'total' => $total,
-        'offset' => $offset
-      )));
-    }
-    
-    public function getStringsHandler() {
-      global $wpdb, $wp_taxonomies;
-      $tTable = $wpdb->prefix . "terms";
-      $ttTable = $wpdb->prefix . "term_taxonomy";
-      $uTable = $wpdb->prefix . "users";
-      $umTable = $wpdb->prefix . "usermeta";
-      $postTable = $wpdb->prefix . "posts";
-      
-      $sql = "SELECT wt.term_id AS id, wt.name AS title, wt.slug
-              FROM $tTable wt
-              INNER JOIN $ttTable wtt
-                ON wt.term_id = wtt.term_id
-              WHERE wtt.taxonomy = 'category'
-              ORDER BY wt.name;";
-                
-      $cats = $wpdb->get_results($sql, ARRAY_A);
-      $k = 0;
-      foreach($cats as &$val) {
-        $k++;
-        $val['recid'] = $k;
-      }
-      
-      $sql = "SELECT wt.term_id AS id, wt.name AS title, wt.slug
-              FROM $tTable wt
-              INNER JOIN $ttTable wtt
-                ON wt.term_id = wtt.term_id
-              WHERE wtt.taxonomy = 'post_tag'
-              ORDER BY wt.name;";
-                
-      $tags = $wpdb->get_results($sql, ARRAY_A);
-      $k = 0;
-      foreach($tags as &$val) {
-        $k++;
-        $val['recid'] = $k;
-      }
-
-      $sql = "SELECT wtt.taxonomy
-              FROM wp_term_taxonomy wtt
-              WHERE NOT FIND_IN_SET(wtt.taxonomy, 'category,post_tag,nav_menu,link_category,post_format')
-              GROUP BY wtt.taxonomy;";
-
-      $sql = "SELECT wt.term_id, wt.name, wt.slug, wtt.taxonomy
-              FROM $tTable wt
-              INNER JOIN $ttTable wtt
-              ON wt.term_id = wtt.term_id
-              WHERE NOT FIND_IN_SET(wtt.taxonomy, 'category,post_tag,nav_menu,link_category,post_format');";
-
-      $cTax = $wpdb->get_results($sql, ARRAY_A);
-      $k = 0;
-      foreach($cTax as &$val) {
-        if(isset($wp_taxonomies[$val['taxonomy']])) $val['ctax_name'] = urldecode($wp_taxonomies[$val['taxonomy']]->labels->name);
-        else $val['ctax_name'] = '';
-        $k++;
-        $val['recid'] = $k;
-      }
-      
-      $sql = "SELECT
-                wu.id,
-                wu.display_name AS title,
-                wu.user_nicename AS slug
-              FROM
-                $uTable wu
-              INNER JOIN $umTable wum
-                ON wu.id = wum.user_id
-              WHERE
-                wum.meta_key = 'wp_user_level' AND
-                wum.meta_value > 1
-              ORDER BY wu.id;";
-                
-      $auth = $wpdb->get_results($sql, ARRAY_A);
-      $k = 0;
-      foreach($auth as &$val) {
-        $k++;
-        $val['recid'] = $k;
-      }
-
-      $roleSubscriber = __('Subscriber', SAM_DOMAIN);
-      $roleContributor = __('Contributor', SAM_DOMAIN);
-      $roleAuthor = __('Author', SAM_DOMAIN);
-      $roleEditor = __('Editor', SAM_DOMAIN);
-      $roleAdministrator = __('Administrator', SAM_DOMAIN);
-      $roleSuperAdmin = __('Super Admin', SAM_DOMAIN);
-      $sql = "SELECT
-                wu.id,
-                wu.display_name AS title,
-                wu.user_nicename AS slug,
-                (CASE wum.meta_value
-                  WHEN 0 THEN '$roleSubscriber'
-                  WHEN 1 THEN '$roleContributor'
-                  WHEN 2 THEN '$roleAuthor'
-                  ELSE
-                    IF(wum.meta_value > 2 AND wum.meta_value <= 7, '$roleEditor',
-                      IF(wum.meta_value > 7 AND wum.meta_value <= 10, '$roleAdministrator',
-                        IF(wum.meta_value > 10, '$roleSuperAdmin', NULL)
-                      )
-                    )
-                END) AS role
-              FROM $uTable wu
-              INNER JOIN $umTable wum
-                ON wu.id = wum.user_id AND wum.meta_key = 'wp_user_level'
-              ORDER BY wu.id;";
-      $users = $wpdb->get_results($sql, ARRAY_A);
-
-      $k = 0;
-      foreach($users as &$val) {
-        $k++;
-        $val['recid'] = $k;
-      }
-      
-      $args = array('public' => true, '_builtin' => false);
-      $output = 'objects';
-      $operator = 'and';
-      $post_types = get_post_types($args, $output, $operator);
-      $customs = array();
-      $sCustoms = array();
-      
-      foreach($post_types as $post_type) {
-        array_push($customs, array('title' => $post_type->labels->name, 'slug' => $post_type->name));
-        array_push($sCustoms, $post_type->name);
-      }
-      $k = 0;
-      foreach($customs as &$val) {
-        $k++;
-        $val['recid'] = $k;
-      }
-
-      if(!empty($sCustoms)) $custs = ',' . implode(',', $sCustoms);
-      else $custs = '';
-      
-      $sql = "SELECT
-                wp.id,
-                wp.post_title AS title,
-                wp.post_type AS type
-              FROM
-                $postTable wp
-              WHERE
-                wp.post_status = 'publish' AND
-                FIND_IN_SET(wp.post_type, 'post,page{$custs}')
-              ORDER BY wp.id;";
-
-      $posts = $wpdb->get_results($sql, ARRAY_A);
-
-      $k = 0;
-      foreach($posts as &$val) {
-        switch($val['type']) {
-          case 'post':
-            $val['type'] = __('Post', SAM_DOMAIN);
-            break;
-          case 'page':
-            $val['type'] = __('Page', SAM_DOMAIN);
-            break;
-          default:
-            $val['type'] = __('Post:', SAM_DOMAIN).' '.$val['type'];
-            break;
-        }
-        $k++;
-        $val['recid'] = $k;
-      }
-
-      $output = array(
-        'uploading' => __('Uploading', SAM_DOMAIN).' ...',
-        'uploaded' => __('Uploaded.', SAM_DOMAIN),
-        'status' => __('Only JPG, PNG or GIF files are allowed', SAM_DOMAIN),
-        'file' => __('File', SAM_DOMAIN),
-        'path' => SAM_AD_IMG,
-        'url' => SAM_AD_URL,
-        'cats' => array(
-          'columns' => array(
-            array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
-            array('field' => 'title', 'caption' => __("Category Title", SAM_DOMAIN), 'size' => '50%'),
-            array('field' => 'slug', 'caption' => __("Category Slug", SAM_DOMAIN), 'size' => '40%')
-          ),
-          'cats' => $cats
-        ),
-        'authors' => array(
-          'columns' => array(
-            array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
-            array('field' => 'title', 'caption' => __("Display Name", SAM_DOMAIN), 'size' => '50%'),
-            array('field' => 'slug', 'caption' => __("User Name", SAM_DOMAIN), 'size' => '40%')
-          ),
-          'authors' => $auth
-        ),
-        'tags' => array(
-          'columns' => array(
-            array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
-            array('field' => 'title', 'caption' => __("Tag Title", SAM_DOMAIN), 'size' => '50%'),
-            array('field' => 'slug', 'caption' => __("Tag Slug", SAM_DOMAIN), 'size' => '40%')
-          ),
-          'tags' => $tags
-        ),
-        'customs' => array(
-          'columns' => array(
-            array('field' => 'title', 'caption' => __("Custom Type Title", SAM_DOMAIN), 'size' => '50%'),
-            array('field' => 'slug', 'caption' => __("Custom Type Slug", SAM_DOMAIN), 'size' => '50%')
-          ),
-          'customs' => $customs
-        ),
-        'posts' => array(
-          'columns' => array(
-            array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
-            array('field' => 'title', 'caption' => __("Publication Title", SAM_DOMAIN), 'size' => '50%'),
-            array('field' => 'type', 'caption' => __("Publication Type", SAM_DOMAIN), 'size' => '40%')
-          ),
-          'posts' => $posts
-        ),
-        'users' => array(
-          'colModel' => array(
-            array('columnName' => 'id', 'width' => '15', 'hidden' => true, 'align' => 'right', 'label' => 'Id'),
-            array('columnName' => 'title', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser Name', SAM_DOMAIN)),
-            array('columnName' => 'slug', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser Nick', SAM_DOMAIN)),
-            array('columnName' => 'email', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser e-mail', SAM_DOMAIN))
-          ),
-          'columns' => array(
-            array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
-            array('field' => 'title', 'caption' => __("Display Name", SAM_DOMAIN), 'size' => '40%'),
-            array('field' => 'slug', 'caption' => __("User Name", SAM_DOMAIN), 'size' => '25%'),
-            array('field' => 'role', 'caption' => __("Role", SAM_DOMAIN), 'size' => '25%')
-          ),
-          'users' => $users
-        ),
-        'custom_taxes' => array(
-          'taxes' => $cTax,
-          'columns' => array(
-            array('field' => 'term_id', 'caption' => __('ID', SAM_DOMAIN), 'size' => '30px'),
-            array('field' => 'name', 'caption' => __('Term Name', SAM_DOMAIN), 'size' => '50%'),
-            array('field' => 'ctax_name', 'caption' => __('Custom Taxonomy Name', SAM_DOMAIN), 'size' => '40%')
-          )
-        )
-      );
-      $charset = get_bloginfo('charset');
-      
-      header("Content-type: application/json; charset=$charset"); 
-      exit(json_encode($output));
     }
 		
 		public function doSettingsSections($page) {
@@ -939,20 +926,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       <?php
       }
     }
-
-    /*public function drawSliderOption( $id, $args ) {
-      $options = $args['options'];
-      $settings = parent::getSettings();
-
-      ?>
-      <input
-        type="hidden"
-        id="<?php echo $id; ?>"
-        name="<?php echo SAM_OPTIONS_NAME.'['.$id.']'; ?>"
-        value="<?php echo $settings[$id]; ?>" />
-      <div id="slider"></div>
-      <?php
-    }*/
 
     public function drawJSliderOption( $id, $args ) {
       //$options = $args['options'];
