@@ -35,6 +35,7 @@ if(!class_exists('SamAd')) {
       $aTable = $wpdb->prefix . "sam_ads";
       
       $settings = $this->getSettings();
+      $rId = rand(1111, 9999);
       if(!empty($args['id'])) $wid = "sa.id = {$args['id']}";
       else $wid = "sa.name = '{$args['name']}'";
       
@@ -90,7 +91,7 @@ if(!class_exists('SamAd')) {
           ";
         }
         else {
-          $outId = ((int) $ad['count_clicks'] == 1) ? " id='a".rand(10, 99)."_".$ad['id']."' class='sam_ad'" : '';
+          $outId = ((int) $ad['count_clicks'] == 1) ? " id='a".$rId."_".$ad['id']."' class='sam_ad'" : '';
           $aStart ='';
           $aEnd ='';
           $iTag = '';
@@ -115,8 +116,9 @@ if(!class_exists('SamAd')) {
         }
         else $output = $ad['ad_code'];
       }
-      if(!$this->crawler && !is_admin())
-        $wpdb->query("UPDATE $aTable SET $aTable.ad_hits = $aTable.ad_hits+1 WHERE $aTable.id = {$ad['id']};");
+      $output = "<div id='c".$rId."_".$ad['id']."' class='sam-container sam-ad'>" . $output . "</div>";
+      //if(!$this->crawler && !is_admin())
+        //$wpdb->query("UPDATE $aTable SET $aTable.ad_hits = $aTable.ad_hits+1 WHERE $aTable.id = {$ad['id']};");
       
       if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
       elseif($useCodes) $output = $ad['code_before'].$output.$ad['code_after'];
@@ -199,8 +201,10 @@ if(!class_exists('SamAdPlace')) {
       if(is_null($args)) return '';
       if(empty($args['id']) && empty($args['name'])) return '';
       if( is_null($this->clauses) ) return '';
+      if(is_admin()) return '';
       
       $settings = $this->getSettings();
+      $rId = rand(1111, 9999);
       if($settings['adCycle'] == 0) $cycle = 1000;
       else $cycle = $settings['adCycle'];
       $el = (integer)$settings['errorlogFS'];
@@ -255,10 +259,12 @@ if(!class_exists('SamAdPlace')) {
           $output .= "</script>"."\n";
           if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
           elseif($useCodes) $output = $place['code_before'].$output.$place['code_after'];
+
+          $output = "<div id='c".$rId."_".$place['id']."' class='sam-container sam-place'>" . $output . "</div>";
         }
         else $output = '';
-        if(!$this->crawler)
-          $wpdb->query("UPDATE {$pTable} SET {$pTable}.patch_hits = {$pTable}.patch_hits+1 WHERE {$pTable}.id = {$place['id']}");
+        //if(!$this->crawler && !is_admin())
+          //$wpdb->query("UPDATE {$pTable} SET {$pTable}.patch_hits = {$pTable}.patch_hits+1 WHERE {$pTable}.id = {$place['id']}");
         return $output;
       }
       
@@ -266,8 +272,9 @@ if(!class_exists('SamAdPlace')) {
         $output = $place['patch_code'];
         if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
         elseif($useCodes) $output = $place['code_before'].$output.$place['code_after'];
-        if(!$this->crawler)
-          $wpdb->query("UPDATE $pTable SET $pTable.patch_hits = $pTable.patch_hits+1 WHERE $pTable.id = {$place['id']}");
+        //if(!$this->crawler && !is_admin())
+          //$wpdb->query("UPDATE $pTable SET $pTable.patch_hits = $pTable.patch_hits+1 WHERE $pTable.id = {$place['id']}");
+        $output = "<div id='c".$rId."_".$place['id']."' class='sam-container sam-place'>" . $output . "</div>";
         return $output;
       }
                                      
@@ -286,8 +293,12 @@ if(!class_exists('SamAdPlace')) {
           $output = $aStart.$iTag.$aEnd;
         }
         else $output = $place['patch_code'];
-        if(!$this->crawler)
-          $wpdb->query("UPDATE $pTable SET $pTable.patch_hits = $pTable.patch_hits+1 WHERE $pTable.id = {$place['id']}");
+        //if(!$this->crawler && !is_admin())
+          //$wpdb->query("UPDATE $pTable SET $pTable.patch_hits = $pTable.patch_hits+1 WHERE $pTable.id = {$place['id']}");
+        $output = "<div id='c".$rId."_".$place['id']."' class='sam-container sam-place'>" . $output . "</div>";
+        if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
+        elseif($useCodes) $output = $place['code_before'].$output.$place['code_after'];
+        return $output;
       }
       
       if((abs($place['ad_logic_count']) > 0) && (abs($place['ad_full_count']) == 0)) {
@@ -375,8 +386,9 @@ if(!class_exists('SamAdPlace')) {
           }
           else $output = $ad['ad_code'];
         }
-        if(!$this->crawler && !is_admin())
-          $wpdb->query("UPDATE $aTable SET $aTable.ad_hits = $aTable.ad_hits+1, $aTable.ad_weight_hits = $aTable.ad_weight_hits+1 WHERE $aTable.id = {$ad['id']}");
+        //if(!$this->crawler && !is_admin())
+          //$wpdb->query("UPDATE $aTable SET $aTable.ad_hits = $aTable.ad_hits+1, $aTable.ad_weight_hits = $aTable.ad_weight_hits+1 WHERE $aTable.id = {$ad['id']}");
+        $output = "<div id='c".$rId."_".$ad['id']."' class='sam-container sam-ad'>" . $output . "</div>";
       }
       
       if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];

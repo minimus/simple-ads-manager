@@ -1029,6 +1029,9 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
                       printf($format, $str); 
                     ?>
                   </p>
+                  <div style="text-align: center;">
+                    <a href='https://pledgie.com/campaigns/23196'><img alt='Click here to lend your support to: Funds to complete the development of plugin Simple Ads Manager 2 and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/23196.png?skin_name=chrome' border='0' ></a>
+                  </div>
                   <div style="text-align: center; margin: 10px;">
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
                       <input type="hidden" name="cmd" value="_s-xclick">

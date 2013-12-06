@@ -22,5 +22,21 @@
 
       e.preventDefault();
     });
+
+    $('div.sam-container').each(function(index) {
+      var
+        ids = this.id.split('_'),
+        id = ids[1],
+        ad = $(this).hasClass('sam-ad') ? 'ad' : 'place';
+      $.ajax({
+        url: samAjax.ajaxurl,
+        data: {
+          action: 'sam_hit',
+          id: id,
+          ad: ad
+        },
+        type: 'POST'
+      });
+    });
   });
 })(jQuery);
