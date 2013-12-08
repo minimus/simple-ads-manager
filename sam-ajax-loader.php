@@ -46,14 +46,27 @@ $allowed_actions = array(
 if(in_array($action, $allowed_actions)) {
   switch($action) {
     case 'sam_ajax_load_place':
-      if(isset($_POST['id']) && isset($_POST['wc'])) {
-        $placeId = $_POST['id'];
+      if(isset($_POST['id']) && isset($_POST['pid']) && isset($_POST['wc'])) {
+        $placeId = $_POST['pid'];
+        $adId = $_POST['id'];
         $clauses = unserialize(base64_decode($_POST['wc']));
+        $args = array('id' => ($adId == 0) ? $placeId : $adId);
+        if(isset($_POST['codes'])) $codes = (bool)($_POST['codes']);
+        else $codes = false;
         include_once('ad.class.php');
-        $ad = new SamAdPlace($args, false, false, $clauses, true);
-        wp_send_json_success(array('ad' => $ad->ad));
+        if($adId == 0) $ad = new SamAdPlace($args, $codes, false, $clauses, true);
+        else $ad = new SamAd($args, $codes, false, true);
+        echo json_encode(array(
+          'success' => true,
+          'ad' => $ad->ad,
+          'id' => $ad->id,
+          'pid' => $ad->pid,
+          'cid' => $ad->cid,
+          'clauses' => $clauses
+        ));
       }
       break;
   }
 }
-else wp_send_json_error(array('error' => 'Not allowed action'));
+else echo json_encode(array('success' => false, 'error' => 'Not allowed'));
+wp_die();

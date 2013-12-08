@@ -94,13 +94,33 @@
   font-size: 11px !important;
 }
 
-.sam-warning {
+div.sam-warning {
   margin: 6px 6px 8px;
   padding: 0 5px;
   background-color: #FFFFE0;
   border-radius: 5px;
   -moz-border-radius: 5px 5px 5px 5px;
   border: 1px solid #E6DB55;
+}
+
+p.sam-warning {
+  display: block;
+  margin: 6px 6px 8px;
+  padding: 8px;
+  background-color: #F8F8D7;
+  border-radius: 5px;
+  -moz-border-radius: 5px 5px 5px 5px;
+  border: 1px solid #E6DB55;
+}
+
+p.sam-info {
+  display: block;
+  margin: 6px 6px 8px;
+  padding: 8px;
+  background-color: #DAF5CB;
+  border-radius: 5px;
+  -moz-border-radius: 5px 5px 5px 5px;
+  border: 1px solid #5BA756;
 }
 
 .block-editor-line {

@@ -31,6 +31,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $options = parent::getSettings(false);
       if(!empty($options['access'])) $access = $options['access'];
       else $access = 'manage_options';
+      //self::checkCachePlugins();
 
       define('SAM_ACCESS', $access);
       
@@ -41,6 +42,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 			add_action('admin_menu', array(&$this, 'regAdminPage'));
       add_filter('tiny_mce_version', array(&$this, 'tinyMCEVersion'));
       add_action('init', array(&$this, 'addButtons'));
+      add_action('admin_init', array(&$this, 'checkCachePlugins'));
       add_filter('image_size_names_choose', array(&$this, 'sizeNamesChoose'));
       if(version_compare($wp_version, '3.3', '<'))
         add_filter('contextual_help', array(&$this, 'help'), 10, 3);
@@ -109,6 +111,40 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $wpdb->query($sql.$bTable);
 
       if(is_dir(SAM_AD_IMG)) rmdir(SAM_AD_IMG);
+    }
+
+    public function checkCachePlugins() {
+      $w3tc = 'w3-total-cache/w3-total-cache.php';
+      $wpsc = 'wp-super-cache/wp-cache.php';
+      define('SAM_WPSC', is_plugin_active($wpsc));
+      define('SAM_W3TC', is_plugin_active($w3tc));
+    }
+
+    private function getWarningString() {
+      $options = parent::getSettings();
+
+      if(SAM_W3TC) $text = __('Active W3 Total Cache plugin detected.', SAM_DOMAIN);
+      elseif(SAM_WPSC) $text = __('Active WP Super Cache plugin detected.', SAM_DOMAIN);
+      else $text = '';
+      $class = ($options['adShow'] == 'php') ? 'sam-warning' : 'sam-info';
+
+      return ((!empty($text)) ? "<p class='{$class}'>{$text}</p>" : '');
+    }
+
+    public function clearCache() {
+      if( SAM_WPSC ) {
+        global $blog_cache_dir, $wp_cache_object_cache;
+        if($wp_cache_object_cache) reset_oc_version();
+        else {
+          prune_super_cache( $blog_cache_dir, true );
+          prune_super_cache( get_supercache_dir(), true );
+        }
+        return __('Cache of WP Super Cache plugin is flushed.', SAM_DOMAIN);
+      } elseif( SAM_W3TC ) {
+        if(function_exists('w3tc_pgcache_flush')) w3tc_pgcache_flush();
+        if(function_exists('w3tc_dbcache_flush')) w3tc_dbcache_flush();
+        return __('Cache of W3 Total Cache plugin is flushed.', SAM_DOMAIN);
+      } else return '';
     }
 
     public function  getPointerOptions($force = false) {
@@ -416,7 +452,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 			
       add_settings_field('adCycle', __("Views per Cycle", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_general_section', array('description' => __('Number of hits of one ad for a full cycle of rotation (maximal activity).', SAM_DOMAIN)));
       add_settings_field('access', __('Minimum Level for access to menu', SAM_DOMAIN), array(&$this, 'drawJSliderOption'), 'sam-settings', 'sam_general_section', array('description' => __('Who can use menu of plugin - Minimum User Level needed for access to menu of plugin. In any case only Super Admin and Administrator can use Settings Menu of SAM Plugin.', SAM_DOMAIN), 'options' => array('manage_network' => __('Super Admin', SAM_DOMAIN), 'manage_options' => __('Administrator', SAM_DOMAIN), 'edit_others_posts' => __('Editor', SAM_DOMAIN), 'publish_posts' => __('Author', SAM_DOMAIN), 'edit_posts' => __('Contributor', SAM_DOMAIN)), 'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')));
-      add_settings_field('adShow', __("Ad Output Mode", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Standard (PHP) mode is more faster but is not compatible with caching plugins. If your blog use caching plugin (i.e WP Super Cache or Hyper Cache) select "Caching Compatible (Javascript)" mode.', SAM_DOMAIN), 'options' => array('php' => __('Standard (PHP)', SAM_DOMAIN), 'js' => __('Caching Compatible (Javascript)', SAM_DOMAIN))));
+      add_settings_field('adShow', __("Ad Output Mode", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Standard (PHP) mode is more faster but is not compatible with caching plugins. If your blog use caching plugin (i.e WP Super Cache or W3 Total Cache) select "Caching Compatible (Javascript)" mode. Due to the confusion apropos "mfunc" in caching plugins, I decided to refrain from development of special support of these plugins.', SAM_DOMAIN), 'options' => array('php' => __('Standard (PHP)', SAM_DOMAIN), 'js' => __('Caching Compatible (Javascript)', SAM_DOMAIN)), 'warning' => true));
       add_settings_field('adDisplay', __("Display Ad Source in", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Target wintow (tab) for advetisement source.', SAM_DOMAIN), 'options' => array('blank' => __('New Window (Tab)', SAM_DOMAIN), 'self' => __('Current Window (Tab)', SAM_DOMAIN))));
       
       add_settings_field('bpAdsId', __("Ads Place before content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
@@ -822,6 +858,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           echo '</p>';
 				}
         if(!empty($field['args']['description'])) echo '<p>' . $field['args']['description'] . '</p>';
+        if(!empty($field['args']['warning'])) echo self::getWarningString();
 			}
 		}
     
@@ -971,8 +1008,9 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         else $updated = false;
 				if($updated === 'true') {
           parent::getSettings(true);
+          $ccw = self::clearCache();
 				  ?>
-				  <div class="updated"><p><strong><?php _e("Simple Ads Manager Settings Updated.", SAM_DOMAIN); ?></strong></p></div>
+				  <div class="updated"><p><strong><?php echo __("Simple Ads Manager Settings Updated.", SAM_DOMAIN) .' '. $ccw ; ?></strong></p></div>
 				<?php } else { ?>
 				  <div class="clear"></div>
 				<?php } ?>
@@ -1006,7 +1044,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
                   <ul>
                     <li><a target='_blank' href='http://wordpress.org/extend/plugins/simple-ads-manager/'><?php _e("Wordpress Plugin Page", SAM_DOMAIN); ?></a></li>
                     <li><a target='_blank' href='http://www.simplelib.com/?p=480'><?php _e("Author Plugin Page", SAM_DOMAIN); ?></a></li>
-                    <li><a target='_blank' href='http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager/'><?php _e("Support Forum", SAM_DOMAIN); ?></a></li>
+                    <li><a target='_blank' href='http://forum.simplelib.com/index.php?forums/simple-ads-manager.13/'><?php _e("Support Forum", SAM_DOMAIN); ?></a></li>
                     <li><a target='_blank' href='http://www.simplelib.com/'><?php _e("Author's Blog", SAM_DOMAIN); ?></a></li>
                   </ul>                    
                 </div>

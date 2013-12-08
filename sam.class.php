@@ -224,8 +224,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           $wci = " OR (sa.view_type = 2 AND FIND_IN_SET({$postID}, sa.view_id))";
           $wcx = " AND IF(sa.x_id, NOT FIND_IN_SET({$postID}, sa.x_view_id), TRUE)";
           $author = get_userdata($post->post_author);
-          $wca = " AND IF(sa.view_type < 2 AND sa.ad_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"{$author->display_name}\", sa.view_authors), TRUE)";
-          $wcxa = " AND IF(sa.view_type < 2 AND sa.x_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"{$author->display_name}\", sa.x_view_authors), TRUE)";
+          $wca = " AND IF(sa.view_type < 2 AND sa.ad_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"{$author->user_login}\", sa.view_authors), TRUE)";
+          $wcxa = " AND IF(sa.view_type < 2 AND sa.x_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"{$author->user_login}\", sa.x_view_authors), TRUE)";
         }
         if(is_page()) {
           global $post;
@@ -259,8 +259,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 
           $viewPages |= SAM_IS_AUTHOR;
           $author = $wp_query->get_queried_object();
-          $wca = " AND IF(sa.view_type < 2 AND sa.ad_authors = 1 AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$author->display_name}', sa.view_authors), TRUE)";
-          $wcxa = " AND IF(sa.view_type < 2 AND sa.x_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$author->display_name}', sa.x_view_authors), TRUE)";
+          $wca = " AND IF(sa.view_type < 2 AND sa.ad_authors = 1 AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$author->user_login}', sa.view_authors), TRUE)";
+          $wcxa = " AND IF(sa.view_type < 2 AND sa.x_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$author->user_login}', sa.x_view_authors), TRUE)";
         }
         if(is_post_type_archive()) {
           $viewPages |= SAM_IS_POST_TYPE_ARCHIVE;
@@ -302,9 +302,11 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       
       wp_enqueue_script('jquery');
       if($options['useSWF']) wp_enqueue_script('swfobject');
-      wp_enqueue_script('samLayout', SAM_URL.'js/sam-layout.js', array('jquery'), SAM_VERSION);
+      wp_enqueue_script('samLayout', SAM_URL.'js/sam-layout.min.js', array('jquery'), SAM_VERSION);
       wp_localize_script('samLayout', 'samAjax', array(
           'ajaxurl' => SAM_URL . 'sam-ajax.php',
+          'loadurl' => SAM_URL . 'sam-ajax-loader.php',
+          'load' => ($this->samOptions['adShow'] == 'js'),
           'level' => count(explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) ))),
           //'queries' => $dClauses64,
           'clauses' => $clauses64 //$this->whereClauses

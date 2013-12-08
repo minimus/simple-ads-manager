@@ -29,6 +29,7 @@ $ttTable = $wpdb->prefix . "term_taxonomy";
 $uTable = $wpdb->base_prefix . "users";
 $umTable = $wpdb->base_prefix . "usermeta";
 $postTable = $wpdb->prefix . "posts";
+$userLevel = $wpdb->base_prefix . 'user_level';
 
 $oTable = $wpdb->prefix . 'options';
 $oSql = "SELECT $oTable.option_value FROM $oTable WHERE $oTable.option_name = 'blog_charset'";
@@ -100,7 +101,7 @@ if(in_array($action, $allowed_actions)) {
               INNER JOIN $umTable wum
                 ON wu.id = wum.user_id
               WHERE
-                wum.meta_key = 'wp_user_level' AND
+                wum.meta_key = '$userLevel' AND
                 wum.meta_value > 1
               ORDER BY wu.id;";
 

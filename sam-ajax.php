@@ -53,6 +53,9 @@ if(in_array($action, $allowed_actions)){
         $aId = explode('_', $adId);
         $id = (integer) $aId[1];
       }
+      elseif(isset($_POST['id'])) {
+        $id = $_POST['id'];
+      }
       else $id = -100;
 
       if($id > 0) {
@@ -68,17 +71,24 @@ if(in_array($action, $allowed_actions)){
       break;
 
     case 'sam_ajax_sam_hit':
-      if(isset($_POST['id']) && isset($_POST['ad'])) {
+      if(isset($_POST['id']) && isset($_POST['pid'])) {
         $id = $_POST['id'];
-        $ad = $_POST['ad'];
-        if($ad == 'ad')
-          $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1 WHERE sa.id = %d;";
-        elseif($ad == 'place')
-          $sql = "UPDATE $pTable sp SET sp.patch_hits = sp.patch_hits + 1 WHERE sp.id = %d;";
+        $pid = $_POST['pid'];
+        $cid = ($id == 0) ? $pid : $id;
+        $result = 0;
+        if($id > 0) $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1, sa.ad_weight_hits = sa.ad_weight_hits + 1 WHERE sa.id = %d;";
+        elseif($id == 0) $sql = "UPDATE $pTable sp SET sp.patch_hits = sp.patch_hits + 1 WHERE sp.id = %d;";
         else $sql = '';
-        if(!empty($sql)) $result = $wpdb->query($wpdb->prepare($sql, $id));
-        if($result === 1) echo json_encode(array('success' => true, 'id' => $id));
-        else echo json_encode(array('success' => false, 'id' => $id));
+        if(!empty($sql)) $result = $wpdb->query($wpdb->prepare($sql, $cid));
+        if($result === 1) echo json_encode(array('success' => true, 'id' => $id, 'pid' => $pid));
+        else echo json_encode(array(
+          'success' => false,
+          'id' => $id,
+          'pid' => $pid,
+          'cid' => $cid,
+          'result' => $result,
+          'sql' => $wpdb->prepare($sql, $cid)
+        ));
       }
       else echo json_encode(array('success' => false));
       break;

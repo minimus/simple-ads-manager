@@ -4,6 +4,8 @@
     <content url="file://$MODULE_DIR$" />
     <content url="file://$MODULE_DIR$/../../Web/Wordpress/Wordpress/Wordpress 3.7.1 ru/wordpress/wp-admin" />
     <content url="file://$MODULE_DIR$/../../Web/Wordpress/Wordpress/Wordpress 3.7.1 ru/wordpress/wp-includes" />
+    <content url="file://$MODULE_DIR$/../../w3-total-cache" />
+    <content url="file://$MODULE_DIR$/../../wp-super-cache" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

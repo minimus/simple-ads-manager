@@ -4,6 +4,9 @@ if(!class_exists('SamAd')) {
     private $args = array();
     private $useCodes = false;
     private $crawler = false;
+    public $id = null;
+    public $pid = null;
+    public $cid = null;
     public $ad = '';
     
     public function __construct($args = null, $useCodes = false, $crawler = false) {
@@ -66,9 +69,14 @@ if(!class_exists('SamAd')) {
                     ON sa.pid = sp.id
                 WHERE $wid;";
       $ad = $wpdb->get_row($aSql, ARRAY_A);
+
+      $this->id = $ad['id'];
+      $this->pid = $ad['pid'];
+      $this->cid = "c{$rId}_{$ad['id']}_{$ad['pid']}";
+
       if($ad['code_mode'] == 0) {
         if((int)$ad['ad_swf']) {
-          $id = "ad-".$ad['id'].'-'.rand(1111, 9999);
+          $id = "ad-".$ad['id'].'-'.$rId;
           $file = $ad['ad_img'];
           $sizes = self::getSize($ad['place_size'], $ad['place_custom_width'], $ad['place_custom_height']);
           $width = $sizes['width'];
@@ -116,7 +124,7 @@ if(!class_exists('SamAd')) {
         }
         else $output = $ad['ad_code'];
       }
-      $output = "<div id='c".$rId."_".$ad['id']."' class='sam-container sam-ad'>" . $output . "</div>";
+      $output = "<div id='c{$rId}_{$ad['id']}_{$ad['pid']}' class='sam-container sam-ad'>{$output}</div>";
       //if(!$this->crawler && !is_admin())
         //$wpdb->query("UPDATE $aTable SET $aTable.ad_hits = $aTable.ad_hits+1 WHERE $aTable.id = {$ad['id']};");
       
@@ -133,6 +141,9 @@ if(!class_exists('SamAdPlace')) {
     private $useCodes = false;
     private $crawler = false;
     public $ad = '';
+    public $id = null;
+    public $pid = null;
+    public $cid = null;
     private $clauses;
     private $force;
     
@@ -201,9 +212,9 @@ if(!class_exists('SamAdPlace')) {
       if(is_null($args)) return '';
       if(empty($args['id']) && empty($args['name'])) return '';
       if( is_null($this->clauses) ) return '';
-      if(is_admin()) return '';
       
       $settings = $this->getSettings();
+      $data = intval($useCodes);
       $rId = rand(1111, 9999);
       if($settings['adCycle'] == 0) $cycle = 1000;
       else $cycle = $settings['adCycle'];
@@ -260,7 +271,7 @@ if(!class_exists('SamAdPlace')) {
           if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
           elseif($useCodes) $output = $place['code_before'].$output.$place['code_after'];
 
-          $output = "<div id='c".$rId."_".$place['id']."' class='sam-container sam-place'>" . $output . "</div>";
+          $output = "<div id='c{$rId}_0_{$place['id']}' class='sam-container sam-ad'>{$output}</div>";
         }
         else $output = '';
         //if(!$this->crawler && !is_admin())
@@ -274,9 +285,18 @@ if(!class_exists('SamAdPlace')) {
         elseif($useCodes) $output = $place['code_before'].$output.$place['code_after'];
         //if(!$this->crawler && !is_admin())
           //$wpdb->query("UPDATE $pTable SET $pTable.patch_hits = $pTable.patch_hits+1 WHERE $pTable.id = {$place['id']}");
-        $output = "<div id='c".$rId."_".$place['id']."' class='sam-container sam-place'>" . $output . "</div>";
+        $output = "<div id='c{$rId}_0_{$place['id']}' class='sam-container sam-ad'>{$output}</div>";
         return $output;
       }
+
+      if(($settings['adShow'] == 'js') && !$this->force) {
+        //$data = "{id: 0, pid: {$place['id']}, codes: $codes}";
+        return "<div id='c{$rId}_0_{$place['id']}' class='sam-container sam-place' data-sam='{$data}'></div>";
+      }
+
+      $this->pid = $place['id'];
+      $this->id = 0;
+      $this->cid = "c{$rId}_0_{$this->pid}";
                                      
       if((abs($place['ad_count']) == 0) || (abs($place['ad_logic_count']) == 0)) {
         if($place['patch_source'] == 0) {
@@ -295,7 +315,8 @@ if(!class_exists('SamAdPlace')) {
         else $output = $place['patch_code'];
         //if(!$this->crawler && !is_admin())
           //$wpdb->query("UPDATE $pTable SET $pTable.patch_hits = $pTable.patch_hits+1 WHERE $pTable.id = {$place['id']}");
-        $output = "<div id='c".$rId."_".$place['id']."' class='sam-container sam-place'>" . $output . "</div>";
+        //$data = "{id: 0, pid: {$place['id']}, codes: $codes}";
+        $output = "<div id='c{$rId}_0_{$place['id']}' class='sam-container sam-place' data-sam='{$data}'>{$output}</div>";
         if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
         elseif($useCodes) $output = $place['code_before'].$output.$place['code_after'];
         return $output;
@@ -336,9 +357,12 @@ if(!class_exists('SamAdPlace')) {
           return '';
         }
 
+        $this->id = $ad['id'];
+        $this->cid = "c{$rId}_{$this->id}_{$this->pid}";
+
         if($ad['code_mode'] == 0) {
           if((int)$ad['ad_swf']) {
-            $id = "ad-".$ad['id'].'-'.rand(1111, 9999);
+            $id = "ad-".$ad['id'].'-'.$rId;
             $file = $ad['ad_img'];
             $sizes = self::getSize($place['place_size'], $place['place_custom_width'], $place['place_custom_height']);
             $width = $sizes['width'];
@@ -346,7 +370,7 @@ if(!class_exists('SamAdPlace')) {
             $flashvars = (!empty($ad['ad_swf_flashvars'])) ? $ad['ad_swf_flashvars'] : '{}';
             $params = (!empty($ad['ad_swf_params'])) ? $ad['ad_swf_params'] : '{}';
             $attributes = (!empty($ad['ad_swf_attributes'])) ? $ad['ad_swf_attributes'] : '{}';
-            $text = __('Flash ad').' ID:'.$ad['id'];
+            $text = 'Flash ad ID:'.$ad['id']; //__('Flash ad').' ID:'.$ad['id'];
             $output = "
             <script type='text/javascript'>
             var
@@ -388,7 +412,8 @@ if(!class_exists('SamAdPlace')) {
         }
         //if(!$this->crawler && !is_admin())
           //$wpdb->query("UPDATE $aTable SET $aTable.ad_hits = $aTable.ad_hits+1, $aTable.ad_weight_hits = $aTable.ad_weight_hits+1 WHERE $aTable.id = {$ad['id']}");
-        $output = "<div id='c".$rId."_".$ad['id']."' class='sam-container sam-ad'>" . $output . "</div>";
+        //$data = "{id: {$ad['id']}, pid: {$place['id']}, codes: $codes}";
+        $output = "<div id='c{$rId}_{$ad['id']}_{$ad['pid']}' class='sam-container sam-place' data-sam='{$data}'>{$output}</div>";
       }
       
       if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
