@@ -263,7 +263,7 @@ if(!class_exists('SamUpdater')) {
         }
         else {
           $pSql = self::getUpdateSql($pTable, $sam_tables_defs['places']);
-          $dbResult = $wpdb->query($pSql);
+          if(!empty($pSql)) $dbResult = $wpdb->query($pSql);
         }
 
         if($el) {
@@ -342,7 +342,7 @@ if(!class_exists('SamUpdater')) {
         }
         else {
           $aSql = self::getUpdateSql($aTable, $sam_tables_defs['ads']);
-          $dbResult = $wpdb->query($aSql);
+          if(!empty($aSql)) $dbResult = $wpdb->query($aSql);
         }
 
         if($el) {
@@ -385,7 +385,7 @@ if(!class_exists('SamUpdater')) {
         }
         else {
           $zSql = self::getUpdateSql($zTable, $sam_tables_defs['zones']);
-          $dbResult = $wpdb->query($zSql);
+          if(!empty($zSql)) $dbResult = $wpdb->query($zSql);
         }
 
         if($el) {
@@ -417,7 +417,7 @@ if(!class_exists('SamUpdater')) {
         }
         else {
           $bSql = self::getUpdateSql($bTable, $sam_tables_defs['blocks']);
-          $dbResult = $wpdb->query($bSql);
+          if(!empty($bSql)) $dbResult = $wpdb->query($bSql);
         }
 
         if($el) {

@@ -40,7 +40,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 		
 	  public function __construct() {
       define('SAM_VERSION', '1.8.70');
-      define('SAM_DB_VERSION', '2.2');
+      define('SAM_DB_VERSION', '2.3');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url('/' . str_replace( basename( __FILE__), "", plugin_basename( __FILE__ ) )) );
       define('SAM_IMG_URL', SAM_URL.'images/');
@@ -140,6 +140,25 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
         }
       }
       return implode(',', $out);
+    }
+
+    private function customTaxonomiesTerms2($id) {
+      global $wpdb;
+
+      $tTable = $wpdb->prefix . "terms";
+      $ttTable = $wpdb->prefix . "term_taxonomy";
+      $trTable = $wpdb->prefix . 'term_relationships';
+
+      $sql = "SELECT wt.slug
+              FROM $trTable wtr
+                INNER JOIN $ttTable wtt
+                  ON wtr.term_taxonomy_id = wtt.term_taxonomy_id
+                INNER JOIN $tTable wt
+                  ON wtt.term_id = wt.term_id
+              WHERE NOT FIND_IN_SET(wtt.taxonomy, 'category,post_tag,nav_menu,link_category,post_format') AND wtr.object_id = %d";
+
+      $cTax = $wpdb->get_results($wpdb->prepare( $sql, $id ), ARRAY_A);
+      return $cTax;
     }
 
     public function buildWhereClause() {
@@ -354,8 +373,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
             break;
             
           case 'exact':
-            if(!class_exists('Browser')) include_once('browser.php');
-            $browser = new Browser();
+            if(!class_exists('samBrowser')) include_once('sam-browser.php');
+            $browser = new samBrowser();
             $crawler = $browser->isRobot();
             break;
             

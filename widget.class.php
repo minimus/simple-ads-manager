@@ -36,8 +36,8 @@ if(!class_exists('simple_ads_manager_widget_admin') && class_exists('WP_Widget')
             break;
             
           case 'exact':
-            include_once('browser.php');
-            $browser = new Browser();
+            include_once('sam-browser.php');
+            $browser = new samBrowser();
             $crawler = $browser->isRobot() || is_admin();
             break;
             
@@ -175,8 +175,8 @@ if(!class_exists('simple_ads_manager_zone_widget') && class_exists('WP_Widget'))
             break;
             
           case 'exact':
-            include_once('browser.php');
-            $browser = new Browser();
+            include_once('sam-browser.php');
+            $browser = new samBrowser();
             $crawler = $browser->isRobot() || is_admin();
             break;
             
@@ -311,8 +311,8 @@ if(!class_exists('simple_ads_manager_ad_widget') && class_exists('WP_Widget')) {
             break;
             
           case 'exact':
-            include_once('browser.php');
-            $browser = new Browser();
+            include_once('sam-browser.php');
+            $browser = new samBrowser();
             $crawler = $browser->isRobot() || is_admin();
             break;
             
@@ -448,8 +448,8 @@ if(!class_exists('simple_ads_manager_block_widget') && class_exists('WP_Widget')
             break;
             
           case 'exact':
-            if(!class_exists('Browser')) include_once('browser.php');
-            $browser = new Browser();
+            if(!class_exists('samBrowser')) include_once('sam-browser.php');
+            $browser = new samBrowser();
             $crawler = $browser->isRobot() || is_admin();
             break;
             

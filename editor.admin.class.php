@@ -595,73 +595,51 @@ if(!class_exists('SamPlaceEdit')) {
               'pid' => $_POST['place_id'],
               'name' => stripslashes($_POST['item_name']),
               'description' => stripslashes($_POST['item_description']),
-              //FIXED 'code_type' => $_POST['code_type'],
               'code_type' => (isset($_POST['code_type']) ? $_POST['code_type'] : 0),
               'code_mode' => $_POST['code_mode'],
               'ad_code' => stripslashes($_POST['ad_code']),
               'ad_img' => $_POST['ad_img'],
               'ad_alt' => $_POST['ad_alt'],
-              //FIXED 'ad_no' => $_POST['ad_no'],
               'ad_no' => (isset($_POST['ad_no']) ? $_POST['ad_no'] : 0),
               'ad_target' => stripslashes($_POST['ad_target']),
-              //FIXED 'ad_swf' => $_POST['ad_swf'],
               'ad_swf' => (isset($_POST['ad_swf']) ? $_POST['ad_swf'] : 0),
               'ad_swf_flashvars' => (!empty($_POST['ad_swf_flashvars'])) ? stripslashes($_POST['ad_swf_flashvars']) : '{}',
               'ad_swf_params' => (!empty($_POST['ad_swf_params'])) ? stripslashes($_POST['ad_swf_params']) : '{}',
               'ad_swf_attributes' => (!empty($_POST['ad_swf_attributes'])) ? stripslashes($_POST['ad_swf_attributes']) : '{}',
-              //FIXED 'count_clicks' => $_POST['count_clicks'],
               'count_clicks' => (isset($_POST['count_clicks']) ? $_POST['count_clicks'] : 0),
               'ad_users' => $_POST['ad_users'],
-              //FIXED 'ad_users_unreg' => $_POST['ad_users_unreg'],
               'ad_users_unreg' => (isset($_POST['ad_users_unreg']) ? $_POST['ad_users_unreg'] : 0),
-              //FIXED 'ad_users_reg' => $_POST['ad_users_reg'],
               'ad_users_reg' => (isset($_POST['ad_users_reg']) ? $_POST['ad_users_reg'] : 0),
-              //FIXED 'x_ad_users' => $_POST['x_ad_users'],
               'x_ad_users' => (isset($_POST['x_ad_users']) ? $_POST['x_ad_users'] : 0),
-              'x_view_users' => $this->removeTrailingComma( stripcslashes($_POST['x_view_users'])),
-              //FIXED 'ad_users_adv' => $_POST['ad_users_adv'],
+              'x_view_users' => self::removeTrailingComma( stripcslashes($_POST['x_view_users'])),
               'ad_users_adv' => (isset($_POST['ad_users_adv']) ? $_POST['ad_users_adv'] : 0),
               'view_type' => $_POST['view_type'],
               'view_pages' => $viewPages,
               'view_id' => $_POST['view_id'],
-              //FIXED 'ad_cats' => $_POST['ad_cats'],
               'ad_cats' => (isset($_POST['ad_cats']) ? $_POST['ad_cats'] : 0),
-              'view_cats' => $this->removeTrailingComma( stripcslashes( $_POST['view_cats'] )),
-              //FIXED 'ad_authors' => $_POST['ad_authors'],
+              'view_cats' => self::removeTrailingComma( stripcslashes( $_POST['view_cats'] )),
               'ad_authors' => (isset($_POST['ad_authors']) ? $_POST['ad_authors'] : 0),
               'view_authors' => $this->removeTrailingComma(stripcslashes( $_POST['view_authors'])),
-              //FIXED 'ad_tags' => $_POST['ad_tags'],
               'ad_tags' => (isset($_POST['ad_tags']) ? $_POST['ad_tags'] : 0),
-              'view_tags' => $this->removeTrailingComma( stripcslashes($_POST['view_tags']) ),
-              //FIXED 'ad_custom' => $_POST['ad_custom'],
+              'view_tags' => self::removeTrailingComma( stripcslashes($_POST['view_tags']) ),
               'ad_custom' => (isset($_POST['ad_custom']) ? $_POST['ad_custom'] : 0),
-              'view_custom' => $this->removeTrailingComma( stripcslashes( $_POST['view_custom'] ) ),
-              //FIXED 'x_id' => $_POST['x_id'],
+              'view_custom' => self::removeTrailingComma( stripcslashes( $_POST['view_custom'] ) ),
               'x_id' => (isset($_POST['x_id']) ? $_POST['x_id'] : 0),
               'x_view_id' => $_POST['x_view_id'],
-              //FIXED 'x_cats' => $_POST['x_cats'],
               'x_cats' => (isset($_POST['x_cats']) ? $_POST['x_cats'] : 0),
-              'x_view_cats' => $this->removeTrailingComma(stripslashes($_POST['x_view_cats'])),
-              //FIXED 'x_authors' => $_POST['x_authors'],
+              'x_view_cats' => self::removeTrailingComma(stripslashes($_POST['x_view_cats'])),
               'x_authors' => (isset($_POST['x_authors']) ? $_POST['x_authors'] : 0),
-              'x_view_authors' => $this->removeTrailingComma(stripcslashes($_POST['x_view_authors'])),
-              //FIXED 'x_tags' => $_POST['x_tags'],
+              'x_view_authors' => self::removeTrailingComma(stripcslashes($_POST['x_view_authors'])),
               'x_tags' => (isset($_POST['x_tags']) ? $_POST['x_tags'] : 0),
-              'x_view_tags' => $this->removeTrailingComma(stripcslashes($_POST['x_view_tags'])),
-              //FIXED 'x_custom' => $_POST['x_custom'],
+              'x_view_tags' => self::removeTrailingComma(stripcslashes($_POST['x_view_tags'])),
               'x_custom' => (isset($_POST['x_custom']) ? $_POST['x_custom'] : 0),
-              'x_view_custom' => $this->removeTrailingComma(stripcslashes($_POST['x_view_custom'])),
-              //FIXED 'ad_start_date' => $_POST['ad_start_date'],
+              'x_view_custom' => self::removeTrailingComma(stripcslashes($_POST['x_view_custom'])),
               'ad_start_date' => (empty($_POST['ad_start_date']) ? '0000-00-00' :$_POST['ad_start_date']),
-              //FIXED 'ad_end_date' => $_POST['ad_end_date'],
               'ad_end_date' => (empty($_POST['ad_end_date']) ? '0000-00-00' : $_POST['ad_end_date']),
-              //FIXED 'ad_schedule' => $_POST['ad_schedule'],
               'ad_schedule' => (isset($_POST['ad_schedule']) ? $_POST['ad_schedule'] : 0),
               'ad_weight' => $_POST['ad_weight'],
-              //FIXED 'limit_hits' => $_POST['limit_hits'],
               'limit_hits' => (isset($_POST['limit_hits']) ? $_POST['limit_hits'] : 0),
               'hits_limit' => $_POST['hits_limit'],
-              //FIXED 'limit_clicks' => $_POST['limit_clicks'],
               'limit_clicks' => (isset($_POST['limit_clicks']) ? $_POST['limit_clicks'] : 0),
               'clicks_limit' => $_POST['clicks_limit'],
               'adv_nick' => $_POST['adv_nick'],
@@ -670,12 +648,21 @@ if(!class_exists('SamPlaceEdit')) {
               'cpm' => $_POST['cpm'],
               'cpc' => $_POST['cpc'],
               'per_month' => $_POST['per_month'],
-              //FIXED 'trash' => ($_POST['trash'] === 'true')
-              'trash' => ($_POST['trash'] === 'true' ? 1 : 0)
+              'trash' => ($_POST['trash'] === 'true' ? 1 : 0),
+              'ad_custom_tax_terms' => ((isset($_POST['ad_custom_tax_terms'])) ? $_POST['ad_custom_tax_terms'] : 0),
+              'view_custom_tax_terms' => self::removeTrailingComma(stripslashes($_POST['view_custom_tax_terms'])),
+              'x_ad_custom_tax_terms' => ((isset($_POST['x_ad_custom_tax_terms'])) ? $_POST['x_ad_custom_tax_terms'] : 0),
+              'x_view_custom_tax_terms' => self::removeTrailingComma(stripslashes($_POST['x_view_custom_tax_terms']))
             );
-            //FIXED $formatRow = array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d');
-            //                                                                  ad_no                               count_click                                     view_pages                                                  x_id                                x_tags                                    ad_weight                     adv_nick
-            $formatRow = array( '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%s', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d');
+            $formatRow = array(
+              '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s',
+              '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s',
+              '%d', '%d', '%s', '%s', '%d', '%s', '%d', '%s', '%d', '%s',
+              '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s',
+              '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d',
+              '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d',
+              '%s'
+            );
             if($itemId === __('Undefined', SAM_DOMAIN)) {
               $wpdb->insert($aTable, $updateRow);
               $item = $wpdb->insert_id;
@@ -684,7 +671,7 @@ if(!class_exists('SamPlaceEdit')) {
               if(is_null($item)) $item = $itemId;
               $wpdb->update($aTable, $updateRow, array( 'id' => $item ), $formatRow, array( '%d' ));
             }
-            $wpdb->query("UPDATE {$aTable} SET {$aTable}.ad_weight_hits = 0 WHERE {$aTable}.pid = {$placeId}");
+            $wpdb->query("UPDATE $aTable sa SET sa.ad_weight_hits = 0 WHERE sa.pid = {$placeId};");
             $action = 'edit';
             ?>
 <div class="updated"><p><strong><?php _e("Ad Data Updated.", SAM_DOMAIN);?></strong></p></div>
@@ -759,7 +746,11 @@ if(!class_exists('SamPlaceEdit')) {
                       sa.trash,
                       IF(DATEDIFF(sa.ad_end_date, NOW()) IS NULL OR DATEDIFF(sa.ad_end_date, NOW()) > 0, FALSE, TRUE) AS expired,
                       sp.code_before,
-                      sp.code_after
+                      sp.code_after,
+                      sa.ad_custom_tax_terms,
+                      sa.view_custom_tax_terms,
+                      sa.x_ad_custom_tax_terms,
+                      sa.x_view_custom_tax_terms
                   FROM $aTable sa
                   INNER JOIN $pTable sp
                   ON sa.pid = sp.id
@@ -832,7 +823,11 @@ if(!class_exists('SamPlaceEdit')) {
               'cpc' => 0.0,
               'per_month' => 0.0,
               'trash' => 0,
-              'expired' => 0
+              'expired' => 0,
+              'ad_custom_tax_terms' => 0,
+              'view_custom_tax_terms' => '',
+              'x_ad_custom_tax_terms' => 0,
+              'x_view_custom_tax_terms' => ''
             );
             $aSize = array(
                 'name' => __('Undefined', SAM_DOMAIN),
@@ -1228,7 +1223,7 @@ if(!class_exists('SamPlaceEdit')) {
                       <label for="ad_custom_tax_terms"><strong><?php echo __('Show ad only in single posts or archives of certain Custom Taxonomies Terms', SAM_DOMAIN).':'; ?></strong></label>
                     </p>
                     <div id="rc-ctt" class="radio-content" style="<?php if((int)$row['ad_custom_tax_terms'] != 1) echo 'display: none;'; ?>">
-                      <input type="hidden" id="view-custom-tax-terms" name="view-custom-tax-terms" value="<?php echo $row['view-custom-tax-terms']; ?>">
+                      <input type="hidden" id="view_custom_tax_terms" name="view_custom_tax_terms" value="<?php echo $row['view_custom_tax_terms']; ?>">
                       <div>
                         <div id="ctt-grid"></div>
                       </div>
@@ -1247,7 +1242,7 @@ if(!class_exists('SamPlaceEdit')) {
                       <label for="x_ad_custom_tax_terms"><strong><?php echo __('Do not show ad in single posts or archives of certain Custom Taxonomies Terms', SAM_DOMAIN).':'; ?></strong></label>
                     </p>
                     <div id="rc-xct" class="radio-content" style="<?php if((int)$row['x_ad_custom_tax_terms'] != 1) echo 'display: none;'; ?>">
-                      <input type="hidden" id="x-view-custom-tax-terms" name="x-view-custom-tax-terms" value="<?php echo $row['x-view-custom-tax-terms']; ?>">
+                      <input type="hidden" id="x_view_custom_tax_terms" name="x_view_custom_tax_terms" value="<?php echo $row['x_view_custom_tax_terms']; ?>">
                       <div>
                         <div id="x-ctt-grid"></div>
                       </div>

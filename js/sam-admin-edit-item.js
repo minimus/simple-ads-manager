@@ -71,15 +71,15 @@ var sam = sam || {};
       adAuth = $('#ad_authors'), rcau = $('#rc-au'), aaw = $('#aaw'), xAuth = $('#x_authors'), rcxa = $('#rc-xa'),
       adTags = $('#ad_tags'), rcat = $('#rc-at'), atw = $('#atw'), xTags = $('#x_tags'), rcxt = $('#rc-xt'),
       adCust = $('#ad_custom'), rccu = $('#rc-cu'), cuw = $('#cuw'), xCust = $('#x_custom'), rcxu = $('#rc-xu'),
-      xViewUsers = $('#x-view-users'), custUsers = $('#custom-users'),
+      xViewUsers = $('#x-view-users'), custUsers = $('#custom-users'), rccmf = $("#rc-cmf"), rccmt = $("#rc-cmt"),
 
       adUsersReg = $("#ad_users_reg"), xRegUsers = $('#x-reg-users'), xAdUsers = $('#x_ad_users'),
 
       btnUpload = $("#upload-file-button"), status = $("#uploading"), srcHelp = $("#uploading-help"),
       loadImg = $('#load_img'), sPointer,
 
-      cttGrid = $('#ctt-grid'), cttIn = $('#view-custom-tax-terms'),
-      xcttGrid = $('#x-ctt-grid'), xcttIn = $('#x-view-custom-tax-terms'),
+      cttGrid = $('#ctt-grid'), cttIn = $('#view_custom_tax_terms'),
+      xcttGrid = $('#x-ctt-grid'), xcttIn = $('#x_view_custom_tax_terms'),
       postsGrid = $('#posts-grid'), postsIn = $('#view_id'),
       usersGrid = $('#users-grid'), usersIn = $('#x_view_users'),
       xpostsGrid = $('#x-posts-grid'), xpostsIn = $('#x_view_id'),
@@ -93,7 +93,7 @@ var sam = sam || {};
       xcustGrid = $('#x-cust-grid'), xcustIn = $('#x_view_custom');
 
     var
-      samUploader, mediaTexts = samEditorOptions.media,
+      //samUploader, mediaTexts = samEditorOptions.media,
       samAjaxUrl = samEditorOptions.samAjaxUrl,
       models = samEditorOptions.models,
       gData = samEditorOptions.data,
@@ -306,13 +306,13 @@ var sam = sam || {};
     });
 
     $('#code_mode_false').click(function () {
-      $("#rc-cmf").show('blind', {direction:'vertical'}, 500);
-      $("#rc-cmt").hide('blind', {direction:'vertical'}, 500);
+      rccmf.show('blind', {direction:'vertical'}, 500);
+      rccmt.hide('blind', {direction:'vertical'}, 500);
     });
 
     $('#code_mode_true').click(function () {
-      $("#rc-cmf").hide('blind', {direction:'vertical'}, 500);
-      $("#rc-cmt").show('blind', {direction:'vertical'}, 500);
+      rccmf.hide('blind', {direction:'vertical'}, 500);
+      rccmt.show('blind', {direction:'vertical'}, 500);
     });
 
     if(2 == $('input:radio[name=view_type]:checked').val()) {

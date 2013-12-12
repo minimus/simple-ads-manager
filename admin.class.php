@@ -121,14 +121,16 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     }
 
     private function getWarningString() {
+      global $wp_version;
       $options = parent::getSettings();
 
       if(SAM_W3TC) $text = __('Active W3 Total Cache plugin detected.', SAM_DOMAIN);
       elseif(SAM_WPSC) $text = __('Active WP Super Cache plugin detected.', SAM_DOMAIN);
       else $text = '';
-      $class = ($options['adShow'] == 'php') ? 'sam-warning' : 'sam-info';
+      if(version_compare($wp_version, '3.8-RC1', '<')) $class = ($options['adShow'] == 'php') ? 'sam-warning' : 'sam-info';
+      else $class = ($options['adShow'] == 'php') ? 'sam2-warning' : 'sam2-info';
 
-      return ((!empty($text)) ? "<p class='{$class}'>{$text}</p>" : '');
+      return ((!empty($text)) ? "<div class='{$class}'><p>{$text}</p></div>" : '');
     }
 
     public function clearCache() {
@@ -248,31 +250,31 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'count_clicks' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => ''),
         'view_type' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '1', 'Extra' => ''),
         'view_pages' => array('Type' => "set('isHome','isSingular','isSingle','isPage','isAttachment','isSearch','is404','isArchive','isTax','isCategory','isTag','isAuthor','isDate','isPostType','isPostTypeArchive')", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-        'view_id' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'view_id' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'ad_users' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'ad_users_unreg' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'ad_users_reg' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'x_ad_users' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-        'x_view_users' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_view_users' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'ad_users_adv' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'ad_cats' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-        'view_cats' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'view_cats' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'ad_authors' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-        'view_authors' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'view_authors' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'ad_tags' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-        'view_tags' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'view_tags' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'ad_custom' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-        'view_custom' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'view_custom' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'x_id' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-        'x_view_id' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_view_id' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'x_cats' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-        'x_view_cats' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_view_cats' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'x_authors' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-        'x_view_authors' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_view_authors' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'x_tags' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-        'x_view_tags' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_view_tags' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'x_custom' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
-        'x_view_custom' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_view_custom' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'ad_schedule' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
         'ad_start_date' => array('Type' => "date", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'ad_end_date' => array('Type' => "date", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
@@ -290,7 +292,11 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'cpm' => array('Type' => "decimal(10,2) unsigned", 'Null' => 'YES', 'Key' => '', 'Default' => '0.00', 'Extra' => ''),
         'cpc' => array('Type' => "decimal(10,2) unsigned", 'Null' => 'YES', 'Key' => '', 'Default' => '0.00', 'Extra' => ''),
         'per_month' => array('Type' => "decimal(10,2) unsigned", 'Null' => 'YES', 'Key' => '', 'Default' => '0.00', 'Extra' => ''),
-        'trash' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => '')
+        'trash' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_custom_tax_terms' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'view_custom_tax_terms' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_ad_custom_tax_terms' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'x_view_custom_tax_terms' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => '')
       );
 
       $zTableDef = array(
@@ -539,6 +545,9 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     }
 
     public function loadScripts($hook) {
+      global $wp_version;
+      $jqCSS = (version_compare($wp_version, '3.8-RC1', '<')) ? SAM_URL.'css/jquery-ui-sam.css' : SAM_URL.'css/jquery-ui-wp38.css';
+
       if($hook == $this->settingsPage) {
         wp_enqueue_style('adminSettingsLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
         wp_enqueue_style('jSlider', SAM_URL.'css/jslider.css', false, '1.1.0');
@@ -567,14 +576,14 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       }
       elseif($hook == $this->listPage || $hook == $this->listZone || $hook == $this->listBlock) {
         wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-admin-list.css', false, SAM_VERSION);
-        wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui.css', false, '1.10.3');
+        wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
       }
       elseif($hook == $this->editPage) {
         $mode = (isset($_GET['mode'])) ? $_GET['mode'] : 'place';
         $pointers = self::getPointerOptions();
         if($mode == 'place') {
           wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
-          wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-sam.css', false, '1.10.3');
+          wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
           wp_enqueue_style('wp-pointer');
           wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
 
@@ -613,7 +622,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         }
         if($mode == 'item') {
           wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
-          wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-sam.css', false, '1.10.3');
+          wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
           wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.3');
           wp_enqueue_style('wp-pointer');
           wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
@@ -685,7 +694,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         $pointers = self::getPointerOptions();
 
         wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
-        wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-sam.css', false, '1.10.3');
+        wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
         //wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.2');
         wp_enqueue_style('wp-pointer');
         wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
@@ -709,7 +718,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       }
       elseif($hook == $this->eLogPage) {
         wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-admin-list.css', false, SAM_VERSION);
-        wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-sam.css', false, '1.10.3');
+        wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
 
         wp_enqueue_script('jquery');
         wp_enqueue_script('jquery-ui-core');
@@ -820,7 +829,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         return;
 
       foreach ( (array) $wp_settings_sections[$page] as $section ) {
-        echo "<div id='poststuff' class='ui-sortable'>\n";
+        echo "<div class='ui-sortable sam-section'>\n";
         echo "<div class='postbox opened'>\n";
         echo "<h3>{$section['title']}</h3>\n";
         echo '<div class="inside">';

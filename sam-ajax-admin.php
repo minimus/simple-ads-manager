@@ -181,7 +181,7 @@ if(in_array($action, $allowed_actions)) {
                 END) AS role
               FROM $uTable wu
               INNER JOIN $umTable wum
-                ON wu.id = wum.user_id AND wum.meta_key = 'wp_user_level'
+                ON wu.id = wum.user_id AND wum.meta_key = '$userLevel'
               ORDER BY wu.id;";
       $users = $wpdb->get_results($sql, ARRAY_A);
 

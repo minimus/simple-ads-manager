@@ -94,33 +94,53 @@
   font-size: 11px !important;
 }
 
-div.sam-warning {
-  margin: 6px 6px 8px;
-  padding: 0 5px;
-  background-color: #FFFFE0;
-  border-radius: 5px;
-  -moz-border-radius: 5px 5px 5px 5px;
-  border: 1px solid #E6DB55;
+.sam2-warning {
+  display: block;
+  margin: 5px 0 15px;
+  padding: 1px 10px;
+  background-color: #FFFFFF;
+  border-left: 4px solid #E6DB55;
+  -webkit-box-shadow:0 1px 1px 0 rgba(0,0,0,.1);
+  box-shadow:1px 1px 1px 1px rgba(0,0,0,.1);
 }
 
-p.sam-warning {
+.sam2-info {
+  display: block;
+  margin: 5px 0 15px;
+  padding: 1px 10px;
+  background-color: #FFFFFF;
+  border-left: 4px solid #7AD03A;
+  -webkit-box-shadow:1px 1px 1px 1px rgba(0,0,0,.1);
+  box-shadow:1px 1px 1px 1px rgba(0,0,0,.1);
+}
+
+.sam2-info p, .sam2-warning p {
+  margin: .5em 0;
+  padding: 2px;
+}
+
+.sam-warning {
   display: block;
   margin: 6px 6px 8px;
-  padding: 8px;
+  padding: 0 12px;
   background-color: #F8F8D7;
   border-radius: 5px;
   -moz-border-radius: 5px 5px 5px 5px;
   border: 1px solid #E6DB55;
 }
 
-p.sam-info {
+.sam-info {
   display: block;
   margin: 6px 6px 8px;
-  padding: 8px;
+  padding: 0 12px;
   background-color: #DAF5CB;
   border-radius: 5px;
   -moz-border-radius: 5px 5px 5px 5px;
   border: 1px solid #5BA756;
+}
+
+.sam-warning p, .sam-info p {
+  line-height: 1.0em;
 }
 
 .block-editor-line {
@@ -177,6 +197,14 @@ input.button-primary, input.button-secondary,
 #x-ctt-grid {
   width: 100%;
   height: 197px;
+}
+
+.sam-section {
+  min-width: 763px;
+}
+
+.sam-section textarea, .sam-section input, .sam-section select, .sam-section button {
+  font-size: 11px;
 }
 
 /*.itab {

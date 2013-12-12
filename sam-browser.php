@@ -1,6 +1,6 @@
 <?php
 	/**
-	 * File: Browser.php
+	 * File: sam-sam-browser.php
 	 * Author: Chris Schuld (http://chrisschuld.com/)
 	 * Last Modified: August 20th, 2010
 	 * @version 1.9
@@ -132,7 +132,7 @@
 	 *
 	 */
 
-	class Browser {
+	class samBrowser {
 		private $_agent = '';
 		private $_browser_name = '';
 		private $_version = '';
@@ -204,7 +204,7 @@
 		
 		const OPERATING_SYSTEM_UNKNOWN = 'unknown';
 
-		public function Browser($useragent="") {
+		public function samBrowser($useragent="") {
 			$this->reset();
 			if( $useragent != "" ) {
 				$this->setUserAgent($useragent);
