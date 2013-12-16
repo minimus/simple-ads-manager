@@ -38,11 +38,12 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_action('wp_ajax_upload_ad_image', array(&$this, 'uploadHandler'));
       add_action('wp_ajax_close_pointer', array(&$this, 'closePointerHandler'));
       add_action('wp_ajax_get_error', array(&$this, 'getErrorDataHandler'));
-			add_action('admin_init', array(&$this, 'initSettings'));
 			add_action('admin_menu', array(&$this, 'regAdminPage'));
       add_filter('tiny_mce_version', array(&$this, 'tinyMCEVersion'));
       add_action('init', array(&$this, 'addButtons'));
       add_action('admin_init', array(&$this, 'checkCachePlugins'));
+      add_action('admin_init', array(&$this, 'checkBbpForum'));
+      add_action('admin_init', array(&$this, 'initSettings'), 11);
       add_filter('image_size_names_choose', array(&$this, 'sizeNamesChoose'));
       if(version_compare($wp_version, '3.3', '<'))
         add_filter('contextual_help', array(&$this, 'help'), 10, 3);
@@ -120,15 +121,38 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       define('SAM_W3TC', is_plugin_active($w3tc));
     }
 
-    private function getWarningString() {
+    public function checkBbpForum() {
+      $force = ( empty( $this->samOptions ) );
+      $settings = parent::getSettings( $force );
+      $bbp = 'bbpress/bbpress.php';
+      define('SAM_BBP', is_plugin_active($bbp));
+      $settings['bbpActive'] = ( SAM_BBP ) ? 1 : 0;
+      if( ! SAM_BBP ) $settings['bbpEnabled'] = 0;
+      update_option( SAM_OPTIONS_NAME, $settings );
+    }
+
+    private function getWarningString( $mode = '' ) {
+      if(empty($mode)) return '';
+
       global $wp_version;
       $options = parent::getSettings();
+      $classDef = false;
 
-      if(SAM_W3TC) $text = __('Active W3 Total Cache plugin detected.', SAM_DOMAIN);
-      elseif(SAM_WPSC) $text = __('Active WP Super Cache plugin detected.', SAM_DOMAIN);
-      else $text = '';
-      if(version_compare($wp_version, '3.8-RC1', '<')) $class = ($options['adShow'] == 'php') ? 'sam-warning' : 'sam-info';
-      else $class = ($options['adShow'] == 'php') ? 'sam2-warning' : 'sam2-info';
+      switch($mode) {
+        case 'cache':
+          if(SAM_W3TC) $text = __('Active W3 Total Cache plugin detected.', SAM_DOMAIN);
+          elseif(SAM_WPSC) $text = __('Active WP Super Cache plugin detected.', SAM_DOMAIN);
+          else $text = '';
+          $classDef = ($options['adShow'] == 'php');
+          break;
+        case 'forum':
+          if(SAM_BBP) $text = __('Active bbPress Forum plugin detected.', SAM_DOMAIN);
+          else $text = '';
+          $classDef = (!$options['bbpEnabled']);
+      }
+
+      if(version_compare($wp_version, '3.8-RC1', '<')) $class = ($classDef) ? 'sam-warning' : 'sam-info';
+      else $class = ($classDef) ? 'sam2-warning' : 'sam2-info';
 
       return ((!empty($text)) ? "<div class='{$class}'><p>{$text}</p></div>" : '');
     }
@@ -458,17 +482,23 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 			
       add_settings_field('adCycle', __("Views per Cycle", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_general_section', array('description' => __('Number of hits of one ad for a full cycle of rotation (maximal activity).', SAM_DOMAIN)));
       add_settings_field('access', __('Minimum Level for access to menu', SAM_DOMAIN), array(&$this, 'drawJSliderOption'), 'sam-settings', 'sam_general_section', array('description' => __('Who can use menu of plugin - Minimum User Level needed for access to menu of plugin. In any case only Super Admin and Administrator can use Settings Menu of SAM Plugin.', SAM_DOMAIN), 'options' => array('manage_network' => __('Super Admin', SAM_DOMAIN), 'manage_options' => __('Administrator', SAM_DOMAIN), 'edit_others_posts' => __('Editor', SAM_DOMAIN), 'publish_posts' => __('Author', SAM_DOMAIN), 'edit_posts' => __('Contributor', SAM_DOMAIN)), 'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')));
-      add_settings_field('adShow', __("Ad Output Mode", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Standard (PHP) mode is more faster but is not compatible with caching plugins. If your blog use caching plugin (i.e WP Super Cache or W3 Total Cache) select "Caching Compatible (Javascript)" mode. Due to the confusion around "mfunc" in caching plugins, I decided to refrain from development of special support of these plugins.', SAM_DOMAIN), 'options' => array('php' => __('Standard (PHP)', SAM_DOMAIN), 'js' => __('Caching Compatible (Javascript)', SAM_DOMAIN)), 'warning' => true));
+      add_settings_field('adShow', __("Ad Output Mode", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Standard (PHP) mode is more faster but is not compatible with caching plugins. If your blog use caching plugin (i.e WP Super Cache or W3 Total Cache) select "Caching Compatible (Javascript)" mode. Due to the confusion around "mfunc" in caching plugins, I decided to refrain from development of special support of these plugins.', SAM_DOMAIN), 'options' => array('php' => __('Standard (PHP)', SAM_DOMAIN), 'js' => __('Caching Compatible (Javascript)', SAM_DOMAIN)), 'warning' => 'cache'));
       add_settings_field('adDisplay', __("Display Ad Source in", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Target wintow (tab) for advetisement source.', SAM_DOMAIN), 'options' => array('blank' => __('New Window (Tab)', SAM_DOMAIN), 'self' => __('Current Window (Tab)', SAM_DOMAIN))));
+      add_settings_field('bbpEnabled', __('Allow displaying ads on bbPress forum pages', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_general_section', array('label_for' => 'bbpEnabled', 'checkbox' => true, 'warning' => 'forum', 'enabled' => ( (defined('SAM_BBP')) ? SAM_BBP  : false )));
       
       add_settings_field('bpAdsId', __("Ads Place before content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
       add_settings_field('beforePost', __("Allow Ads Place auto inserting before post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'beforePost', 'checkbox' => true));
+      add_settings_field('bpExcerpt', __('Allow Ads Place auto inserting before post/page excerpt (in the loop)', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bpExcerpt', 'checkbox' => true));
+      add_settings_field('bbpBeforePost', __("Allow Ads Place auto inserting before bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpBeforePost', 'checkbox' => true));
+      add_settings_field('bbpList', __("Allow Ads Place auto inserting into bbPress Forum forums/topics lists", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpList', 'checkbox' => true));
       add_settings_field('bpUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bpUseCodes', 'checkbox' => true));
       add_settings_field('mpAdsId', __("Ads Place in the middle of content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
       add_settings_field('middlePost', __("Allow Ads Place auto inserting into the middle of post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'middlePost', 'checkbox' => true));
+      add_settings_field('bbpMiddlePost', __("Allow Ads Place auto inserting into the middle of bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpMiddlePost', 'checkbox' => true));
       add_settings_field('mpUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'mpUseCodes', 'checkbox' => true));
       add_settings_field('apAdsId', __("Ads Place after content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
       add_settings_field('afterPost', __("Allow Ads Place auto inserting after post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'afterPost', 'checkbox' => true));
+      add_settings_field('bbpAfterPost', __("Allow Ads Place auto inserting after bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpAfterPost', 'checkbox' => true));
       add_settings_field('apUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'apUseCodes', 'checkbox' => true));
 
       add_settings_field('useSWF', __('I use (plan to use) my own flash (SWF) banners. In other words, allow loading the script "SWFObject" on the pages of the blog.', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_ext_section', array('label_for' => 'useSWF', 'checkbox' => true));
@@ -867,7 +897,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           echo '</p>';
 				}
         if(!empty($field['args']['description'])) echo '<p>' . $field['args']['description'] . '</p>';
-        if(!empty($field['args']['warning'])) echo self::getWarningString();
+        if(!empty($field['args']['warning'])) echo self::getWarningString($field['args']['warning']);
 			}
 		}
     
@@ -928,12 +958,14 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
     public function drawCheckboxOption( $id, $args ) {
 			$settings = parent::getSettings();
+      $disabled = '';
+      if(isset($args['enabled'])) $disabled = (($args['enabled']) ? '' : 'disabled');
 			?>
 				<input id="<?php echo $id; ?>"
 					<?php checked('1', $settings[$id]); ?>
 					name="<?php echo SAM_OPTIONS_NAME.'['.$id.']'; ?>"
 					type="checkbox"
-					value="1" />
+					value="1" <?php echo $disabled ?>>
 			<?php
 		}
     

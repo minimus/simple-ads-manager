@@ -37,7 +37,7 @@ if(!class_exists('SamAd')) {
       $pTable = $wpdb->prefix . "sam_places";
       $aTable = $wpdb->prefix . "sam_ads";
       
-      $settings = $this->getSettings();
+      $settings = self::getSettings();
       $rId = rand(1111, 9999);
       if(!empty($args['id'])) $wid = "sa.id = {$args['id']}";
       else $wid = "sa.name = '{$args['name']}'";
@@ -165,6 +165,13 @@ if(!class_exists('SamAdPlace')) {
       return $options;
     }
 
+    private function prepareCodes( $codes, $ind = null ) {
+      $index = (is_null($ind)) ? rand(1111, 9999) : $ind;
+      $out = str_replace('{samIndex}', $index, $codes);
+
+      return $out;
+    }
+
     private function getSize($ss, $width, $height) {
       if($ss == 'custom') return array('width' => $width, 'height' => $height);
       else {
@@ -213,7 +220,7 @@ if(!class_exists('SamAdPlace')) {
       if(empty($args['id']) && empty($args['name'])) return '';
       if( is_null($this->clauses) ) return '';
       
-      $settings = $this->getSettings();
+      $settings = self::getSettings();
       $data = intval($useCodes);
       $rId = rand(1111, 9999);
       if($settings['adCycle'] == 0) $cycle = 1000;
@@ -280,7 +287,7 @@ if(!class_exists('SamAdPlace')) {
       }
       
       if(($place['patch_source'] == 1) && (abs($place['patch_adserver']) == 1)) {
-        $output = $place['patch_code'];
+        $output = self::prepareCodes($place['patch_code'], $rId);
         if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
         elseif($useCodes) $output = $place['code_before'].$output.$place['code_after'];
         //if(!$this->crawler && !is_admin())
@@ -408,11 +415,15 @@ if(!class_exists('SamAdPlace')) {
             $output = ob_get_contents();
             ob_end_clean();
           }
-          else $output = $ad['ad_code'];
+          else $output = self::prepareCodes($ad['ad_code'], $rId);
         }
         //if(!$this->crawler && !is_admin())
           //$wpdb->query("UPDATE $aTable SET $aTable.ad_hits = $aTable.ad_hits+1, $aTable.ad_weight_hits = $aTable.ad_weight_hits+1 WHERE $aTable.id = {$ad['id']}");
         //$data = "{id: {$ad['id']}, pid: {$place['id']}, codes: $codes}";
+        if(!$this->crawler && !is_admin()) {
+          $sSql = "UPDATE $aTable sa SET sa.ad_weight_hits = sa.ad_weight_hits + 1 WHERE sa.id = %d;";
+          $wpdb->query($wpdb->prepare($sSql, $ad['id']));
+        }
         $output = "<div id='c{$rId}_{$ad['id']}_{$ad['pid']}' class='sam-container sam-place' data-sam='{$data}'>{$output}</div>";
       }
       
@@ -447,7 +458,7 @@ if(!class_exists('SamAdPlaceZone')) {
     }
     
     private function isCustomPostType() {
-      return (in_array(get_post_type(), $this->getCustomPostTypes()));
+      return (in_array(get_post_type(), self::getCustomPostTypes()));
     }
     
     private function buildZone($args = null, $useCodes = false, $crawler = false) {
@@ -621,9 +632,9 @@ if(!class_exists('SamAdBlock')) {
         $ads = unserialize($block['block_data']);
         $lines = (integer) $block['b_lines'];
         $cols = (integer) $block['b_cols'];
-        $blockDiv = "<div style='margin: ".$block['b_margin']."; padding: ".$block['b_padding']."; background: ".$block['b_background']."; border: ".$block['b_border']."'>";
-        $lineDiv = "<div style='margin: 0px; padding: 0px;'>";
-        $itemDiv = "<div style='display: inline-block; margin: ".$block['i_margin']."; padding: ".$block['i_padding']."; background: ".$block['i_background']."; border: ".$block['i_border']."'>";
+        $blockDiv = "<div style='margin: {$block['b_margin']}; padding: {$block['b_padding']}; background: {$block['b_background']}; border: {$block['b_border']}'>";
+        $lineDiv = "<div class='sam-block-line' style='margin: 0px; padding: 0px;'>";
+        $itemDiv = "<div class='sam-block-item' style='display: inline-block; margin: {$block['i_margin']}; padding: {$block['i_padding']}; background: {$block['i_background']}; border: {$block['i_border']}'>";
 
         for($i = 1; $i <= $lines; $i++) {
           $lDiv = '';

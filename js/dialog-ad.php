@@ -32,6 +32,11 @@ $ads = $wpdb->get_results("SELECT id, name FROM {$aTable} WHERE trash IS FALSE",
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/utils/editable_selects.js"></script>
 	<script language="javascript" type="text/javascript" src="<?php echo SAM_URL ?>js/sam-dialog.js"></script>
 	<base target="_self" />
+  <style>
+    table, input {
+      font-size: 11px;
+    }
+  </style>
 </head>
 
 <body id="link" onload="tinyMCEPopup.executeOnLoad('init();');document.body.style.display='';" style="display: none">

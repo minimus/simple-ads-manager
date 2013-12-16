@@ -12,7 +12,7 @@
   vertical-align: middle;
 }
 
-.postbox .inside input {
+.postbox .inside input, .postbox .inside select {
   font-size: 11px;
 }
 

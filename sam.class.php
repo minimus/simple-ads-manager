@@ -1,7 +1,7 @@
 <?php
 if ( !class_exists( 'SimpleAdsManager' ) ) {
   class SimpleAdsManager {
-    private $samOptions = array();
+    protected $samOptions = array();
     private $samVersions = array('sam' => null, 'db' => null);
     private $crawler = false;
     public $samNonce;
@@ -19,12 +19,17 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'beforePost' => 0,
       'bpAdsId' => 0,
       'bpUseCodes' => 0,
+      'bpExcerpt' => 0,
+      'bbpBeforePost' => 0,
+      'bbpList' => 0,
       'middlePost' => 0,
       'mpAdsId' => 0,
       'mpUseCodes' => 0,
+      'bbpMiddlePost' => 0,
       'afterPost' => 0,
       'apAdsId' => 0,
       'apUseCodes' => 0,
+      'bbpAfterPost' => 0,
       'useDFP' => 0,
       'detectBots' => 0,
       'detectingMode' => 'inexact',
@@ -35,14 +40,16 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'useSWF' => 0,
       'access' => 'manage_options',
       'errorlog' => 1,
-      'errorlogFS' => 1
+      'errorlogFS' => 1,
+      'bbpActive' => 0,
+      'bbpEnabled' => 0
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '1.8.70');
+      define('SAM_VERSION', '1.8.71');
       define('SAM_DB_VERSION', '2.3');
       define('SAM_PATH', dirname( __FILE__ ));
-      define('SAM_URL', plugins_url('/' . str_replace( basename( __FILE__), "", plugin_basename( __FILE__ ) )) );
+      define('SAM_URL', plugins_url( '/',  __FILE__  ) );
       define('SAM_IMG_URL', SAM_URL.'images/');
       define('SAM_DOMAIN', 'simple-ads-manager');
       define('SAM_OPTIONS_NAME', 'samPluginOptions');
@@ -78,6 +85,16 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
         add_shortcode('sam_zone', array(&$this, 'doZoneShortcode'));
         add_shortcode('sam_block', array(&$this, 'doBlockShortcode'));      
         add_filter('the_content', array(&$this, 'addContentAds'), 8);
+        // SE begin
+        add_filter('get_the_excerpt', array(&$this, 'addExcerptAds'), 10);
+        if( $this->samOptions['bbpActive'] && $this->samOptions['bbpEnabled'] ) {
+          add_filter('bbp_get_reply_content', array(&$this, 'addBbpContentAds'), 39, 2);
+          add_filter('bbp_get_topic_content', array(&$this, 'addBbpContentAds'), 39, 2);
+          add_action('bbp_theme_after_forum_sub_forums', array(&$this, 'addBbpForumAds'));
+          add_action('bbp_theme_before_topic_started_by', array(&$this, 'addBbpForumAds'));
+        }
+        //SE end
+
         // For backward compatibility
         add_shortcode('sam-ad', array(&$this, 'doAdShortcode'));
         add_shortcode('sam-zone', array(&$this, 'doZoneShortcode'));
@@ -139,7 +156,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           }
         }
       }
-      return implode(',', $out);
+      return $out;
     }
 
     private function customTaxonomiesTerms2($id) {
@@ -165,10 +182,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $settings = $this->getSettings();
       if($settings['adCycle'] == 0) $cycle = 1000;
       else $cycle = $settings['adCycle'];
-      //$el = (integer)$settings['errorlogFS'];
 
-      global /*$wpdb,*/ $current_user;
-      //$aTable = $wpdb->prefix . "sam_ads";
+      global $current_user;
 
       $viewPages = 0;
       $wcc = '';
@@ -179,6 +194,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $wcxc = '';
       $wcxa = '';
       $wcxt = '';
+      $wcct = '';
+      $wcxct = '';
 
       if(is_user_logged_in()) {
         get_currentuserinfo();
@@ -240,6 +257,21 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
             $wcxt .= $wcxt_0.", TRUE)";
           }
 
+          if(!empty($customTerms)) {
+            $wcct_0 = '';
+            $wcxct_0 = '';
+            $wcct .= " AND IF(sa.view_type < 2 AND sa.ad_custom_tax_terms AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE),";
+            $wcxct .= " AND IF(sa.view_type < 2 AND sa.x_ad_custom_tax_terms AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE),";
+            foreach($customTerms as $cTerm) {
+              if(empty($wcct_0)) $wcct_0 = " FIND_IN_SET(\"{$cTerm}\", sa.view_custom_tax_terms)";
+              else $wcct_0 .= " OR FIND_IN_SET(\"{$cTerm}\", sa.view_custom_tax_terms)";
+              if(empty($wcxct_0)) $wcxct_0 = " (NOT FIND_IN_SET(\"{$cTerm}\", sa.x_view_custom_tax_terms))";
+              else $wcxct_0 .= " AND (NOT FIND_IN_SET(\"{$cTerm}\", sa.x_view_custom_tax_terms))";
+            }
+            $wcct .= $wcct_0 . ", TRUE)";
+            $wcxct .= $wcxct_0 . ", TRUE)";
+          }
+
           $wci = " OR (sa.view_type = 2 AND FIND_IN_SET({$postID}, sa.view_id))";
           $wcx = " AND IF(sa.x_id, NOT FIND_IN_SET({$postID}, sa.x_view_id), TRUE)";
           $author = get_userdata($post->post_author);
@@ -260,7 +292,12 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       if(is_404()) $viewPages |= SAM_IS_404;
       if(is_archive()) {
         $viewPages |= SAM_IS_ARCHIVE;
-        if(is_tax()) $viewPages |= SAM_IS_TAX;
+        if(is_tax()) {
+          $viewPages |= SAM_IS_TAX;
+          $term = get_query_var('term');
+          $wcct = " AND IF(sa.view_type < 2 AND sa.ad_custom_tax_terms AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$term}', sa.view_custom_tax_terms), TRUE)";
+          $wcxct = " AND IF(sa.view_type < 2 AND sa.x_ad_custom_tax_terms AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$term}', sa.x_view_custom_tax_terms), TRUE)";
+        }
         if(is_category()) {
           $viewPages |= SAM_IS_CATEGORY;
           $cat = get_category(get_query_var('cat'), false);
@@ -297,7 +334,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $whereClause  = "$wcu ((sa.view_type = 1)";
       $whereClause .= " OR (sa.view_type = 0 AND (sa.view_pages+0 & $viewPages))";
       $whereClause .= "$wci)";
-      $whereClause .= "$wcc $wca $wct $wcx $wcxc $wcxa $wcxt";
+      $whereClause .= "$wcc $wca $wct $wcct $wcx $wcxc $wcxa $wcxt $wcxct";
       $whereClauseT = " AND IF(sa.ad_schedule, CURDATE() BETWEEN sa.ad_start_date AND sa.ad_end_date, TRUE)";
       $whereClauseT .= " AND IF(sa.limit_hits, sa.hits_limit > sa.ad_hits, TRUE)";
       $whereClauseT .= " AND IF(sa.limit_clicks, sa.clicks_limit > sa.ad_clicks, TRUE)";
@@ -313,11 +350,10 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 
       $this->samNonce = wp_create_nonce('samNonce');
       $options = self::getSettings();
-      $this->whereClauses = self::buildWhereClause();
+      if(empty($this->whereClauses)) $this->whereClauses = self::buildWhereClause();
 
       $SAM_Query = array('clauses' => $this->whereClauses);
       $clauses64 = base64_encode(serialize($SAM_Query['clauses']));
-      //$dClauses64 = unserialize(base64_decode($clauses64));
       
       wp_enqueue_script('jquery');
       if($options['useSWF']) wp_enqueue_script('swfobject');
@@ -327,8 +363,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           'loadurl' => SAM_URL . 'sam-ajax-loader.php',
           'load' => ($this->samOptions['adShow'] == 'js'),
           'level' => count(explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) ))),
-          //'queries' => $dClauses64,
-          'clauses' => $clauses64 //$this->whereClauses
+          'clauses' => $clauses64
         )
       );
     }
@@ -457,31 +492,31 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
     }
     
     public function doAdShortcode($atts) {
-      extract(shortcode_atts( array( 'id' => '', 'name' => '', 'codes' => ''), $atts ));
-      $ad = new SamAd(array('id' => $id, 'name' => $name), ($codes == 'true'), $this->crawler);
+      shortcode_atts( array( 'id' => '', 'name' => '', 'codes' => ''), $atts );
+      $ad = new SamAd(array('id' => $atts['id'], 'name' => $atts['name']), ($atts['codes'] == 'true'), $this->crawler);
       return $ad->ad;
     }
     
     public function doShortcode( $atts ) {
-      extract(shortcode_atts( array( 'id' => '', 'name' => '', 'codes' => ''), $atts ));      
-      $ad = new SamAdPlace(array('id' => $id, 'name' => $name), ($codes == 'true'), $this->crawler);
+      shortcode_atts( array( 'id' => '', 'name' => '', 'codes' => ''), $atts );
+      $ad = new SamAdPlace(array('id' => $atts['id'], 'name' => $atts['name']), ($atts['codes'] == 'true'), $this->crawler);
       return $ad->ad;
     }
     
     public function doZoneShortcode($atts) {
-      extract(shortcode_atts( array( 'id' => '', 'name' => '', 'codes' => ''), $atts ));
-      $ad = new SamAdPlaceZone(array('id' => $id, 'name' => $name), ($codes == 'true'), $this->crawler);
+      shortcode_atts( array( 'id' => '', 'name' => '', 'codes' => ''), $atts );
+      $ad = new SamAdPlaceZone(array('id' => $atts['id'], 'name' => $atts['name']), ($atts['codes'] == 'true'), $this->crawler);
       return $ad->ad;
     }
     
     public function doBlockShortcode($atts) {
-      extract(shortcode_atts( array( 'id' => '', 'name' => ''), $atts ));
-      $block = new SamAdBlock(array('id' => $id, 'name' => $name), $this->crawler);
+      shortcode_atts( array( 'id' => '', 'name' => ''), $atts );
+      $block = new SamAdBlock(array('id' => $atts['id'], 'name' => $atts['name']), $this->crawler);
       return $block->ad;
     }
     
     public function addContentAds( $content ) {
-      $options = $this->getSettings();
+      $options = self::getSettings();
       $bpAd = '';
       $apAd = '';
       $mpAd = '';
@@ -494,6 +529,11 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
         if(!empty($options['afterPost']) && !empty($options['apAdsId'])) 
           $apAd = $this->buildAd(array('id' => $options['apAdsId']), $options['apUseCodes']);
       }
+      //SE
+      else {
+        if(!empty($options['beforePost']) && !empty($options['bpAdsId']))
+          $bpAd = $this->buildAd(array('id' => $options['bpAdsId']), $options['bpUseCodes']);
+      }
 
       if(!empty($mpAd)) {
         $xc = explode("\r\n", $content);
@@ -505,6 +545,71 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       }
       else return $bpAd.$content.$apAd;
     }
+
+    public function addExcerptAds( $excerpt ) {
+      $options = self::getSettings();
+      $bpAd = '';
+      if(!is_single()) {
+        if(empty($this->whereClauses)) $this->whereClauses = self::buildWhereClause();
+
+        if(!empty($options['beforePost']) && !empty($options['bpExcerpt']) && !empty($options['bpAdsId'])) {
+          $oBpAd = new SamAdPlace(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false, $this->whereClauses);
+          $bpAd = $oBpAd->ad;
+        }
+
+        return $bpAd.$excerpt;
+      }
+      else return $excerpt;
+    }
+
+    // SE begin
+    public function addBbpContentAds( $content, $reply_id ) {
+      $options = self::getSettings();
+      $bpAd = '';
+      $apAd = '';
+      $mpAd = '';
+      if(empty($this->whereClauses)) $this->whereClauses = self::buildWhereClause();
+
+      if(!empty($options['bbpBeforePost']) && !empty($options['bpAdsId'])) {
+        $oBpAd = new SamAdPlace(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false, $this->whereClauses);
+        $bpAd = $oBpAd->ad;
+      }
+      if(!empty($options['bbpMiddlePost']) && !empty($options['mpAdsId'])) {
+        $oMpAd = new SamAdPlace(array('id' => $options['mpAdsId']), $options['mpUseCodes'], false, $this->whereClauses);
+        $mpAd = $oMpAd->ad;
+      }
+      if(!empty($options['bbpAfterPost']) && !empty($options['apAdsId'])) {
+        $oApAd = new SamAdPlace(array('id' => $options['apAdsId']), $options['apUseCodes'], false, $this->whereClauses);
+        $apAd = $oApAd->ad;
+      }
+
+      if(!empty($mpAd)) {
+        $xc = explode("\r\n", $content);
+        if(count($xc) < 3) return $bpAd.$content.$apAd;
+        else {
+          $hm = ceil(count($xc)/2);
+          $cntFirst = implode("\r\n", array_slice($xc, 0, $hm));
+          $cntLast = implode("\r\n", array_slice($xc, $hm));
+
+          return $bpAd.$cntFirst.$mpAd.$cntLast.$apAd;
+        }
+      }
+      else return $bpAd.$content.$apAd;
+    }
+
+    public function addBbpForumAds() {
+      $options = self::getSettings();
+      $bpAd = '';
+      if(empty($this->whereClauses)) $this->whereClauses = self::buildWhereClause();
+
+      if(!empty($options['bbpList']) && !empty($options['bpAdsId'])) {
+        $oBpAd = new SamAdPlace(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false, $this->whereClauses);
+        $bpAd = $oBpAd->ad;
+      }
+
+      echo $bpAd;
+    }
+    // SE end
   } // end of class definition
 } // end of if not class SimpleAdsManager exists
 ?>

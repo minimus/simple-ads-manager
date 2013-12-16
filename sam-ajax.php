@@ -76,7 +76,8 @@ if(in_array($action, $allowed_actions)){
         $pid = $_POST['pid'];
         $cid = ($id == 0) ? $pid : $id;
         $result = 0;
-        if($id > 0) $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1, sa.ad_weight_hits = sa.ad_weight_hits + 1 WHERE sa.id = %d;";
+        //if($id > 0) $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1, sa.ad_weight_hits = sa.ad_weight_hits + 1 WHERE sa.id = %d;";
+        if($id > 0) $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1 WHERE sa.id = %d;";
         elseif($id == 0) $sql = "UPDATE $pTable sp SET sp.patch_hits = sp.patch_hits + 1 WHERE sp.id = %d;";
         else $sql = '';
         if(!empty($sql)) $result = $wpdb->query($wpdb->prepare($sql, $cid));

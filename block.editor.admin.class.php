@@ -75,7 +75,7 @@ if(!class_exists('SamBlockEditor')) {
               <div class="inside">
                 <input type='radio' name='item-<?php echo $line.'-'.$column; ?>' id='item-<?php echo $line.'-'.$column; ?>-place' value='0' <?php checked('place', $data[$line][$column]['type']); ?>>
                 <label for='item-<?php echo $line.'-'.$column; ?>-place'><?php _e('Ads Place', SAM_DOMAIN); ?>:</label>
-                <select name='place_id_<?php echo $line.'_'.$column; ?>' id='place_id_<?php echo $line.'_'.$column; ?>'>
+                <select name='place_id_<?php echo $line.'_'.$column; ?>' id='place_id_<?php echo $line.'_'.$column; ?>' style="width: 100%;">
                   <option value='0' <?php selected(0, ($data[$line][$column]['type'] == 'place') ? $data[$line][$column]['id'] : 0); ?>><?php _e('Non selected', SAM_DOMAIN); ?></option>
       <?php
         foreach($this->freeItems['places'] as $value) {
@@ -85,10 +85,10 @@ if(!class_exists('SamBlockEditor')) {
         }
       ?>
                 </select>
-                <br/>
+                <br><br>
                 <input type='radio' name='item-<?php echo $line.'-'.$column; ?>' id='item-<?php echo $line.'-'.$column; ?>-ad' value='1' <?php checked('ad', $data[$line][$column]['type']); ?>>
                 <label for='item-<?php echo $line.'-'.$column; ?>-ad'><?php _e('Single Ad', SAM_DOMAIN); ?>:</label>
-                <select name='ad_id_<?php echo $line.'_'.$column; ?>' id='ad_id_<?php echo $line.'_'.$column; ?>'>
+                <select name='ad_id_<?php echo $line.'_'.$column; ?>' id='ad_id_<?php echo $line.'_'.$column; ?>' style="width: 100%;">
                   <option value='0' <?php selected(0, ($data[$line][$column]['type'] == 'ad') ? $data[$line][$column]['id'] : 0); ?>><?php _e('Non selected', SAM_DOMAIN); ?></option>
       <?php
         foreach($this->freeItems['ads'] as $value) {
@@ -98,10 +98,10 @@ if(!class_exists('SamBlockEditor')) {
         }
       ?>
                 </select>
-                <br/>
+                <br><br>
                 <input type='radio' name='item-<?php echo $line.'-'.$column; ?>' id='item-<?php echo $line.'-'.$column; ?>-zone' value='2' <?php checked('zone', $data[$line][$column]['type']); ?>>
                 <label for='item-<?php echo $line.'-'.$column; ?>-zone'><?php _e('Ads Zone', SAM_DOMAIN); ?>:</label>
-                <select name='zone_id_<?php echo $line.'_'.$column; ?>' id='zone_id_<?php echo $line.'_'.$column; ?>'>
+                <select name='zone_id_<?php echo $line.'_'.$column; ?>' id='zone_id_<?php echo $line.'_'.$column; ?>' style="width: 100%">
                   <option value='0' <?php selected(0, ($data[$line][$column]['type'] == 'zone') ? $data[$line][$column]['id'] : 0); ?>><?php _e('Non selected', SAM_DOMAIN); ?></option>
       <?php
         foreach($this->freeItems['zones'] as $value) {
@@ -401,7 +401,7 @@ if(!class_exists('SamBlockEditor')) {
               <div class="handlediv" title="<?php _e('Click to toggle', SAM_DOMAIN); ?>"><br/></div>
               <h3 class="hndle"><span><?php _e('Ads Block Editor', SAM_DOMAIN);?></span></h3>
               <div class="inside">
-                <p><?php _e('Enter description of this Ads Block.', SAM_DOMAIN);?></p>
+                <p><?php _e('Adjust items settings of this Ads Block.', SAM_DOMAIN);?></p>
                 <?php $this->buildEditorItems($row['b_lines'], $row['b_cols'], $data); ?>
                 <p><?php _e('Block Editor.', SAM_DOMAIN); ?></p>
               </div>
