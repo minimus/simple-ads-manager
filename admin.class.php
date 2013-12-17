@@ -131,6 +131,11 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       update_option( SAM_OPTIONS_NAME, $settings );
     }
 
+    public function hideBbpOptions() {
+      $options = parent::getSettings();
+      return !( SAM_BBP && $options['bbpEnabled']);
+    }
+
     private function getWarningString( $mode = '' ) {
       if(empty($mode)) return '';
 
@@ -489,16 +494,16 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_settings_field('bpAdsId', __("Ads Place before content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
       add_settings_field('beforePost', __("Allow Ads Place auto inserting before post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'beforePost', 'checkbox' => true));
       add_settings_field('bpExcerpt', __('Allow Ads Place auto inserting before post/page excerpt (in the loop)', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bpExcerpt', 'checkbox' => true));
-      add_settings_field('bbpBeforePost', __("Allow Ads Place auto inserting before bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpBeforePost', 'checkbox' => true));
-      add_settings_field('bbpList', __("Allow Ads Place auto inserting into bbPress Forum forums/topics lists", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpList', 'checkbox' => true));
+      add_settings_field('bbpBeforePost', __("Allow Ads Place auto inserting before bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpBeforePost', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
+      add_settings_field('bbpList', __("Allow Ads Place auto inserting into bbPress Forum forums/topics lists", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpList', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
       add_settings_field('bpUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bpUseCodes', 'checkbox' => true));
       add_settings_field('mpAdsId', __("Ads Place in the middle of content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
       add_settings_field('middlePost', __("Allow Ads Place auto inserting into the middle of post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'middlePost', 'checkbox' => true));
-      add_settings_field('bbpMiddlePost', __("Allow Ads Place auto inserting into the middle of bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpMiddlePost', 'checkbox' => true));
+      add_settings_field('bbpMiddlePost', __("Allow Ads Place auto inserting into the middle of bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpMiddlePost', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
       add_settings_field('mpUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'mpUseCodes', 'checkbox' => true));
       add_settings_field('apAdsId', __("Ads Place after content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
       add_settings_field('afterPost', __("Allow Ads Place auto inserting after post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'afterPost', 'checkbox' => true));
-      add_settings_field('bbpAfterPost', __("Allow Ads Place auto inserting after bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpAfterPost', 'checkbox' => true));
+      add_settings_field('bbpAfterPost', __("Allow Ads Place auto inserting after bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpAfterPost', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
       add_settings_field('apUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'apUseCodes', 'checkbox' => true));
 
       add_settings_field('useSWF', __('I use (plan to use) my own flash (SWF) banners. In other words, allow loading the script "SWFObject" on the pages of the blog.', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_ext_section', array('label_for' => 'useSWF', 'checkbox' => true));
@@ -585,6 +590,9 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
 
         wp_enqueue_script('jquery');
+        wp_enqueue_script('jquery-ui-core');
+        wp_enqueue_script('jquery-effects-core');
+        wp_enqueue_script('jquery-effects-blind');
         wp_enqueue_script('hash-table', SAM_URL.'js/slider/jshashtable-2.1_src.js', array('jquery'), '2.1');
         wp_enqueue_script('number-formatter', SAM_URL.'js/slider/jquery.numberformatter-1.2.3.js', array('jquery'), '1.2.3');
         wp_enqueue_script('templates', SAM_URL.'js/slider/tmpl.js', array('jquery'));
@@ -592,7 +600,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         wp_enqueue_script('draggable', SAM_URL.'js/slider/draggable-0.1.js', array('jquery'), '0.1');
         wp_enqueue_script('jSlider', SAM_URL.'js/slider/jquery.slider.js', array('jquery', 'draggable'), '1.1.0');
 
-        wp_enqueue_script('sam-settings', SAM_URL.'js/sam-settings.js', array('jquery', 'draggable'), SAM_VERSION);
+        wp_enqueue_script('sam-settings', SAM_URL.'js/sam-settings.min.js', array('jquery', 'draggable'), SAM_VERSION);
         wp_localize_script('sam-settings', 'options', array(
           'roles' => array(
             __('Super Admin', SAM_DOMAIN),
@@ -883,7 +891,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 				echo '<p>';
 				if ( !empty($field['args']['checkbox']) ) {
 					call_user_func($field['callback'], $field['id'], $field['args']);
-					echo '<label for="' . $field['args']['label_for'] . '">' . $field['title'] . '</label>';
+					echo '<label for="' . $field['args']['label_for'] . '"' . ((isset($field['args']['hide']) && $field['args']['hide']) ? 'style="display: none;"' : '' ) . '>' . $field['title'] . '</label>';
           echo '</p>';
 				}
 				else {
@@ -959,13 +967,16 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     public function drawCheckboxOption( $id, $args ) {
 			$settings = parent::getSettings();
       $disabled = '';
+      $hide = '';
       if(isset($args['enabled'])) $disabled = (($args['enabled']) ? '' : 'disabled');
+      if(isset($args['hide'])) $hide = ( ($args['hide']) ? " style='display: none;'" : '');
 			?>
 				<input id="<?php echo $id; ?>"
 					<?php checked('1', $settings[$id]); ?>
 					name="<?php echo SAM_OPTIONS_NAME.'['.$id.']'; ?>"
 					type="checkbox"
-					value="1" <?php echo $disabled ?>>
+					value="1"
+          <?php echo $disabled.$hide; ?>>
 			<?php
 		}
     
