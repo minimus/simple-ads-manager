@@ -24,6 +24,7 @@ require_once( $root . '/wp-load.php' );
 
 global $wpdb;
 
+$sTable = $wpdb->prefix . 'sam_stats';
 $tTable = $wpdb->prefix . "terms";
 $ttTable = $wpdb->prefix . "term_taxonomy";
 $uTable = $wpdb->base_prefix . "users";
@@ -51,7 +52,8 @@ $allowed_actions = array(
   'sam_ajax_load_authors',
   'sam_ajax_load_posts',
   'sam_ajax_load_users',
-  'sam_ajax_load_combo_data'
+  'sam_ajax_load_combo_data',
+  'sam_ajax_load_stats'
 );
 $out = array();
 
@@ -207,16 +209,13 @@ if(in_array($action, $allowed_actions)) {
                 wu.user_email AS email
               FROM
                 $uTable wu
-              WHERE wu.user_nicename LIKE '".$searchTerm."%'
+              WHERE wu.user_nicename LIKE '{$searchTerm}%'
               ORDER BY wu.id
               LIMIT $offset, $rows;";
       $users = $wpdb->get_results($sql, ARRAY_A);
 
-      $sql = "SELECT
-      	        COUNT(*)
-              FROM $uTable wu
-              WHERE wu.user_nicename LIKE '".$searchTerm."%';";
-      $rTotal = $wpdb->get_var($wpdb->prepare($sql));
+      $sql = "SELECT COUNT(*) FROM $uTable wu WHERE wu.user_nicename LIKE '{$searchTerm}%';";
+      $rTotal = $wpdb->get_var($sql);
       $total = ceil((int)$rTotal/(int)$rows);
 
       $out = array(
@@ -227,6 +226,26 @@ if(in_array($action, $allowed_actions)) {
         'offset' => $offset
       );
 
+      break;
+
+    case 'sam_ajax_load_stats':
+      $sql = "SELECT
+                DATE_FORMAT(ss.event_time, %s) AS ed,
+                DATE_FORMAT(LAST_DAY(ss.event_time), %s) AS days,
+                COUNT(*) AS hits
+              FROM $sTable ss
+              WHERE (EXTRACT(YEAR_MONTH FROM NOW()) - %d = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.event_type = %d
+              GROUP BY ed;";
+      $hits = $wpdb->get_results($wpdb->prepare($sql, '%d', '%d', 0, 0), ARRAY_A);
+      $clicks = $wpdb->get_results($wpdb->prepare($sql, '%d', '%d', 0, 1), ARRAY_A);
+      $days = $hits[0]['days'];
+      for($i = 1; $i <= $days; $i++) {
+        $hitsFull[$i - 1] = array( $i, 0);
+        $clicksFull[$i - 1] = array($i, 0);
+      }
+      foreach($hits as $hit) $hitsFull[$hit['ed']][1] = $hit['hits'];
+      foreach($clicks as $click) $clicksFull[$click['ed']][1] = $click['hits'];
+      $out = array('hits' => $hitsFull, 'clicks' => $clicksFull, 'sql' => $sql);
       break;
 
     default:

@@ -33,6 +33,7 @@
             $.post(samAjax.ajaxurl, {
               action: 'sam_click',
               id: data.id,
+              pid: data.pid,
               level: samAjax.level
             });
           });

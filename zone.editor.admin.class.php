@@ -35,22 +35,25 @@ if(!class_exists('SamZoneEditor')) {
     
     private function getTax($type = 'category') {
       if(empty($type)) return;
+
+      if($type === 'custom_tax_terms') $wc = "NOT FIND_IN_SET(wtt.taxonomy, 'category,post_tag,nav_menu,link_category,post_format')";
+      else $wc = "wtt.taxonomy = '$type'";
       
       global $wpdb;
       $tTable = $wpdb->prefix . "terms";
       $ttTable = $wpdb->prefix . "term_taxonomy";
       
       $sql = "SELECT
-                $tTable.term_id,
-                $tTable.name,
-                $tTable.slug,
-                $ttTable.taxonomy
+                wt.term_id,
+                wt.name,
+                wt.slug,
+                wtt.taxonomy
               FROM
-                $tTable
-              INNER JOIN $ttTable
-                ON $tTable.term_id = $ttTable.term_id
+                $tTable wt
+              INNER JOIN $ttTable wtt
+                ON wt.term_id = wtt.term_id
               WHERE
-                $ttTable.taxonomy = '$type' AND $tTable.term_id <> 1;";
+                $wc AND wt.term_id <> 1;";
       
       $taxonomies = $wpdb->get_results($sql, ARRAY_A);
       
@@ -63,20 +66,21 @@ if(!class_exists('SamZoneEditor')) {
     
     private function getAuthors() {
       global $wpdb;
-      $uTable = $wpdb->prefix . "users";
-      $umTable = $wpdb->prefix . "usermeta";
+      $uTable = $wpdb->base_prefix . "users";
+      $umTable = $wpdb->base_prefix . "usermeta";
+      $userLevel = $wpdb->base_prefix . 'user_level';
       
       $sql = "SELECT
-                $uTable.id,
-                $uTable.user_nicename,
-                $uTable.display_name
+                wu.id,
+                wu.user_nicename,
+                wu.display_name
               FROM
-                $uTable
-              INNER JOIN $umTable
-                ON $uTable.ID = $umTable.user_id
+                $uTable wu
+              INNER JOIN $umTable wum
+                ON wu.ID = wum.user_id
               WHERE
-                $umTable.meta_key = 'wp_user_level' AND
-                $umTable.meta_value > 1;";
+                wum.meta_key = '$userLevel' AND
+                wum.meta_value > 1;";
                 
       $auth = $wpdb->get_results($sql, ARRAY_A);
       $authors = array();
@@ -132,7 +136,6 @@ if(!class_exists('SamZoneEditor')) {
           'z_home' => $_POST['z_home'],
           'z_singular' => $_POST['z_singular'],
           'z_single' => $_POST['z_single'],
-          //FIXED 'z_ct' => $_POST['z_ct'],
           'z_ct' => (isset($_POST['z_ct']) ? $_POST['z_ct'] : -1),
           'z_single_ct' => serialize($uSingleCT),
           'z_page' => $_POST['z_page'],
@@ -146,15 +149,16 @@ if(!class_exists('SamZoneEditor')) {
           'z_tag' => $_POST['z_tag'],
           'z_author' => $_POST['z_author'],
           'z_authors' => serialize($uAuthors),
-          //FIXED 'z_cts' => $_POST['z_cts'],
           'z_cts' => (isset($_POST['z_cts']) ? $_POST['z_cts'] : -1),
           'z_archive_ct' => serialize($uArchiveCT),
           'z_date' => $_POST['z_date'],
-          //FIXED 'trash' => ($_POST['trash'] === 'true')
           'trash' => ($_POST['trash'] === 'true' ? 1 : 0)
         );
-        //FIXED $formatRow = array( '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%s', '%d', '%s', '%d', '%d');
-        $formatRow = array( '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%s', '%d', '%s', '%d', '%d');
+        $formatRow = array(
+          '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d',
+          '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%s', '%d',
+          '%s', '%d', '%d'
+        );
         if($zoneId === __('Undefined', SAM_DOMAIN)) {
           $wpdb->insert($zTable, $updateRow);
           $updated = true;

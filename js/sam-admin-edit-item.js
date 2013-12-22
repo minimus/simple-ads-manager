@@ -95,10 +95,13 @@ var sam = sam || {};
     var
       //samUploader, mediaTexts = samEditorOptions.media,
       samAjaxUrl = samEditorOptions.samAjaxUrl,
+      samStatsUrl = samEditorOptions.samStatsUrl,
       models = samEditorOptions.models,
       gData = samEditorOptions.data,
       samStrs = samEditorOptions.strings,
       sPost = encodeURI(samStrs.posts), sPage = encodeURI(samStrs.page);
+
+    var stats, statsData, itemId = $('#item_id').val(), sMonth = 0;
 
     function buildLGrid(name, grid, vi, field, gc, url) {
       var iVal = vi.val();
@@ -208,6 +211,37 @@ var sam = sam || {};
 
     media.init();
 
+    stats = $.post(samStatsUrl, {
+      action: 'load_item_stats',
+      id: itemId,
+      sm: sMonth
+    }).done(function(data) {
+        var
+          hits = {label: samStrs.labels.hits, data: data.hits},
+          clicks = {label: samStrs.labels.clicks, data: data.clicks};
+        statsData = [hits, clicks];
+        $('#total_hits').text(data.total.hits);
+        $('#total_clicks').text(data.total.clicks);
+        $.plot('#graph', statsData, {
+          series: {
+            lines: { show: true },
+            points: { show: true }
+          },
+          xaxis: {
+            mode: "categories",
+            tickLength: 0
+          },
+          legend: {
+            backgroundColor: 'rgb(235, 233, 233)'
+          },
+          grid: {
+            backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
+            borderWidth: 1,
+            borderColor: '#DFDFDF'
+          }
+        });
+    });
+
     fu = new AjaxUpload(btnUpload, {
       action:ajaxurl,
       name:'uploadfile',
@@ -292,7 +326,6 @@ var sam = sam || {};
           if(rcctt.is(':visible') && w2ui['ctt-grid']) cttGrid.w2render('ctt-grid');
           if(rcxct.is(':visible') && w2ui['x-ctt-grid']) xcttGrid.w2render('x-ctt-grid');
           if(rcxid.is(':visible') && w2ui['x-posts-grid']) xpostsGrid.w2render('x-posts-grid');
-          if(xViewUsers.is(':visible') && w2ui['users-grid']) usersGrid.w2render('users-grid');
           if(rcac.is(':visible') && w2ui['cats-grid']) catsGrid.w2render('cats-grid');
           if(rcxc.is(':visible') && w2ui['x-cats-grid']) xcatsGrid.w2render('x-cats-grid');
           if(rcau.is(':visible') && w2ui['auth-grid']) authGrid.w2render('auth-grid');
@@ -302,6 +335,27 @@ var sam = sam || {};
           if(rccu.is(':visible') && w2ui['cust-grid']) custGrid.w2render('cust-grid');
           if(rcxu.is(':visible') && w2ui['xcust-grid']) xcustGrid.w2render('x-cust-grid');
         }
+        if(el == 'tabs-3')
+          if(xViewUsers.is(':visible') && w2ui['users-grid']) usersGrid.w2render('users-grid');
+        if(el == 'tabs-5')
+          $.plot('#graph', statsData, {
+            series: {
+              lines: { show: true },
+              points: { show: true }
+            },
+            xaxis: {
+              mode: "categories",
+              tickLength: 0
+            },
+            legend: {
+              backgroundColor: 'rgb(235, 233, 233)'
+            },
+            grid: {
+              backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
+              borderWidth: 1,
+              borderColor: '#DFDFDF'
+            }
+          });
       }
     });
 
@@ -777,6 +831,40 @@ var sam = sam || {};
           isArc.attr('checked', true);
         }
       }
+    });
+
+    $('#stats_month').change(function() {
+      sMonth = $(this).val();
+      $.post(samStatsUrl, {
+        action: 'load_item_stats',
+        id: itemId,
+        sm: sMonth
+      }).done(function(data) {
+          var
+            hits = {label: samStrs.labels.hits, data: data.hits},
+            clicks = {label: samStrs.labels.clicks, data: data.clicks};
+          statsData = [hits, clicks];
+          $('#total_hits').text(data.total.hits);
+          $('#total_clicks').text(data.total.clicks);
+          $.plot('#graph', statsData, {
+            series: {
+              lines: { show: true },
+              points: { show: true }
+            },
+            xaxis: {
+              mode: "categories",
+              tickLength: 0
+            },
+            legend: {
+              backgroundColor: 'rgb(235, 233, 233)'
+            },
+            grid: {
+              backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
+              borderWidth: 1,
+              borderColor: '#DFDFDF'
+            }
+          });
+        });
     });
 
     return false;

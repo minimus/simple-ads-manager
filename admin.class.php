@@ -373,7 +373,20 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'trash' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => '')
       );
 
-      return array('places' => $pTableDef, 'ads' => $aTableDef, 'zones' => $zTableDef, 'blocks' => $bTableDef);
+      $sTableDef = array(
+        'id' => array('Type' => 'int(10) unsigned', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'pid' => array('Type' => 'int(10) unsigned', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'event_time' => array('Type' => 'datetime', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'event_type' => array('Type' => 'tinyint(1)', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => '')
+      );
+
+      return array(
+        'places' => $pTableDef,
+        'ads' => $aTableDef,
+        'zones' => $zTableDef,
+        'blocks' => $bTableDef,
+        'stats' => $sTableDef
+      );
     }
 
     private function getColumnsModels() {
@@ -624,6 +637,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
           wp_enqueue_style('wp-pointer');
           wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
+          wp_enqueue_style('W2UI', SAM_URL . 'css/w2ui.min.css', false, '1.3');
 
           if($this->cmsVer === 'low') {
             wp_register_script('jquery-effects-core', SAM_URL.'js/jquery.effects.core.min.js', array('jquery'), '1.8.16');
@@ -641,6 +655,11 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('jquery-effects-blind');
           wp_enqueue_script('jquery-ui-tooltip');
           wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
+          wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.3');
+
+          wp_enqueue_script('flot', SAM_URL.'js/jquery.flot.min.js', array('jquery'), '0.8.1');
+          wp_enqueue_script('flotCategories', SAM_URL.'js/jquery.flot.categories.min.js', array('jquery'), '0.8.1');
+          wp_enqueue_script('flotResize', SAM_URL.'js/jquery.flot.resize.min.js', array('jquery'), '0.8.1');
 
           wp_enqueue_script('wp-pointer');
           wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-place.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
@@ -648,6 +667,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
             'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
             'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
             'media' => array('title' => __('Select Banner Image', SAM_DOMAIN), 'button' => __('Select', SAM_DOMAIN)),
+
+            'samStatsUrl' => SAM_URL . 'sam-ajax-admin-stats.php',
             'options' => array(
               'uploading' => __('Uploading', SAM_DOMAIN).' ...',
               'uploaded' => __('Uploaded.', SAM_DOMAIN),
@@ -655,6 +676,16 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               'file' => __('File', SAM_DOMAIN),
               'path' => SAM_AD_IMG,
               'url' => SAM_AD_URL
+            ),
+            'labels' => array('hits' => __('Hits', SAM_DOMAIN), 'clicks' => __('Clicks', SAM_DOMAIN)),
+            'columns' => array(
+              array('field' => 'id', 'caption' => 'ID', 'size' => '40px', 'render' => 'int'),
+              array('field' => 'name', 'caption' => __("Name", SAM_DOMAIN), 'size' => '40%'),
+              array('field' => 'ad_hits', 'caption' => __("Hits", SAM_DOMAIN), 'size' => '10%', 'render' => 'int'),
+              array('field' => 'ad_clicks', 'caption' => __('Clicks', SAM_DOMAIN), 'size' => '10%', 'render' => 'int'),
+              array('field' => 'e_cpm', 'caption' => 'CPM', 'size' => '10%', 'render' => 'float:2'),
+              array('field' => 'e_cpc', 'caption' => 'CPC', 'size' => '10%', 'render' => 'float:2'),
+              array('field' => 'e_ctr', 'caption' => 'CTR', 'size' => '10%', 'render' => 'percent')
             )
           ));
         }
@@ -698,6 +729,9 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
           //wp_enqueue_script('cg-props', SAM_URL.'js/jquery.i18n.properties-1.0.9.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), '1.0.9');
           wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.3.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.3');
+          wp_enqueue_script('flot', SAM_URL.'js/jquery.flot.min.js', array('jquery'), '0.8.1');
+          wp_enqueue_script('flotCategories', SAM_URL.'js/jquery.flot.categories.min.js', array('jquery'), '0.8.1');
+          wp_enqueue_script('flotResize', SAM_URL.'js/jquery.flot.resize.min.js', array('jquery'), '0.8.1');
 
           wp_enqueue_script('wp-pointer');
           wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
@@ -706,6 +740,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
             'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
             'media' => array('title' => __('Select Banner Image', SAM_DOMAIN), 'button' => __('Select', SAM_DOMAIN)),
             'samAjaxUrl' => SAM_URL . 'sam-ajax-admin.php',
+            'samStatsUrl' => SAM_URL . 'sam-ajax-admin-stats.php',
             'models' => self::getColumnsModels(),
             'data' => self::getGridsData(),
             'strings' => array(
@@ -722,7 +757,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               'author' => __('Author', SAM_DOMAIN),
               'editor' => __('Editor', SAM_DOMAIN),
               'admin' => __('Administrator', SAM_DOMAIN),
-              'superAdmin' => __('Super Admin', SAM_DOMAIN)
+              'superAdmin' => __('Super Admin', SAM_DOMAIN),
+              'labels' => array('hits' => __('Hits', SAM_DOMAIN), 'clicks' => __('Clicks', SAM_DOMAIN))
             )
           ));
           //wp_enqueue_script('samMedia', SAM_URL . 'js/sam-media.js', array('jquery'), SAM_VERSION, true);

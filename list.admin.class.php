@@ -85,6 +85,7 @@ if(!class_exists('SamPlaceList')) {
       global $wpdb;
       $pTable = $wpdb->prefix . "sam_places";
       $aTable = $wpdb->prefix . "sam_ads";
+      $sTable = $wpdb->prefix . 'sam_stats';
 
       if(isset($_GET['mode'])) $mode = $_GET['mode'];
       else $mode = 'active';
@@ -198,16 +199,16 @@ if(!class_exists('SamPlaceList')) {
                       sp.place_size,
                       sp.place_custom_width,
                       sp.place_custom_height,
-                      IFNULL(sp.patch_hits, 0) AS patch_hits,
-                      (IFNULL((SELECT sum(sa.ad_hits) FROM $aTable sa WHERE sa.pid = sp.id), 0) + IFNULL(sp.patch_hits, 0)) as total_ad_hits,
-                      (IFNULL((SELECT SUM(IF(cpm > 0, ad_hits*cpm/1000, 0)) FROM $aTable sa WHERE sa.pid = sp.id), 0)) AS e_cpm,
-                      (IFNULL((SELECT SUM(IF(cpc > 0, ad_clicks*cpc, 0)) FROM $aTable sa WHERE sa.pid = sp.id), 0)) AS e_cpc,
-                      (IFNULL((SELECT SUM(IF(ad_schedule AND per_month > 0, DATEDIFF(CURDATE(), ad_start_date)*per_month/30, 0)) FROM $aTable sa WHERE sa.pid = sp.id), 0)) AS e_month,
+                      @patch_hits := (IFNULL((SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = 0 AND ss.pid = sp.id AND ss.event_type = 0), 0)) AS patch_hits,
+                      (IFNULL((SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id > 0 AND ss.pid = sp.id AND ss.event_type = 0), 0) + IFNULL(@patch_hits, 0)) as total_ad_hits,
+                      (IFNULL((SELECT SUM(IF(sa.cpm > 0, IFNULL((SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 0), 0) * sa.cpm / 1000, 0)) FROM $aTable sa WHERE sa.pid = sp.id), 0)) AS e_cpm,
+                      (IFNULL((SELECT SUM(IF(sa.cpc > 0, IFNULL((SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 1), 0) * sa.cpc, 0)) FROM $aTable sa WHERE sa.pid = sp.id), 0)) AS e_cpc,
+                      (IFNULL((SELECT SUM(IF(sa.ad_schedule AND sa.per_month > 0, DATEDIFF(CURDATE(), sa.ad_start_date) * sa.per_month / 30, 0)) FROM $aTable sa WHERE sa.pid = sp.id), 0)) AS e_month,
                       sp.trash,
                       (SELECT COUNT(*) FROM $aTable sa WHERE sa.pid = sp.id) AS items
                     FROM $pTable sp".
                     (($mode !== 'all') ? " WHERE sp.trash = ".(($mode === 'trash') ? 'TRUE' : 'FALSE') : '').
-                    " LIMIT $offset, $places_per_page";
+                    " LIMIT $offset, $places_per_page;";
           $places = $wpdb->get_results($pSql, ARRAY_A);          
           $i = 0;
           if(!is_array($places) || empty($places)) {
@@ -383,12 +384,12 @@ if(!class_exists('SamPlaceList')) {
                       sa.pid,
                       sa.name,
                       sa.description,
-                      sa.ad_hits,
-                      sa.ad_clicks,
+                      @ad_hits := (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 0) AS ad_hits,
+                      @ad_clicks := (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 1) AS ad_clicks,
                       sa.ad_weight,
                       (IF(sa.ad_schedule AND sa.per_month > 0, DATEDIFF(CURDATE(), sa.ad_start_date)*sa.per_month/30, 0)) AS e_month,
-                      (sa.cpm * sa.ad_hits / 1000) AS e_cpm,
-                      (sa.cpc * sa.ad_clicks) AS e_cpc,
+                      (sa.cpm * @ad_hits / 1000) AS e_cpm,
+                      (sa.cpc * @ad_clicks) AS e_cpc,
                       sa.trash,
                       IF(DATEDIFF(sa.ad_end_date, NOW()) IS NULL OR DATEDIFF(sa.ad_end_date, NOW()) > 0, FALSE, TRUE) AS expired
                      FROM $aTable sa

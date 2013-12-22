@@ -219,6 +219,24 @@ if(!class_exists('SamPlaceEdit')) {
 
     }
 
+    private function getMonthName( $month ) {
+      $months = array(
+        __('January', SAM_DOMAIN),
+        __('February', SAM_DOMAIN),
+        __('Mart', SAM_DOMAIN),
+        __('April', SAM_DOMAIN),
+        __('May', SAM_DOMAIN),
+        __('June', SAM_DOMAIN),
+        __('July', SAM_DOMAIN),
+        __('August', SAM_DOMAIN),
+        __('September', SAM_DOMAIN),
+        __('October', SAM_DOMAIN),
+        __('November', SAM_DOMAIN),
+        __('December', SAM_DOMAIN),
+      );
+      return $months[$month - 1];
+    }
+
     private function drawImageTools() {
       ?>
       <div id="source_tools" >
@@ -270,6 +288,7 @@ if(!class_exists('SamPlaceEdit')) {
       global $wpdb;
       $pTable = $wpdb->prefix . "sam_places";          
       $aTable = $wpdb->prefix . "sam_ads";
+      $sTable = $wpdb->prefix . "sam_stats";
       
       $options = $this->settings;
       
@@ -294,21 +313,16 @@ if(!class_exists('SamPlaceEdit')) {
               'code_before' => stripslashes($_POST['code_before']),
               'code_after' => stripslashes($_POST['code_after']),
               'place_size' => $_POST['place_size'],
-              //FIXED 'place_custom_width' => $_POST['place_custom_width'],
               'place_custom_width' => (isset($_POST['place_custom_width']) ? $_POST['place_custom_width'] : 0),
-              //FIXED 'place_custom_height' => $_POST['place_custom_height'],
               'place_custom_height' => (isset($_POST['place_custom_height']) ? $_POST['place_custom_height'] : 0),
               'patch_img' => $_POST['patch_img'],
               'patch_link' => stripslashes($_POST['patch_link']),
               'patch_code' => stripslashes($_POST['patch_code']),
-              //FIXED 'patch_adserver' => $_POST['patch_adserver'],
               'patch_adserver' => (isset($_POST['patch_adserver']) ? 1 : 0),
               'patch_dfp' => $_POST['patch_dfp'],
               'patch_source' => $_POST['patch_source'],
-              //FIXED 'trash' => ($_POST['trash'] === 'true')
               'trash' => ($_POST['trash'] === 'true' ? 1 : 0)
             );
-            //FIXED $formatRow = array( '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%d', '%s', '%d', '%d');
             $formatRow = array( '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%d', '%d');
             if($placeId === __('Undefined', SAM_DOMAIN)) {
               $wpdb->insert($pTable, $updateRow);
@@ -460,103 +474,148 @@ if(!class_exists('SamPlaceEdit')) {
               </div>
             </div>
           </div>
-          <div class="meta-box-sortables ui-sortable">
-            <div id="sizediv" class="postbox ">
-              <div class="handlediv" title="<?php _e('Click to toggle', SAM_DOMAIN); ?>"><br></div>
-              <h3 class="hndle"><span><?php _e('Ads Place Size', SAM_DOMAIN);?></span></h3>
-              <div class="inside">
-                <p><?php _e('Select size of this Ads Place.', SAM_DOMAIN);?></p>
-                <p>
-                  <?php $this->adSizes($row['place_size']); ?>
-                </p>
-                <p>
-                  <label for="place_custom_width"><?php echo __('Custom Width', SAM_DOMAIN).':'; ?></label>
-                  <input id="place_custom_width" type="text" tabindex="3" name="place_custom_width" value="<?php echo $row['place_custom_width']; ?>" style="width:20%" >
-                </p>
-                <p>
-                  <label for="place_custom_height"><?php echo __('Custom Height', SAM_DOMAIN).':'; ?></label>
-                  <input id="place_custom_height" type="text" tabindex="3" name="place_custom_height" value="<?php echo $row['place_custom_height']; ?>" style="width:20%" >
-                </p>
-                <p><?php _e('These values are not used and are added solely for the convenience of advertising management. Will be used in the future...', SAM_DOMAIN); ?></p>
+          <div id="tabs">
+            <ul>
+              <li><a href="#tabs-1"><?php _e('General', SAM_DOMAIN); ?></a></li>
+              <li><a href="#tabs-2"><?php _e('Default Ad', SAM_DOMAIN); ?></a></li>
+              <li><a href="#tabs-3"><?php _e('Statistic', SAM_DOMAIN); ?></a></li>
+            </ul>
+            <div id="tabs-1">
+              <div class="meta-box-sortables ui-sortable">
+                <div id="sizediv" class="postbox ">
+                  <div class="handlediv" title="<?php _e('Click to toggle', SAM_DOMAIN); ?>"><br></div>
+                  <h3 class="hndle"><span><?php _e('Ads Place Size', SAM_DOMAIN);?></span></h3>
+                  <div class="inside">
+                    <p><?php _e('Select size of this Ads Place.', SAM_DOMAIN);?></p>
+                    <p>
+                      <?php $this->adSizes($row['place_size']); ?>
+                    </p>
+                    <p>
+                      <label for="place_custom_width"><?php echo __('Custom Width', SAM_DOMAIN).':'; ?></label>
+                      <input id="place_custom_width" type="text" tabindex="3" name="place_custom_width" value="<?php echo $row['place_custom_width']; ?>" style="width:20%" >
+                    </p>
+                    <p>
+                      <label for="place_custom_height"><?php echo __('Custom Height', SAM_DOMAIN).':'; ?></label>
+                      <input id="place_custom_height" type="text" tabindex="3" name="place_custom_height" value="<?php echo $row['place_custom_height']; ?>" style="width:20%" >
+                    </p>
+                    <p><?php _e('These values are not used and are added solely for the convenience of advertising management. Will be used in the future...', SAM_DOMAIN); ?></p>
+                  </div>
+                </div>
               </div>
+              <div class="meta-box-sortables ui-sortable">
+                <div id="codediv" class="postbox ">
+                  <div class="handlediv" title="<?php _e('Click to toggle', SAM_DOMAIN); ?>"><br></div>
+                  <h3 class="hndle"><span><?php _e('Codes', SAM_DOMAIN);?></span></h3>
+                  <div class="inside">
+                    <p><?php _e('Enter the code to output before and after the codes of Ads Place.', SAM_DOMAIN);?></p>
+                    <p>
+                      <label for="code_before"><?php echo __('Code Before', SAM_DOMAIN).':'; ?></label>
+                      <input id="code_before" class="code" type="text" tabindex="2" name="code_before" value="<?php echo htmlspecialchars(stripslashes($row['code_before'])); ?>" style="width:100%" >
+                    </p>
+                    <p>
+                      <label for="code_after"><?php echo __('Code After', SAM_DOMAIN).':'; ?></label>
+                      <input id="code_after" class="code" type="text" tabindex="3" name="code_after" value="<?php echo htmlspecialchars(stripslashes($row['code_after'])); ?>" style="width:100%" >
+                    </p>
+                    <p><?php _e('You can enter any HTML codes here for the further withdrawal of their before and after the code of Ads Place.', SAM_DOMAIN); ?></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="tabs-2">
+              <div class="meta-box-sortables ui-sortable">
+                <div id="srcdiv" class="postbox ">
+                  <div class="handlediv" title="<?php _e('Click to toggle', SAM_DOMAIN); ?>"><br></div>
+                  <h3 class="hndle"><span><?php _e('Ads Place Patch', SAM_DOMAIN);?></span></h3>
+                  <div class="inside">
+                    <p><?php _e('Select type of the code of a patch and fill data entry fields with the appropriate data.', SAM_DOMAIN);?></p>
+                    <p>
+                      <label for="patch_source_image"><input type="radio" id="patch_source_image" name="patch_source" value="0" <?php if($row['patch_source'] == '0') { echo 'checked="checked"'; } ?> >&nbsp;<?php _e('Image', SAM_DOMAIN); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    </p>
+                    <div id="rc-psi" class='radio-content' style="<?php if((int)$row['patch_source'] != 0) echo 'display: none;'; ?>">
+                      <p>
+                        <label for="patch_img"><?php echo __('Image', SAM_DOMAIN).':'; ?></label>
+                        <input id="patch_img" class="code" type="text" tabindex="3" name="patch_img" value="<?php echo htmlspecialchars(stripslashes($row['patch_img'])); ?>" style="width:100%" >
+                        <input id="patch_img_id" name="patch_img_id" type="hidden" value="<?php echo $row['patch_img_id'] ?>">
+                      </p>
+                      <p>
+                        <?php _e('This image is a patch for advertising space. This may be an image with the text "Place your ad here".', SAM_DOMAIN); ?>
+                      </p>
+                      <p>
+                        <label for="patch_link"><?php echo __('Target', SAM_DOMAIN).':'; ?></label>
+                        <input id="patch_link" class="code" type="text" tabindex="4" name="patch_link" value="<?php echo htmlspecialchars(stripslashes($row['patch_link'])); ?>" style="width:100%" >
+                      </p>
+                      <p>
+                        <?php _e('This is a link to a page where are your suggestions for advertisers.', SAM_DOMAIN); ?>
+                      </p>
+                      <?php self::drawImageTools(); ?>
+                    </div>
+                    <div class='clear-line'></div>
+                    <p>
+                      <label for="patch_source_code"><input type="radio" id="patch_source_code" name="patch_source" value="1" <?php if($row['patch_source'] == '1') { echo 'checked="checked"'; } ?> >&nbsp;<?php _e('HTML or Javascript Code', SAM_DOMAIN); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    </p>
+                    <div id="rc-psc" class='radio-content' style="<?php if((int)$row['patch_source'] != 1) echo 'display: none;'; ?>">
+                      <p>
+                        <label for="patch_code"><?php echo __('Patch Code', SAM_DOMAIN).':'; ?></label>
+                        <textarea id="patch_code" class="code" rows='10' name="patch_code" style="width:100%" ><?php echo $row['patch_code']; ?></textarea>
+                      </p>
+                      <p>
+                        <input type='checkbox' name='patch_adserver' id='patch_adserver' value='1' <?php checked(1, $row['patch_adserver']); ?> >
+                        <label for='patch_adserver'><?php _e('This is one-block code of third-party AdServer rotator. Selecting this checkbox prevents displaying contained ads.', SAM_DOMAIN); ?></label>
+                      </p>
+                      <p>
+                        <?php _e('This is a HTML-code patch of advertising space. For example: use the code to display AdSense advertisement. ', SAM_DOMAIN); ?>
+                      </p>
+                    </div>
+                    <div class='clear-line'></div>
+                    <p>
+                      <label for="patch_source_dfp"><input type="radio" id="patch_source_dfp" name="patch_source" value="2" <?php if($row['patch_source'] == '2') { echo 'checked="checked"'; } ?> >&nbsp;<?php _e('Google DFP', SAM_DOMAIN); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
+                    </p>
+                    <div id="rc-psd" class='radio-content' style="<?php if((int)$row['patch_source'] != 2) echo 'display: none;'; ?>">
+                      <p>
+                        <label for="patch_dfp"><?php echo __('DFP Block Name', SAM_DOMAIN).':'; ?></label>
+                        <input type='text' name='patch_dfp' id='patch_dfp' value='<?php echo $row['patch_dfp']; ?>'>
+                      </p>
+                      <p>
+                        <?php _e('This is name of Google DFP block!', SAM_DOMAIN); ?>
+                      </p>
+                    </div>
+                    <p><?php _e('The patch (default advertisement) will be shown that if the logic of the plugin can not show any contained advertisement on the current page of the document.', SAM_DOMAIN); ?></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="tabs-3">
+              <p class="totals">
+                <?php
+                $now = getdate();
+                $thisMonth = $now['mon'];
+                $thisYear = $now['year'];
+                $prevMonth = ($thisMonth == 1) ? 12 : $thisMonth - 1;
+                $prevYear = ($thisMonth == 1) ? $thisYear - 1 : $thisYear;
+
+                ?>
+                <label for="stats_month"><?php echo __('Select Period', SAM_DOMAIN) . ': '; ?></label>
+                <select id="stats_month">
+                  <option value="0"><?php echo __('This Month', SAM_DOMAIN) . ' (' . self::getMonthName($thisMonth) . ", $thisYear" . ')'; ?></option>
+                  <option value="1"><?php echo __('Previous Month', SAM_DOMAIN) . ' (' . self::getMonthName($prevMonth) . ", $prevYear" . ')'; ?></option>
+                </select>
+              </p>
+              <div class="graph-container">
+                <div id="graph" style="width: 100%; height: 300px;"></div>
+              </div>
+              <p class="totals">
+                <strong><?php echo __('Total', SAM_DOMAIN) . ':'; ?></strong><br>
+                <?php _e('Hits', SAM_DOMAIN); ?>: <span id="total_hits"></span><br>
+                <?php _e('Clicks', SAM_DOMAIN); ?>: <span id="total_clicks"></span><br>
+              </p>
             </div>
           </div>
           <div class="meta-box-sortables ui-sortable">
-            <div id="srcdiv" class="postbox ">
+            <div id="p-descdiv" class="postbox ">
               <div class="handlediv" title="<?php _e('Click to toggle', SAM_DOMAIN); ?>"><br></div>
-              <h3 class="hndle"><span><?php _e('Ads Place Patch', SAM_DOMAIN);?></span></h3>
+              <h3 class="hndle"><span><?php _e('Contained Ads', SAM_DOMAIN);?></span></h3>
               <div class="inside">
-                <p><?php _e('Select type of the code of a patch and fill data entry fields with the appropriate data.', SAM_DOMAIN);?></p>
-                <p>
-                  <label for="patch_source_image"><input type="radio" id="patch_source_image" name="patch_source" value="0" <?php if($row['patch_source'] == '0') { echo 'checked="checked"'; } ?> >&nbsp;<?php _e('Image', SAM_DOMAIN); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-                </p>
-                <div id="rc-psi" class='radio-content' style="<?php if((int)$row['patch_source'] != 0) echo 'display: none;'; ?>">
-                  <p>
-                    <label for="patch_img"><?php echo __('Image', SAM_DOMAIN).':'; ?></label>
-                    <input id="patch_img" class="code" type="text" tabindex="3" name="patch_img" value="<?php echo htmlspecialchars(stripslashes($row['patch_img'])); ?>" style="width:100%" >
-                    <input id="patch_img_id" name="patch_img_id" type="hidden" value="<?php echo $row['patch_img_id'] ?>">
-                  </p>
-                  <p>
-                    <?php _e('This image is a patch for advertising space. This may be an image with the text "Place your ad here".', SAM_DOMAIN); ?>
-                  </p>
-                  <p>
-                    <label for="patch_link"><?php echo __('Target', SAM_DOMAIN).':'; ?></label>
-                    <input id="patch_link" class="code" type="text" tabindex="4" name="patch_link" value="<?php echo htmlspecialchars(stripslashes($row['patch_link'])); ?>" style="width:100%" >
-                  </p>
-                  <p>
-                    <?php _e('This is a link to a page where are your suggestions for advertisers.', SAM_DOMAIN); ?>
-                  </p>
-                  <?php self::drawImageTools(); ?>
-                </div>
-                <div class='clear-line'></div>
-                <p>
-                  <label for="patch_source_code"><input type="radio" id="patch_source_code" name="patch_source" value="1" <?php if($row['patch_source'] == '1') { echo 'checked="checked"'; } ?> >&nbsp;<?php _e('HTML or Javascript Code', SAM_DOMAIN); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-                </p>
-                <div id="rc-psc" class='radio-content' style="<?php if((int)$row['patch_source'] != 1) echo 'display: none;'; ?>">
-                  <p>
-                    <label for="patch_code"><?php echo __('Patch Code', SAM_DOMAIN).':'; ?></label>
-                    <textarea id="patch_code" class="code" rows='10' name="patch_code" style="width:100%" ><?php echo $row['patch_code']; ?></textarea>
-                  </p>
-                  <p>
-                    <input type='checkbox' name='patch_adserver' id='patch_adserver' value='1' <?php checked(1, $row['patch_adserver']); ?> >
-                    <label for='patch_adserver'><?php _e('This is one-block code of third-party AdServer rotator. Selecting this checkbox prevents displaying contained ads.', SAM_DOMAIN); ?></label>
-                  </p>
-                  <p>
-                    <?php _e('This is a HTML-code patch of advertising space. For example: use the code to display AdSense advertisement. ', SAM_DOMAIN); ?>
-                  </p>
-                </div>
-                <div class='clear-line'></div>
-                <p>
-                  <label for="patch_source_dfp"><input type="radio" id="patch_source_dfp" name="patch_source" value="2" <?php if($row['patch_source'] == '2') { echo 'checked="checked"'; } ?> >&nbsp;<?php _e('Google DFP', SAM_DOMAIN); ?></label>&nbsp;&nbsp;&nbsp;&nbsp;
-                </p>
-                <div id="rc-psd" class='radio-content' style="<?php if((int)$row['patch_source'] != 2) echo 'display: none;'; ?>">
-                  <p>
-                    <label for="patch_dfp"><?php echo __('DFP Block Name', SAM_DOMAIN).':'; ?></label>
-                    <input type='text' name='patch_dfp' id='patch_dfp' value='<?php echo $row['patch_dfp']; ?>'>
-                  </p>
-                  <p>
-                    <?php _e('This is name of Google DFP block!', SAM_DOMAIN); ?>
-                  </p>
-                </div>              
-                <p><?php _e('The patch (default advertisement) will be shown that if the logic of the plugin can not show any contained advertisement on the current page of the document.', SAM_DOMAIN); ?></p>
-              </div>
-            </div>
-          </div>
-          <div class="meta-box-sortables ui-sortable">
-            <div id="codediv" class="postbox ">
-              <div class="handlediv" title="<?php _e('Click to toggle', SAM_DOMAIN); ?>"><br></div>
-              <h3 class="hndle"><span><?php _e('Codes', SAM_DOMAIN);?></span></h3>
-              <div class="inside">
-                <p><?php _e('Enter the code to output before and after the codes of Ads Place.', SAM_DOMAIN);?></p>
-                <p>
-                  <label for="code_before"><?php echo __('Code Before', SAM_DOMAIN).':'; ?></label>
-                  <input id="code_before" class="code" type="text" tabindex="2" name="code_before" value="<?php echo htmlspecialchars(stripslashes($row['code_before'])); ?>" style="width:100%" >
-                </p>
-                <p>
-                  <label for="code_after"><?php echo __('Code After', SAM_DOMAIN).':'; ?></label>
-                  <input id="code_after" class="code" type="text" tabindex="3" name="code_after" value="<?php echo htmlspecialchars(stripslashes($row['code_after'])); ?>" style="width:100%" >
-                </p>
-                <p><?php _e('You can enter any HTML codes here for the further withdrawal of their before and after the code of Ads Place.', SAM_DOMAIN); ?></p>
+                <div id="ads-grid" style="height: 250px; width: 100%;"></div>
               </div>
             </div>
           </div>
@@ -733,8 +792,8 @@ if(!class_exists('SamPlaceEdit')) {
                       sa.hits_limit,
                       sa.limit_clicks,
                       sa.clicks_limit,
-                      sa.ad_hits,
-                      sa.ad_clicks,
+                      (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 0) AS ad_hits,
+                      (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 1) AS ad_clicks,
                       sa.ad_weight,
                       sa.ad_weight_hits,
                       sa.adv_nick,
@@ -754,7 +813,7 @@ if(!class_exists('SamPlaceEdit')) {
                   FROM $aTable sa
                   INNER JOIN $pTable sp
                   ON sa.pid = sp.id
-                  WHERE sa.id = $item",
+                  WHERE sa.id = $item;",
               ARRAY_A);
               
             if($row['ad_size'] === 'custom') $aSize = $this->getAdSize($row['ad_size'], $row['ad_custom_width'], $row['ad_custom_height']);
@@ -946,7 +1005,9 @@ if(!class_exists('SamPlaceEdit')) {
             <ul>
               <li><a href="#tabs-1"><?php _e('General', SAM_DOMAIN); ?></a></li>
               <li><a href="#tabs-2"><?php _e('Extended Restrictions', SAM_DOMAIN); ?></a></li>
-              <li><a href="#tabs-3"><?php _e('Earnings settings', SAM_DOMAIN); ?></a></li>
+              <li><a href="#tabs-3"><?php _e('Targeting', SAM_DOMAIN); ?></a></li>
+              <li><a href="#tabs-4"><?php _e('Earnings settings', SAM_DOMAIN); ?></a></li>
+              <li><a href="#tabs-5"><?php _e('Statistic', SAM_DOMAIN); ?></a></li>
             </ul>
             <div id="tabs-1">
               <div id="sources" class="meta-box-sortables ui-sortable">
@@ -1119,49 +1180,7 @@ if(!class_exists('SamPlaceEdit')) {
             </div>
             <div id="tabs-2">
               <div id="xlimits" class="meta-box-sortables ui-sortable">
-                <div id="limitsusr" class="postbox">
-                  <div class="handlediv" title="<?php _e('Click to toggle', SAM_DOMAIN); ?>"><br></div>
-                  <h3 class="hndle"><span><?php _e('Users', SAM_DOMAIN);?></span></h3>
-                  <div class="inside">
-                    <p><strong><?php echo __('Show this ad for', SAM_DOMAIN).':'; ?></strong></p>
-                    <p>
-                      <input type="radio" name="ad_users" id="ad_users_0" value="0" <?php checked(0, $row['ad_users']); ?> >
-                      <label for="ad_users_0"><strong><?php _e('all users', SAM_DOMAIN); ?></strong></label>
-                    </p>
-                    <div class="clear-line"></div>
-                    <p>
-                      <input type="radio" name="ad_users" id="ad_users_1" value="1" <?php checked(1, $row['ad_users']); ?> >
-                      <label for="ad_users_1"><strong><?php _e('these users', SAM_DOMAIN); ?></strong></label>
-                    </p>
-                    <div id="custom-users" class="radio-content" style="<?php if((int)$row['ad_users'] != 1) echo 'display: none;'; ?>">
-                      <p>
-                        <input type="checkbox" name="ad_users_unreg" id="ad_users_unreg" value="1" <?php checked(1, $row['ad_users_unreg']); ?> >
-                        <label for="ad_users_unreg"><strong><?php _e('Unregistered Users', SAM_DOMAIN); ?></strong></label>
-                      </p>
-                      <p>
-                        <input type="checkbox" name="ad_users_reg" id="ad_users_reg" value="1" <?php checked(1, $row['ad_users_reg']); ?> >
-                        <label for="ad_users_reg"><strong><?php _e('Registered Users', SAM_DOMAIN) ?></strong></label>
-                      </p>
-                      <div id="x-reg-users" class="radio-content" style="<?php if((int)$row['ad_users_reg'] != 1) echo 'display: none;'; ?>">
-                        <p>
-                          <input type="checkbox" name="x_ad_users" id="x_ad_users" value="1" <?php checked(1, $row['x_ad_users']) ?> >
-                          <label for="x_ad_users"><strong><?php _e('Exclude these users', SAM_DOMAIN) ?></strong></label>
-                        </p>
-                        <div id="x-view-users" class="radio-content" style="<?php if((int)$row['x_ad_users'] != 1) echo 'display: none;'; ?>">
-                          <strong><?php echo __('Registered Users', SAM_DOMAIN).':'; ?></strong>
-                          <input type="hidden" name="x_view_users" id="x_view_users" value="<?php echo $row['x_view_users'] ?>" >
-                          <div>
-                            <div id="users-grid"></div>
-                          </div>
-                        </div>
-                        <p>
-                          <input type="checkbox" name="ad_users_adv" id="ad_users_adv" value="1" <?php checked(1, $row['ad_users_adv']); ?> >
-                          <label for="ad_users_adv"><strong><?php _e('Do not show this ad for advertiser', SAM_DOMAIN) ?></strong></label>
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+
                 <div id="limitsdiv" class="postbox ">
                   <div class="handlediv" title="<?php _e('Click to toggle', SAM_DOMAIN); ?>"><br></div>
                   <h3 class="hndle"><span><?php _e('Extended restrictions of advertisements showing', SAM_DOMAIN);?></span></h3>
@@ -1406,6 +1425,53 @@ if(!class_exists('SamPlaceEdit')) {
               </div>
             </div>
             <div id="tabs-3">
+              <div id="targeting" class="meta-box-sortables ui-sortable">
+                <div id="limitsusr" class="postbox">
+                  <div class="handlediv" title="<?php _e('Click to toggle', SAM_DOMAIN); ?>"><br></div>
+                  <h3 class="hndle"><span><?php _e('Users', SAM_DOMAIN);?></span></h3>
+                  <div class="inside">
+                    <p><strong><?php echo __('Show this ad for', SAM_DOMAIN).':'; ?></strong></p>
+                    <p>
+                      <input type="radio" name="ad_users" id="ad_users_0" value="0" <?php checked(0, $row['ad_users']); ?> >
+                      <label for="ad_users_0"><strong><?php _e('all users', SAM_DOMAIN); ?></strong></label>
+                    </p>
+                    <div class="clear-line"></div>
+                    <p>
+                      <input type="radio" name="ad_users" id="ad_users_1" value="1" <?php checked(1, $row['ad_users']); ?> >
+                      <label for="ad_users_1"><strong><?php _e('these users', SAM_DOMAIN); ?></strong></label>
+                    </p>
+                    <div id="custom-users" class="radio-content" style="<?php if((int)$row['ad_users'] != 1) echo 'display: none;'; ?>">
+                      <p>
+                        <input type="checkbox" name="ad_users_unreg" id="ad_users_unreg" value="1" <?php checked(1, $row['ad_users_unreg']); ?> >
+                        <label for="ad_users_unreg"><strong><?php _e('Unregistered Users', SAM_DOMAIN); ?></strong></label>
+                      </p>
+                      <p>
+                        <input type="checkbox" name="ad_users_reg" id="ad_users_reg" value="1" <?php checked(1, $row['ad_users_reg']); ?> >
+                        <label for="ad_users_reg"><strong><?php _e('Registered Users', SAM_DOMAIN) ?></strong></label>
+                      </p>
+                      <div id="x-reg-users" class="radio-content" style="<?php if((int)$row['ad_users_reg'] != 1) echo 'display: none;'; ?>">
+                        <p>
+                          <input type="checkbox" name="x_ad_users" id="x_ad_users" value="1" <?php checked(1, $row['x_ad_users']) ?> >
+                          <label for="x_ad_users"><strong><?php _e('Exclude these users', SAM_DOMAIN) ?></strong></label>
+                        </p>
+                        <div id="x-view-users" class="radio-content" style="<?php if((int)$row['x_ad_users'] != 1) echo 'display: none;'; ?>">
+                          <strong><?php echo __('Registered Users', SAM_DOMAIN).':'; ?></strong>
+                          <input type="hidden" name="x_view_users" id="x_view_users" value="<?php echo $row['x_view_users'] ?>" >
+                          <div>
+                            <div id="users-grid"></div>
+                          </div>
+                        </div>
+                        <p>
+                          <input type="checkbox" name="ad_users_adv" id="ad_users_adv" value="1" <?php checked(1, $row['ad_users_adv']); ?> >
+                          <label for="ad_users_adv"><strong><?php _e('Do not show this ad for advertiser', SAM_DOMAIN) ?></strong></label>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div id="tabs-4">
               <div id="advertiser" class="meta-box-sortables ui-sortable">
                 <div id="advdiv" class="postbox">
                   <div class="handlediv" title="<?php _e('Click to toggle', SAM_DOMAIN); ?>"><br></div>
@@ -1454,6 +1520,33 @@ if(!class_exists('SamPlaceEdit')) {
                     </p>
                   </div>
                 </div>
+              </div>
+            </div>
+            <div id="tabs-5">
+              <div id="stats" class="meta-box-sortables ui-sortable">
+                <p class="totals">
+                  <?php
+                  $now = getdate();
+                  $thisMonth = $now['mon'];
+                  $thisYear = $now['year'];
+                  $prevMonth = ($thisMonth == 1) ? 12 : $thisMonth - 1;
+                  $prevYear = ($thisMonth == 1) ? $thisYear - 1 : $thisYear;
+
+                  ?>
+                  <label for="stats_month"><?php echo __('Select Period', SAM_DOMAIN) . ': '; ?></label>
+                  <select id="stats_month">
+                    <option value="0"><?php echo __('This Month', SAM_DOMAIN) . ' (' . self::getMonthName($thisMonth) . ", $thisYear" . ')'; ?></option>
+                    <option value="1"><?php echo __('Previous Month', SAM_DOMAIN) . ' (' . self::getMonthName($prevMonth) . ", $prevYear" . ')'; ?></option>
+                  </select>
+                </p>
+                <div class="graph-container">
+                  <div id="graph" style="width: 100%; height: 300px; padding: 15px;"></div>
+                </div>
+                <p class="totals">
+                  <strong><?php echo __('Total', SAM_DOMAIN) . ':'; ?></strong><br>
+                  <?php _e('Hits', SAM_DOMAIN); ?>: <span id="total_hits"></span><br>
+                  <?php _e('Clicks', SAM_DOMAIN); ?>: <span id="total_clicks"></span><br>
+                </p>
               </div>
             </div>
           </div>

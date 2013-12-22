@@ -213,6 +213,7 @@ if(!class_exists('SamUpdater')) {
       $zTable = $wpdb->prefix . "sam_zones";
       $bTable = $wpdb->prefix . "sam_blocks";
       $eTable = $wpdb->prefix . "sam_errors";
+      $sTable = $wpdb->prefix . "sam_stats";
 
       $options = $this->options;
       $el = (integer)$options['errorlog'];
@@ -421,7 +422,29 @@ if(!class_exists('SamUpdater')) {
         }
 
         if($el) {
-          self::errorWrite($eTable, $pTable, $bSql, $dbResult, $wpdb->last_error);
+          self::errorWrite($eTable, $bTable, $bSql, $dbResult, $wpdb->last_error);
+          $dbResult = null;
+        }
+
+        // Statistics Table
+        if($wpdb->get_var("SHOW TABLES LIKE '$sTable'") != $sTable) {
+          $sSql = "CREATE TABLE $sTable (
+                    id int(10) UNSIGNED DEFAULT NULL,
+                    pid int(10) UNSIGNED DEFAULT NULL,
+                    event_time datetime DEFAULT NULL,
+                    event_type tinyint(1) DEFAULT NULL
+                    )
+                    $charset_collate
+                    COMMENT = 'Simple Ads Manager Statistics';";
+          dbDelta($sSql);
+        }
+        else {
+          $sSql = self::getUpdateSql($sTable, $sam_tables_defs['stats']);
+          if(!empty($sSql)) $dbResult = $wpdb->query($sSql);
+        }
+
+        if($el) {
+          self::errorWrite($eTable, $sTable, $sSql, $dbResult, $wpdb->last_error);
           $dbResult = null;
         }
 

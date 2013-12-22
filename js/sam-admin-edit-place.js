@@ -68,11 +68,15 @@ var sam = sam || {};
       rcpsi = $('#rc-psi'), rcpsc = $('#rc-psc'), rcpsd = $('#rc-psd'), title = $("#title");
 
     var
+      itemId = $('#place_id').val(),
       btnUpload = $("#upload-file-button"),
       status = $("#uploading"),
       srcHelp = $("#uploading-help"),
       loadImg = $('#load_img'),
-      sPointer,
+      sPointer, statsData, sMonth = 0,
+      grid = $('#ads-grid'),
+      samStatsUrl = samEditorOptions.samStatsUrl,
+      labels = samEditorOptions.labels,
       fileExt = '';
 
     sPointer = samEditorOptions.places;
@@ -86,12 +90,7 @@ var sam = sam || {};
       track: true
     });
 
-    var options = samEditorOptions.options/*$.parseJSON($.ajax({
-      url:ajaxurl,
-      data:{action:'get_strings'},
-      async:false,
-      dataType:'jsonp'
-    }).responseText)*/;
+    var options = samEditorOptions.options;
 
     fu = new AjaxUpload(btnUpload, {
       action:ajaxurl,
@@ -99,7 +98,7 @@ var sam = sam || {};
       data:{
         action:'upload_ad_image'
       },
-      onSubmit:function (file, ext) {
+      onSubmit: function (file, ext) {
         if (!(ext && /^(jpg|png|jpeg|gif|swf)$/.test(ext))) {
           status.text(options.status);
           return false;
@@ -132,7 +131,80 @@ var sam = sam || {};
       }
     });
 
+    $.post(samStatsUrl, {
+      action: 'load_stats',
+      id: itemId,
+      sm: sMonth
+    }).done(function(data) {
+        var
+          hits = {label: labels.hits, data: data.hits},
+          clicks = {label: labels.clicks, data: data.clicks};
+        statsData = [hits, clicks];
+        $('#total_hits').text(data.total.hits);
+        $('#total_clicks').text(data.total.clicks);
+        $.plot('#graph', statsData, {
+          series: {
+            lines: { show: true },
+            points: { show: true }
+          },
+          xaxis: {
+            mode: "categories",
+            tickLength: 0
+          },
+          legend: {
+            backgroundColor: 'rgb(235, 233, 233)'
+          },
+          grid: {
+            backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
+            borderWidth: 1,
+            borderColor: '#DFDFDF'
+          }
+        });
+      });
+
+    $('#tabs').tabs({
+      activate: function(ev, ui) {
+        var el = ui.newPanel[0].id;
+        if(el == 'tabs-3') {
+          $.plot('#graph', statsData, {
+            series: {
+              lines: { show: true },
+              points: { show: true }
+            },
+            xaxis: {
+              mode: "categories",
+              tickLength: 0
+            },
+            legend: {
+              backgroundColor: 'rgb(235, 233, 233)'
+            },
+            grid: {
+              backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
+              borderWidth: 1,
+              borderColor: '#DFDFDF'
+            }
+          });
+        }
+      }
+    });
     $('#image_tools').tabs();
+
+    $.post(samStatsUrl, {
+      action: 'load_ads',
+      id: itemId,
+      sm: 0
+    }).done(function(data) {
+        var records = data.records;
+        grid.w2grid({
+          name: 'ads',
+          show: {selectColumn: false},
+          multiSelect: false,
+          columns: samEditorOptions.columns,
+          records: records
+        });
+      });
+    /*var url = samStatsUrl + '?action=load_ads&id=' + itemId + '&sm=0';
+    grid.w2render('ads-grid');*/
 
     $("#add-file-button").click(function () {
       var curFile = options.url + $("select#files_list option:selected").val();
@@ -174,6 +246,40 @@ var sam = sam || {};
         }
       }).pointer('open');
     }
+
+    $('#stats_month').change(function() {
+      sMonth = $(this).val();
+      $.post(samStatsUrl, {
+        action: 'load_stats',
+        id: itemId,
+        sm: sMonth
+      }).done(function(data) {
+          var
+            hits = {label: labels.hits, data: data.hits},
+            clicks = {label: labels.clicks, data: data.clicks};
+          statsData = [hits, clicks];
+          $('#total_hits').text(data.total.hits);
+          $('#total_clicks').text(data.total.clicks);
+          $.plot('#graph', statsData, {
+            series: {
+              lines: { show: true },
+              points: { show: true }
+            },
+            xaxis: {
+              mode: "categories",
+              tickLength: 0
+            },
+            legend: {
+              backgroundColor: 'rgb(235, 233, 233)'
+            },
+            grid: {
+              backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
+              borderWidth: 1,
+              borderColor: '#DFDFDF'
+            }
+          });
+        });
+    });
 
     return false;
   });

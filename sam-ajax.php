@@ -28,6 +28,7 @@ $oSql = "SELECT $oTable.option_value FROM $oTable WHERE $oTable.option_name = 'b
 $charset = $wpdb->get_var($oSql);
 $aTable = $wpdb->prefix . "sam_ads";
 $pTable = $wpdb->prefix . 'sam_places';
+$sTable = $wpdb->prefix . 'sam_stats';
 
 //Typical headers
 @header("Content-Type: application/json; charset=$charset");
@@ -55,12 +56,14 @@ if(in_array($action, $allowed_actions)){
       }
       elseif(isset($_POST['id'])) {
         $id = $_POST['id'];
+        $pid = $_POST['pid'];
       }
       else $id = -100;
 
       if($id > 0) {
-        $aSql = "UPDATE $aTable sa SET sa.ad_clicks = sa.ad_clicks + 1 WHERE sa.id = %d;";
-        $result = $wpdb->query($wpdb->prepare($aSql, $id));
+        //$aSql = "UPDATE $aTable sa SET sa.ad_clicks = sa.ad_clicks + 1 WHERE sa.id = %d;";
+        $aSql = "INSERT HIGH_PRIORITY INTO $sTable (id, pid, event_time, event_type) VALUES (%d, %d, NOW(), 1);";
+        $result = $wpdb->query($wpdb->prepare($aSql, $id, $pid));
         if($result === 1) {
           $out = array('success' => true, 'id' => $id, 'result' => $result, 'charset' => $charset);
           echo json_encode( $out );
@@ -77,10 +80,11 @@ if(in_array($action, $allowed_actions)){
         $cid = ($id == 0) ? $pid : $id;
         $result = 0;
         //if($id > 0) $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1, sa.ad_weight_hits = sa.ad_weight_hits + 1 WHERE sa.id = %d;";
-        if($id > 0) $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1 WHERE sa.id = %d;";
+        /*if($id > 0) $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1 WHERE sa.id = %d;";
         elseif($id == 0) $sql = "UPDATE $pTable sp SET sp.patch_hits = sp.patch_hits + 1 WHERE sp.id = %d;";
-        else $sql = '';
-        if(!empty($sql)) $result = $wpdb->query($wpdb->prepare($sql, $cid));
+        else $sql = '';*/
+        $sql = "INSERT HIGH_PRIORITY INTO $sTable (id, pid, event_time, event_type) VALUES (%d, %d, NOW(), 0);";
+        if(!empty($sql)) $result = $wpdb->query($wpdb->prepare($sql, $id, $pid));
         if($result === 1) echo json_encode(array('success' => true, 'id' => $id, 'pid' => $pid));
         else echo json_encode(array(
           'success' => false,
