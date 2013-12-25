@@ -10,6 +10,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     private $listBlock;
     private $eLogPage;
     private $cmsVer;
+    private $settingsTabs;
     private $samPointerOptions = array('places' => true, 'ads' => true, 'zones' => true, 'blocks' => true);
     
     public function __construct() {
@@ -22,6 +23,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       
       if(!is_dir(SAM_AD_IMG)) mkdir(SAM_AD_IMG);
 
+      $this->settingsTabs = array();
       $sam_tables_defs = self::getTablesDefs();
 				
       register_activation_hook(SAM_MAIN_FILE, array(&$this, 'onActivate'));
@@ -487,16 +489,34 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'cTax' => $cTax
       );
     }
+
+    public function starSettingsTab( $section, $uri, $name ) {
+      $this->settingsTabs[$section] = array('start_tab' => true, 'uri' => $uri, 'name' => $name);
+    }
+
+    public function finishSettingsTab( $section ) {
+      $this->settingsTabs[$section]['finish_tab'] = true;
+    }
 		
 		public function initSettings() {
 			register_setting('samOptions', SAM_OPTIONS_NAME);
+
+      self::starSettingsTab("sam_general_section", 'tabs-1', __('General', SAM_DOMAIN));
       add_settings_section("sam_general_section", __("General Settings", SAM_DOMAIN), array(&$this, "drawGeneralSection"), 'sam-settings');
-      add_settings_section("sam_single_section", __("Auto Inserting Settings", SAM_DOMAIN), array(&$this, "drawSingleSection"), 'sam-settings');
       add_settings_section("sam_ext_section", __('Extended Options', SAM_DOMAIN), array(&$this, 'drawExtSection'), 'sam-settings');
-      add_settings_section("sam_dfp_section", __("Google DFP Settings", SAM_DOMAIN), array(&$this, "drawDFPSection"), 'sam-settings');
-      add_settings_section("sam_statistic_section", __("Statistics Settings", SAM_DOMAIN), array(&$this, "drawStatisticsSection"), 'sam-settings');
       add_settings_section("sam_layout_section", __("Admin Layout", SAM_DOMAIN), array(&$this, "drawLayoutSection"), 'sam-settings');
-			add_settings_section("sam_deactivate_section", __("Plugin Deactivating", SAM_DOMAIN), array(&$this, "drawDeactivateSection"), 'sam-settings');
+      add_settings_section("sam_deactivate_section", __("Plugin Deactivating", SAM_DOMAIN), array(&$this, "drawDeactivateSection"), 'sam-settings');
+      self::finishSettingsTab('sam_deactivate_section');
+      self::starSettingsTab('sam_single_section', 'tabs-2', __('Auto Inserting', SAM_DOMAIN));
+      add_settings_section("sam_single_section", __("Auto Inserting Settings", SAM_DOMAIN), array(&$this, "drawSingleSection"), 'sam-settings');
+      self::finishSettingsTab('sam_single_section');
+      self::starSettingsTab('sam_dfp_section', 'tabs-3', __('Google', SAM_DOMAIN));
+      add_settings_section("sam_dfp_section", __("Google DFP Settings", SAM_DOMAIN), array(&$this, "drawDFPSection"), 'sam-settings');
+      self::finishSettingsTab('sam_dfp_section');
+      self::starSettingsTab('sam_statistic_section', 'tabs-4', __('Tools', SAM_DOMAIN));
+      add_settings_section("sam_statistic_section", __("Statistics Settings", SAM_DOMAIN), array(&$this, "drawStatisticsSection"), 'sam-settings');
+      add_settings_section('sam_mailer_section', __('Mailing System', SAM_DOMAIN), array(&$this, 'drawMailerSection'), 'sam-settings');
+      self::finishSettingsTab('sam_mailer_section');
 			
       add_settings_field('adCycle', __("Views per Cycle", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_general_section', array('description' => __('Number of hits of one ad for a full cycle of rotation (maximal activity).', SAM_DOMAIN)));
       add_settings_field('access', __('Minimum Level for access to menu', SAM_DOMAIN), array(&$this, 'drawJSliderOption'), 'sam-settings', 'sam_general_section', array('description' => __('Who can use menu of plugin - Minimum User Level needed for access to menu of plugin. In any case only Super Admin and Administrator can use Settings Menu of SAM Plugin.', SAM_DOMAIN), 'options' => array('manage_network' => __('Super Admin', SAM_DOMAIN), 'manage_options' => __('Administrator', SAM_DOMAIN), 'edit_others_posts' => __('Editor', SAM_DOMAIN), 'publish_posts' => __('Author', SAM_DOMAIN), 'edit_posts' => __('Contributor', SAM_DOMAIN)), 'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')));
@@ -524,7 +544,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_settings_field('errorlogFS', __('Turn on/off the error log for Face Side.', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_ext_section', array('label_for' => 'errorlogFS', 'checkbox' => true));
 
       add_settings_field('useDFP', __("Allow using Google DoubleClick for Publishers (DFP) rotator codes", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_dfp_section', array('label_for' => 'useDFP', 'checkbox' => true));
-      add_settings_field('dfpPub', __("Google DFP Pub Code", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_dfp_section', array('description' => __('Your Google DFP Pub code. i.e:', SAM_DOMAIN).' ca-pub-0000000000000000.', 'width' => 200));
+      add_settings_field('dfpPub', __("Google DFP Pub Code", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_dfp_section', array('description' => __('Your Google DFP Pub code. i.e:', SAM_DOMAIN).' ca-pub-0000000000000000.', 'width' => '200px'));
       
       add_settings_field('detectBots', __("Allow Bots and Crawlers detection", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_statistic_section', array('label_for' => 'detectBots', 'checkbox' => true));
       add_settings_field('detectingMode', __("Accuracy of Bots and Crawlers Detection", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_statistic_section', array('description' => __("If bot is detected hits of ads won't be counted. Use with caution! More exact detection requires more server resources.", SAM_DOMAIN), 'options' => array( 'inexact' => __('Inexact detection', SAM_DOMAIN), 'exact' => __('Exact detection', SAM_DOMAIN), 'more' => __('More exact detection', SAM_DOMAIN))));
@@ -537,6 +557,14 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_settings_field('deleteOptions', __("Delete plugin options during deactivating plugin", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_deactivate_section', array('label_for' => 'deleteOptions', 'checkbox' => true));
 			add_settings_field('deleteDB', __("Delete database tables of plugin during deactivating plugin", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_deactivate_section', array('label_for' => 'deleteDB', 'checkbox' => true));
       add_settings_field('deleteFolder', __("Delete custom images folder of plugin during deactivating plugin", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_deactivate_section', array('label_for' => 'deleteFolder', 'checkbox' => true));
+
+      add_settings_field('mailer', __('Allow SAM Mailing System to send statistical data to advertisers', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_mailer_section', array('label_for' => 'mailer', 'checkbox' => true));
+      add_settings_field('mail_subject', __('Mail Subject', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Mail subject of sending email.', SAM_DOMAIN), 'width' => '70%'));
+      add_settings_field('mail_greeting', __('Mail Greeting String', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Greeting string of sending email.', SAM_DOMAIN).' '.__("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site.", SAM_DOMAIN), 'width' => '70%'));
+      add_settings_field('mail_text_before', __('Mail Text before statistical data table', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Some text before statistical data table of sending email.', SAM_DOMAIN).' '.__("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site.", SAM_DOMAIN), 'height' => '75px'));
+      add_settings_field('mail_text_after', __('Mail Text after statistical data table', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Some text after statistical data table of sending email.', SAM_DOMAIN).' '.__("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site.", SAM_DOMAIN), 'height' => '75px'));
+      add_settings_field('mail_warning', __('Mail Warning 1', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('This text will be placed at the end of sending email.', SAM_DOMAIN).' '.__("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site.", SAM_DOMAIN), 'height' => '50px'));
+      add_settings_field('mail_message', __('Mail Warning 2', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('This text will be placed at the very end of sending email.', SAM_DOMAIN).' '.__("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site.", SAM_DOMAIN), 'height' => '50px'));
       
       register_setting('sam-settings', SAM_OPTIONS_NAME, array(&$this, 'sanitizeSettings'));
 		}
@@ -601,11 +629,14 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         wp_enqueue_style('jSlider', SAM_URL.'css/jslider.css', false, '1.1.0');
         wp_enqueue_style('jSlider-plastic', SAM_URL.'css/jslider.round.plastic.css', false, '1.1.0');
         wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
+        wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
 
         wp_enqueue_script('jquery');
         wp_enqueue_script('jquery-ui-core');
         wp_enqueue_script('jquery-effects-core');
         wp_enqueue_script('jquery-effects-blind');
+        wp_enqueue_script('jquery-ui-widget');
+        wp_enqueue_script('jquery-ui-tabs');
         wp_enqueue_script('hash-table', SAM_URL.'js/slider/jshashtable-2.1_src.js', array('jquery'), '2.1');
         wp_enqueue_script('number-formatter', SAM_URL.'js/slider/jquery.numberformatter-1.2.3.js', array('jquery'), '1.2.3');
         wp_enqueue_script('templates', SAM_URL.'js/slider/tmpl.js', array('jquery'));
@@ -895,14 +926,36 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       }
       else wp_send_json_error();
     }
+
+    public function settingsTabsHeader( $tabs ) {
+      $out = "<ul>";
+
+      foreach($tabs as $tab) {
+        if(isset($tab['uri']) && isset($tab['name'])) {
+          $tabUri = $tab['uri'];
+          $tabName = $tab['name'];
+          $out .= "<li><a href='#{$tabUri}'>{$tabName}</a></li>";
+        }
+      }
+
+      $out .= "</ul>";
+
+      return $out;
+    }
 		
-		public function doSettingsSections($page) {
+		public function doSettingsSections($page, $tabs) {
       global $wp_settings_sections, $wp_settings_fields;
 
       if ( !isset($wp_settings_sections) || !isset($wp_settings_sections[$page]) )
         return;
 
+      echo "<div id='tabs'>\n";
+      echo self::settingsTabsHeader($tabs);
+
       foreach ( (array) $wp_settings_sections[$page] as $section ) {
+        if($this->settingsTabs[ $section['id'] ]['start_tab'])
+          echo "<div id='{$this->settingsTabs[ $section['id'] ]['uri']}'>";
+
         echo "<div class='ui-sortable sam-section'>\n";
         echo "<div class='postbox opened'>\n";
         echo "<h3>{$section['title']}</h3>\n";
@@ -914,7 +967,9 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         echo '</div>';
         echo '</div>';
         echo '</div>';
+        if($this->settingsTabs[ $section['id'] ]['finish_tab']) echo "</div>";
       }
+      echo "</div>";
     }
     
     public function doSettingsFields($page, $section) {
@@ -986,6 +1041,11 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     public function drawDeactivateSection() {
 			echo '<p>'.__('Are you allow to perform these actions during deactivating plugin?', SAM_DOMAIN).'</p>';
 		}
+
+    public function drawMailerSection() {
+      $time = get_transient( 'sam_maintenance_date' );
+      echo "Next mailing is scheduled on <code>{$time}</code>... ".$this->test[0];
+    }
     
     public function drawTextOption( $id, $args ) {
       $settings = parent::getSettings();
@@ -996,7 +1056,18 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 					name="<?php echo SAM_OPTIONS_NAME.'['.$id.']'; ?>"
 					type="text"
 					value="<?php echo $settings[$id]; ?>"
-          style="height: 22px; font-size: 11px; <?php echo "width: {$width}px;" ?>" />
+          style="height: 22px; font-size: 11px; <?php echo "width: {$width};" ?>" />
+      <?php
+    }
+
+    public function drawTextareaOption( $id, $args ) {
+      $settings = parent::getSettings();
+      if(isset($args['height'])) $height = $args['height'];
+      else $height = '100px';
+      ?>
+      <textarea id="<?php echo $id; ?>"
+        name="<?php echo SAM_OPTIONS_NAME.'['.$id.']'; ?>"
+        style="width: 100%; height: <?php echo $height ?>;"><?php echo $settings[$id]; ?></textarea>
       <?php
     }
 
@@ -1190,7 +1261,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
             <div id="post-body">
               <div id="post-body-content">
                 <?php settings_fields('samOptions'); ?>
-                <?php $this->doSettingsSections('sam-settings'); ?>
+                <?php $this->doSettingsSections('sam-settings', $this->settingsTabs); ?>
                 <p class="submit">
                   <!--<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />-->
                   <button id="submit-button" class="color-btn color-btn-left" name="Submit" type="submit">

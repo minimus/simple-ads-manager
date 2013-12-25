@@ -92,7 +92,7 @@ if(in_array($action, $allowed_actions)) {
                       AND ss.event_type = 1 AND ss.pid = %d) AS clicks;";
         $total = $wpdb->get_row($wpdb->prepare($sql, $month, $pid, $month, $pid));
 
-        $out = array('hits' => $hitsFull, 'clicks' => $clicksFull, 'total' => $total);
+        $out = array('hits' => $hitsFull, 'clicks' => $clicksFull, 'total' => $total, 'test' => $test);
       }
       else $out = array("status" => "error", "message" => "Error");
       break;

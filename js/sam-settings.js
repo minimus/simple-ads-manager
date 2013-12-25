@@ -16,7 +16,9 @@
         $('#access').val(options.values[values[1]]);
       }
     });
-      
+
+    $('#tabs').tabs();
+
     var
       hvOpts = {direction: 'vertical'},
       el = $('#errorlog'), elfs = $('#errorlogFS'),

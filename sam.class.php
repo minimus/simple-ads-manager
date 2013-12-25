@@ -42,7 +42,15 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'errorlog' => 1,
       'errorlogFS' => 1,
       'bbpActive' => 0,
-      'bbpEnabled' => 0
+      'bbpEnabled' => 0,
+      // Mailer
+      'mailer' => 1,
+      'mail_subject' => 'Ad campaign report ([month])',
+      'mail_greeting' => 'Hi! [name]!',
+      'mail_text_before' => 'This is your Ad Campaing Report:',
+      'mail_text_after' => '',
+      'mail_warning' => 'You received this mail because you are an advertiser of site [site]. If time of your campaign expires or if you refuse to post your ads on our site, you will be excluded from the mailing list automatically. Thank you for your cooperation.',
+      'mail_message' => 'Do not respond to this mail! This mail was sent automatically by Wordpress plugin Simple Ads Manager.'
 	  );
 		
 	  public function __construct() {
@@ -75,7 +83,9 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $this->getSettings(true);
       $this->getVersions(true);
       $this->crawler = $this->isCrawler();
-      
+
+      add_action('plugins_loaded', array(&$this, 'samMaintenance'));
+
       if(!is_admin()) {
         add_action('wp_enqueue_scripts', array(&$this, 'headerScripts'));
         add_action('wp_head', array(&$this, 'headerCodes'));
@@ -157,6 +167,22 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
         }
       }
       return $out;
+    }
+
+    public function samMaintenance() {
+      if(false === ($mDate = get_transient( 'sam_maintenance_date' ))) {
+        $date = new DateTime('now');
+        $date->modify('+1 month');
+        $nextDate = new DateTime($date->format('Y-m-01 02:00'));
+        $diff = $nextDate->format('U') - $_SERVER['REQUEST_TIME'];
+
+        include_once('sam.tools.php');
+        $mailer = new SamMailer($this->getSettings());
+        $mailer->sendMails();
+
+        $format = get_option('date_format').' '.get_option('time_format');
+        set_transient( 'sam_maintenance_date', $nextDate->format($format), $diff );
+      }
     }
 
     private function customTaxonomiesTerms2($id) {
