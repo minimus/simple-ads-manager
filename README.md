@@ -33,9 +33,10 @@ Features
 * Customizable limitation of displaying advertisements by hits
 * Customizable limitation of displaying advertisements by clicks
 * Statistics of hits
-* Statistics of clicks (your own advertisment image mode)
+* Statistics of clicks (excluding iframes and swf-banners)
 * Customizable accuracy of bots and crawlers detection
 * Counting revenue from ads placement, display ads and clicks on advertisement
+* Compatible with all caching plugins
 
 Requirements
 ------------
@@ -68,7 +69,7 @@ Do not upgrade this plugin from Update page! Upgrade it from Plugins page!
 Change log
 ==========
 
-1.8.71
+1.8.72
 * Javascript output of ads (for caching compatibility) is added
 * Custom Taxonomies restrictions are added
 * Building query for SQL request is optimised
@@ -77,6 +78,7 @@ Change log
 * Updater is fixed and improved
 * Language pack folder is added
 * bbPress support is added
+* Some bugs are fixed
 
 1.7.63
 * Some bugs (Ads Block style, Click Tracker) are resolved.
