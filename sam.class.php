@@ -55,7 +55,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 		
 	  public function __construct() {
       define('SAM_VERSION', '1.8.71');
-      define('SAM_DB_VERSION', '2.4');
+      define('SAM_DB_VERSION', '2.5');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );
       define('SAM_IMG_URL', SAM_URL.'images/');
@@ -95,7 +95,6 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
         add_shortcode('sam_zone', array(&$this, 'doZoneShortcode'));
         add_shortcode('sam_block', array(&$this, 'doBlockShortcode'));      
         add_filter('the_content', array(&$this, 'addContentAds'), 8);
-        // SE begin
         add_filter('get_the_excerpt', array(&$this, 'addExcerptAds'), 10);
         if( $this->samOptions['bbpActive'] && $this->samOptions['bbpEnabled'] ) {
           add_filter('bbp_get_reply_content', array(&$this, 'addBbpContentAds'), 39, 2);
@@ -103,7 +102,6 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           add_action('bbp_theme_after_forum_sub_forums', array(&$this, 'addBbpForumAds'));
           add_action('bbp_theme_before_topic_started_by', array(&$this, 'addBbpForumAds'));
         }
-        //SE end
 
         // For backward compatibility
         add_shortcode('sam-ad', array(&$this, 'doAdShortcode'));
@@ -170,15 +168,18 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
     }
 
     public function samMaintenance() {
+      $options = self::getSettings();
       if(false === ($mDate = get_transient( 'sam_maintenance_date' ))) {
         $date = new DateTime('now');
         $date->modify('+1 month');
         $nextDate = new DateTime($date->format('Y-m-01 02:00'));
         $diff = $nextDate->format('U') - $_SERVER['REQUEST_TIME'];
 
-        include_once('sam.tools.php');
-        $mailer = new SamMailer($this->getSettings());
-        $mailer->sendMails();
+        if($options['mailer']) {
+          include_once('sam.tools.php');
+          $mailer = new SamMailer($options);
+          $mailer->sendMails();
+        }
 
         $format = get_option('date_format').' '.get_option('time_format');
         set_transient( 'sam_maintenance_date', $nextDate->format($format), $diff );
@@ -555,8 +556,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
         if(!empty($options['afterPost']) && !empty($options['apAdsId'])) 
           $apAd = $this->buildAd(array('id' => $options['apAdsId']), $options['apUseCodes']);
       }
-      //SE
-      else {
+      elseif($options['bpExcerpt']) {
         if(!empty($options['beforePost']) && !empty($options['bpAdsId']))
           $bpAd = $this->buildAd(array('id' => $options['bpAdsId']), $options['bpUseCodes']);
       }
@@ -588,7 +588,6 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       else return $excerpt;
     }
 
-    // SE begin
     public function addBbpContentAds( $content, $reply_id ) {
       $options = self::getSettings();
       $bpAd = '';
@@ -635,7 +634,6 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 
       echo $bpAd;
     }
-    // SE end
   } // end of class definition
 } // end of if not class SimpleAdsManager exists
 ?>

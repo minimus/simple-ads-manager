@@ -585,6 +585,7 @@ if(!class_exists('SamPlaceEdit')) {
               </div>
             </div>
             <div id="tabs-3">
+              <?php if($action != 'new') { ?>
               <p class="totals">
                 <?php
                 $now = getdate();
@@ -608,6 +609,7 @@ if(!class_exists('SamPlaceEdit')) {
                 <?php _e('Hits', SAM_DOMAIN); ?>: <span id="total_hits"></span><br>
                 <?php _e('Clicks', SAM_DOMAIN); ?>: <span id="total_clicks"></span><br>
               </p>
+              <?php } ?>
             </div>
           </div>
           <div class="meta-box-sortables ui-sortable">
@@ -1524,6 +1526,7 @@ if(!class_exists('SamPlaceEdit')) {
             </div>
             <div id="tabs-5">
               <div id="stats" class="meta-box-sortables ui-sortable">
+                <?php if($action != 'new') { ?>
                 <p class="totals">
                   <?php
                   $now = getdate();
@@ -1547,6 +1550,7 @@ if(!class_exists('SamPlaceEdit')) {
                   <?php _e('Hits', SAM_DOMAIN); ?>: <span id="total_hits"></span><br>
                   <?php _e('Clicks', SAM_DOMAIN); ?>: <span id="total_clicks"></span><br>
                 </p>
+                <?php } ?>
               </div>
             </div>
           </div>

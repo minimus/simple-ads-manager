@@ -47,20 +47,20 @@
 
 .sub-content {
   padding: 3px 7px;
-  margin: 0px 5px 0px 15px;
+  margin: 0 5px 0 15px;
   line-height: 140%;
-  background-color: #EEEEEE;
-  border-radius: 5px;
-  -moz-border-radius: 5px 5px 5px 5px;
+  background-color: #F7F7F7;
+  border-radius: 3px;
+  -moz-border-radius: 3px 3px 3px 3px;
 }
 
 .sub-content-level-2 {
   padding: 3px 7px;
-  margin: 0px 7px 0px 15px;
+  margin: 0 7px 0 15px;
   line-height: 140%;
-  background-color: #E0E0E0;
-  border-radius: 5px;
-  -moz-border-radius: 5px 5px 5px 5px;
+  background-color: #F0F0F0;
+  border-radius: 3px;
+  -moz-border-radius: 3px 3px 3px 3px;
 }
 
 .ad-example {
@@ -221,11 +221,11 @@ input.button-primary, input.button-secondary,
   border: 1px solid #ddd;
   border-radius: 3px;
   background: #fff;
-  background: linear-gradient(#f6f6f6 0, #fff 50px);
-  background: -o-linear-gradient(#f6f6f6 0, #fff 50px);
-  background: -ms-linear-gradient(#f6f6f6 0, #fff 50px);
-  background: -moz-linear-gradient(#f6f6f6 0, #fff 50px);
-  background: -webkit-linear-gradient(#f6f6f6 0, #fff 50px);
+  background-image: linear-gradient(#f6f6f6 0, #fff 50px);
+  background-image: -o-linear-gradient(#f6f6f6 0, #fff 50px);
+  background-image: -ms-linear-gradient(#f6f6f6 0, #fff 50px);
+  background-image: -moz-linear-gradient(#f6f6f6 0, #fff 50px);
+  background-image: -webkit-linear-gradient(#f6f6f6 0, #fff 50px);
   box-shadow: 0 3px 10px rgba(0,0,0,0.15);
   -o-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
   -ms-box-shadow: 0 3px 10px rgba(0,0,0,0.1);

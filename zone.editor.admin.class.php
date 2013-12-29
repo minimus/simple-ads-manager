@@ -33,7 +33,7 @@ if(!class_exists('SamZoneEditor')) {
       return $post_types;
     }
     
-    private function getTax($type = 'category') {
+    private function getTaxes($type = 'category') {
       if(empty($type)) return;
 
       if($type === 'custom_tax_terms') $wc = "NOT FIND_IN_SET(wtt.taxonomy, 'category,post_tag,nav_menu,link_category,post_format')";
@@ -59,7 +59,7 @@ if(!class_exists('SamZoneEditor')) {
       
       $output = array();
       foreach($taxonomies as $tax) {
-        array_push($output, array('name' => $tax['name'], 'slug' => $tax['slug']));
+        array_push($output, array('name' => $tax['name'], 'slug' => $tax['slug'], 'tax' => $tax['taxonomy']));
       }
       return $output;
     }
@@ -95,9 +95,12 @@ if(!class_exists('SamZoneEditor')) {
       $pTable = $wpdb->prefix . "sam_places";
       
       $options = $this->settings;
-      $cats = $this->getTax();
-      $authors = $this->getAuthors();  
-      $customs = $this->getCustomPostTypes();
+      $taxes = self::getTaxes('custom_tax_terms');
+      $cats = self::getTaxes();
+      $authors = self::getAuthors();
+      $customs = self::getCustomPostTypes();
+
+      $uTaxes = array();
       $uCats = array();
       $uAuthors = array();
       $uSingleCT = array();
@@ -116,6 +119,12 @@ if(!class_exists('SamZoneEditor')) {
           
       if(isset($_POST['update_zone'])) {
         $zoneId = $_POST['zone_id'];
+        foreach($taxes as $tax) {
+          if(isset($_POST['z_taxes_'.$tax['slug']])) {
+            $value = (integer) $_POST['z_taxes_'.$tax['slug']];
+            $uTaxes[$tax['slug']] = array('id' => $value, 'tax' => $tax['tax']);
+          }
+        }
         foreach($cats as $cat) {
           if(isset($_POST['z_cats_'.$cat['slug']])) {
             $value = (integer) $_POST['z_cats_'.$cat['slug']];
@@ -144,6 +153,7 @@ if(!class_exists('SamZoneEditor')) {
           'z_404' => $_POST['z_404'],
           'z_archive' => $_POST['z_archive'],
           'z_tax' => $_POST['z_tax'],
+          'z_taxes' => serialize($uTaxes),
           'z_category' => $_POST['z_category'],
           'z_cats' => serialize($uCats),
           'z_tag' => $_POST['z_tag'],
@@ -156,8 +166,8 @@ if(!class_exists('SamZoneEditor')) {
         );
         $formatRow = array(
           '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d',
-          '%d', '%d', '%d', '%d', '%d', '%s', '%d', '%d', '%s', '%d',
-          '%s', '%d', '%d'
+          '%d', '%d', '%d', '%d', '%s', '%d', '%s', '%d', '%d', '%s',
+          '%d', '%s', '%d', '%d'
         );
         if($zoneId === __('Undefined', SAM_DOMAIN)) {
           $wpdb->insert($zTable, $updateRow);
@@ -189,7 +199,8 @@ if(!class_exists('SamZoneEditor')) {
                   z_search, 
                   z_404, 
                   z_archive, 
-                  z_tax, 
+                  z_tax,
+                  z_taxes,
                   z_category,
                   z_cats,
                   z_tag,
@@ -204,17 +215,25 @@ if(!class_exists('SamZoneEditor')) {
       
       $pSql = "SELECT id, name FROM $pTable WHERE $pTable.trash IS FALSE;";
       $places = $wpdb->get_results($pSql, ARRAY_A);
+
       $sCats = array();
       $sAuthors = array();
       $sSingleCT = array();
       $sArchiveCT = array();
+      $sTaxes = array();
       
       if($action !== 'new') {
         $row = $wpdb->get_row($zSql, ARRAY_A);
+        $zTaxes = unserialize($row['z_taxes']);
         $zCats = unserialize($row['z_cats']);
         $zAuthors = unserialize($row['z_authors']);
         $zSingleCT = unserialize($row['z_single_ct']);
         $zArchiveCT = unserialize($row['z_archive_ct']);
+
+        foreach($taxes as $tax) {
+          $val = (!is_null($zTaxes[$tax['slug']])) ? $zTaxes[$tax['slug']]['id'] : -1;
+          array_push($sTaxes, array('name' => $tax['name'], 'slug' => $tax['slug'], 'tax' => $tax['tax'], 'val' => $val));
+        }
         foreach($cats as $cat) {
           $val = (!is_null($zCats[$cat['slug']])) ? $zCats[$cat['slug']] : -1;
           array_push($sCats, array('name' => $cat['name'], 'slug' => $cat['slug'], 'val' => $val));
@@ -233,10 +252,16 @@ if(!class_exists('SamZoneEditor')) {
       else {
         if($updated) {
           $row = $wpdb->get_row($zSql, ARRAY_A);
+          $zTaxes = unserialize($row['z_taxes']);
           $zCats = unserialize($row['z_cats']);          
           $zAuthors = unserialize($row['z_authors']);
           $zSingleCT = unserialize($row['z_single_ct']);
           $zArchiveCT = unserialize($row['z_archive_ct']);
+
+          foreach($taxes as $tax) {
+            $val = (!is_null($zTaxes[$tax['slug']])) ? $zTaxes[$tax['slug']]['id'] : -1;
+            array_push($sTaxes, array('name' => $tax['name'], 'slug' => $tax['slug'], 'tax' => $tax['tax'], 'val' => $val));
+          }
           foreach($cats as $cat) {
             $val = (!is_null($zCats[$cat['slug']])) ? $zCats[$cat['slug']] : -1;
             array_push($sCats, array('name' => $cat['name'], 'slug' => $cat['slug'], 'val' => $val));
@@ -275,6 +300,7 @@ if(!class_exists('SamZoneEditor')) {
             'z_date' => -1,
             'trash' => false
           );
+          foreach($taxes as $tax) array_push($sTaxes, array('name' => $tax['name'], 'slug' => $tax['slug'], 'tax' => $tax['tax'], 'val' => -1));
           foreach($cats as $cat) array_push($sCats, array('name' => $cat['name'], 'slug' => $cat['slug'], 'val' => -1));
           foreach($authors as $key => $author) array_push($sAuthors, array('id' => $author, 'name' => $key, 'val' => -1));
           foreach($customs as $custom) {
@@ -465,62 +491,80 @@ if(!class_exists('SamZoneEditor')) {
                       <?php $this->drawPlacesSelector($places, $row['z_tax'], false); ?>
                     </select>
                   </p>
-                  <div class='sub-content-level-2'>
-                    <p>
-                      <label for='z_category'><?php echo __('Default Ads Place for Category Archive Pages', SAM_DOMAIN).': '; ?></label>
-                      <select id='z_category' name='z_category'>
-                        <?php $this->drawPlacesSelector($places, $row['z_category'], false); ?>
-                      </select>
-                    </p>
-                    <?php 
-                    if(count($sCats) > 1) {
-                      ?>
-                    <div class='sub-content'>  
-                      <?php
-                      foreach($sCats as $cat) {
-                        ?>
-                      <p>
-                        <label for='<?php echo 'z_cats_'.$cat['slug']; ?>'><?php echo __('Ads Place for Category', SAM_DOMAIN).' "<strong>'.$cat['name'].'</strong>": '; ?></label>
-                        <select id='<?php echo 'z_cats_'.$cat['slug']; ?>' name='<?php echo 'z_cats_'.$cat['slug']; ?>'>
-                          <?php $this->drawPlacesSelector($places, $cat['val'], false); ?>
-                        </select>
-                      </p>      
-                        <?php
-                      }
-                      ?>
-                    </div>
-                    <?php  
-                    }                    
+                  <?php
+                  if(count($sTaxes) > 1) {
                     ?>
+                    <div class='sub-content-level-2'>
                     <?php
-                      if(!empty($sArchiveCT)) {
-                    ?>
+                    foreach($sTaxes as $tax) {
+                      ?>
                       <p>
-                        <label for='z_cts'><?php echo __('Default Ads Place for Archives of Custom Type Posts', SAM_DOMAIN).': '; ?></label>
-                        <select id='z_cts' name='z_cts'>
-                          <?php $this->drawPlacesSelector($places, $row['z_cts'], false); ?>
+                        <label for='<?php echo 'z_taxes_'.$tax['slug']; ?>'><?php echo __('Ads Place for Custom Taxonomy Term', SAM_DOMAIN).' "<strong>'.$tax['name'].'</strong>": '; ?></label>
+                        <select id='<?php echo 'z_taxes_'.$tax['slug']; ?>' name='<?php echo 'z_taxes_'.$tax['slug']; ?>'>
+                          <?php $this->drawPlacesSelector($places, $tax['val'], false); ?>
                         </select>
                       </p>
-                      <div class='sub-content'>                    
-                        <?php
-                            foreach($sArchiveCT as $ctype) {
-                        ?>
-                        <p>
-                          <label for='<?php echo 'z_archive_ct_'.$ctype[name]; ?>'><?php echo __('Ads Place for Custom Type Posts Archive', SAM_DOMAIN).' <strong>'.$ctype['label'].'</strong>: '; ?></label>
-                          <select id='<?php echo 'z_archive_ct_'.$ctype[name]; ?>' name='<?php echo 'z_archive_ct_'.$ctype[name]; ?>'>
-                            <?php $this->drawPlacesSelector($places, $ctype['val'], false); ?>
-                          </select>
-                        </p>
-                        <?php } ?>
-                      </div>
-                    <?php } ?>
+                    <?php
+                    }
+                    ?>
+                    </div>
+                  <?php
+                  }
+                  ?>
+                  <p>
+                    <label for='z_category'><?php echo __('Default Ads Place for Category Archive Pages', SAM_DOMAIN).': '; ?></label>
+                    <select id='z_category' name='z_category'>
+                      <?php $this->drawPlacesSelector($places, $row['z_category'], false); ?>
+                    </select>
+                  </p>
+                  <?php
+                  if(count($sCats) > 1) {
+                    ?>
+                  <div class='sub-content-level-2'>
+                    <?php
+                    foreach($sCats as $cat) {
+                      ?>
                     <p>
-                      <label for='z_tag'><?php echo __('Tags Archive Pages Ads Place', SAM_DOMAIN).': '; ?></label>
-                      <select id='z_tag' name='z_tag'>
-                        <?php $this->drawPlacesSelector($places, $row['z_tag'], false); ?>
+                      <label for='<?php echo 'z_cats_'.$cat['slug']; ?>'><?php echo __('Ads Place for Category', SAM_DOMAIN).' "<strong>'.$cat['name'].'</strong>": '; ?></label>
+                      <select id='<?php echo 'z_cats_'.$cat['slug']; ?>' name='<?php echo 'z_cats_'.$cat['slug']; ?>'>
+                        <?php $this->drawPlacesSelector($places, $cat['val'], false); ?>
                       </select>
                     </p>
+                      <?php
+                    }
+                    ?>
                   </div>
+                  <?php
+                  }
+                  ?>
+                  <?php
+                    if(!empty($sArchiveCT)) {
+                  ?>
+                    <p>
+                      <label for='z_cts'><?php echo __('Default Ads Place for Archives of Custom Type Posts', SAM_DOMAIN).': '; ?></label>
+                      <select id='z_cts' name='z_cts'>
+                        <?php $this->drawPlacesSelector($places, $row['z_cts'], false); ?>
+                      </select>
+                    </p>
+                    <div class='sub-content-level-2'>
+                      <?php
+                          foreach($sArchiveCT as $ctype) {
+                      ?>
+                      <p>
+                        <label for='<?php echo 'z_archive_ct_'.$ctype[name]; ?>'><?php echo __('Ads Place for Custom Type Posts Archive', SAM_DOMAIN).' <strong>'.$ctype['label'].'</strong>: '; ?></label>
+                        <select id='<?php echo 'z_archive_ct_'.$ctype[name]; ?>' name='<?php echo 'z_archive_ct_'.$ctype[name]; ?>'>
+                          <?php $this->drawPlacesSelector($places, $ctype['val'], false); ?>
+                        </select>
+                      </p>
+                      <?php } ?>
+                    </div>
+                  <?php } ?>
+                  <p>
+                    <label for='z_tag'><?php echo __('Tags Archive Pages Ads Place', SAM_DOMAIN).': '; ?></label>
+                    <select id='z_tag' name='z_tag'>
+                      <?php $this->drawPlacesSelector($places, $row['z_tag'], false); ?>
+                    </select>
+                  </p>
                   <p>
                     <label for='z_author'><?php echo __('Default Ads Place for Author Archive Pages', SAM_DOMAIN).': '; ?></label>
                     <select id='z_author' name='z_author'>

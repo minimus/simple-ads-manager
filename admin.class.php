@@ -346,6 +346,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'z_404' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
         'z_archive' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
         'z_tax' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_taxes' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'z_category' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
         'z_cats' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'z_tag' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
@@ -499,7 +500,9 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     }
 		
 		public function initSettings() {
-			register_setting('samOptions', SAM_OPTIONS_NAME);
+			$scStr = __("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site. Shotcode <code>[month]</code> will be replaced with name of month of reporting period.", SAM_DOMAIN);
+
+      register_setting('samOptions', SAM_OPTIONS_NAME);
 
       self::starSettingsTab("sam_general_section", 'tabs-1', __('General', SAM_DOMAIN));
       add_settings_section("sam_general_section", __("General Settings", SAM_DOMAIN), array(&$this, "drawGeneralSection"), 'sam-settings');
@@ -526,7 +529,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       
       add_settings_field('bpAdsId', __("Ads Place before content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
       add_settings_field('beforePost', __("Allow Ads Place auto inserting before post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'beforePost', 'checkbox' => true));
-      add_settings_field('bpExcerpt', __('Allow Ads Place auto inserting before post/page excerpt (in the loop)', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bpExcerpt', 'checkbox' => true));
+      add_settings_field('bpExcerpt', __('Allow Ads Place auto inserting before post/page or post/page excerpt in the loop', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bpExcerpt', 'checkbox' => true));
       add_settings_field('bbpBeforePost', __("Allow Ads Place auto inserting before bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpBeforePost', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
       add_settings_field('bbpList', __("Allow Ads Place auto inserting into bbPress Forum forums/topics lists", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpList', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
       add_settings_field('bpUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bpUseCodes', 'checkbox' => true));
@@ -560,11 +563,11 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       add_settings_field('mailer', __('Allow SAM Mailing System to send statistical data to advertisers', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_mailer_section', array('label_for' => 'mailer', 'checkbox' => true));
       add_settings_field('mail_subject', __('Mail Subject', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Mail subject of sending email.', SAM_DOMAIN), 'width' => '70%'));
-      add_settings_field('mail_greeting', __('Mail Greeting String', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Greeting string of sending email.', SAM_DOMAIN).' '.__("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site.", SAM_DOMAIN), 'width' => '70%'));
-      add_settings_field('mail_text_before', __('Mail Text before statistical data table', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Some text before statistical data table of sending email.', SAM_DOMAIN).' '.__("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site.", SAM_DOMAIN), 'height' => '75px'));
-      add_settings_field('mail_text_after', __('Mail Text after statistical data table', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Some text after statistical data table of sending email.', SAM_DOMAIN).' '.__("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site.", SAM_DOMAIN), 'height' => '75px'));
-      add_settings_field('mail_warning', __('Mail Warning 1', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('This text will be placed at the end of sending email.', SAM_DOMAIN).' '.__("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site.", SAM_DOMAIN), 'height' => '50px'));
-      add_settings_field('mail_message', __('Mail Warning 2', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('This text will be placed at the very end of sending email.', SAM_DOMAIN).' '.__("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site.", SAM_DOMAIN), 'height' => '50px'));
+      add_settings_field('mail_greeting', __('Mail Greeting String', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Greeting string of sending email.', SAM_DOMAIN).' '.$scStr, 'width' => '70%'));
+      add_settings_field('mail_text_before', __('Mail Text before statistical data table', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Some text before statistical data table of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '75px'));
+      add_settings_field('mail_text_after', __('Mail Text after statistical data table', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Some text after statistical data table of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '75px'));
+      add_settings_field('mail_warning', __('Mail Warning 1', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('This text will be placed at the end of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '50px'));
+      add_settings_field('mail_message', __('Mail Warning 2', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('This text will be placed at the very end of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '50px'));
       
       register_setting('sam-settings', SAM_OPTIONS_NAME, array(&$this, 'sanitizeSettings'));
 		}
@@ -1011,6 +1014,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       
       $output = $input;
       $output['dfpBlocks'] = array_unique($blocks);
+      $output['mailer'] = (isset($input['mailer'])) ? 1 : 0;
       return $output;
     }
     
@@ -1043,8 +1047,13 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 		}
 
     public function drawMailerSection() {
-      $time = get_transient( 'sam_maintenance_date' );
-      echo "Next mailing is scheduled on <code>{$time}</code>... ".$this->test[0];
+      $options = parent::getSettings();
+
+      if($options['mailer']) {
+        $time = get_transient( 'sam_maintenance_date' );
+        echo "<p>".__("Next mailing is scheduled on", SAM_DOMAIN)." <code>{$time}</code>... "."</p>";
+      }
+      else echo "<p>".__("Adjust parameters of Mailing System.", SAM_DOMAIN)."</p>";
     }
     
     public function drawTextOption( $id, $args ) {

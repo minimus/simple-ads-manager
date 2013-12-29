@@ -4,8 +4,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Simple Ads Manager 1.8.70\n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/simple-ads-manager\n"
-"POT-Creation-Date: 2013-12-22 22:01+0300\n"
-"PO-Revision-Date: 2013-12-22 22:01+0300\n"
+"POT-Creation-Date: 2013-12-29 20:08+0300\n"
+"PO-Revision-Date: 2013-12-29 20:08+0300\n"
 "Last-Translator: minimus <minimus@blogcoding.ru>\n"
 "Language-Team:  <minimus@simplelib.com>\n"
 "MIME-Version: 1.0\n"
@@ -26,83 +26,83 @@ msgstr ""
 msgid "Empty data..."
 msgstr ""
 
-#: ../admin.class.php:148
+#: ../admin.class.php:150
 msgid "Active W3 Total Cache plugin detected."
 msgstr ""
 
-#: ../admin.class.php:149
+#: ../admin.class.php:151
 msgid "Active WP Super Cache plugin detected."
 msgstr ""
 
-#: ../admin.class.php:154
+#: ../admin.class.php:156
 msgid "Active bbPress Forum plugin detected."
 msgstr ""
 
-#: ../admin.class.php:173
+#: ../admin.class.php:175
 msgid "Cache of WP Super Cache plugin is flushed."
 msgstr ""
 
-#: ../admin.class.php:177
+#: ../admin.class.php:179
 msgid "Cache of W3 Total Cache plugin is flushed."
 msgstr ""
 
-#: ../admin.class.php:396 ../editor.admin.class.php:1485
+#: ../admin.class.php:399 ../editor.admin.class.php:1487
 msgid "Advertiser Name"
 msgstr ""
 
-#: ../admin.class.php:397
+#: ../admin.class.php:400
 msgid "Advertiser Nick"
 msgstr ""
 
-#: ../admin.class.php:398 ../editor.admin.class.php:1489
+#: ../admin.class.php:401 ../editor.admin.class.php:1491
 msgid "Advertiser e-mail"
 msgstr ""
 
-#: ../admin.class.php:402
+#: ../admin.class.php:405
 msgid "Category Title"
 msgstr ""
 
-#: ../admin.class.php:403
+#: ../admin.class.php:406
 msgid "Category Slug"
 msgstr ""
 
-#: ../admin.class.php:407 ../admin.class.php:426
+#: ../admin.class.php:410 ../admin.class.php:429
 msgid "Display Name"
 msgstr ""
 
-#: ../admin.class.php:408 ../admin.class.php:427
+#: ../admin.class.php:411 ../admin.class.php:430
 msgid "User Name"
 msgstr ""
 
-#: ../admin.class.php:412
+#: ../admin.class.php:415
 msgid "Tag Title"
 msgstr ""
 
-#: ../admin.class.php:413
+#: ../admin.class.php:416
 msgid "Tag Slug"
 msgstr ""
 
-#: ../admin.class.php:416
+#: ../admin.class.php:419
 msgid "Custom Type Title"
 msgstr ""
 
-#: ../admin.class.php:417
+#: ../admin.class.php:420
 msgid "Custom Type Slug"
 msgstr ""
 
-#: ../admin.class.php:421
+#: ../admin.class.php:424
 msgid "Publication Title"
 msgstr ""
 
-#: ../admin.class.php:422
+#: ../admin.class.php:425
 msgid "Publication Type"
 msgstr ""
 
-#: ../admin.class.php:428
+#: ../admin.class.php:431
 msgid "Role"
 msgstr ""
 
-#: ../admin.class.php:431 ../block.list.admin.class.php:88
+#: ../admin.class.php:434 ../block.list.admin.class.php:88
 #: ../block.list.admin.class.php:94 ../errorlog.admin.class.php:83
 #: ../errorlog.admin.class.php:93 ../list.admin.class.php:173
 #: ../list.admin.class.php:184 ../list.admin.class.php:360
@@ -111,91 +111,120 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
-#: ../admin.class.php:432
+#: ../admin.class.php:435
 msgid "Term Name"
 msgstr ""
 
-#: ../admin.class.php:433
+#: ../admin.class.php:436
 msgid "Custom Taxonomy Name"
 msgstr ""
 
-#: ../admin.class.php:439
+#: ../admin.class.php:442
 msgid "Full Size"
 msgstr ""
 
-#: ../admin.class.php:493
+#: ../admin.class.php:503
+msgid ""
+"Shortcode <code>[name]</code> will be replaced with advertiser's name. "
+"Shortcode <code>[site]</code> will be replaced with name of your site. "
+"Shotcode <code>[month]</code> will be replaced with name of month of "
+"reporting period."
+msgstr ""
+
+#: ../admin.class.php:507 ../editor.admin.class.php:479
+#: ../editor.admin.class.php:1008
+msgid "General"
+msgstr ""
+
+#: ../admin.class.php:508
 msgid "General Settings"
 msgstr ""
 
-#: ../admin.class.php:494
-msgid "Auto Inserting Settings"
-msgstr ""
-
-#: ../admin.class.php:495
+#: ../admin.class.php:509
 msgid "Extended Options"
 msgstr ""
 
-#: ../admin.class.php:496
-msgid "Google DFP Settings"
-msgstr ""
-
-#: ../admin.class.php:497 ../help.class.php:68 ../help.class.php:195
-msgid "Statistics Settings"
-msgstr ""
-
-#: ../admin.class.php:498
+#: ../admin.class.php:510
 msgid "Admin Layout"
 msgstr ""
 
-#: ../admin.class.php:499
+#: ../admin.class.php:511
 msgid "Plugin Deactivating"
 msgstr ""
 
-#: ../admin.class.php:501
+#: ../admin.class.php:513
+msgid "Auto Inserting"
+msgstr ""
+
+#: ../admin.class.php:514
+msgid "Auto Inserting Settings"
+msgstr ""
+
+#: ../admin.class.php:516
+msgid "Google"
+msgstr ""
+
+#: ../admin.class.php:517
+msgid "Google DFP Settings"
+msgstr ""
+
+#: ../admin.class.php:519
+msgid "Tools"
+msgstr ""
+
+#: ../admin.class.php:520 ../help.class.php:68 ../help.class.php:195
+msgid "Statistics Settings"
+msgstr ""
+
+#: ../admin.class.php:521
+msgid "Mailing System"
+msgstr ""
+
+#: ../admin.class.php:524
 msgid "Views per Cycle"
 msgstr ""
 
-#: ../admin.class.php:501
+#: ../admin.class.php:524
 msgid ""
 "Number of hits of one ad for a full cycle of rotation (maximal activity)."
 msgstr ""
 
-#: ../admin.class.php:502
+#: ../admin.class.php:525
 msgid "Minimum Level for access to menu"
 msgstr ""
 
-#: ../admin.class.php:502
+#: ../admin.class.php:525
 msgid ""
 "Who can use menu of plugin - Minimum User Level needed for access to menu of "
 "plugin. In any case only Super Admin and Administrator can use Settings Menu "
 "of SAM Plugin."
 msgstr ""
 
-#: ../admin.class.php:502 ../admin.class.php:619 ../admin.class.php:760
+#: ../admin.class.php:525 ../admin.class.php:653 ../admin.class.php:794
 msgid "Super Admin"
 msgstr ""
 
-#: ../admin.class.php:502 ../admin.class.php:620 ../admin.class.php:759
+#: ../admin.class.php:525 ../admin.class.php:654 ../admin.class.php:793
 msgid "Administrator"
 msgstr ""
 
-#: ../admin.class.php:502 ../admin.class.php:621 ../admin.class.php:758
+#: ../admin.class.php:525 ../admin.class.php:655 ../admin.class.php:792
 msgid "Editor"
 msgstr ""
 
-#: ../admin.class.php:502 ../admin.class.php:622 ../admin.class.php:757
+#: ../admin.class.php:525 ../admin.class.php:656 ../admin.class.php:791
 msgid "Author"
 msgstr ""
 
-#: ../admin.class.php:502 ../admin.class.php:623 ../admin.class.php:756
+#: ../admin.class.php:525 ../admin.class.php:657 ../admin.class.php:790
 msgid "Contributor"
 msgstr ""
 
-#: ../admin.class.php:503
+#: ../admin.class.php:526
 msgid "Ad Output Mode"
 msgstr ""
 
-#: ../admin.class.php:503
+#: ../admin.class.php:526
 msgid ""
 "Standard (PHP) mode is more faster but is not compatible with caching "
 "plugins. If your blog use caching plugin (i.e WP Super Cache or W3 Total "
@@ -204,491 +233,553 @@ msgid ""
 "of special support of these plugins."
 msgstr ""
 
-#: ../admin.class.php:503
+#: ../admin.class.php:526
 msgid "Standard (PHP)"
 msgstr ""
 
-#: ../admin.class.php:503
+#: ../admin.class.php:526
 msgid "Caching Compatible (Javascript)"
 msgstr ""
 
-#: ../admin.class.php:504
+#: ../admin.class.php:527
 msgid "Display Ad Source in"
 msgstr ""
 
-#: ../admin.class.php:504
+#: ../admin.class.php:527
 msgid "Target wintow (tab) for advetisement source."
 msgstr ""
 
-#: ../admin.class.php:504
+#: ../admin.class.php:527
 msgid "New Window (Tab)"
 msgstr ""
 
-#: ../admin.class.php:504
+#: ../admin.class.php:527
 msgid "Current Window (Tab)"
 msgstr ""
 
-#: ../admin.class.php:505
+#: ../admin.class.php:528
 msgid "Allow displaying ads on bbPress forum pages"
 msgstr ""
 
-#: ../admin.class.php:507
+#: ../admin.class.php:530
 msgid "Ads Place before content"
 msgstr ""
 
-#: ../admin.class.php:508
+#: ../admin.class.php:531
 msgid "Allow Ads Place auto inserting before post/page content"
 msgstr ""
 
-#: ../admin.class.php:509
-msgid "Allow Ads Place auto inserting before post/page excerpt (in the loop)"
+#: ../admin.class.php:532
+msgid ""
+"Allow Ads Place auto inserting before post/page or post/page excerpt in the "
+"loop"
 msgstr ""
 
-#: ../admin.class.php:510
+#: ../admin.class.php:533
 msgid "Allow Ads Place auto inserting before bbPress Forum topic content"
 msgstr ""
 
-#: ../admin.class.php:511
+#: ../admin.class.php:534
 msgid "Allow Ads Place auto inserting into bbPress Forum forums/topics lists"
 msgstr ""
 
-#: ../admin.class.php:512 ../admin.class.php:516 ../admin.class.php:520
+#: ../admin.class.php:535 ../admin.class.php:539 ../admin.class.php:543
 msgid "Allow using predefined Ads Place HTML codes (before and after codes)"
 msgstr ""
 
-#: ../admin.class.php:513
+#: ../admin.class.php:536
 msgid "Ads Place in the middle of content"
 msgstr ""
 
-#: ../admin.class.php:514
+#: ../admin.class.php:537
 msgid "Allow Ads Place auto inserting into the middle of post/page content"
 msgstr ""
 
-#: ../admin.class.php:515
+#: ../admin.class.php:538
 msgid ""
 "Allow Ads Place auto inserting into the middle of bbPress Forum topic content"
 msgstr ""
 
-#: ../admin.class.php:517
+#: ../admin.class.php:540
 msgid "Ads Place after content"
 msgstr ""
 
-#: ../admin.class.php:518
+#: ../admin.class.php:541
 msgid "Allow Ads Place auto inserting after post/page content"
 msgstr ""
 
-#: ../admin.class.php:519
+#: ../admin.class.php:542
 msgid "Allow Ads Place auto inserting after bbPress Forum topic content"
 msgstr ""
 
-#: ../admin.class.php:522
+#: ../admin.class.php:545
 msgid ""
 "I use (plan to use) my own flash (SWF) banners. In other words, allow "
 "loading the script \"SWFObject\" on the pages of the blog."
 msgstr ""
 
-#: ../admin.class.php:523
+#: ../admin.class.php:546
 msgid "Turn on/off the error log."
 msgstr ""
 
-#: ../admin.class.php:524
+#: ../admin.class.php:547
 msgid "Turn on/off the error log for Face Side."
 msgstr ""
 
-#: ../admin.class.php:526
+#: ../admin.class.php:549
 msgid "Allow using Google DoubleClick for Publishers (DFP) rotator codes"
 msgstr ""
 
-#: ../admin.class.php:527
+#: ../admin.class.php:550
 msgid "Google DFP Pub Code"
 msgstr ""
 
-#: ../admin.class.php:527
+#: ../admin.class.php:550
 msgid "Your Google DFP Pub code. i.e:"
 msgstr ""
 
-#: ../admin.class.php:529
+#: ../admin.class.php:552
 msgid "Allow Bots and Crawlers detection"
 msgstr ""
 
-#: ../admin.class.php:530
+#: ../admin.class.php:553
 msgid "Accuracy of Bots and Crawlers Detection"
 msgstr ""
 
-#: ../admin.class.php:530
+#: ../admin.class.php:553
 msgid ""
 "If bot is detected hits of ads won't be counted. Use with caution! More "
 "exact detection requires more server resources."
 msgstr ""
 
-#: ../admin.class.php:530
+#: ../admin.class.php:553
 msgid "Inexact detection"
 msgstr ""
 
-#: ../admin.class.php:530
+#: ../admin.class.php:553
 msgid "Exact detection"
 msgstr ""
 
-#: ../admin.class.php:530
+#: ../admin.class.php:553
 msgid "More exact detection"
 msgstr ""
 
-#: ../admin.class.php:531 ../help.class.php:70 ../help.class.php:197
+#: ../admin.class.php:554 ../help.class.php:70 ../help.class.php:197
 msgid "Display of Currency"
 msgstr ""
 
-#: ../admin.class.php:531 ../help.class.php:70 ../help.class.php:197
+#: ../admin.class.php:554 ../help.class.php:70 ../help.class.php:197
 msgid ""
 "Define display of currency. Auto - auto detection of currency from blog "
 "settings. USD, EUR - Forcing the display of currency to U.S. dollars or Euro."
 msgstr ""
 
-#: ../admin.class.php:531
+#: ../admin.class.php:554
 msgid "Auto"
 msgstr ""
 
-#: ../admin.class.php:531
+#: ../admin.class.php:554
 msgid "USD"
 msgstr ""
 
-#: ../admin.class.php:531
+#: ../admin.class.php:554
 msgid "EUR"
 msgstr ""
 
-#: ../admin.class.php:533
+#: ../admin.class.php:556
 msgid "TinyMCE Editor Button Mode"
 msgstr ""
 
-#: ../admin.class.php:533
+#: ../admin.class.php:556
 msgid ""
 "If you do not want to use the modern dropdown button in your TinyMCE editor, "
 "or use of this button causes a problem, you can use classic TinyMCE buttons. "
 "In this case select \"Classic TinyMCE Buttons\"."
 msgstr ""
 
-#: ../admin.class.php:533
+#: ../admin.class.php:556
 msgid "Modern TinyMCE Button"
 msgstr ""
 
-#: ../admin.class.php:533
+#: ../admin.class.php:556
 msgid "Classic TinyMCE Buttons"
 msgstr ""
 
-#: ../admin.class.php:534
+#: ../admin.class.php:557
 msgid "Ads Places per Page"
 msgstr ""
 
-#: ../admin.class.php:534
+#: ../admin.class.php:557
 msgid ""
 "Ads Places Management grid pagination. How many Ads Places will be shown on "
 "one page of grid."
 msgstr ""
 
-#: ../admin.class.php:535
+#: ../admin.class.php:558
 msgid "Ads per Page"
 msgstr ""
 
-#: ../admin.class.php:535
+#: ../admin.class.php:558
 msgid ""
 "Ads of Ads Place Management grid pagination. How many Ads will be shown on "
 "one page of grid."
 msgstr ""
 
-#: ../admin.class.php:537
+#: ../admin.class.php:560
 msgid "Delete plugin options during deactivating plugin"
 msgstr ""
 
-#: ../admin.class.php:538
+#: ../admin.class.php:561
 msgid "Delete database tables of plugin during deactivating plugin"
 msgstr ""
 
-#: ../admin.class.php:539
+#: ../admin.class.php:562
 msgid "Delete custom images folder of plugin during deactivating plugin"
 msgstr ""
 
-#: ../admin.class.php:547
+#: ../admin.class.php:564
+msgid "Allow SAM Mailing System to send statistical data to advertisers"
+msgstr ""
+
+#: ../admin.class.php:565
+msgid "Mail Subject"
+msgstr ""
+
+#: ../admin.class.php:565
+msgid "Mail subject of sending email."
+msgstr ""
+
+#: ../admin.class.php:566
+msgid "Mail Greeting String"
+msgstr ""
+
+#: ../admin.class.php:566
+msgid "Greeting string of sending email."
+msgstr ""
+
+#: ../admin.class.php:567
+msgid "Mail Text before statistical data table"
+msgstr ""
+
+#: ../admin.class.php:567
+msgid "Some text before statistical data table of sending email."
+msgstr ""
+
+#: ../admin.class.php:568
+msgid "Mail Text after statistical data table"
+msgstr ""
+
+#: ../admin.class.php:568
+msgid "Some text after statistical data table of sending email."
+msgstr ""
+
+#: ../admin.class.php:569
+msgid "Mail Warning 1"
+msgstr ""
+
+#: ../admin.class.php:569
+msgid "This text will be placed at the end of sending email."
+msgstr ""
+
+#: ../admin.class.php:570
+msgid "Mail Warning 2"
+msgstr ""
+
+#: ../admin.class.php:570
+msgid "This text will be placed at the very end of sending email."
+msgstr ""
+
+#: ../admin.class.php:578
 msgid "Ads"
 msgstr ""
 
-#: ../admin.class.php:548
+#: ../admin.class.php:579
 msgid "Ads List"
 msgstr ""
 
-#: ../admin.class.php:548
+#: ../admin.class.php:579
 msgid "Ads Places"
 msgstr ""
 
-#: ../admin.class.php:549
+#: ../admin.class.php:580
 msgid "Ad Editor"
 msgstr ""
 
-#: ../admin.class.php:549
+#: ../admin.class.php:580
 msgid "New Place"
 msgstr ""
 
-#: ../admin.class.php:550
+#: ../admin.class.php:581
 msgid "Ads Zones List"
 msgstr ""
 
-#: ../admin.class.php:550
+#: ../admin.class.php:581
 msgid "Ads Zones"
 msgstr ""
 
-#: ../admin.class.php:551
+#: ../admin.class.php:582
 msgid "Ads Zone Editor"
 msgstr ""
 
-#: ../admin.class.php:551
+#: ../admin.class.php:582
 msgid "New Zone"
 msgstr ""
 
-#: ../admin.class.php:552
+#: ../admin.class.php:583
 msgid "Ads Blocks List"
 msgstr ""
 
-#: ../admin.class.php:552
+#: ../admin.class.php:583
 msgid "Ads Blocks"
 msgstr ""
 
-#: ../admin.class.php:553 ../block.editor.admin.class.php:402
+#: ../admin.class.php:584 ../block.editor.admin.class.php:402
 msgid "Ads Block Editor"
 msgstr ""
 
-#: ../admin.class.php:553
+#: ../admin.class.php:584
 msgid "New Block"
 msgstr ""
 
-#: ../admin.class.php:554 ../admin.class.php:1087
+#: ../admin.class.php:585 ../admin.class.php:1167
 msgid "Simple Ads Manager Settings"
 msgstr ""
 
-#: ../admin.class.php:554
+#: ../admin.class.php:585
 msgid "Settings"
 msgstr ""
 
-#: ../admin.class.php:555
+#: ../admin.class.php:586
 msgid "Simple Ads Manager Error Log"
 msgstr ""
 
-#: ../admin.class.php:555 ../errorlog.admin.class.php:57
+#: ../admin.class.php:586 ../errorlog.admin.class.php:57
 msgid "Error Log"
 msgstr ""
 
-#: ../admin.class.php:667 ../admin.class.php:739 ../editor.admin.class.php:460
+#: ../admin.class.php:701 ../admin.class.php:773 ../editor.admin.class.php:460
 msgid "Name of Ads Place"
 msgstr ""
 
-#: ../admin.class.php:667 ../admin.class.php:739
+#: ../admin.class.php:701 ../admin.class.php:773
 msgid ""
 "This is not required parameter. But it is strongly recommended to define it "
 "if you plan to use Ads Blocks, plugin's widgets or autoinserting of ads."
 msgstr ""
 
-#: ../admin.class.php:668 ../admin.class.php:740 ../editor.admin.class.php:986
+#: ../admin.class.php:702 ../admin.class.php:774 ../editor.admin.class.php:988
 msgid "Name of Ad"
 msgstr ""
 
-#: ../admin.class.php:668 ../admin.class.php:740 ../admin.class.php:788
+#: ../admin.class.php:702 ../admin.class.php:774 ../admin.class.php:822
 msgid ""
 "This is not required parameter. But it is strongly recommended to define it "
 "if you plan to use Ads Blocks or plugin's widgets."
 msgstr ""
 
-#: ../admin.class.php:669 ../admin.class.php:741
+#: ../admin.class.php:703 ../admin.class.php:775
 msgid "Select Banner Image"
 msgstr ""
 
-#: ../admin.class.php:669 ../admin.class.php:741
+#: ../admin.class.php:703 ../admin.class.php:775
 msgid "Select"
 msgstr ""
 
-#: ../admin.class.php:673 ../admin.class.php:747
+#: ../admin.class.php:707 ../admin.class.php:781
 msgid "Uploading"
 msgstr ""
 
-#: ../admin.class.php:674 ../admin.class.php:748
+#: ../admin.class.php:708 ../admin.class.php:782
 msgid "Uploaded."
 msgstr ""
 
-#: ../admin.class.php:675 ../admin.class.php:749
+#: ../admin.class.php:709 ../admin.class.php:783
 msgid "Only JPG, PNG or GIF files are allowed"
 msgstr ""
 
-#: ../admin.class.php:676 ../admin.class.php:750
+#: ../admin.class.php:710 ../admin.class.php:784
 msgid "File"
 msgstr ""
 
-#: ../admin.class.php:680 ../admin.class.php:684 ../admin.class.php:761
-#: ../editor.admin.class.php:608 ../editor.admin.class.php:937
-#: ../editor.admin.class.php:1547 ../list.admin.class.php:176
+#: ../admin.class.php:714 ../admin.class.php:718 ../admin.class.php:795
+#: ../editor.admin.class.php:609 ../editor.admin.class.php:939
+#: ../editor.admin.class.php:1550 ../list.admin.class.php:176
 #: ../list.admin.class.php:187 ../list.admin.class.php:235
 #: ../list.admin.class.php:363 ../list.admin.class.php:373
 #: ../list.admin.class.php:425
 msgid "Hits"
 msgstr ""
 
-#: ../admin.class.php:680 ../admin.class.php:685 ../admin.class.php:761
-#: ../editor.admin.class.php:609 ../editor.admin.class.php:939
-#: ../editor.admin.class.php:1548 ../list.admin.class.php:236
+#: ../admin.class.php:714 ../admin.class.php:719 ../admin.class.php:795
+#: ../editor.admin.class.php:610 ../editor.admin.class.php:941
+#: ../editor.admin.class.php:1551 ../list.admin.class.php:236
 #: ../list.admin.class.php:364 ../list.admin.class.php:374
 #: ../list.admin.class.php:426
 msgid "Clicks"
 msgstr ""
 
-#: ../admin.class.php:683 ../block.editor.admin.class.php:308
-#: ../editor.admin.class.php:459 ../zone.editor.admin.class.php:355
+#: ../admin.class.php:717 ../block.editor.admin.class.php:308
+#: ../editor.admin.class.php:459 ../zone.editor.admin.class.php:381
 msgid "Name"
 msgstr ""
 
-#: ../admin.class.php:753
+#: ../admin.class.php:787
 msgid "Post"
 msgstr ""
 
-#: ../admin.class.php:754 ../editor.admin.class.php:1134
+#: ../admin.class.php:788 ../editor.admin.class.php:1136
 msgid "Page"
 msgstr ""
 
-#: ../admin.class.php:755
+#: ../admin.class.php:789
 msgid "Subscriber"
 msgstr ""
 
-#: ../admin.class.php:788 ../zone.editor.admin.class.php:356
+#: ../admin.class.php:822 ../zone.editor.admin.class.php:382
 msgid "Name of Ads Zone"
 msgstr ""
 
-#: ../admin.class.php:789 ../block.editor.admin.class.php:309
+#: ../admin.class.php:823 ../block.editor.admin.class.php:309
 msgid "Name of Ads Block"
 msgstr ""
 
-#: ../admin.class.php:789
+#: ../admin.class.php:823
 msgid ""
 "This is not required parameter. But it is strongly recommended to define it "
 "if you plan to use plugin's widgets."
 msgstr ""
 
-#: ../admin.class.php:808
+#: ../admin.class.php:842
 msgid "Error ID"
 msgstr ""
 
-#: ../admin.class.php:809
+#: ../admin.class.php:843
 msgid "Error Date"
 msgstr ""
 
-#: ../admin.class.php:810 ../errorlog.admin.class.php:86
+#: ../admin.class.php:844 ../errorlog.admin.class.php:86
 #: ../errorlog.admin.class.php:96
 msgid "Table"
 msgstr ""
 
-#: ../admin.class.php:811
+#: ../admin.class.php:845
 msgid "Error Message"
 msgstr ""
 
-#: ../admin.class.php:812
+#: ../admin.class.php:846
 msgid "Error SQL"
 msgstr ""
 
-#: ../admin.class.php:813 ../errorlog.admin.class.php:87
+#: ../admin.class.php:847 ../errorlog.admin.class.php:87
 #: ../errorlog.admin.class.php:97
 msgid "Type"
 msgstr ""
 
-#: ../admin.class.php:814
+#: ../admin.class.php:848
 msgid "Close"
 msgstr ""
 
-#: ../admin.class.php:816 ../admin.class.php:877
+#: ../admin.class.php:850 ../admin.class.php:911
 #: ../errorlog.admin.class.php:116 ../errorlog.admin.class.php:132
 msgid "Warning"
 msgstr ""
 
-#: ../admin.class.php:816 ../errorlog.admin.class.php:136
+#: ../admin.class.php:850 ../errorlog.admin.class.php:136
 msgid "Ok"
 msgstr ""
 
-#: ../admin.class.php:877 ../errorlog.admin.class.php:116
+#: ../admin.class.php:911 ../errorlog.admin.class.php:116
 msgid "Update Error"
 msgstr ""
 
-#: ../admin.class.php:877 ../errorlog.admin.class.php:116
+#: ../admin.class.php:911 ../errorlog.admin.class.php:116
 msgid "Output Error"
 msgstr ""
 
-#: ../admin.class.php:963
+#: ../admin.class.php:1022
 msgid "There are general options."
 msgstr ""
 
-#: ../admin.class.php:967
+#: ../admin.class.php:1026
 msgid ""
 "Single post/page auto inserting options. Use these parameters for allowing/"
 "defining Ads Places which will be automatically inserted before/after post/"
 "page content."
 msgstr ""
 
-#: ../admin.class.php:975
+#: ../admin.class.php:1034
 msgid "Adjust parameters of your Google DFP account."
 msgstr ""
 
-#: ../admin.class.php:979
+#: ../admin.class.php:1038
 msgid "Adjust parameters of plugin statistics."
 msgstr ""
 
-#: ../admin.class.php:983
+#: ../admin.class.php:1042
 msgid "This options define layout for Ads Managin Pages."
 msgstr ""
 
-#: ../admin.class.php:987
+#: ../admin.class.php:1046
 msgid "Are you allow to perform these actions during deactivating plugin?"
 msgstr ""
 
-#: ../admin.class.php:1101
+#: ../admin.class.php:1054
+msgid "Next mailing is scheduled on"
+msgstr ""
+
+#: ../admin.class.php:1056
+msgid "Adjust parameters of Mailing System."
+msgstr ""
+
+#: ../admin.class.php:1181
 msgid "Simple Ads Manager Settings Updated."
 msgstr ""
 
-#: ../admin.class.php:1109
+#: ../admin.class.php:1189
 msgid "System Info"
 msgstr ""
 
-#: ../admin.class.php:1116
+#: ../admin.class.php:1196
 msgid "Wordpress Version"
 msgstr ""
 
-#: ../admin.class.php:1117
+#: ../admin.class.php:1197
 msgid "SAM Version"
 msgstr ""
 
-#: ../admin.class.php:1118
+#: ../admin.class.php:1198
 msgid "SAM DB Version"
 msgstr ""
 
-#: ../admin.class.php:1119
+#: ../admin.class.php:1199
 msgid "PHP Version"
 msgstr ""
 
-#: ../admin.class.php:1120
+#: ../admin.class.php:1200
 msgid "MySQL Version"
 msgstr ""
 
-#: ../admin.class.php:1121
+#: ../admin.class.php:1201
 msgid "Memory Limit"
 msgstr ""
 
-#: ../admin.class.php:1125
+#: ../admin.class.php:1205
 msgid "Note! If you have detected a bug, include this data to bug report."
 msgstr ""
 
-#: ../admin.class.php:1130
+#: ../admin.class.php:1210
 msgid "Resources"
 msgstr ""
 
-#: ../admin.class.php:1133
+#: ../admin.class.php:1213
 msgid "Wordpress Plugin Page"
 msgstr ""
 
-#: ../admin.class.php:1134
+#: ../admin.class.php:1214
 msgid "Author Plugin Page"
 msgstr ""
 
-#: ../admin.class.php:1135 ../help.class.php:34 ../help.class.php:51
+#: ../admin.class.php:1215 ../help.class.php:34 ../help.class.php:51
 #: ../help.class.php:58 ../help.class.php:72 ../help.class.php:105
 #: ../help.class.php:113 ../help.class.php:124 ../help.class.php:141
 #: ../help.class.php:150 ../help.class.php:166 ../help.class.php:182
@@ -696,62 +787,62 @@ msgstr ""
 msgid "Support Forum"
 msgstr ""
 
-#: ../admin.class.php:1136
+#: ../admin.class.php:1216
 msgid "Author's Blog"
 msgstr ""
 
-#: ../admin.class.php:1141
+#: ../admin.class.php:1221
 msgid "Donations"
 msgstr ""
 
-#: ../admin.class.php:1153
+#: ../admin.class.php:1233
 #, php-format
 msgid ""
 "If you have found this plugin useful, please consider making a %s to help "
 "support future development. Your support will be much appreciated. Thank you!"
 msgstr ""
 
-#: ../admin.class.php:1154
+#: ../admin.class.php:1234
 msgid "Donate Now!"
 msgstr ""
 
-#: ../admin.class.php:1154
+#: ../admin.class.php:1234
 msgid "donation"
 msgstr ""
 
-#: ../admin.class.php:1172
+#: ../admin.class.php:1252
 msgid "Another Plugins"
 msgstr ""
 
-#: ../admin.class.php:1176
+#: ../admin.class.php:1256
 #, php-format
 msgid "Another plugins from %s"
 msgstr ""
 
-#: ../admin.class.php:1182
+#: ../admin.class.php:1262
 msgid "Highlights any portion of text as text in the colored boxes."
 msgstr ""
 
-#: ../admin.class.php:1183
+#: ../admin.class.php:1263
 msgid ""
 "Adds simple counters badge (FeedBurner subscribers and Twitter followers) to "
 "your blog."
 msgstr ""
 
-#: ../admin.class.php:1184
+#: ../admin.class.php:1264
 msgid "This plugin is WordPress shell for FloatBox library by Byron McGregor."
 msgstr ""
 
-#: ../admin.class.php:1185
+#: ../admin.class.php:1265
 msgid "Adds copyright notice in the end of each post of your blog. "
 msgstr ""
 
-#: ../admin.class.php:1201
+#: ../admin.class.php:1281
 msgctxt "Copyright String"
 msgid "Simple Ads Manager plugin for Wordpress."
 msgstr ""
 
-#: ../admin.class.php:1201
+#: ../admin.class.php:1281
 msgctxt "Copyright String"
 msgid "All rights reserved."
 msgstr ""
@@ -762,13 +853,13 @@ msgstr ""
 #: ../block.editor.admin.class.php:401 ../editor.admin.class.php:396
 #: ../editor.admin.class.php:465 ../editor.admin.class.php:486
 #: ../editor.admin.class.php:507 ../editor.admin.class.php:527
-#: ../editor.admin.class.php:615 ../editor.admin.class.php:911
-#: ../editor.admin.class.php:991 ../editor.admin.class.php:1015
-#: ../editor.admin.class.php:1085 ../editor.admin.class.php:1185
-#: ../editor.admin.class.php:1430 ../editor.admin.class.php:1477
-#: ../editor.admin.class.php:1497 ../editor.admin.class.php:1556
-#: ../zone.editor.admin.class.php:300 ../zone.editor.admin.class.php:361
-#: ../zone.editor.admin.class.php:375
+#: ../editor.admin.class.php:617 ../editor.admin.class.php:913
+#: ../editor.admin.class.php:993 ../editor.admin.class.php:1017
+#: ../editor.admin.class.php:1087 ../editor.admin.class.php:1187
+#: ../editor.admin.class.php:1432 ../editor.admin.class.php:1479
+#: ../editor.admin.class.php:1499 ../editor.admin.class.php:1560
+#: ../zone.editor.admin.class.php:326 ../zone.editor.admin.class.php:387
+#: ../zone.editor.admin.class.php:401
 msgid "Click to toggle"
 msgstr ""
 
@@ -799,11 +890,11 @@ msgstr ""
 #: ../block.editor.admin.class.php:243 ../editor.admin.class.php:327
 #: ../editor.admin.class.php:359 ../editor.admin.class.php:376
 #: ../editor.admin.class.php:377 ../editor.admin.class.php:378
-#: ../editor.admin.class.php:386 ../editor.admin.class.php:725
-#: ../editor.admin.class.php:824 ../editor.admin.class.php:892
-#: ../editor.admin.class.php:893 ../editor.admin.class.php:894
-#: ../zone.editor.admin.class.php:162 ../zone.editor.admin.class.php:257
-#: ../zone.editor.admin.class.php:290
+#: ../editor.admin.class.php:386 ../editor.admin.class.php:727
+#: ../editor.admin.class.php:826 ../editor.admin.class.php:894
+#: ../editor.admin.class.php:895 ../editor.admin.class.php:896
+#: ../zone.editor.admin.class.php:172 ../zone.editor.admin.class.php:282
+#: ../zone.editor.admin.class.php:316
 msgid "Undefined"
 msgstr ""
 
@@ -820,8 +911,8 @@ msgid "Edit Ads Block"
 msgstr ""
 
 #: ../block.editor.admin.class.php:254 ../editor.admin.class.php:397
-#: ../editor.admin.class.php:912 ../errorlog.admin.class.php:84
-#: ../errorlog.admin.class.php:94 ../zone.editor.admin.class.php:301
+#: ../editor.admin.class.php:914 ../errorlog.admin.class.php:84
+#: ../errorlog.admin.class.php:94 ../zone.editor.admin.class.php:327
 msgid "Status"
 msgstr ""
 
@@ -834,19 +925,19 @@ msgid "Ads Block ID"
 msgstr ""
 
 #: ../block.editor.admin.class.php:276 ../editor.admin.class.php:427
-#: ../zone.editor.admin.class.php:323
+#: ../zone.editor.admin.class.php:349
 msgid "Is Active"
 msgstr ""
 
 #: ../block.editor.admin.class.php:277 ../editor.admin.class.php:428
-#: ../editor.admin.class.php:954 ../zone.editor.admin.class.php:324
+#: ../editor.admin.class.php:956 ../zone.editor.admin.class.php:350
 msgid "Is In Trash"
 msgstr ""
 
 #: ../block.editor.admin.class.php:284 ../block.editor.admin.class.php:289
 #: ../editor.admin.class.php:435 ../editor.admin.class.php:440
-#: ../editor.admin.class.php:961 ../editor.admin.class.php:966
-#: ../zone.editor.admin.class.php:331 ../zone.editor.admin.class.php:337
+#: ../editor.admin.class.php:963 ../editor.admin.class.php:968
+#: ../zone.editor.admin.class.php:357 ../zone.editor.admin.class.php:363
 #: ../js/dialog-ad.php:94 ../js/dialog-block.php:84 ../js/dialog-zone.php:94
 #: ../js/dialog.php:94
 msgid "Cancel"
@@ -854,20 +945,20 @@ msgstr ""
 
 #: ../block.editor.admin.class.php:293 ../block.editor.admin.class.php:295
 #: ../editor.admin.class.php:444 ../editor.admin.class.php:446
-#: ../editor.admin.class.php:970 ../editor.admin.class.php:972
-#: ../zone.editor.admin.class.php:334 ../zone.editor.admin.class.php:341
+#: ../editor.admin.class.php:972 ../editor.admin.class.php:974
+#: ../zone.editor.admin.class.php:360 ../zone.editor.admin.class.php:367
 msgid "Save"
 msgstr ""
 
-#: ../block.editor.admin.class.php:309 ../editor.admin.class.php:986
-#: ../zone.editor.admin.class.php:356
+#: ../block.editor.admin.class.php:309 ../editor.admin.class.php:988
+#: ../zone.editor.admin.class.php:382
 msgid "Required for SAM widgets."
 msgstr ""
 
 #: ../block.editor.admin.class.php:315 ../block.editor.admin.class.php:319
 #: ../editor.admin.class.php:466 ../editor.admin.class.php:470
-#: ../editor.admin.class.php:995 ../zone.editor.admin.class.php:362
-#: ../zone.editor.admin.class.php:366
+#: ../editor.admin.class.php:997 ../zone.editor.admin.class.php:388
+#: ../zone.editor.admin.class.php:392
 msgid "Description"
 msgstr ""
 
@@ -876,7 +967,7 @@ msgid "Enter description of this Ads Block."
 msgstr ""
 
 #: ../block.editor.admin.class.php:322 ../editor.admin.class.php:473
-#: ../editor.admin.class.php:999 ../zone.editor.admin.class.php:369
+#: ../editor.admin.class.php:1001 ../zone.editor.admin.class.php:395
 msgid ""
 "This description is not used anywhere and is added solely for the "
 "convenience of managing advertisements."
@@ -1402,16 +1493,16 @@ msgstr ""
 msgid "Ads Place ID"
 msgstr ""
 
-#: ../editor.admin.class.php:419 ../editor.admin.class.php:943
+#: ../editor.admin.class.php:419 ../editor.admin.class.php:945
 #: ../list.admin.class.php:175 ../list.admin.class.php:186
 msgid "Size"
 msgstr ""
 
-#: ../editor.admin.class.php:421 ../editor.admin.class.php:945
+#: ../editor.admin.class.php:421 ../editor.admin.class.php:947
 msgid "Width"
 msgstr ""
 
-#: ../editor.admin.class.php:423 ../editor.admin.class.php:947
+#: ../editor.admin.class.php:423 ../editor.admin.class.php:949
 msgid "Height"
 msgstr ""
 
@@ -1423,15 +1514,11 @@ msgstr ""
 msgid "Enter description of this Ads Place."
 msgstr ""
 
-#: ../editor.admin.class.php:479 ../editor.admin.class.php:1006
-msgid "General"
-msgstr ""
-
 #: ../editor.admin.class.php:480
 msgid "Default Ad"
 msgstr ""
 
-#: ../editor.admin.class.php:481 ../editor.admin.class.php:1010
+#: ../editor.admin.class.php:481 ../editor.admin.class.php:1012
 msgid "Statistic"
 msgstr ""
 
@@ -1546,554 +1633,554 @@ msgid ""
 "document."
 msgstr ""
 
-#: ../editor.admin.class.php:597 ../editor.admin.class.php:1536
+#: ../editor.admin.class.php:598 ../editor.admin.class.php:1539
 msgid "Select Period"
 msgstr ""
 
-#: ../editor.admin.class.php:599 ../editor.admin.class.php:1538
+#: ../editor.admin.class.php:600 ../editor.admin.class.php:1541
 msgid "This Month"
 msgstr ""
 
-#: ../editor.admin.class.php:600 ../editor.admin.class.php:1539
+#: ../editor.admin.class.php:601 ../editor.admin.class.php:1542
 msgid "Previous Month"
 msgstr ""
 
-#: ../editor.admin.class.php:607 ../editor.admin.class.php:1546
+#: ../editor.admin.class.php:608 ../editor.admin.class.php:1549
 #: ../list.admin.class.php:237 ../list.admin.class.php:427
 msgid "Total"
 msgstr ""
 
-#: ../editor.admin.class.php:616
+#: ../editor.admin.class.php:618
 msgid "Contained Ads"
 msgstr ""
 
-#: ../editor.admin.class.php:736
+#: ../editor.admin.class.php:738
 msgid "Ad Data Updated."
 msgstr ""
 
-#: ../editor.admin.class.php:901
+#: ../editor.admin.class.php:903
 msgid "New advertisement"
 msgstr ""
 
-#: ../editor.admin.class.php:901
+#: ../editor.admin.class.php:903
 msgid "Edit advertisement"
 msgstr ""
 
-#: ../editor.admin.class.php:921
+#: ../editor.admin.class.php:923
 msgid "Back to Ads List"
 msgstr ""
 
-#: ../editor.admin.class.php:928
+#: ../editor.admin.class.php:930
 msgid "Advertisement ID"
 msgstr ""
 
-#: ../editor.admin.class.php:935 ../list.admin.class.php:362
+#: ../editor.admin.class.php:937 ../list.admin.class.php:362
 #: ../list.admin.class.php:372
 msgid "Activity"
 msgstr ""
 
-#: ../editor.admin.class.php:936
+#: ../editor.admin.class.php:938
 msgid "Ad is Active"
 msgstr ""
 
-#: ../editor.admin.class.php:936
+#: ../editor.admin.class.php:938
 msgid "Ad is Inactive"
 msgstr ""
 
-#: ../editor.admin.class.php:952
+#: ../editor.admin.class.php:954
 msgid "Is in Rotation"
 msgstr ""
 
-#: ../editor.admin.class.php:985
+#: ../editor.admin.class.php:987
 msgid "Title"
 msgstr ""
 
-#: ../editor.admin.class.php:992
+#: ../editor.admin.class.php:994
 msgid "Advertisement Description"
 msgstr ""
 
-#: ../editor.admin.class.php:1007
+#: ../editor.admin.class.php:1009
 msgid "Extended Restrictions"
 msgstr ""
 
-#: ../editor.admin.class.php:1008
+#: ../editor.admin.class.php:1010
 msgid "Targeting"
 msgstr ""
 
-#: ../editor.admin.class.php:1009
+#: ../editor.admin.class.php:1011
 msgid "Earnings settings"
 msgstr ""
 
-#: ../editor.admin.class.php:1016 ../editor.admin.class.php:1075
+#: ../editor.admin.class.php:1018 ../editor.admin.class.php:1077
 msgid "Ad Code"
 msgstr ""
 
-#: ../editor.admin.class.php:1020
+#: ../editor.admin.class.php:1022
 msgid "Image Mode"
 msgstr ""
 
-#: ../editor.admin.class.php:1024
+#: ../editor.admin.class.php:1026
 msgid "Ad Image"
 msgstr ""
 
-#: ../editor.admin.class.php:1029
+#: ../editor.admin.class.php:1031
 msgid "Ad Target"
 msgstr ""
 
-#: ../editor.admin.class.php:1033
+#: ../editor.admin.class.php:1035
 msgid "Ad Alternative Text"
 msgstr ""
 
-#: ../editor.admin.class.php:1038
+#: ../editor.admin.class.php:1040
 msgid "Count clicks for this advertisement"
 msgstr ""
 
-#: ../editor.admin.class.php:1040
+#: ../editor.admin.class.php:1042
 msgid "Use carefully!"
 msgstr ""
 
-#: ../editor.admin.class.php:1040
+#: ../editor.admin.class.php:1042
 msgid ""
 "Do not use if the wp-admin folder is password protected. In this case the "
 "viewer will be prompted to enter a username and password during ajax "
 "request. It's not good."
 msgstr ""
 
-#: ../editor.admin.class.php:1043
+#: ../editor.admin.class.php:1045
 msgid "This is flash (SWF) banner"
 msgstr ""
 
-#: ../editor.admin.class.php:1046
+#: ../editor.admin.class.php:1048
 msgid "Flash banner \"flashvars\""
 msgstr ""
 
-#: ../editor.admin.class.php:1048
+#: ../editor.admin.class.php:1050
 msgid "Insert \"flashvars\" parameters between braces..."
 msgstr ""
 
-#: ../editor.admin.class.php:1049
+#: ../editor.admin.class.php:1051
 msgid "Flash banner \"params\""
 msgstr ""
 
-#: ../editor.admin.class.php:1051
+#: ../editor.admin.class.php:1053
 msgid "Insert \"params\" parameters between braces..."
 msgstr ""
 
-#: ../editor.admin.class.php:1052
+#: ../editor.admin.class.php:1054
 msgid "Flash banner \"attributes\""
 msgstr ""
 
-#: ../editor.admin.class.php:1054
+#: ../editor.admin.class.php:1056
 msgid "Insert \"attributes\" parameters between braces..."
 msgstr ""
 
-#: ../editor.admin.class.php:1057
+#: ../editor.admin.class.php:1059
 msgid "Add to ad"
 msgstr ""
 
-#: ../editor.admin.class.php:1059
+#: ../editor.admin.class.php:1061
 msgid "Non Selected"
 msgstr ""
 
-#: ../editor.admin.class.php:1060
+#: ../editor.admin.class.php:1062
 msgid "nofollow"
 msgstr ""
 
-#: ../editor.admin.class.php:1061
+#: ../editor.admin.class.php:1063
 msgid "noindex"
 msgstr ""
 
-#: ../editor.admin.class.php:1062
+#: ../editor.admin.class.php:1064
 msgid "nofollow and noindex"
 msgstr ""
 
-#: ../editor.admin.class.php:1071
+#: ../editor.admin.class.php:1073
 msgid "Code Mode"
 msgstr ""
 
-#: ../editor.admin.class.php:1077
+#: ../editor.admin.class.php:1079
 msgid "This code of ad contains PHP script"
 msgstr ""
 
-#: ../editor.admin.class.php:1086
+#: ../editor.admin.class.php:1088
 msgid "Restrictions of advertisements showing"
 msgstr ""
 
-#: ../editor.admin.class.php:1089
+#: ../editor.admin.class.php:1091
 msgid "Ad Weight"
 msgstr ""
 
-#: ../editor.admin.class.php:1096
+#: ../editor.admin.class.php:1098
 msgid "Inactive"
 msgstr ""
 
-#: ../editor.admin.class.php:1097
+#: ../editor.admin.class.php:1099
 msgid "Minimal Activity"
 msgstr ""
 
-#: ../editor.admin.class.php:1098
+#: ../editor.admin.class.php:1100
 msgid "Maximal Activity"
 msgstr ""
 
-#: ../editor.admin.class.php:1108
+#: ../editor.admin.class.php:1110
 msgid ""
 "Ad weight - coefficient of frequency of show of the advertisement for one "
 "cycle of advertisements rotation."
 msgstr ""
 
-#: ../editor.admin.class.php:1110
+#: ../editor.admin.class.php:1112
 msgid "0 - ad is inactive"
 msgstr ""
 
-#: ../editor.admin.class.php:1111
+#: ../editor.admin.class.php:1113
 msgid "1 - minimal activity of this advertisement"
 msgstr ""
 
-#: ../editor.admin.class.php:1113
+#: ../editor.admin.class.php:1115
 msgid "10 - maximal activity of this ad."
 msgstr ""
 
-#: ../editor.admin.class.php:1119 ../help.class.php:20 ../help.class.php:161
+#: ../editor.admin.class.php:1121 ../help.class.php:20 ../help.class.php:161
 msgid "Show ad on all pages of blog"
 msgstr ""
 
-#: ../editor.admin.class.php:1123
+#: ../editor.admin.class.php:1125
 msgid "Show ad only on pages of this type"
 msgstr ""
 
-#: ../editor.admin.class.php:1127
+#: ../editor.admin.class.php:1129
 msgid "Home Page (Home or Front Page)"
 msgstr ""
 
-#: ../editor.admin.class.php:1129
+#: ../editor.admin.class.php:1131
 msgid "Singular Pages"
 msgstr ""
 
-#: ../editor.admin.class.php:1132
+#: ../editor.admin.class.php:1134
 msgid "Single Post"
 msgstr ""
 
-#: ../editor.admin.class.php:1136
+#: ../editor.admin.class.php:1138
 msgid "Custom Post Type"
 msgstr ""
 
-#: ../editor.admin.class.php:1138
+#: ../editor.admin.class.php:1140
 msgid "Attachment"
 msgstr ""
 
-#: ../editor.admin.class.php:1141
+#: ../editor.admin.class.php:1143
 msgid "Search Page"
 msgstr ""
 
-#: ../editor.admin.class.php:1143
+#: ../editor.admin.class.php:1145
 msgid "\"Not found\" Page (HTTP 404: Not Found)"
 msgstr ""
 
-#: ../editor.admin.class.php:1145
+#: ../editor.admin.class.php:1147
 msgid "Archive Pages"
 msgstr ""
 
-#: ../editor.admin.class.php:1148
+#: ../editor.admin.class.php:1150
 msgid "Taxonomy Archive Pages"
 msgstr ""
 
-#: ../editor.admin.class.php:1150
+#: ../editor.admin.class.php:1152
 msgid "Category Archive Pages"
 msgstr ""
 
-#: ../editor.admin.class.php:1152
+#: ../editor.admin.class.php:1154
 msgid "Tag Archive Pages"
 msgstr ""
 
-#: ../editor.admin.class.php:1154
+#: ../editor.admin.class.php:1156
 msgid "Author Archive Pages"
 msgstr ""
 
-#: ../editor.admin.class.php:1156
+#: ../editor.admin.class.php:1158
 msgid "Custom Post Type Archive Pages"
 msgstr ""
 
-#: ../editor.admin.class.php:1158
+#: ../editor.admin.class.php:1160
 msgid ""
 "Date Archive Pages (any date-based archive pages, i.e. a monthly, yearly, "
 "daily or time-based archive)"
 msgstr ""
 
-#: ../editor.admin.class.php:1163
+#: ../editor.admin.class.php:1165
 msgid "Show ad only in certain posts/pages"
 msgstr ""
 
-#: ../editor.admin.class.php:1167 ../editor.admin.class.php:1194
+#: ../editor.admin.class.php:1169 ../editor.admin.class.php:1196
 msgid "Posts/Pages"
 msgstr ""
 
-#: ../editor.admin.class.php:1174
+#: ../editor.admin.class.php:1176
 msgid ""
 "Use this setting to display an ad only in certain posts/pages. Select posts/"
 "pages."
 msgstr ""
 
-#: ../editor.admin.class.php:1186
+#: ../editor.admin.class.php:1188
 msgid "Extended restrictions of advertisements showing"
 msgstr ""
 
-#: ../editor.admin.class.php:1190
+#: ../editor.admin.class.php:1192
 msgid "Do not show ad on certain posts/pages"
 msgstr ""
 
-#: ../editor.admin.class.php:1202
+#: ../editor.admin.class.php:1204
 msgid ""
 "Use this setting to not display an ad on certain posts/pages. Select posts/"
 "pages."
 msgstr ""
 
-#: ../editor.admin.class.php:1207
+#: ../editor.admin.class.php:1209
 msgid ""
 "Show ad only in single posts or categories archives of certain categories"
 msgstr ""
 
-#: ../editor.admin.class.php:1210 ../editor.admin.class.php:1230
+#: ../editor.admin.class.php:1212 ../editor.admin.class.php:1232
 msgid "Categories"
 msgstr ""
 
-#: ../editor.admin.class.php:1217
+#: ../editor.admin.class.php:1219
 msgid ""
 "Use this setting to display an ad only in single posts or categories "
 "archives of certain categories."
 msgstr ""
 
-#: ../editor.admin.class.php:1221 ../editor.admin.class.php:1255
-#: ../editor.admin.class.php:1289 ../editor.admin.class.php:1324
-#: ../editor.admin.class.php:1359
+#: ../editor.admin.class.php:1223 ../editor.admin.class.php:1257
+#: ../editor.admin.class.php:1291 ../editor.admin.class.php:1326
+#: ../editor.admin.class.php:1361
 msgid ""
 "This display logic parameter will be applied only when you use the \"Show ad "
 "on all pages of blog\" and \"Show your ad only on the pages of this type\" "
 "modes. Otherwise, it will be ignored."
 msgstr ""
 
-#: ../editor.admin.class.php:1227
+#: ../editor.admin.class.php:1229
 msgid ""
 "Do not show ad in single posts or categories archives of certain categories"
 msgstr ""
 
-#: ../editor.admin.class.php:1237
+#: ../editor.admin.class.php:1239
 msgid ""
 "Use this setting to not display an ad in single posts or categories archives "
 "of certain categories."
 msgstr ""
 
-#: ../editor.admin.class.php:1242
+#: ../editor.admin.class.php:1244
 msgid ""
 "Show ad only in single posts or archives of certain Custom Taxonomies Terms"
 msgstr ""
 
-#: ../editor.admin.class.php:1251
+#: ../editor.admin.class.php:1253
 msgid ""
 "Use this setting to display an ad only in single posts or archives of "
 "certain Custom Taxonomies Terms."
 msgstr ""
 
-#: ../editor.admin.class.php:1261
+#: ../editor.admin.class.php:1263
 msgid ""
 "Do not show ad in single posts or archives of certain Custom Taxonomies Terms"
 msgstr ""
 
-#: ../editor.admin.class.php:1270
+#: ../editor.admin.class.php:1272
 msgid ""
 "Use this setting to not display an ad only in single posts or archives of "
 "certain Custom Taxonomies Terms."
 msgstr ""
 
-#: ../editor.admin.class.php:1275
+#: ../editor.admin.class.php:1277
 msgid "Show ad only in single posts or authors archives of certain authors"
 msgstr ""
 
-#: ../editor.admin.class.php:1278 ../editor.admin.class.php:1298
+#: ../editor.admin.class.php:1280 ../editor.admin.class.php:1300
 msgid "Authors"
 msgstr ""
 
-#: ../editor.admin.class.php:1285
+#: ../editor.admin.class.php:1287
 msgid ""
 "Use this setting to display an ad only in single posts or authors archives "
 "of certain authors."
 msgstr ""
 
-#: ../editor.admin.class.php:1295
+#: ../editor.admin.class.php:1297
 msgid "Do not show ad in single posts or authors archives of certain authors"
 msgstr ""
 
-#: ../editor.admin.class.php:1305
+#: ../editor.admin.class.php:1307
 msgid ""
 "Use this setting to not display an ad in single posts or authors archives of "
 "certain authors."
 msgstr ""
 
-#: ../editor.admin.class.php:1310
+#: ../editor.admin.class.php:1312
 msgid "Show ad only in single posts or tags archives of certain tags"
 msgstr ""
 
-#: ../editor.admin.class.php:1313 ../editor.admin.class.php:1333
+#: ../editor.admin.class.php:1315 ../editor.admin.class.php:1335
 msgid "Tags"
 msgstr ""
 
-#: ../editor.admin.class.php:1320
+#: ../editor.admin.class.php:1322
 msgid ""
 "Use this setting to display an ad only in single posts or tags archives of "
 "certain tags."
 msgstr ""
 
-#: ../editor.admin.class.php:1330
+#: ../editor.admin.class.php:1332
 msgid "Do not show ad in single posts or tags archives of certain tags"
 msgstr ""
 
-#: ../editor.admin.class.php:1340
+#: ../editor.admin.class.php:1342
 msgid ""
 "Use this setting to not display an ad in single posts or tags archives of "
 "certain tags."
 msgstr ""
 
-#: ../editor.admin.class.php:1345
+#: ../editor.admin.class.php:1347
 msgid ""
 "Show ad only in custom type single posts or custom post type archives of "
 "certain custom post types"
 msgstr ""
 
-#: ../editor.admin.class.php:1348 ../editor.admin.class.php:1368
+#: ../editor.admin.class.php:1350 ../editor.admin.class.php:1370
 msgid "Custom post types"
 msgstr ""
 
-#: ../editor.admin.class.php:1355
+#: ../editor.admin.class.php:1357
 msgid ""
 "Use this setting to display an ad only in custom type single posts or custom "
 "post type archives of certain custom post types."
 msgstr ""
 
-#: ../editor.admin.class.php:1365
+#: ../editor.admin.class.php:1367
 msgid ""
 "Do not show ad in custom type single posts or custom post type archives of "
 "certain custom post types"
 msgstr ""
 
-#: ../editor.admin.class.php:1375
+#: ../editor.admin.class.php:1377
 msgid ""
 "Use this setting to not display an ad in custom type single posts or custom "
 "post type archives of certain custom post types."
 msgstr ""
 
-#: ../editor.admin.class.php:1380
+#: ../editor.admin.class.php:1382
 msgid "Use the schedule for this ad"
 msgstr ""
 
-#: ../editor.admin.class.php:1384
+#: ../editor.admin.class.php:1386
 msgid "Campaign Start Date"
 msgstr ""
 
-#: ../editor.admin.class.php:1388
+#: ../editor.admin.class.php:1390
 msgid "Campaign End Date"
 msgstr ""
 
-#: ../editor.admin.class.php:1393
+#: ../editor.admin.class.php:1395
 msgid ""
 "Use these parameters for displaying ad during the certain period of time."
 msgstr ""
 
-#: ../editor.admin.class.php:1398
+#: ../editor.admin.class.php:1400
 msgid "Use limitation by hits"
 msgstr ""
 
-#: ../editor.admin.class.php:1402
+#: ../editor.admin.class.php:1404
 msgid "Hits Limit"
 msgstr ""
 
-#: ../editor.admin.class.php:1407
+#: ../editor.admin.class.php:1409
 msgid "Use this parameter for limiting displaying of ad by hits."
 msgstr ""
 
-#: ../editor.admin.class.php:1412
+#: ../editor.admin.class.php:1414
 msgid "Use limitation by clicks"
 msgstr ""
 
-#: ../editor.admin.class.php:1416
+#: ../editor.admin.class.php:1418
 msgid "Clicks Limit"
 msgstr ""
 
-#: ../editor.admin.class.php:1421
+#: ../editor.admin.class.php:1423
 msgid "Use this parameter for limiting displaying of ad by clicks."
 msgstr ""
 
-#: ../editor.admin.class.php:1431
+#: ../editor.admin.class.php:1433
 msgid "Users"
 msgstr ""
 
-#: ../editor.admin.class.php:1433
+#: ../editor.admin.class.php:1435
 msgid "Show this ad for"
 msgstr ""
 
-#: ../editor.admin.class.php:1436
+#: ../editor.admin.class.php:1438
 msgid "all users"
 msgstr ""
 
-#: ../editor.admin.class.php:1441
+#: ../editor.admin.class.php:1443
 msgid "these users"
 msgstr ""
 
-#: ../editor.admin.class.php:1446
+#: ../editor.admin.class.php:1448
 msgid "Unregistered Users"
 msgstr ""
 
-#: ../editor.admin.class.php:1450 ../editor.admin.class.php:1458
+#: ../editor.admin.class.php:1452 ../editor.admin.class.php:1460
 msgid "Registered Users"
 msgstr ""
 
-#: ../editor.admin.class.php:1455
+#: ../editor.admin.class.php:1457
 msgid "Exclude these users"
 msgstr ""
 
-#: ../editor.admin.class.php:1466
+#: ../editor.admin.class.php:1468
 msgid "Do not show this ad for advertiser"
 msgstr ""
 
-#: ../editor.admin.class.php:1478
+#: ../editor.admin.class.php:1480
 msgid "Advertiser"
 msgstr ""
 
-#: ../editor.admin.class.php:1481
+#: ../editor.admin.class.php:1483
 msgid "Advertiser Nick Name"
 msgstr ""
 
-#: ../editor.admin.class.php:1498 ../help.class.php:32 ../help.class.php:180
+#: ../editor.admin.class.php:1500 ../help.class.php:32 ../help.class.php:180
 msgid "Prices"
 msgstr ""
 
-#: ../editor.admin.class.php:1501
+#: ../editor.admin.class.php:1503
 msgid "Price of ad placement per month"
 msgstr ""
 
-#: ../editor.admin.class.php:1505
+#: ../editor.admin.class.php:1507
 msgid "Tthis parameter used only for scheduled ads."
 msgstr ""
 
-#: ../editor.admin.class.php:1508
+#: ../editor.admin.class.php:1510
 msgid "Price per Thousand Hits"
 msgstr ""
 
-#: ../editor.admin.class.php:1512
+#: ../editor.admin.class.php:1514
 msgid ""
 "Not only humans visit your blog, bots and crawlers too. In order not to "
 "deceive an advertiser, you must enable the detection of bots and crawlers."
 msgstr ""
 
-#: ../editor.admin.class.php:1515
+#: ../editor.admin.class.php:1517
 msgid "Price per Click"
 msgstr ""
 
-#: ../editor.admin.class.php:1519
+#: ../editor.admin.class.php:1521
 msgid ""
 "To calculate the earnings on clicks, you must enable counting of clicks for "
 "that ad."
 msgstr ""
 
-#: ../editor.admin.class.php:1557
+#: ../editor.admin.class.php:1561
 msgid "Ad Preview"
 msgstr ""
 
@@ -2574,122 +2661,126 @@ msgstr ""
 msgid "None"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:173
+#: ../zone.editor.admin.class.php:183
 msgid "Ads Zone Data Updated."
 msgstr ""
 
-#: ../zone.editor.admin.class.php:290
+#: ../zone.editor.admin.class.php:316
 msgid "New Ads Zone"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:290
+#: ../zone.editor.admin.class.php:316
 msgid "Edit Ads Zone"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:310
+#: ../zone.editor.admin.class.php:336
 msgid "Back to Zones List"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:317 ../js/dialog-zone.php:71
+#: ../zone.editor.admin.class.php:343 ../js/dialog-zone.php:71
 msgid "Ads Zone ID"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:364
+#: ../zone.editor.admin.class.php:390
 msgid "Enter description of this Ads Zone."
 msgstr ""
 
-#: ../zone.editor.admin.class.php:376
+#: ../zone.editor.admin.class.php:402
 msgid "Ads Zone Settings"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:379
+#: ../zone.editor.admin.class.php:405
 msgid "Default Ads Place"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:385
+#: ../zone.editor.admin.class.php:411
 msgid ""
 "Select the Ads Place by default. This Ads Place will be displayed in the "
 "event that for the page of a given type the Ads Place value is set to "
 "\"Default\"."
 msgstr ""
 
-#: ../zone.editor.admin.class.php:389
+#: ../zone.editor.admin.class.php:415
 msgid "Home Page Ads Place"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:395
+#: ../zone.editor.admin.class.php:421
 msgid "Default Ads Place for Singular Pages"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:402
+#: ../zone.editor.admin.class.php:428
 msgid "Single Post Ads Place"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:411
+#: ../zone.editor.admin.class.php:437
 msgid "Default Ads Place for Single Custom Type Post"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:422
+#: ../zone.editor.admin.class.php:448
 msgid "Ads Place for Single Post of Custom Type"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:431
+#: ../zone.editor.admin.class.php:457
 msgid "Page Ads Place"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:437
+#: ../zone.editor.admin.class.php:463
 msgid "Attachment Ads Place"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:444
+#: ../zone.editor.admin.class.php:470
 msgid "Search Pages Ads Place"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:450
+#: ../zone.editor.admin.class.php:476
 msgid "404 Page Ads Place"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:456
+#: ../zone.editor.admin.class.php:482
 msgid "Default Ads Place for Archive Pages"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:463
+#: ../zone.editor.admin.class.php:489
 msgid "Default Ads Place for Taxonomies Pages"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:470
+#: ../zone.editor.admin.class.php:502
+msgid "Ads Place for Custom Taxonomy Term"
+msgstr ""
+
+#: ../zone.editor.admin.class.php:515
 msgid "Default Ads Place for Category Archive Pages"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:483
+#: ../zone.editor.admin.class.php:528
 msgid "Ads Place for Category"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:499
+#: ../zone.editor.admin.class.php:544
 msgid "Default Ads Place for Archives of Custom Type Posts"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:509
+#: ../zone.editor.admin.class.php:554
 msgid "Ads Place for Custom Type Posts Archive"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:518
+#: ../zone.editor.admin.class.php:563
 msgid "Tags Archive Pages Ads Place"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:525
+#: ../zone.editor.admin.class.php:569
 msgid "Default Ads Place for Author Archive Pages"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:534
+#: ../zone.editor.admin.class.php:578
 msgid "Ads Place for author"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:543
+#: ../zone.editor.admin.class.php:587
 msgid "Date Archive Pages Ads Place"
 msgstr ""
 
-#: ../zone.editor.admin.class.php:550
+#: ../zone.editor.admin.class.php:594
 msgid ""
 "Ads Places for Singular pages, for Pages of Taxonomies and for Archive pages "
 "are Ads Places by default for the low level pages of relevant pages."

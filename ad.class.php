@@ -489,6 +489,7 @@ if(!class_exists('SamAdPlaceZone')) {
                   sz.z_404,
                   sz.z_archive,
                   sz.z_tax,
+                  sz.z_taxes,
                   sz.z_category,
                   sz.z_cats,
                   sz.z_tag,
@@ -501,6 +502,7 @@ if(!class_exists('SamAdPlaceZone')) {
                 WHERE $zId AND sz.trash IS FALSE;";
       $zone = $wpdb->get_row($zSql, ARRAY_A);
       if(!empty($zone)) {
+        $taxes = unserialize($zone['z_taxes']);
         $cats = unserialize($zone['z_cats']);
         $authors = unserialize($zone['z_authors']);
         $singleCT = unserialize($zone['z_single_ct']);
@@ -519,6 +521,9 @@ if(!class_exists('SamAdPlaceZone')) {
         if((integer)$zone['z_404'] < 0) $zone['z_404'] = $zone['z_default'];
         if((integer)$zone['z_archive'] < 0) $zone['z_archive'] = $zone['z_default'];
         if((integer)$zone['z_tax'] < 0) $zone['z_tax'] = $zone['z_archive'];
+        foreach($taxes as $key => $value) {
+          if($value < 0) $taxes[$key] = $zone['z_tax'];
+        }
         if((integer)$zone['z_category'] < 0) $zone['z_category'] = $zone['z_tax'];
         foreach($cats as $key => $value) {
           if($value < 0) $cats[$key] = $zone['z_category'];
@@ -553,7 +558,12 @@ if(!class_exists('SamAdPlaceZone')) {
         if(is_404()) $id = $zone['z_404'];
         if(is_archive()) {
           $id = $zone['z_archive'];
-          if(is_tax()) $id = $zone['z_tax'];
+          if(is_tax()) {
+            $id = $zone['z_tax'];
+            foreach($taxes as $key => $value) {
+              if(is_tax($value['tax'], $key)) $id = $value['id'];
+            }
+          }
           if(is_category()) {
             $id = $zone['z_category'];
             foreach($cats as $key => $value) {
