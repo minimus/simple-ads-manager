@@ -1,8 +1,8 @@
 (function($) {
   $(document).ready(function() {
-    var cButton = 'Закрыть';
+    var cButton = 'Закрыть', dlg = $('#dialog');
 
-    $('#dialog').dialog({
+    dlg.dialog({
       autoOpen: false,
       height: 550,
       width: 400,
@@ -22,12 +22,23 @@
       var
         id = $(this).attr('id').split('-'),
         idn = id[1],
-        eType = $('#et-'+idn).val(),
-        eDate = $('#dt-'+idn).val(),
-        eTable = $('#tn-'+idn).val(),
-        eMsg = $('#em-'+idn).val(),
-        eSql = $('#es-'+idn).val(),
-        eResolved = $('#rs-'+idn).val(),
+        wOpts = $.parseJSON($.ajax({
+        url:ajaxurl,
+        data:{
+          action:'get_error',
+          id: idn
+        },
+        async:false,
+        dataType:'jsonp'
+      }).responseText);
+
+      var
+        eType = wOpts.data.type,
+        eDate = wOpts.data.date,
+        eTable = wOpts.data.name,
+        eMsg = wOpts.data.msg,
+        eSql = wOpts.data.es,
+        eResolved = wOpts.data.resolved,
         img = options.imgURL + ((eResolved-0) ? 'ok.png' : 'warning.png'),
         alt = options.alts[eResolved-0],
         dHTML = '<img style="float: left; margin: 5px" src="'+img+'" alt="'+alt+'" />' +
@@ -36,10 +47,10 @@
           '<p><strong>'+options.etype+'</strong>:<br/>'+eType+'</p>' +
           '<p><strong>'+options.msg+'</strong>:<br/>'+eMsg+'</p>' +
           '<p><strong>'+options.sql+'</strong>:</p>' +
-          '<textarea style="width: 100%; height: 200px;" readonly>'+eSql+'</textarea> ';
+          '<textarea style="width: 100%; height: 270px;" readonly>'+eSql+'</textarea> ';
 
-      $('#dialog').html(dHTML);
-      $('#dialog').dialog('open');
+      dlg.html(dHTML);
+      dlg.dialog('open');
     });
   });
 })(jQuery);

@@ -26,6 +26,9 @@ global $wpdb;
 $oTable = $wpdb->prefix . 'options';
 $oSql = "SELECT $oTable.option_value FROM $oTable WHERE $oTable.option_name = 'blog_charset'";
 $charset = $wpdb->get_var($oSql);
+$aTable = $wpdb->prefix . "sam_ads";
+$pTable = $wpdb->prefix . 'sam_places';
+$sTable = $wpdb->prefix . 'sam_stats';
 
 //Typical headers
 @header("Content-Type: application/json; charset=$charset");
@@ -39,7 +42,7 @@ $action = !empty($_POST['action']) ? 'sam_ajax_' . stripslashes($_POST['action']
 //A bit of security
 $allowed_actions = array(
   'sam_ajax_sam_click',
-  'sam_ajax_sam_show'
+  'sam_ajax_sam_hit'
 );
 
 if(in_array($action, $allowed_actions)){
@@ -51,25 +54,53 @@ if(in_array($action, $allowed_actions)){
         $aId = explode('_', $adId);
         $id = (integer) $aId[1];
       }
+      elseif(isset($_POST['id'])) {
+        $id = $_POST['id'];
+        $pid = $_POST['pid'];
+      }
       else $id = -100;
 
       if($id > 0) {
-        $aTable = $wpdb->prefix . "sam_ads";
-
-        $aSql = "UPDATE $aTable SET $aTable.ad_clicks = $aTable.ad_clicks+1 WHERE $aTable.id = %d;";
-        $result = $wpdb->query($wpdb->prepare($aSql, $id));
+        //$aSql = "UPDATE $aTable sa SET sa.ad_clicks = sa.ad_clicks + 1 WHERE sa.id = %d;";
+        $aSql = "INSERT HIGH_PRIORITY INTO $sTable (id, pid, event_time, event_type) VALUES (%d, %d, NOW(), 1);";
+        $result = $wpdb->query($wpdb->prepare($aSql, $id, $pid));
         if($result === 1) {
-          $out = array('id' => $id, 'result' => $result, 'charset' => $charset);
-          wp_send_json_success( $out );
+          $out = array('success' => true, 'id' => $id, 'result' => $result, 'charset' => $charset);
+          echo json_encode( $out );
         }
-        else wp_send_json_error(array('id' => $id, 'sql' => $wpdb->last_query, 'error' => $wpdb->last_error));
+        else echo json_encode(array('success' => false, 'id' => $id, 'sql' => $wpdb->last_query, 'error' => $wpdb->last_error));
       }
-      else wp_send_json_error(array('id' => $id));
+      else echo json_encode(array('success' => false, 'id' => $id));
       break;
 
-    case 'sam_ajax_sam_show':
-
+    case 'sam_ajax_sam_hit':
+      if(isset($_POST['id']) && isset($_POST['pid'])) {
+        $id = $_POST['id'];
+        $pid = $_POST['pid'];
+        $cid = ($id == 0) ? $pid : $id;
+        $result = 0;
+        //if($id > 0) $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1, sa.ad_weight_hits = sa.ad_weight_hits + 1 WHERE sa.id = %d;";
+        /*if($id > 0) $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1 WHERE sa.id = %d;";
+        elseif($id == 0) $sql = "UPDATE $pTable sp SET sp.patch_hits = sp.patch_hits + 1 WHERE sp.id = %d;";
+        else $sql = '';*/
+        $sql = "INSERT HIGH_PRIORITY INTO $sTable (id, pid, event_time, event_type) VALUES (%d, %d, NOW(), 0);";
+        if(!empty($sql)) $result = $wpdb->query($wpdb->prepare($sql, $id, $pid));
+        if($result === 1) echo json_encode(array('success' => true, 'id' => $id, 'pid' => $pid));
+        else echo json_encode(array(
+          'success' => false,
+          'id' => $id,
+          'pid' => $pid,
+          'cid' => $cid,
+          'result' => $result,
+          'sql' => $wpdb->prepare($sql, $cid)
+        ));
+      }
+      else echo json_encode(array('success' => false));
+      break;
+    default:
+      echo json_encode(array('success' => false, 'error' => 'Data error'));
       break;
   }
 }
-else wp_send_json_error(array('error' => 'Not allowed action'));
+else echo json_encode(array('success' => false, 'error' => 'Not allowed'));
+wp_die();

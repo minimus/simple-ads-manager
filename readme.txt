@@ -3,14 +3,18 @@ Contributors: minimus
 Donate link: https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.com
 Tags: ad, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, yahoo, ypn
 Requires at least: 3.5
-Tested up to: 3.7.1
-Stable tag: 1.8.70-SE
+Tested up to: 3.8
+Stable tag: 1.8.71
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 Advertisement rotation system with a flexible logic of displaying advertisements.
 
 == Description ==
 
 Simple Ads Manager is easy to use plugin providing a flexible logic of displaying advertisements.
+
+[![endorse](https://api.coderwall.com/minimus/endorsecount.png)](https://coderwall.com/minimus)
 
 = Features =
 * Flexible logic of advertisements rotation based on defined weight of each advertisement in group (Ads Place)
@@ -82,6 +86,15 @@ No questions now...
 
 == Changelog ==
 
+= 1.8.71 =
+* Javascript output of ads (for caching compatibility) is added
+* Custom Taxonomies restrictions are added
+* Building query for SQL request is optimised
+* Admin interface is improved
+* Loading/Selecting banners from Wordpress Media Library is added
+* Updater is fixed and improved
+* Language pack folder is added
+* bbPress support is added
 = 1.7.63 =
 * Some bugs (Ads Block style, Click Tracker) are resolved.
 = 1.7.61 =

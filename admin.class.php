@@ -10,54 +10,43 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     private $listBlock;
     private $eLogPage;
     private $cmsVer;
+    private $settingsTabs;
     private $samPointerOptions = array('places' => true, 'ads' => true, 'zones' => true, 'blocks' => true);
     
     public function __construct() {
       parent::__construct();
 
-      global $wp_version;
+      global $wp_version, $sam_tables_defs;
       
 			if ( function_exists( 'load_plugin_textdomain' ) )
-				load_plugin_textdomain( SAM_DOMAIN, false, basename( SAM_PATH ) );
+				load_plugin_textdomain( SAM_DOMAIN, false, basename( SAM_PATH ) . '/langs/' );
       
       if(!is_dir(SAM_AD_IMG)) mkdir(SAM_AD_IMG);
+
+      $this->settingsTabs = array();
+      $sam_tables_defs = self::getTablesDefs();
 				
       register_activation_hook(SAM_MAIN_FILE, array(&$this, 'onActivate'));
       register_deactivation_hook(SAM_MAIN_FILE, array(&$this, 'onDeactivate'));
+      register_uninstall_hook(SAM_MAIN_FILE, array(&$this, 'onUninstall'));
 
       $options = parent::getSettings(false);
       if(!empty($options['access'])) $access = $options['access'];
       else $access = 'manage_options';
-      /*switch($options) {
-        case 'SuperAdmin':
-          $access = 'manage_network';
-          break;
-        case 'Administrator':
-          $access = 'Plugin menu access by user role';
-          break;
-        case 'Editor':
-          $access = 'edit_others_posts';
-          break;
-        case 'Author':
-          $access = 'publish_posts';
-          break;
-        case 'Contributor':
-          $access = 'edit_posts';
-          break;
-        default:
-          $access = 'manage_options';
-          break;
-      }*/
+      //self::checkCachePlugins();
+
       define('SAM_ACCESS', $access);
       
       add_action('wp_ajax_upload_ad_image', array(&$this, 'uploadHandler'));
-      add_action('wp_ajax_get_strings', array(&$this, 'getStringsHandler'));
-      add_action('wp_ajax_get_combo_data', array(&$this, 'getComboDataHandler'));
       add_action('wp_ajax_close_pointer', array(&$this, 'closePointerHandler'));
-			add_action('admin_init', array(&$this, 'initSettings'));
+      add_action('wp_ajax_get_error', array(&$this, 'getErrorDataHandler'));
 			add_action('admin_menu', array(&$this, 'regAdminPage'));
       add_filter('tiny_mce_version', array(&$this, 'tinyMCEVersion'));
       add_action('init', array(&$this, 'addButtons'));
+      add_action('admin_init', array(&$this, 'checkCachePlugins'));
+      add_action('admin_init', array(&$this, 'checkBbpForum'));
+      add_action('admin_init', array(&$this, 'initSettings'), 11);
+      add_filter('image_size_names_choose', array(&$this, 'sizeNamesChoose'));
       if(version_compare($wp_version, '3.3', '<'))
         add_filter('contextual_help', array(&$this, 'help'), 10, 3);
       
@@ -105,6 +94,90 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       if($settings['deleteFolder'] == 1) {
         if(is_dir(SAM_AD_IMG)) rmdir(SAM_AD_IMG);
       }
+    }
+
+    public function onUninstall() {
+      global $wpdb;
+      $zTable = $wpdb->prefix . "sam_zones";
+      $pTable = $wpdb->prefix . "sam_places";
+      $aTable = $wpdb->prefix . "sam_ads";
+      $bTable = $wpdb->prefix . "sam_blocks";
+
+      delete_option( SAM_OPTIONS_NAME );
+      delete_option('sam_version');
+      delete_option('sam_db_version');
+
+      $sql = 'DROP TABLE IF EXISTS ';
+      $wpdb->query($sql.$zTable);
+      $wpdb->query($sql.$pTable);
+      $wpdb->query($sql.$aTable);
+      $wpdb->query($sql.$bTable);
+
+      if(is_dir(SAM_AD_IMG)) rmdir(SAM_AD_IMG);
+    }
+
+    public function checkCachePlugins() {
+      $w3tc = 'w3-total-cache/w3-total-cache.php';
+      $wpsc = 'wp-super-cache/wp-cache.php';
+      define('SAM_WPSC', is_plugin_active($wpsc));
+      define('SAM_W3TC', is_plugin_active($w3tc));
+    }
+
+    public function checkBbpForum() {
+      $force = ( empty( $this->samOptions ) );
+      $settings = parent::getSettings( $force );
+      $bbp = 'bbpress/bbpress.php';
+      define('SAM_BBP', is_plugin_active($bbp));
+      $settings['bbpActive'] = ( SAM_BBP ) ? 1 : 0;
+      if( ! SAM_BBP ) $settings['bbpEnabled'] = 0;
+      update_option( SAM_OPTIONS_NAME, $settings );
+    }
+
+    public function hideBbpOptions() {
+      $options = parent::getSettings();
+      return !( SAM_BBP && $options['bbpEnabled']);
+    }
+
+    private function getWarningString( $mode = '' ) {
+      if(empty($mode)) return '';
+
+      global $wp_version;
+      $options = parent::getSettings();
+      $classDef = false;
+
+      switch($mode) {
+        case 'cache':
+          if(SAM_W3TC) $text = __('Active W3 Total Cache plugin detected.', SAM_DOMAIN);
+          elseif(SAM_WPSC) $text = __('Active WP Super Cache plugin detected.', SAM_DOMAIN);
+          else $text = '';
+          $classDef = ($options['adShow'] == 'php');
+          break;
+        case 'forum':
+          if(SAM_BBP) $text = __('Active bbPress Forum plugin detected.', SAM_DOMAIN);
+          else $text = '';
+          $classDef = (!$options['bbpEnabled']);
+      }
+
+      if(version_compare($wp_version, '3.8-RC1', '<')) $class = ($classDef) ? 'sam-warning' : 'sam-info';
+      else $class = ($classDef) ? 'sam2-warning' : 'sam2-info';
+
+      return ((!empty($text)) ? "<div class='{$class}'><p>{$text}</p></div>" : '');
+    }
+
+    public function clearCache() {
+      if( SAM_WPSC ) {
+        global $blog_cache_dir, $wp_cache_object_cache;
+        if($wp_cache_object_cache) reset_oc_version();
+        else {
+          prune_super_cache( $blog_cache_dir, true );
+          prune_super_cache( get_supercache_dir(), true );
+        }
+        return __('Cache of WP Super Cache plugin is flushed.', SAM_DOMAIN);
+      } elseif( SAM_W3TC ) {
+        if(function_exists('w3tc_pgcache_flush')) w3tc_pgcache_flush();
+        if(function_exists('w3tc_dbcache_flush')) w3tc_dbcache_flush();
+        return __('Cache of W3 Total Cache plugin is flushed.', SAM_DOMAIN);
+      } else return '';
     }
 
     public function  getPointerOptions($force = false) {
@@ -167,29 +240,306 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       $this->getVersions(true);
     }
+
+    public function getTablesDefs() {
+      $pTableDef = array(
+        'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
+        'name' => array('Type' => "varchar(255)", 'Null' => 'NO', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'description' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'code_before' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'code_after' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'place_size' => array('Type' => "varchar(25)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'place_custom_width' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'place_custom_height' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'patch_img' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'patch_link' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'patch_code' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'patch_adserver' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'patch_dfp' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'patch_source' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'patch_hits' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'trash' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => '')
+      );
+
+      $aTableDef = array(
+        'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
+        'pid' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => ''),
+        'name' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'description' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'code_type' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'code_mode' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '1', 'Extra' => ''),
+        'ad_code' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_img' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_alt' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_title' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_no' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_target' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_swf' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_swf_flashvars' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_swf_params' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_swf_attributes' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'count_clicks' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'view_type' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '1', 'Extra' => ''),
+        'view_pages' => array('Type' => "set('isHome','isSingular','isSingle','isPage','isAttachment','isSearch','is404','isArchive','isTax','isCategory','isTag','isAuthor','isDate','isPostType','isPostTypeArchive')", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'view_id' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_users' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_users_unreg' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_users_reg' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_ad_users' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_view_users' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_users_adv' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_cats' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'view_cats' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_authors' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'view_authors' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_tags' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'view_tags' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_custom' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'view_custom' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_id' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'x_view_id' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_cats' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'x_view_cats' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_authors' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'x_view_authors' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_tags' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'x_view_tags' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_custom' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'x_view_custom' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_schedule' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_start_date' => array('Type' => "date", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'ad_end_date' => array('Type' => "date", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'limit_hits' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'hits_limit' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'limit_clicks' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'clicks_limit' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_hits' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_clicks' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_weight' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '10', 'Extra' => ''),
+        'ad_weight_hits' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'adv_nick' => array('Type' => "varchar(50)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'adv_name' => array('Type' => "varchar(100)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'adv_mail' => array('Type' => "varchar(50)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'cpm' => array('Type' => "decimal(10,2) unsigned", 'Null' => 'YES', 'Key' => '', 'Default' => '0.00', 'Extra' => ''),
+        'cpc' => array('Type' => "decimal(10,2) unsigned", 'Null' => 'YES', 'Key' => '', 'Default' => '0.00', 'Extra' => ''),
+        'per_month' => array('Type' => "decimal(10,2) unsigned", 'Null' => 'YES', 'Key' => '', 'Default' => '0.00', 'Extra' => ''),
+        'trash' => array('Type' => "tinyint(1)", 'Null' => 'NO', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'ad_custom_tax_terms' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'view_custom_tax_terms' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'x_ad_custom_tax_terms' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'x_view_custom_tax_terms' => array('Type' => "text", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => '')
+      );
+
+      $zTableDef = array(
+        'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
+        'name' => array('Type' => "varchar(255)", 'Null' => 'NO', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'description' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'z_default' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_home' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_singular' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_single' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_ct' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_single_ct' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'z_page' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_attachment' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_search' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_404' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_archive' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_tax' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_taxes' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'z_category' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_cats' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'z_tag' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_author' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_authors' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'z_date' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_cts' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => ''),
+        'z_archive_ct' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'trash' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => '')
+      );
+
+      $bTableDef = array(
+        'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
+        'name' => array('Type' => "varchar(255)", 'Null' => 'NO', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'description' => array('Type' => "varchar(255)", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'b_lines' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '2', 'Extra' => ''),
+        'b_cols' => array('Type' => "int(11)", 'Null' => 'YES', 'Key' => '', 'Default' => '2', 'Extra' => ''),
+        'block_data' => array('Type' => "longtext", 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'b_margin' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '5px 5px 5px 5px', 'Extra' => 'str'),
+        'b_padding' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '5px 5px 5px 5px', 'Extra' => 'str'),
+        'b_background' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '#FFFFFF', 'Extra' => 'str'),
+        'b_border' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '0px solid #333333', 'Extra' => 'str'),
+        'i_margin' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '5px 5px 5px 5px', 'Extra' => 'str'),
+        'i_padding' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '5px 5px 5px 5px', 'Extra' => 'str'),
+        'i_background' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '#FFFFFF', 'Extra' => 'str'),
+        'i_border' => array('Type' => "varchar(30)", 'Null' => 'YES', 'Key' => '', 'Default' => '0px solid #333333', 'Extra' => 'str'),
+        'trash' => array('Type' => "tinyint(1)", 'Null' => 'YES', 'Key' => '', 'Default' => '0', 'Extra' => '')
+      );
+
+      $sTableDef = array(
+        'id' => array('Type' => 'int(10) unsigned', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'pid' => array('Type' => 'int(10) unsigned', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'event_time' => array('Type' => 'datetime', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'event_type' => array('Type' => 'tinyint(1)', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => '')
+      );
+
+      return array(
+        'places' => $pTableDef,
+        'ads' => $aTableDef,
+        'zones' => $zTableDef,
+        'blocks' => $bTableDef,
+        'stats' => $sTableDef
+      );
+    }
+
+    private function getColumnsModels() {
+      return array(
+        'comboGrid' => array(
+          array('columnName' => 'id', 'width' => '15', 'hidden' => true, 'align' => 'right', 'label' => 'Id'),
+          array('columnName' => 'title', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser Name', SAM_DOMAIN)),
+          array('columnName' => 'slug', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser Nick', SAM_DOMAIN)),
+          array('columnName' => 'email', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser e-mail', SAM_DOMAIN))
+        ),
+        'cats' => array(
+          array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+          array('field' => 'title', 'caption' => __("Category Title", SAM_DOMAIN), 'size' => '50%'),
+          array('field' => 'slug', 'caption' => __("Category Slug", SAM_DOMAIN), 'size' => '40%')
+        ),
+        'authors' => array(
+          array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+          array('field' => 'title', 'caption' => __("Display Name", SAM_DOMAIN), 'size' => '50%'),
+          array('field' => 'slug', 'caption' => __("User Name", SAM_DOMAIN), 'size' => '40%')
+        ),
+        'tags' => array(
+          array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+          array('field' => 'title', 'caption' => __("Tag Title", SAM_DOMAIN), 'size' => '50%'),
+          array('field' => 'slug', 'caption' => __("Tag Slug", SAM_DOMAIN), 'size' => '40%')
+        ),
+        'customs' => array(
+          array('field' => 'title', 'caption' => __("Custom Type Title", SAM_DOMAIN), 'size' => '50%'),
+          array('field' => 'slug', 'caption' => __("Custom Type Slug", SAM_DOMAIN), 'size' => '50%')
+        ),
+        'posts' => array(
+          array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+          array('field' => 'title', 'caption' => __("Publication Title", SAM_DOMAIN), 'size' => '50%'),
+          array('field' => 'type', 'caption' => __("Publication Type", SAM_DOMAIN), 'size' => '40%')
+        ),
+        'users' => array(
+          array('field' => 'id', 'caption' => 'ID', 'size' => '40px'),
+          array('field' => 'title', 'caption' => __("Display Name", SAM_DOMAIN), 'size' => '40%'),
+          array('field' => 'slug', 'caption' => __("User Name", SAM_DOMAIN), 'size' => '25%'),
+          array('field' => 'role', 'caption' => __("Role", SAM_DOMAIN), 'size' => '25%')
+        ),
+        'customTaxes' => array(
+          array('field' => 'term_id', 'caption' => __('ID', SAM_DOMAIN), 'size' => '30px'),
+          array('field' => 'name', 'caption' => __('Term Name', SAM_DOMAIN), 'size' => '50%'),
+          array('field' => 'ctax_name', 'caption' => __('Custom Taxonomy Name', SAM_DOMAIN), 'size' => '40%')
+        )
+      );
+    }
+
+    public function sizeNamesChoose() {
+      return array('full' => __('Full Size'));
+    }
+
+    private function getGridsData() {
+      global $wpdb, $wp_taxonomies;
+
+      $tTable = $wpdb->prefix . "terms";
+      $ttTable = $wpdb->prefix . "term_taxonomy";
+
+      //Custom Post Types
+      $args = array('public' => true, '_builtin' => false);
+      $output = 'objects';
+      $operator = 'and';
+      $post_types = get_post_types($args, $output, $operator);
+      $customs = array();
+      $sCustoms = array();
+
+      foreach($post_types as $post_type) {
+        array_push($customs, array('title' => $post_type->labels->name, 'slug' => $post_type->name));
+        array_push($sCustoms, $post_type->name);
+      }
+      $k = 0;
+      foreach($customs as &$val) {
+        $k++;
+        $val['recid'] = $k;
+      }
+      if(!empty($sCustoms)) $custs = ',' . implode(',', $sCustoms);
+      else $custs = '';
+
+      // Custom Taxonomies Terms
+      $sql = "SELECT wt.term_id, wt.name, wt.slug, wtt.taxonomy
+              FROM $tTable wt
+              INNER JOIN $ttTable wtt
+              ON wt.term_id = wtt.term_id
+              WHERE NOT FIND_IN_SET(wtt.taxonomy, 'category,post_tag,nav_menu,link_category,post_format');";
+
+      $cTax = $wpdb->get_results($sql, ARRAY_A);
+      $k = 0;
+      foreach($cTax as &$val) {
+        if(isset($wp_taxonomies[$val['taxonomy']])) $val['ctax_name'] = urldecode($wp_taxonomies[$val['taxonomy']]->labels->name);
+        else $val['ctax_name'] = '';
+        $k++;
+        $val['recid'] = $k;
+      }
+
+      return array(
+        'customs' => $customs,
+        'custList' => $custs,
+        'cTax' => $cTax
+      );
+    }
+
+    public function starSettingsTab( $section, $uri, $name ) {
+      $this->settingsTabs[$section] = array('start_tab' => true, 'uri' => $uri, 'name' => $name);
+    }
+
+    public function finishSettingsTab( $section ) {
+      $this->settingsTabs[$section]['finish_tab'] = true;
+    }
 		
 		public function initSettings() {
-			register_setting('samOptions', SAM_OPTIONS_NAME);
+			$scStr = __("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site. Shotcode <code>[month]</code> will be replaced with name of month of reporting period.", SAM_DOMAIN);
+
+      register_setting('samOptions', SAM_OPTIONS_NAME);
+
+      self::starSettingsTab("sam_general_section", 'tabs-1', __('General', SAM_DOMAIN));
       add_settings_section("sam_general_section", __("General Settings", SAM_DOMAIN), array(&$this, "drawGeneralSection"), 'sam-settings');
-      add_settings_section("sam_single_section", __("Auto Inserting Settings", SAM_DOMAIN), array(&$this, "drawSingleSection"), 'sam-settings');
       add_settings_section("sam_ext_section", __('Extended Options', SAM_DOMAIN), array(&$this, 'drawExtSection'), 'sam-settings');
-      add_settings_section("sam_dfp_section", __("Google DFP Settings", SAM_DOMAIN), array(&$this, "drawDFPSection"), 'sam-settings');
-      add_settings_section("sam_statistic_section", __("Statistics Settings", SAM_DOMAIN), array(&$this, "drawStatisticsSection"), 'sam-settings');
       add_settings_section("sam_layout_section", __("Admin Layout", SAM_DOMAIN), array(&$this, "drawLayoutSection"), 'sam-settings');
-			add_settings_section("sam_deactivate_section", __("Plugin Deactivating", SAM_DOMAIN), array(&$this, "drawDeactivateSection"), 'sam-settings');
+      add_settings_section("sam_deactivate_section", __("Plugin Deactivating", SAM_DOMAIN), array(&$this, "drawDeactivateSection"), 'sam-settings');
+      self::finishSettingsTab('sam_deactivate_section');
+      self::starSettingsTab('sam_single_section', 'tabs-2', __('Auto Inserting', SAM_DOMAIN));
+      add_settings_section("sam_single_section", __("Auto Inserting Settings", SAM_DOMAIN), array(&$this, "drawSingleSection"), 'sam-settings');
+      self::finishSettingsTab('sam_single_section');
+      self::starSettingsTab('sam_dfp_section', 'tabs-3', __('Google', SAM_DOMAIN));
+      add_settings_section("sam_dfp_section", __("Google DFP Settings", SAM_DOMAIN), array(&$this, "drawDFPSection"), 'sam-settings');
+      self::finishSettingsTab('sam_dfp_section');
+      self::starSettingsTab('sam_statistic_section', 'tabs-4', __('Tools', SAM_DOMAIN));
+      add_settings_section("sam_statistic_section", __("Statistics Settings", SAM_DOMAIN), array(&$this, "drawStatisticsSection"), 'sam-settings');
+      add_settings_section('sam_mailer_section', __('Mailing System', SAM_DOMAIN), array(&$this, 'drawMailerSection'), 'sam-settings');
+      self::finishSettingsTab('sam_mailer_section');
 			
       add_settings_field('adCycle', __("Views per Cycle", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_general_section', array('description' => __('Number of hits of one ad for a full cycle of rotation (maximal activity).', SAM_DOMAIN)));
       add_settings_field('access', __('Minimum Level for access to menu', SAM_DOMAIN), array(&$this, 'drawJSliderOption'), 'sam-settings', 'sam_general_section', array('description' => __('Who can use menu of plugin - Minimum User Level needed for access to menu of plugin. In any case only Super Admin and Administrator can use Settings Menu of SAM Plugin.', SAM_DOMAIN), 'options' => array('manage_network' => __('Super Admin', SAM_DOMAIN), 'manage_options' => __('Administrator', SAM_DOMAIN), 'edit_others_posts' => __('Editor', SAM_DOMAIN), 'publish_posts' => __('Author', SAM_DOMAIN), 'edit_posts' => __('Contributor', SAM_DOMAIN)), 'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')));
+      add_settings_field('adShow', __("Ad Output Mode", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Standard (PHP) mode is more faster but is not compatible with caching plugins. If your blog use caching plugin (i.e WP Super Cache or W3 Total Cache) select "Caching Compatible (Javascript)" mode. Due to the confusion around "mfunc" in caching plugins, I decided to refrain from development of special support of these plugins.', SAM_DOMAIN), 'options' => array('php' => __('Standard (PHP)', SAM_DOMAIN), 'js' => __('Caching Compatible (Javascript)', SAM_DOMAIN)), 'warning' => 'cache'));
       add_settings_field('adDisplay', __("Display Ad Source in", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Target wintow (tab) for advetisement source.', SAM_DOMAIN), 'options' => array('blank' => __('New Window (Tab)', SAM_DOMAIN), 'self' => __('Current Window (Tab)', SAM_DOMAIN))));
+      add_settings_field('bbpEnabled', __('Allow displaying ads on bbPress forum pages', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_general_section', array('label_for' => 'bbpEnabled', 'checkbox' => true, 'warning' => 'forum', 'enabled' => ( (defined('SAM_BBP')) ? SAM_BBP  : false )));
       
       add_settings_field('bpAdsId', __("Ads Place before content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
       add_settings_field('beforePost', __("Allow Ads Place auto inserting before post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'beforePost', 'checkbox' => true));
+      add_settings_field('bpExcerpt', __('Allow Ads Place auto inserting before post/page or post/page excerpt in the loop', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bpExcerpt', 'checkbox' => true));
+      add_settings_field('bbpBeforePost', __("Allow Ads Place auto inserting before bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpBeforePost', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
+      add_settings_field('bbpList', __("Allow Ads Place auto inserting into bbPress Forum forums/topics lists", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpList', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
       add_settings_field('bpUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bpUseCodes', 'checkbox' => true));
       add_settings_field('mpAdsId', __("Ads Place in the middle of content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
       add_settings_field('middlePost', __("Allow Ads Place auto inserting into the middle of post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'middlePost', 'checkbox' => true));
+      add_settings_field('bbpMiddlePost', __("Allow Ads Place auto inserting into the middle of bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpMiddlePost', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
       add_settings_field('mpUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'mpUseCodes', 'checkbox' => true));
       add_settings_field('apAdsId', __("Ads Place after content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
       add_settings_field('afterPost', __("Allow Ads Place auto inserting after post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'afterPost', 'checkbox' => true));
+      add_settings_field('bbpAfterPost', __("Allow Ads Place auto inserting after bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpAfterPost', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
       add_settings_field('apUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'apUseCodes', 'checkbox' => true));
 
       add_settings_field('useSWF', __('I use (plan to use) my own flash (SWF) banners. In other words, allow loading the script "SWFObject" on the pages of the blog.', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_ext_section', array('label_for' => 'useSWF', 'checkbox' => true));
@@ -197,7 +547,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_settings_field('errorlogFS', __('Turn on/off the error log for Face Side.', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_ext_section', array('label_for' => 'errorlogFS', 'checkbox' => true));
 
       add_settings_field('useDFP', __("Allow using Google DoubleClick for Publishers (DFP) rotator codes", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_dfp_section', array('label_for' => 'useDFP', 'checkbox' => true));
-      add_settings_field('dfpPub', __("Google DFP Pub Code", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_dfp_section', array('description' => __('Your Google DFP Pub code. i.e:', SAM_DOMAIN).' ca-pub-0000000000000000.', 'width' => 200));
+      add_settings_field('dfpPub', __("Google DFP Pub Code", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_dfp_section', array('description' => __('Your Google DFP Pub code. i.e:', SAM_DOMAIN).' ca-pub-0000000000000000.', 'width' => '200px'));
       
       add_settings_field('detectBots', __("Allow Bots and Crawlers detection", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_statistic_section', array('label_for' => 'detectBots', 'checkbox' => true));
       add_settings_field('detectingMode', __("Accuracy of Bots and Crawlers Detection", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_statistic_section', array('description' => __("If bot is detected hits of ads won't be counted. Use with caution! More exact detection requires more server resources.", SAM_DOMAIN), 'options' => array( 'inexact' => __('Inexact detection', SAM_DOMAIN), 'exact' => __('Exact detection', SAM_DOMAIN), 'more' => __('More exact detection', SAM_DOMAIN))));
@@ -210,6 +560,14 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_settings_field('deleteOptions', __("Delete plugin options during deactivating plugin", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_deactivate_section', array('label_for' => 'deleteOptions', 'checkbox' => true));
 			add_settings_field('deleteDB', __("Delete database tables of plugin during deactivating plugin", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_deactivate_section', array('label_for' => 'deleteDB', 'checkbox' => true));
       add_settings_field('deleteFolder', __("Delete custom images folder of plugin during deactivating plugin", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_deactivate_section', array('label_for' => 'deleteFolder', 'checkbox' => true));
+
+      add_settings_field('mailer', __('Allow SAM Mailing System to send statistical data to advertisers', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_mailer_section', array('label_for' => 'mailer', 'checkbox' => true));
+      add_settings_field('mail_subject', __('Mail Subject', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Mail subject of sending email.', SAM_DOMAIN), 'width' => '70%'));
+      add_settings_field('mail_greeting', __('Mail Greeting String', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Greeting string of sending email.', SAM_DOMAIN).' '.$scStr, 'width' => '70%'));
+      add_settings_field('mail_text_before', __('Mail Text before statistical data table', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Some text before statistical data table of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '75px'));
+      add_settings_field('mail_text_after', __('Mail Text after statistical data table', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Some text after statistical data table of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '75px'));
+      add_settings_field('mail_warning', __('Mail Warning 1', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('This text will be placed at the end of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '50px'));
+      add_settings_field('mail_message', __('Mail Warning 2', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('This text will be placed at the very end of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '50px'));
       
       register_setting('sam-settings', SAM_OPTIONS_NAME, array(&$this, 'sanitizeSettings'));
 		}
@@ -219,26 +577,16 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       $menuPage = add_object_page(__('Ads', SAM_DOMAIN), __('Ads', SAM_DOMAIN), SAM_ACCESS, 'sam-list', array(&$this, 'samTablePage'), WP_PLUGIN_URL.'/simple-ads-manager/images/sam-icon.png');
 			$this->listPage = add_submenu_page('sam-list', __('Ads List', SAM_DOMAIN), __('Ads Places', SAM_DOMAIN), SAM_ACCESS, 'sam-list', array(&$this, 'samTablePage'));
-			add_action('admin_print_styles-'.$this->listPage, array(&$this, 'adminListStyles'));
-      $this->editPage = add_submenu_page('sam-list', __('Ad Editor', SAM_DOMAIN), __('New Place', SAM_DOMAIN), SAM_ACCESS, 'sam-edit', array(&$this, 'samEditPage'));
-      add_action('admin_print_styles-'.$this->editPage, array(&$this, 'adminEditStyles'));
-      add_action('admin_print_scripts-'.$this->editPage, array(&$this, 'adminEditScripts'));
+			$this->editPage = add_submenu_page('sam-list', __('Ad Editor', SAM_DOMAIN), __('New Place', SAM_DOMAIN), SAM_ACCESS, 'sam-edit', array(&$this, 'samEditPage'));
       $this->listZone = add_submenu_page('sam-list', __('Ads Zones List', SAM_DOMAIN), __('Ads Zones', SAM_DOMAIN), SAM_ACCESS, 'sam-zone-list', array(&$this, 'samZoneListPage'));
-      add_action('admin_print_styles-'.$this->listZone, array(&$this, 'adminListStyles'));
       $this->editZone = add_submenu_page('sam-list', __('Ads Zone Editor', SAM_DOMAIN), __('New Zone', SAM_DOMAIN), SAM_ACCESS, 'sam-zone-edit', array(&$this, 'samZoneEditPage'));
-      add_action('admin_print_styles-'.$this->editZone, array(&$this, 'adminEditStyles'));
-      add_action('admin_print_scripts-'.$this->editZone, array(&$this, 'adminEditZBScripts'));
       $this->listBlock = add_submenu_page('sam-list', __('Ads Blocks List', SAM_DOMAIN), __('Ads Blocks', SAM_DOMAIN), SAM_ACCESS, 'sam-block-list', array(&$this, 'samBlockListPage'));
-      add_action('admin_print_styles-'.$this->listBlock, array(&$this, 'adminListStyles'));
       $this->editBlock = add_submenu_page('sam-list', __('Ads Block Editor', SAM_DOMAIN), __('New Block', SAM_DOMAIN), SAM_ACCESS, 'sam-block-edit', array(&$this, 'samBlockEditPage'));
-      add_action('admin_print_styles-'.$this->editBlock, array(&$this, 'adminEditStyles'));
-      add_action('admin_print_scripts-'.$this->editBlock, array(&$this, 'adminEditZBScripts'));
-			$this->settingsPage = add_submenu_page('sam-list', __('Simple Ads Manager Settings', SAM_DOMAIN), __('Settings', SAM_DOMAIN), 'manage_options', 'sam-settings', array(&$this, 'samAdminPage'));
-      add_action('admin_print_styles-'.$this->settingsPage, array(&$this, 'adminSettingsStyles'));
-      add_action('admin_print_scripts-'.$this->settingsPage, array(&$this, 'adminSettingsScripts'));
+      $this->settingsPage = add_submenu_page('sam-list', __('Simple Ads Manager Settings', SAM_DOMAIN), __('Settings', SAM_DOMAIN), 'manage_options', 'sam-settings', array(&$this, 'samAdminPage'));
       $this->eLogPage = add_submenu_page('sam-list', __('Simple Ads Manager Error Log', SAM_DOMAIN), __('Error Log', SAM_DOMAIN), SAM_ACCESS, 'sam-errors', array(&$this, 'samErrorLog'));
-      add_action('admin_print_styles-'.$this->eLogPage, array(&$this, 'adminListStyles'));
-      add_action('admin_print_scripts-'.$this->eLogPage, array(&$this, 'errorsListScripts'));
+
+      add_action('admin_enqueue_scripts', array(&$this, 'loadScripts'));
+
       if(version_compare($wp_version, '3.3', '>=')) {
         add_action('load-'.$this->listPage, array(&$this, 'samHelp'));
         add_action('load-'.$this->editPage, array(&$this, 'samHelp'));
@@ -274,157 +622,234 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       return $help->help($contextualHelp, $screenId, $screen);
     }
-    
-    public function adminEditStyles() {
-      wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
-      wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui.css', false, '1.10.3');
-      wp_enqueue_style('ColorPickerCSS', SAM_URL.'css/colorpicker.css');
-      wp_enqueue_style('slick', SAM_URL.'css/slick.grid.css', false, '2.0');
-      wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.2');
-      wp_enqueue_style('wp-pointer');
-      wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
-    }
-    
-    public function adminSettingsStyles() {
-      wp_enqueue_style('adminSettingsLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
-      //wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui-1.8.9.custom.css', false, '1.8.9');
-      wp_enqueue_style('jSlider', SAM_URL.'css/jslider.css', false, '1.1.0');
-      wp_enqueue_style('jSlider-plastic', SAM_URL.'css/jslider.round.plastic.css', false, '1.1.0');
-    }
-    
-    public function adminListStyles() {
-      wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-admin-list.css', false, SAM_VERSION);
-      wp_enqueue_style('jquery-ui-css', SAM_URL.'css/jquery-ui.css', false, '1.10.3');
-    }
-    
-    public function adminEditScripts() {
-      $options = parent::getSettings();
-      $pointers = self::getPointerOptions();
-      $loc = get_locale();
-      if(in_array($loc, array('en_GB', 'fr_CH', 'pt_BR', 'sr_SR', 'zh_CN', 'zh_HK', 'zh_TW')))
-        $lc = str_replace('_', '-', $loc);
-      else $lc = substr($loc, 0, 2);
 
-      if($this->cmsVer === 'low') {
-        wp_register_script('jquery-effects-core', SAM_URL.'js/jquery.effects.core.min.js', array('jquery'), '1.8.16');
-        wp_register_script('jquery-effects-blind', SAM_URL.'js/jquery.effects.blind.min.js', array('jquery', 'jquery-effects-core'), '1.8.16');
+    public function loadScripts($hook) {
+      global $wp_version;
+      $jqCSS = (version_compare($wp_version, '3.8-RC1', '<')) ? SAM_URL.'css/jquery-ui-sam.css' : SAM_URL.'css/jquery-ui-wp38.css';
+
+      if($hook == $this->settingsPage) {
+        wp_enqueue_style('adminSettingsLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
+        wp_enqueue_style('jSlider', SAM_URL.'css/jslider.css', false, '1.1.0');
+        wp_enqueue_style('jSlider-plastic', SAM_URL.'css/jslider.round.plastic.css', false, '1.1.0');
+        wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
+        wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
+
+        wp_enqueue_script('jquery');
+        wp_enqueue_script('jquery-ui-core');
+        wp_enqueue_script('jquery-effects-core');
+        wp_enqueue_script('jquery-effects-blind');
+        wp_enqueue_script('jquery-ui-widget');
+        wp_enqueue_script('jquery-ui-tabs');
+        wp_enqueue_script('hash-table', SAM_URL.'js/slider/jshashtable-2.1_src.js', array('jquery'), '2.1');
+        wp_enqueue_script('number-formatter', SAM_URL.'js/slider/jquery.numberformatter-1.2.3.js', array('jquery'), '1.2.3');
+        wp_enqueue_script('templates', SAM_URL.'js/slider/tmpl.js', array('jquery'));
+        wp_enqueue_script('depend-class', SAM_URL.'js/slider/jquery.dependClass-0.1.js', array('jquery'), '0.1');
+        wp_enqueue_script('draggable', SAM_URL.'js/slider/draggable-0.1.js', array('jquery'), '0.1');
+        wp_enqueue_script('jSlider', SAM_URL.'js/slider/jquery.slider.js', array('jquery', 'draggable'), '1.1.0');
+
+        wp_enqueue_script('sam-settings', SAM_URL.'js/sam-settings.min.js', array('jquery', 'draggable'), SAM_VERSION);
+        wp_localize_script('sam-settings', 'options', array(
+          'roles' => array(
+            __('Super Admin', SAM_DOMAIN),
+            __('Administrator', SAM_DOMAIN),
+            __('Editor', SAM_DOMAIN),
+            __('Author', SAM_DOMAIN),
+            __('Contributor', SAM_DOMAIN)
+          ),
+          'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')
+        ));
       }
+      elseif($hook == $this->listPage || $hook == $this->listZone || $hook == $this->listBlock) {
+        wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-admin-list.css', false, SAM_VERSION);
+        wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
+      }
+      elseif($hook == $this->editPage) {
+        $mode = (isset($_GET['mode'])) ? $_GET['mode'] : 'place';
+        $pointers = self::getPointerOptions();
+        if($mode == 'place') {
+          wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
+          wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
+          wp_enqueue_style('wp-pointer');
+          wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
+          wp_enqueue_style('W2UI', SAM_URL . 'css/w2ui.min.css', false, '1.3');
 
-      if($options['useSWF']) wp_enqueue_script('swfobject');
-      wp_enqueue_script('jquery');
-      wp_enqueue_script('jquery-ui-core');
-      wp_enqueue_script('jquery-effects-core');
-      //wp_enqueue_script('jquery-ui-mouse');
-      wp_enqueue_script('jquery-ui-widget');
-      wp_enqueue_script('jquery-ui-sortable');
-      wp_enqueue_script('jquery-ui-position');
-      //wp_enqueue_script('jquery-ui-autocomplete');
-      wp_enqueue_script('jquery-ui-tabs');
-      wp_enqueue_script('jquery-effects-blind');
-      wp_enqueue_script('jquery-ui-datepicker');
-      wp_enqueue_script('jquery-ui-tooltip');
-      /*wp_enqueue_script('jquery-ui', SAM_URL.'js/jquery-ui-1.8.9.custom.min.js', array('jquery'), '1.8.9');*/
-      if(file_exists(SAM_PATH.'/js/i18n/jquery.ui.datepicker-'.$lc.'.js'))
-        wp_enqueue_script('jquery-ui-locale', SAM_URL.'js/i18n/jquery.ui.datepicker-'.$lc.'.js', array('jquery'), '1.8.9');
-      wp_enqueue_script('ColorPicker', SAM_URL.'js/colorpicker.js', array('jquery'));
-      wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
+          if($this->cmsVer === 'low') {
+            wp_register_script('jquery-effects-core', SAM_URL.'js/jquery.effects.core.min.js', array('jquery'), '1.8.16');
+            wp_register_script('jquery-effects-blind', SAM_URL.'js/jquery.effects.blind.min.js', array('jquery', 'jquery-effects-core'), '1.8.16');
+          }
 
-      wp_enqueue_script('jquery-event-drag', SAM_URL.'js/slick/jquery.event.drag-2.0.min.js', array('jquery'), '2.0');
-      wp_enqueue_script('slick-core', SAM_URL.'js/slick/slick.core.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-checkboxes', SAM_URL.'js/slick/slick.checkboxselectcolumn.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-tooltips', SAM_URL.'js/slick/slick.autotooltips.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-cell-rd', SAM_URL.'js/slick/slick.cellrangedecorator.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-cell-rs', SAM_URL.'js/slick/slick.cellrangeselector.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-cell-cm', SAM_URL.'js/slick/slick.cellcopymanager.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-cell-sm', SAM_URL.'js/slick/slick.cellselectionmodel.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-row-sm', SAM_URL.'js/slick/slick.rowselectionmodel.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-formatters', SAM_URL.'js/slick/slick.formatters.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-editors', SAM_URL.'js/slick/slick.editors.js', array('jquery', 'jquery-ui-core'), '2.0');
-      wp_enqueue_script('slick-grid', SAM_URL.'js/slick/slick.grid.js', array('jquery', 'jquery-ui-core'), '2.0');
+          wp_enqueue_script('jquery');
+          wp_enqueue_media( array('post' => 999999) );
+          wp_enqueue_script('jquery-ui-core');
+          wp_enqueue_script('jquery-effects-core');
+          wp_enqueue_script('jquery-ui-widget');
+          wp_enqueue_script('jquery-ui-sortable');
+          wp_enqueue_script('jquery-ui-position');
+          wp_enqueue_script('jquery-ui-tabs');
+          wp_enqueue_script('jquery-effects-blind');
+          wp_enqueue_script('jquery-ui-tooltip');
+          wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
+          wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.3');
 
-      //wp_enqueue_script('cg-props', SAM_URL.'js/jquery.i18n.properties-1.0.9.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), '1.0.9');
-      wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.3.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.2');
+          wp_enqueue_script('flot', SAM_URL.'js/jquery.flot.min.js', array('jquery'), '0.8.1');
+          wp_enqueue_script('flotCategories', SAM_URL.'js/jquery.flot.categories.min.js', array('jquery'), '0.8.1');
+          wp_enqueue_script('flotResize', SAM_URL.'js/jquery.flot.resize.min.js', array('jquery'), '0.8.1');
 
-      wp_enqueue_script('wp-pointer');
-      wp_localize_script('wp-pointer', 'samPointer', array(
-        'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
-        'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
-        'zones' => array('enabled' => $pointers['zones'], 'title' => __('Name of Ads Zone', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
-        'blocks' => array('enabled' => $pointers['blocks'], 'title' => __('Name of Ads Block', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use plugin\'s widgets.', SAM_DOMAIN))
-      ));
-      wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
-    }
+          wp_enqueue_script('wp-pointer');
+          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-place.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+          wp_localize_script('adminEditScript', 'samEditorOptions', array(
+            'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
+            'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
+            'media' => array('title' => __('Select Banner Image', SAM_DOMAIN), 'button' => __('Select', SAM_DOMAIN)),
 
-    public function adminEditZBScripts() {
-      $pointers = self::getPointerOptions();
+            'samStatsUrl' => SAM_URL . 'sam-ajax-admin-stats.php',
+            'options' => array(
+              'uploading' => __('Uploading', SAM_DOMAIN).' ...',
+              'uploaded' => __('Uploaded.', SAM_DOMAIN),
+              'status' => __('Only JPG, PNG or GIF files are allowed', SAM_DOMAIN),
+              'file' => __('File', SAM_DOMAIN),
+              'path' => SAM_AD_IMG,
+              'url' => SAM_AD_URL
+            ),
+            'labels' => array('hits' => __('Hits', SAM_DOMAIN), 'clicks' => __('Clicks', SAM_DOMAIN)),
+            'columns' => array(
+              array('field' => 'id', 'caption' => 'ID', 'size' => '40px', 'render' => 'int'),
+              array('field' => 'name', 'caption' => __("Name", SAM_DOMAIN), 'size' => '40%'),
+              array('field' => 'ad_hits', 'caption' => __("Hits", SAM_DOMAIN), 'size' => '10%', 'render' => 'int'),
+              array('field' => 'ad_clicks', 'caption' => __('Clicks', SAM_DOMAIN), 'size' => '10%', 'render' => 'int'),
+              array('field' => 'e_cpm', 'caption' => 'CPM', 'size' => '10%', 'render' => 'float:2'),
+              array('field' => 'e_cpc', 'caption' => 'CPC', 'size' => '10%', 'render' => 'float:2'),
+              array('field' => 'e_ctr', 'caption' => 'CTR', 'size' => '10%', 'render' => 'percent')
+            )
+          ));
+        }
+        if($mode == 'item') {
+          wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
+          wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
+          wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.3');
+          wp_enqueue_style('wp-pointer');
+          wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
+          wp_enqueue_style('W2UI', SAM_URL . 'css/w2ui.min.css', false, '1.3');
 
-      wp_enqueue_script('jquery');
-      wp_enqueue_script('jquery-ui-core');
-      wp_enqueue_script('jquery-effects-core');
-      wp_enqueue_script('jquery-ui-widget');
-      wp_enqueue_script('jquery-ui-sortable');
-      wp_enqueue_script('jquery-ui-position');
-      wp_enqueue_script('jquery-effects-blind');
-      wp_enqueue_script('jquery-ui-tooltip');
+          $options = parent::getSettings();
+          $loc = get_locale();
+          if(in_array($loc, array('en_GB', 'fr_CH', 'pt_BR', 'sr_SR', 'zh_CN', 'zh_HK', 'zh_TW')))
+            $lc = str_replace('_', '-', $loc);
+          else $lc = substr($loc, 0, 2);
 
-      wp_enqueue_script('wp-pointer');
-      wp_localize_script('wp-pointer', 'samPointer', array(
-        'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
-        'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
-        'zones' => array('enabled' => $pointers['zones'], 'title' => __('Name of Ads Zone', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
-        'blocks' => array('enabled' => $pointers['blocks'], 'title' => __('Name of Ads Block', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use plugin\'s widgets.', SAM_DOMAIN))
-      ));
-      wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-zb.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
-    }
+          if($this->cmsVer === 'low') {
+            wp_register_script('jquery-effects-core', SAM_URL.'js/jquery.effects.core.min.js', array('jquery'), '1.8.16');
+            wp_register_script('jquery-effects-blind', SAM_URL.'js/jquery.effects.blind.min.js', array('jquery', 'jquery-effects-core'), '1.8.16');
+          }
 
-    public function errorsListScripts() {
-      wp_enqueue_script('jquery');
-      wp_enqueue_script('jquery-ui-core');
-      wp_enqueue_script('jquery-ui-widget');
-      wp_enqueue_script('jquery-ui-button');
-      wp_enqueue_script('jquery-ui-draggable');
-      wp_enqueue_script('jquery-ui-mouse');
-      wp_enqueue_script('jquery-ui-position');
-      wp_enqueue_script('jquery-ui-resizable');
-      wp_enqueue_script('jquery-ui-dialog');
-      wp_enqueue_script('errorsListScript', SAM_URL.'js/sam-errors-list.js', array('jquery', 'jquery-ui-core'), SAM_VERSION);
-      wp_localize_script('errorsListScript', 'options', array(
-        'id' => __('Error ID', SAM_DOMAIN),
-        'date' => __('Error Date', SAM_DOMAIN),
-        'table' => __('Table', SAM_DOMAIN),
-        'msg' => __('Error Message', SAM_DOMAIN),
-        'sql' => __('Error SQL', SAM_DOMAIN),
-        'etype' => __('Type', SAM_DOMAIN),
-        'close' => __('Close', SAM_DOMAIN),
-        'imgURL' => SAM_IMG_URL,
-        'alts' => array(__('Warning', SAM_DOMAIN), __('Ok', SAM_DOMAIN))
-      ));
-    }
+          if($options['useSWF']) wp_enqueue_script('swfobject');
+          wp_enqueue_script('jquery');
+          wp_enqueue_media();
+          wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.3');
+          wp_enqueue_script('jquery-ui-core');
+          wp_enqueue_script('jquery-effects-core');
+          //wp_enqueue_script('jquery-ui-mouse');
+          wp_enqueue_script('jquery-ui-widget');
+          wp_enqueue_script('jquery-ui-sortable');
+          wp_enqueue_script('jquery-ui-position');
+          //wp_enqueue_script('jquery-ui-autocomplete');
+          wp_enqueue_script('jquery-ui-tabs');
+          wp_enqueue_script('jquery-effects-blind');
+          wp_enqueue_script('jquery-ui-datepicker');
+          wp_enqueue_script('jquery-ui-tooltip');
+          if(file_exists(SAM_PATH.'/js/i18n/jquery.ui.datepicker-'.$lc.'.js'))
+            wp_enqueue_script('jquery-ui-locale', SAM_URL.'js/i18n/jquery.ui.datepicker-'.$lc.'.js', array('jquery'), '1.8.9');
+          wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
 
-    public function adminSettingsScripts() {
-      wp_enqueue_script('jquery');
-      //wp_enqueue_script('jquery-ui-core');
-      //wp_enqueue_script('jquery-ui-widget');
-      //wp_enqueue_script('jquery-ui-mouse');
-      //wp_enqueue_script('jquery-ui-slider');
-      wp_enqueue_script('hash-table', SAM_URL.'js/slider/jshashtable-2.1_src.js', array('jquery'), '2.1');
-      wp_enqueue_script('number-formatter', SAM_URL.'js/slider/jquery.numberformatter-1.2.3.js', array('jquery'), '1.2.3');
-      wp_enqueue_script('templates', SAM_URL.'js/slider/tmpl.js', array('jquery'));
-      wp_enqueue_script('depend-class', SAM_URL.'js/slider/jquery.dependClass-0.1.js', array('jquery'), '0.1');
-      wp_enqueue_script('draggable', SAM_URL.'js/slider/draggable-0.1.js', array('jquery'), '0.1');
-      wp_enqueue_script('jSlider', SAM_URL.'js/slider/jquery.slider.js', array('jquery', 'draggable'), '1.1.0');
+          //wp_enqueue_script('cg-props', SAM_URL.'js/jquery.i18n.properties-1.0.9.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), '1.0.9');
+          wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.3.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.3');
+          wp_enqueue_script('flot', SAM_URL.'js/jquery.flot.min.js', array('jquery'), '0.8.1');
+          wp_enqueue_script('flotCategories', SAM_URL.'js/jquery.flot.categories.min.js', array('jquery'), '0.8.1');
+          wp_enqueue_script('flotResize', SAM_URL.'js/jquery.flot.resize.min.js', array('jquery'), '0.8.1');
 
-      wp_enqueue_script('sam-settings', SAM_URL.'js/sam-settings.js', array('jquery', 'draggable'), SAM_VERSION);
-      wp_localize_script('sam-settings', 'options', array(
-        'roles' => array(
-          __('Super Admin', SAM_DOMAIN),
-          __('Administrator', SAM_DOMAIN),
-          __('Editor', SAM_DOMAIN),
-          __('Author', SAM_DOMAIN),
-          __('Contributor', SAM_DOMAIN)
-        ),
-        'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')
-      ));
+          wp_enqueue_script('wp-pointer');
+          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+          wp_localize_script('adminEditScript', 'samEditorOptions', array(
+            'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
+            'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
+            'media' => array('title' => __('Select Banner Image', SAM_DOMAIN), 'button' => __('Select', SAM_DOMAIN)),
+            'samAjaxUrl' => SAM_URL . 'sam-ajax-admin.php',
+            'samStatsUrl' => SAM_URL . 'sam-ajax-admin-stats.php',
+            'models' => self::getColumnsModels(),
+            'data' => self::getGridsData(),
+            'strings' => array(
+              'uploading' => __('Uploading', SAM_DOMAIN).' ...',
+              'uploaded' => __('Uploaded.', SAM_DOMAIN),
+              'status' => __('Only JPG, PNG or GIF files are allowed', SAM_DOMAIN),
+              'file' => __('File', SAM_DOMAIN),
+              'path' => SAM_AD_IMG,
+              'url' => SAM_AD_URL,
+              'posts' => __('Post', SAM_DOMAIN),
+              'page' => __('Page', SAM_DOMAIN),
+              'subscriber' => __('Subscriber', SAM_DOMAIN),
+              'contributor' => __('Contributor', SAM_DOMAIN),
+              'author' => __('Author', SAM_DOMAIN),
+              'editor' => __('Editor', SAM_DOMAIN),
+              'admin' => __('Administrator', SAM_DOMAIN),
+              'superAdmin' => __('Super Admin', SAM_DOMAIN),
+              'labels' => array('hits' => __('Hits', SAM_DOMAIN), 'clicks' => __('Clicks', SAM_DOMAIN))
+            )
+          ));
+          //wp_enqueue_script('samMedia', SAM_URL . 'js/sam-media.js', array('jquery'), SAM_VERSION, true);
+        }
+      }
+      elseif($hook == $this->editZone || $hook == $this->editBlock) {
+        $pointers = self::getPointerOptions();
+
+        wp_enqueue_style('adminEditLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
+        wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
+        //wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.2');
+        wp_enqueue_style('wp-pointer');
+        wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
+        //wp_enqueue_style('W2UI', SAM_URL . 'css/w2ui.min.css', false, '1.3');
+
+        wp_enqueue_script('jquery');
+        wp_enqueue_script('jquery-ui-core');
+        wp_enqueue_script('jquery-effects-core');
+        wp_enqueue_script('jquery-ui-widget');
+        wp_enqueue_script('jquery-ui-sortable');
+        wp_enqueue_script('jquery-ui-position');
+        wp_enqueue_script('jquery-effects-blind');
+        wp_enqueue_script('jquery-ui-tooltip');
+
+        wp_enqueue_script('wp-pointer');
+        wp_localize_script('wp-pointer', 'samPointer', array(
+          'zones' => array('enabled' => $pointers['zones'], 'title' => __('Name of Ads Zone', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
+          'blocks' => array('enabled' => $pointers['blocks'], 'title' => __('Name of Ads Block', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use plugin\'s widgets.', SAM_DOMAIN))
+        ));
+        wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-zb.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+      }
+      elseif($hook == $this->eLogPage) {
+        wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-admin-list.css', false, SAM_VERSION);
+        wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
+
+        wp_enqueue_script('jquery');
+        wp_enqueue_script('jquery-ui-core');
+        wp_enqueue_script('jquery-ui-widget');
+        wp_enqueue_script('jquery-ui-button');
+        wp_enqueue_script('jquery-ui-draggable');
+        wp_enqueue_script('jquery-ui-mouse');
+        wp_enqueue_script('jquery-ui-position');
+        wp_enqueue_script('jquery-ui-resizable');
+        wp_enqueue_script('jquery-ui-dialog');
+        wp_enqueue_script('errorsListScript', SAM_URL.'js/sam-errors-list.js', array('jquery', 'jquery-ui-core'), SAM_VERSION);
+        wp_localize_script('errorsListScript', 'options', array(
+          'id' => __('Error ID', SAM_DOMAIN),
+          'date' => __('Error Date', SAM_DOMAIN),
+          'table' => __('Table', SAM_DOMAIN),
+          'msg' => __('Error Message', SAM_DOMAIN),
+          'sql' => __('Error SQL', SAM_DOMAIN),
+          'etype' => __('Type', SAM_DOMAIN),
+          'close' => __('Close', SAM_DOMAIN),
+          'imgURL' => SAM_IMG_URL,
+          'alts' => array(__('Warning', SAM_DOMAIN), __('Ok', SAM_DOMAIN))
+        ));
+      }
     }
 
     public function getCategories($valueType = 'array') {
@@ -433,15 +858,15 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $ttTable = $wpdb->prefix . "term_taxonomy";
       
       $sql = "SELECT
-                $tTable.term_id,
-                $tTable.name,
-                $ttTable.taxonomy
+                wt.term_id,
+                wt.name,
+                wtt.taxonomy
               FROM
-                $tTable
-              INNER JOIN $ttTable
-                ON $tTable.term_id = $ttTable.term_id
+                $tTable wt
+              INNER JOIN $ttTable wtt
+                ON wt.term_id = wtt.term_id
               WHERE
-                $ttTable.taxonomy = 'category'";
+                wtt.taxonomy = 'category'";
                 
       $cats = $wpdb->get_results($sql, ARRAY_A);
       if($valueType == 'array') $output = $cats;
@@ -479,224 +904,62 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       else wp_send_json_error();
     }
 
-    public function getComboDataHandler() {
+    public function getErrorDataHandler() {
       global $wpdb;
-      $uTable = $wpdb->prefix . "users";
-      $page = $_GET['page'];
-      $rows = $_GET['rows'];
-      $searchTerm = $_GET['searchTerm'];
-      $offset = ((int)$page - 1) * (int)$rows;
-
-      $sql = "SELECT
-                $uTable.id,
-                $uTable.display_name AS title,
-                $uTable.user_nicename AS slug,
-                $uTable.user_email AS email
-              FROM
-                $uTable
-              WHERE $uTable.user_nicename LIKE '".$searchTerm."%'
-              ORDER BY $uTable.id
-              LIMIT $offset, $rows;";
-      $users = $wpdb->get_results($sql, ARRAY_A);
-
-      $sql = "SELECT
-      	        COUNT(*)
-              FROM $uTable
-              WHERE $uTable.user_nicename LIKE '".$searchTerm."%';";
-      $rTotal = $wpdb->get_var($wpdb->prepare($sql));
-      $total = ceil((int)$rTotal/(int)$rows);
-
+      $eTable = $wpdb->prefix . 'sam_errors';
       $charset = get_bloginfo('charset');
-
-      header("Content-type: application/json; charset=$charset");
-      exit(json_encode(array(
-        'page' => $page,
-        'records' => count($users),
-        'rows' => $users,
-        'total' => $total,
-        'offset' => $offset
-      )));
-    }
-    
-    public function getStringsHandler() {
-      global $wpdb;
-      $tTable = $wpdb->prefix . "terms";
-      $ttTable = $wpdb->prefix . "term_taxonomy";
-      $uTable = $wpdb->prefix . "users";
-      $umTable = $wpdb->prefix . "usermeta";
-      $postTable = $wpdb->prefix . "posts";
-      
-      $sql = "SELECT $tTable.term_id AS id, $tTable.name AS title, $tTable.slug
-              FROM $tTable
-              INNER JOIN $ttTable
-                ON $tTable.term_id = $ttTable.term_id
-              WHERE $ttTable.taxonomy = 'category'
-              ORDER BY $tTable.name;";
-                
-      $cats = $wpdb->get_results($sql, ARRAY_A);
-      
-      $sql = "SELECT $tTable.term_id AS id, $tTable.name AS title, $tTable.slug
-              FROM $tTable
-              INNER JOIN $ttTable
-                ON $tTable.term_id = $ttTable.term_id
-              WHERE $ttTable.taxonomy = 'post_tag'
-              ORDER BY $tTable.name;";
-                
-      $tags = $wpdb->get_results($sql, ARRAY_A);
-      
-      $sql = "SELECT
-                $uTable.id,
-                $uTable.display_name AS title,
-                $uTable.user_nicename AS slug
-              FROM
-                $uTable
-              INNER JOIN $umTable
-                ON $uTable.id = $umTable.user_id
-              WHERE
-                $umTable.meta_key = 'wp_user_level' AND
-                $umTable.meta_value > 1
-              ORDER BY $uTable.id;";
-                
-      $auth = $wpdb->get_results($sql, ARRAY_A);
-
-      $sql = "SELECT
-                $uTable.id,
-                $uTable.display_name AS title,
-                $uTable.user_nicename AS slug,
-                (CASE $umTable.meta_value
-                  WHEN 0 THEN '".__('Subscriber', SAM_DOMAIN)."'
-                  WHEN 1 THEN '".__('Contributor', SAM_DOMAIN)."'
-                  WHEN 2 THEN '".__('Author', SAM_DOMAIN)."'
-                  ELSE
-                    IF($umTable.meta_value > 2 AND $umTable.meta_value <= 7, '".__('Editor', SAM_DOMAIN)."',
-                      IF($umTable.meta_value > 7 AND $umTable.meta_value <= 10, '".__('Administrator', SAM_DOMAIN)."',
-                        IF($umTable.meta_value > 10, '".__('Super Admin', SAM_DOMAIN)."', NULL)
-                      )
-                    )
-                END) AS role
-              FROM $uTable
-              INNER JOIN $umTable
-                ON $uTable.id = $umTable.user_id AND $umTable.meta_key = 'wp_user_level'
-              ORDER BY $uTable.id;";
-      $users = $wpdb->get_results($sql, ARRAY_A);
-      
-      $args = array('public' => true, '_builtin' => false);
-      $output = 'objects';
-      $operator = 'and';
-      $post_types = get_post_types($args, $output, $operator);
-      $customs = array();
-      $sCustoms = array();
-      
-      foreach($post_types as $post_type) {
-        array_push($customs, array('title' => $post_type->labels->name, 'slug' => $post_type->name));
-        array_push($sCustoms, $post_type->name);
+      $eTypes = array(__('Warning', SAM_DOMAIN), __('Update Error', SAM_DOMAIN), __('Output Error', SAM_DOMAIN));
+      @header("Content-Type: application/json; charset=$charset");
+      if(isset($_REQUEST['id'])) {
+        $id = $_REQUEST['id'];
+        $eSql = "SELECT
+                  se.id,
+                  se.error_date,
+                  UNIX_TIMESTAMP(se.error_date) as date,
+                  se.table_name as name,
+                  se.error_type,
+                  se.error_msg as msg,
+                  se.error_sql as es,
+                  se.resolved
+                FROM $eTable se WHERE se.id = %d";
+        $out = $wpdb->get_row($wpdb->prepare($eSql, $id), ARRAY_A);
+        if(!empty($out['date'])) $out['date'] = date_i18n(get_option('date_format').' '.get_option('time_format'), $out['date']);
+        $out['type'] = $eTypes[$out['error_type']];
+        wp_send_json_success($out);
       }
+      else wp_send_json_error();
+    }
 
-      if(!empty($sCustoms)) $custs = ',' . implode(',', $sCustoms);
-      else $custs = '';
-      
-      $sql = "SELECT
-                $postTable.id,
-                $postTable.post_title AS title,
-                $postTable.post_type AS type
-              FROM
-                $postTable
-              WHERE
-                $postTable.post_status = 'publish' AND
-                FIND_IN_SET($postTable.post_type, 'post,page".$custs."')
-              ORDER BY $postTable.id;";
+    public function settingsTabsHeader( $tabs ) {
+      $out = "<ul>";
 
-      $posts = $wpdb->get_results($sql, ARRAY_A);
-      for($i = 0; $i < sizeof($posts); $i++) {
-        switch($posts[$i]['type']) {
-          case 'post':
-            $posts[$i]['type'] = __('Post', SAM_DOMAIN);
-            break;
-          case 'page':
-            $posts[$i]['type'] = __('Page', SAM_DOMAIN);
-            break;
-          default:
-            $posts[$i]['type'] = __('Post:', SAM_DOMAIN).' '.$posts[$i]['type'];
-            break;
+      foreach($tabs as $tab) {
+        if(isset($tab['uri']) && isset($tab['name'])) {
+          $tabUri = $tab['uri'];
+          $tabName = $tab['name'];
+          $out .= "<li><a href='#{$tabUri}'>{$tabName}</a></li>";
         }
       }
 
-      $output = array(
-        'uploading' => __('Uploading', SAM_DOMAIN).' ...',
-        'uploaded' => __('Uploaded.', SAM_DOMAIN),
-        'status' => __('Only JPG, PNG or GIF files are allowed', SAM_DOMAIN),
-        'file' => __('File', SAM_DOMAIN),
-        'path' => SAM_AD_IMG,
-        'url' => SAM_AD_URL,
-        'cats' => array(
-          'columns' => array(
-            array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
-            array('id' => "title", 'name' => __("Category Title", SAM_DOMAIN), 'field' => "title", 'width' => 500),
-            array('id' => "slug", 'name' => __("Category Slug", SAM_DOMAIN), 'field' => "slug", 'width' => 200)
-          ),
-          'cats' => $cats
-        ),
-        'authors' => array(
-          'columns' => array(
-            array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
-            array('id' => "title", 'name' => __("Display Name", SAM_DOMAIN), 'field' => "title", 'width' => 500),
-            array('id' => "slug", 'name' => __("User Name", SAM_DOMAIN), 'field' => "slug", 'width' => 200)
-          ),
-          'authors' => $auth
-        ),
-        'tags' => array(
-          'columns' => array(
-            array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
-            array('id' => "title", 'name' => __("Tag Title", SAM_DOMAIN), 'field' => "title", 'width' => 500),
-            array('id' => "slug", 'name' => __("Tag Slug", SAM_DOMAIN), 'field' => "slug", 'width' => 200)
-          ),
-          'tags' => $tags
-        ),
-        'customs' => array(
-          'columns' => array(
-            array('id' => "title", 'name' => __("Custom Type Title", SAM_DOMAIN), 'field' => "title", 'width' => 550),
-            array('id' => "slug", 'name' => __("Custom Type Slug", SAM_DOMAIN), 'field' => "slug", 'width' => 200)
-          ),
-          'customs' => $customs
-        ),
-        'posts' => array(
-          'columns' => array(
-            array('id' => "id", 'name' => "ID", 'field' => "id", 'width' => 50),
-            array('id' => "title", 'name' => __("Publication Title", SAM_DOMAIN), 'field' => "title", 'width' => 500),
-            array('id' => "type", 'name' => __("Publication Type", SAM_DOMAIN), 'field' => "type", 'width' => 200)
-          ),
-          'posts' => $posts
-        ),
-        'users' => array(
-          'colModel' => array(
-            array('columnName' => 'id', 'width' => '15', 'hidden' => true, 'align' => 'right', 'label' => 'Id'),
-            array('columnName' => 'title', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser Name', SAM_DOMAIN)),
-            array('columnName' => 'slug', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser Nick', SAM_DOMAIN)),
-            array('columnName' => 'email', 'width' => '190', 'align' => 'left', 'label' => __('Advertiser e-mail', SAM_DOMAIN))
-          ),
-          'columns' => array(
-            array('id' => 'id', 'name' => 'ID', 'field' => 'id', 'width' => 50),
-            array('id' => "title", 'name' => __("Display Name", SAM_DOMAIN), 'field' => "title", 'width' => 250),
-            array('id' => "slug", 'name' => __("User Name", SAM_DOMAIN), 'field' => "slug", 'width' => 200),
-            array('id' => 'role', 'name' => __("Role", SAM_DOMAIN), 'field' => 'role', 'width' => 200)
-          ),
-          'users' => $users
-        )
-      );
-      $charset = get_bloginfo('charset');
-      
-      header("Content-type: application/json; charset=$charset"); 
-      exit(json_encode($output));
+      $out .= "</ul>";
+
+      return $out;
     }
 		
-		public function doSettingsSections($page) {
+		public function doSettingsSections($page, $tabs) {
       global $wp_settings_sections, $wp_settings_fields;
 
       if ( !isset($wp_settings_sections) || !isset($wp_settings_sections[$page]) )
         return;
 
+      echo "<div id='tabs'>\n";
+      echo self::settingsTabsHeader($tabs);
+
       foreach ( (array) $wp_settings_sections[$page] as $section ) {
-        echo "<div id='poststuff' class='ui-sortable'>\n";
+        if($this->settingsTabs[ $section['id'] ]['start_tab'])
+          echo "<div id='{$this->settingsTabs[ $section['id'] ]['uri']}'>";
+
+        echo "<div class='ui-sortable sam-section'>\n";
         echo "<div class='postbox opened'>\n";
         echo "<h3>{$section['title']}</h3>\n";
         echo '<div class="inside">';
@@ -707,7 +970,9 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         echo '</div>';
         echo '</div>';
         echo '</div>';
+        if($this->settingsTabs[ $section['id'] ]['finish_tab']) echo "</div>";
       }
+      echo "</div>";
     }
     
     public function doSettingsFields($page, $section) {
@@ -720,7 +985,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 				echo '<p>';
 				if ( !empty($field['args']['checkbox']) ) {
 					call_user_func($field['callback'], $field['id'], $field['args']);
-					echo '<label for="' . $field['args']['label_for'] . '">' . $field['title'] . '</label>';
+					echo '<label for="' . $field['args']['label_for'] . '"' . ((isset($field['args']['hide']) && $field['args']['hide']) ? 'style="display: none;"' : '' ) . '>' . $field['title'] . '</label>';
           echo '</p>';
 				}
 				else {
@@ -734,6 +999,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           echo '</p>';
 				}
         if(!empty($field['args']['description'])) echo '<p>' . $field['args']['description'] . '</p>';
+        if(!empty($field['args']['warning'])) echo self::getWarningString($field['args']['warning']);
 			}
 		}
     
@@ -741,13 +1007,14 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       global $wpdb;
       
       $pTable = $wpdb->prefix . "sam_places";
-      $sql = "SELECT $pTable.patch_dfp FROM $pTable WHERE $pTable.patch_source = 2";
+      $sql = "SELECT sp.patch_dfp FROM $pTable sp WHERE sp.patch_source = 2";
       $rows = $wpdb->get_results($sql, ARRAY_A);
       $blocks = array();      
       foreach($rows as $value) array_push($blocks, $value['patch_dfp']);
       
       $output = $input;
       $output['dfpBlocks'] = array_unique($blocks);
+      $output['mailer'] = (isset($input['mailer'])) ? 1 : 0;
       return $output;
     }
     
@@ -778,6 +1045,16 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     public function drawDeactivateSection() {
 			echo '<p>'.__('Are you allow to perform these actions during deactivating plugin?', SAM_DOMAIN).'</p>';
 		}
+
+    public function drawMailerSection() {
+      $options = parent::getSettings();
+
+      if($options['mailer']) {
+        $time = get_transient( 'sam_maintenance_date' );
+        echo "<p>".__("Next mailing is scheduled on", SAM_DOMAIN)." <code>{$time}</code>... "."</p>";
+      }
+      else echo "<p>".__("Adjust parameters of Mailing System.", SAM_DOMAIN)."</p>";
+    }
     
     public function drawTextOption( $id, $args ) {
       $settings = parent::getSettings();
@@ -788,18 +1065,34 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 					name="<?php echo SAM_OPTIONS_NAME.'['.$id.']'; ?>"
 					type="text"
 					value="<?php echo $settings[$id]; ?>"
-          style="height: 22px; font-size: 11px; <?php echo "width: {$width}px;" ?>" />
+          style="height: 22px; font-size: 11px; <?php echo "width: {$width};" ?>" />
+      <?php
+    }
+
+    public function drawTextareaOption( $id, $args ) {
+      $settings = parent::getSettings();
+      if(isset($args['height'])) $height = $args['height'];
+      else $height = '100px';
+      ?>
+      <textarea id="<?php echo $id; ?>"
+        name="<?php echo SAM_OPTIONS_NAME.'['.$id.']'; ?>"
+        style="width: 100%; height: <?php echo $height ?>;"><?php echo $settings[$id]; ?></textarea>
       <?php
     }
 
     public function drawCheckboxOption( $id, $args ) {
 			$settings = parent::getSettings();
+      $disabled = '';
+      $hide = '';
+      if(isset($args['enabled'])) $disabled = (($args['enabled']) ? '' : 'disabled');
+      if(isset($args['hide'])) $hide = ( ($args['hide']) ? " style='display: none;'" : '');
 			?>
 				<input id="<?php echo $id; ?>"
 					<?php checked('1', $settings[$id]); ?>
 					name="<?php echo SAM_OPTIONS_NAME.'['.$id.']'; ?>"
 					type="checkbox"
-					value="1" />
+					value="1"
+          <?php echo $disabled.$hide; ?>>
 			<?php
 		}
     
@@ -838,20 +1131,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       <?php
       }
     }
-
-    /*public function drawSliderOption( $id, $args ) {
-      $options = $args['options'];
-      $settings = parent::getSettings();
-
-      ?>
-      <input
-        type="hidden"
-        id="<?php echo $id; ?>"
-        name="<?php echo SAM_OPTIONS_NAME.'['.$id.']'; ?>"
-        value="<?php echo $settings[$id]; ?>" />
-      <div id="slider"></div>
-      <?php
-    }*/
 
     public function drawJSliderOption( $id, $args ) {
       //$options = $args['options'];
@@ -897,8 +1176,9 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         else $updated = false;
 				if($updated === 'true') {
           parent::getSettings(true);
+          $ccw = self::clearCache();
 				  ?>
-				  <div class="updated"><p><strong><?php _e("Simple Ads Manager Settings Updated.", SAM_DOMAIN); ?></strong></p></div>
+				  <div class="updated"><p><strong><?php echo __("Simple Ads Manager Settings Updated.", SAM_DOMAIN) .' '. $ccw ; ?></strong></p></div>
 				<?php } else { ?>
 				  <div class="clear"></div>
 				<?php } ?>
@@ -932,7 +1212,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
                   <ul>
                     <li><a target='_blank' href='http://wordpress.org/extend/plugins/simple-ads-manager/'><?php _e("Wordpress Plugin Page", SAM_DOMAIN); ?></a></li>
                     <li><a target='_blank' href='http://www.simplelib.com/?p=480'><?php _e("Author Plugin Page", SAM_DOMAIN); ?></a></li>
-                    <li><a target='_blank' href='http://forum.simplelib.com/forumdisplay.php?13-Simple-Ads-Manager/'><?php _e("Support Forum", SAM_DOMAIN); ?></a></li>
+                    <li><a target='_blank' href='http://forum.simplelib.com/index.php?forums/simple-ads-manager.13/'><?php _e("Support Forum", SAM_DOMAIN); ?></a></li>
                     <li><a target='_blank' href='http://www.simplelib.com/'><?php _e("Author's Blog", SAM_DOMAIN); ?></a></li>
                   </ul>                    
                 </div>
@@ -940,6 +1220,14 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               <div class='postbox opened'>
                 <h3><?php _e('Donations', SAM_DOMAIN) ?></h3>
                 <div class="inside">
+                  <div style="text-align: center; margin-top: 10px;">
+                    <script type="text/javascript">
+                      /* <![CDATA[ */
+                      function affiliateLink(str){ str = unescape(str); var r = ''; for(var i = 0; i < str.length; i++) r += String.fromCharCode(8^str.charCodeAt(i)); document.write(r); }
+                      affiliateLink('4i%28%60zmn5*%60%7C%7Cx2%27%27%7F%7F%7F%26%7Cmp%7C%25dafc%25il%7B%26kge%277zmn5%3B%3A9%3E%3F0*64aeo%28%7Bzk5*%60%7C%7Cx2%27%27%7F%7F%7F%26%7Cmp%7C%25dafc%25il%7B%26kge%27aeiom%7B%27jiffmz%7B%27%7Bfgzm%25908p%3E8%26oan*%28jgzlmz5*8*%28id%7C5*%5Cmp%7C%28Dafc%28Il%7B*%2764%27i6');
+                      /* ]]> */
+                    </script>
+                  </div>
                   <p>
                     <?php 
                       $format = __('If you have found this plugin useful, please consider making a %s to help support future development. Your support will be much appreciated. Thank you!', SAM_DOMAIN);
@@ -947,20 +1235,9 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
                       printf($format, $str); 
                     ?>
                   </p>
-                  <p style="color: #777777"><strong><?php _e('Donate via', SAM_DOMAIN); ?> Payoneer:</strong></p>
-                  <div style="text-align: center; margin: 10px;">
-                    <a title="Donate Now!" href="https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.com" target="_blank">
-                      <img  title="<?php _e('Donate Now!', SAM_DOMAIN); ?>" src="<?php echo SAM_IMG_URL.'donate-now.png' ?>" alt="" width="100" height="34" style='margin-right: 5px;' />
-                    </a>
+                  <div style="text-align: center;">
+                    <a href='https://pledgie.com/campaigns/23196'><img alt='Click here to lend your support to: Funds to complete the development of plugin Simple Ads Manager 2 and make a donation at pledgie.com !' src='https://pledgie.com/campaigns/23196.png?skin_name=chrome' border='0' ></a>
                   </div>
-                  <p style='margin: 3px; font-size: 0.7em'>
-                    <?php 
-                      $format = __("Warning! The default value of donation is %s. Don't worry! This is not my appetite, this is default value defined by Payoneer service.", SAM_DOMAIN).'<strong>'.__(' You can change it to any value you want!', SAM_DOMAIN).'</strong>';
-                      $str = '<strong>$200</strong>';
-                      printf($format, $str);
-                    ?>
-                  </p>
-                  <p style="color: #777777"><strong><?php _e('Donate via', SAM_DOMAIN); ?> PayPal:</strong></p>
                   <div style="text-align: center; margin: 10px;">
                     <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
                       <input type="hidden" name="cmd" value="_s-xclick">
@@ -993,11 +1270,15 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
             <div id="post-body">
               <div id="post-body-content">
                 <?php settings_fields('samOptions'); ?>
-                <?php $this->doSettingsSections('sam-settings'); ?>
+                <?php $this->doSettingsSections('sam-settings', $this->settingsTabs); ?>
                 <p class="submit">
-                  <input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />
+                  <!--<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />-->
+                  <button id="submit-button" class="color-btn color-btn-left" name="Submit" type="submit">
+                    <b style="background-color: #21759b"></b>
+                    <?php esc_attr_e('Save Changes'); ?>
+                  </button>
                 </p>
-                <p style='color: #777777; font-size: 12px; font-style: italic;'>Simple Ads Manager plugin for Wordpress. Copyright &copy; 2010 - 2011, <a href='http://www.simplelib.com/'>minimus</a>. All rights reserved.</p>
+                <p style='color: #777777; font-size: 12px; font-style: italic;'><?php _ex('Simple Ads Manager plugin for Wordpress.', 'Copyright String', SAM_DOMAIN); ?> Copyright &copy; 2010 - 2014, <a href='http://www.simplelib.com/'>minimus</a>. <?php _ex('All rights reserved.', 'Copyright String', SAM_DOMAIN); ?></p>
               </div>
             </div>
           </div>
