@@ -74,6 +74,30 @@ if(!class_exists('SamUpdater')) {
       }
     }
 
+    private function getCreateSql( $table, $defTable ) {
+      global $charset_collate;
+
+      $add = '';
+      $primaryKey = '';
+
+      foreach($defTable as $key => $val) {
+        $add .= ((empty($add)) ? '' : ', ')
+          . $key . ' ' . $val['Type']
+          . (($val['Null'] == 'NO') ? ' NOT NULL' : '')
+          . ((empty($val['Default'])) ? '' : ' DEFAULT ' . (($val['Extra'] == 'str') ? "'{$val['Default']}'" : $val['Default']))
+          . (($val['Extra'] == 'auto_increment') ? ' AUTO_INCREMENT' : '' );
+        if($val['Key'] == 'PRI') $primaryKey .= ((empty($primaryKey)) ? '' : ', ') . $key;
+      }
+
+      if(!empty($add)) {
+        $add .= ((!empty($primaryKey)) ? ", PRIMARY KEY ({$primaryKey})" : '');
+        $out = "CREATE TABLE {$table} ({$add}) {$charset_collate};";
+      }
+      else $out = '';
+
+      return $out;
+    }
+
     private function getUpdateSql($table, $defTable) {
       global $wpdb, $charset_collate;
       $dbv = $this->dbVersion;
@@ -241,25 +265,7 @@ if(!class_exists('SamUpdater')) {
 
         // Place Table
         if($wpdb->get_var("SHOW TABLES LIKE '$pTable'") != $pTable) {
-          $pSql = "CREATE TABLE $pTable (
-                    id INT(11) NOT NULL AUTO_INCREMENT,
-                    name VARCHAR(255) NOT NULL,
-                    description VARCHAR(255) DEFAULT NULL,
-                    code_before VARCHAR(255) DEFAULT NULL,
-                    code_after VARCHAR(255) DEFAULT NULL,
-                    place_size VARCHAR(25) DEFAULT NULL,
-                    place_custom_width INT(11) DEFAULT NULL,
-                    place_custom_height INT(11) DEFAULT NULL,
-                    patch_img VARCHAR(255) DEFAULT NULL,
-                    patch_link VARCHAR(255) DEFAULT NULL,
-                    patch_code TEXT DEFAULT NULL,
-                    patch_adserver TINYINT(1) DEFAULT 0,
-                    patch_dfp VARCHAR(255) DEFAULT NULL,
-                    patch_source TINYINT(1) DEFAULT 0,
-                    patch_hits INT(11) DEFAULT 0,
-                    trash TINYINT(1) DEFAULT 0,
-                    PRIMARY KEY  (id)
-                   ) $charset_collate;";
+          $pSql = self::getCreateSql($pTable, $sam_tables_defs['places']);
           dbDelta($pSql);
         }
         else {
@@ -274,71 +280,7 @@ if(!class_exists('SamUpdater')) {
 
         // Ads Table
         if($wpdb->get_var("SHOW TABLES LIKE '$aTable'") != $aTable) {
-          $aSql = "CREATE TABLE $aTable (
-                  id INT(11) NOT NULL AUTO_INCREMENT,
-                  pid INT(11) NOT NULL,
-                  name VARCHAR(255) DEFAULT NULL,
-                  description VARCHAR(255) DEFAULT NULL,
-                  code_type TINYINT(1) NOT NULL DEFAULT 0,
-                  code_mode TINYINT(1) NOT NULL DEFAULT 1,
-                  ad_code TEXT DEFAULT NULL,
-                  ad_img TEXT DEFAULT NULL,
-                  ad_alt TEXT DEFAULT NULL,
-                  ad_title varchar(255) DEFAULT NULL,
-                  ad_no TINYINT(1) NOT NULL DEFAULT 0,
-                  ad_target TEXT DEFAULT NULL,
-                  ad_swf tinyint(1) DEFAULT 0,
-                  ad_swf_flashvars text,
-                  ad_swf_params text,
-                  ad_swf_attributes text,
-                  count_clicks TINYINT(1) NOT NULL DEFAULT 0,
-                  ad_users tinyint(1) DEFAULT 0,
-                  ad_users_unreg tinyint(1) DEFAULT 0,
-                  ad_users_reg tinyint(1) DEFAULT 0,
-                  x_ad_users tinyint(1) DEFAULT NULL,
-                  x_view_users TEXT DEFAULT NULL,
-                  ad_users_adv tinyint(1) DEFAULT 0,
-                  view_type INT(11) DEFAULT 1,
-                  view_pages SET('isHome','isSingular','isSingle','isPage','isAttachment','isSearch','is404','isArchive','isTax','isCategory','isTag','isAuthor','isDate','isPostType','isPostTypeArchive') DEFAULT NULL,
-                  view_id TEXT DEFAULT NULL,
-                  ad_cats TINYINT(1) DEFAULT 0,
-                  view_cats TEXT DEFAULT NULL,
-                  ad_authors TINYINT(1) DEFAULT 0,
-                  view_authors TEXT DEFAULT NULL,
-                  ad_tags TINYINT(1) DEFAULT 0,
-                  view_tags TEXT DEFAULT NULL,
-                  ad_custom TINYINT(1) DEFAULT 0,
-                  view_custom TEXT DEFAULT NULL,
-                  x_id TINYINT(1) DEFAULT 0,
-                  x_view_id TEXT DEFAULT NULL,
-                  x_cats TINYINT(1) DEFAULT 0,
-                  x_view_cats TEXT DEFAULT NULL,
-                  x_authors TINYINT(1) DEFAULT 0,
-                  x_view_authors TEXT DEFAULT NULL,
-                  x_tags TINYINT(1) DEFAULT 0,
-                  x_view_tags TEXT DEFAULT NULL,
-                  x_custom TINYINT(1) DEFAULT 0,
-                  x_view_custom TEXT DEFAULT NULL,
-                  ad_schedule TINYINT(1) DEFAULT 0,
-                  ad_start_date DATE DEFAULT NULL,
-                  ad_end_date DATE DEFAULT NULL,
-                  limit_hits TINYINT(1) DEFAULT 0,
-                  hits_limit INT(11) DEFAULT 0,
-                  limit_clicks TINYINT(1) DEFAULT 0,
-                  clicks_limit INT(11) DEFAULT 0,
-                  ad_hits INT(11) DEFAULT 0,
-                  ad_clicks INT(11) DEFAULT 0,
-                  ad_weight INT(11) DEFAULT 10,
-                  ad_weight_hits INT(11) DEFAULT 0,
-                  adv_nick varchar(50) DEFAULT NULL,
-                  adv_name varchar(100) DEFAULT NULL,
-                  adv_mail varchar(50) DEFAULT NULL,
-                  cpm DECIMAL(10,2) UNSIGNED DEFAULT 0.00,
-                  cpc DECIMAL(10,2) UNSIGNED DEFAULT 0.00,
-                  per_month DECIMAL(10,2) UNSIGNED DEFAULT 0.00,
-                  trash TINYINT(1) NOT NULL DEFAULT 0,
-                  PRIMARY KEY  (id, pid)
-                ) $charset_collate;";
+          $aSql = self::getCreateSql($aTable, $sam_tables_defs['ads']);
           dbDelta($aSql);
         }
         else {
@@ -355,33 +297,7 @@ if(!class_exists('SamUpdater')) {
 
         // Zones Table
         if($wpdb->get_var("SHOW TABLES LIKE '$zTable'") != $zTable) {
-          $zSql = "CREATE TABLE $zTable (
-                    id INT(11) NOT NULL AUTO_INCREMENT,
-                    name VARCHAR(255) NOT NULL,
-                    description VARCHAR(255) DEFAULT NULL,
-                    z_default INT(11) DEFAULT 0,
-                    z_home INT(11) DEFAULT 0,
-                    z_singular INT(11) DEFAULT 0,
-                    z_single INT(11) DEFAULT 0,
-                    z_ct INT(11) DEFAULT 0,
-                    z_single_ct LONGTEXT DEFAULT NULL,
-                    z_page INT(11) DEFAULT 0,
-                    z_attachment INT(11) DEFAULT 0,
-                    z_search INT(11) DEFAULT 0,
-                    z_404 INT(11) DEFAULT 0,
-                    z_archive INT(11) DEFAULT 0,
-                    z_tax INT(11) DEFAULT 0,
-                    z_category INT(11) DEFAULT 0,
-                    z_cats LONGTEXT DEFAULT NULL,
-                    z_tag INT(11) DEFAULT 0,
-                    z_author INT(11) DEFAULT 0,
-                    z_authors LONGTEXT DEFAULT NULL,
-                    z_date INT(11) DEFAULT 0,
-                    z_cts INT(11) DEFAULT 0,
-                    z_archive_ct LONGTEXT DEFAULT NULL,
-                    trash TINYINT(1) DEFAULT 0,
-                    PRIMARY KEY (id)
-                  ) $charset_collate;";
+          $zSql = self::getCreateSql($zTable, $sam_tables_defs['zones']);
           dbDelta($zSql);
         }
         else {
@@ -396,24 +312,7 @@ if(!class_exists('SamUpdater')) {
 
         // Blocks Table
         if($wpdb->get_var("SHOW TABLES LIKE '$bTable'") != $bTable) {
-          $bSql = "CREATE TABLE $bTable (
-                      id INT(11) NOT NULL AUTO_INCREMENT,
-                      name VARCHAR(255) NOT NULL,
-                      description VARCHAR(255) DEFAULT NULL,
-                      b_lines INT(11) DEFAULT 2,
-                      b_cols INT(11) DEFAULT 2,
-                      block_data LONGTEXT DEFAULT NULL,
-                      b_margin VARCHAR(30) DEFAULT '5px 5px 5px 5px',
-                      b_padding VARCHAR(30) DEFAULT '5px 5px 5px 5px',
-                      b_background VARCHAR(30) DEFAULT '#FFFFFF',
-                      b_border VARCHAR(30) DEFAULT '0px solid #333333',
-                      i_margin VARCHAR(30) DEFAULT '5px 5px 5px 5px',
-                      i_padding VARCHAR(30) DEFAULT '5px 5px 5px 5px',
-                      i_background VARCHAR(30) DEFAULT '#FFFFFF',
-                      i_border VARCHAR(30) DEFAULT '0px solid #333333',
-                      trash TINYINT(1) DEFAULT 0,
-                      PRIMARY KEY (id)
-                  ) $charset_collate;";
+          $bSql = self::getCreateSql($bTable, $sam_tables_defs['blocks']);
           dbDelta($bSql);
         }
         else {
@@ -428,14 +327,7 @@ if(!class_exists('SamUpdater')) {
 
         // Statistics Table
         if($wpdb->get_var("SHOW TABLES LIKE '$sTable'") != $sTable) {
-          $sSql = "CREATE TABLE $sTable (
-                    id int(10) UNSIGNED DEFAULT NULL,
-                    pid int(10) UNSIGNED DEFAULT NULL,
-                    event_time datetime DEFAULT NULL,
-                    event_type tinyint(1) DEFAULT NULL
-                    )
-                    $charset_collate
-                    COMMENT = 'Simple Ads Manager Statistics';";
+          $sSql = self::getCreateSql($sTable, $sam_tables_defs['stats']);
           dbDelta($sSql);
         }
         else {

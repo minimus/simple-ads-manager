@@ -76,6 +76,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $pTable = $wpdb->prefix . "sam_places";					
 			$aTable = $wpdb->prefix . "sam_ads";
       $bTable = $wpdb->prefix . "sam_blocks";
+      $eTable = $wpdb->prefix . "sam_errors";
+      $sTable = $wpdb->prefix . "sam_stats";
 			$settings = parent::getSettings();
 			
 			if($settings['deleteOptions'] == 1) {
@@ -89,6 +91,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 				$wpdb->query($sql.$pTable);
 				$wpdb->query($sql.$aTable);
         $wpdb->query($sql.$bTable);
+        $wpdb->query($sql.$eTable);
+        $wpdb->query($sql.$sTable);
 				delete_option('sam_db_version');
 			}
       if($settings['deleteFolder'] == 1) {
@@ -102,6 +106,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $pTable = $wpdb->prefix . "sam_places";
       $aTable = $wpdb->prefix . "sam_ads";
       $bTable = $wpdb->prefix . "sam_blocks";
+      $eTable = $wpdb->prefix . "sam_errors";
+      $sTable = $wpdb->prefix . "sam_stats";
 
       delete_option( SAM_OPTIONS_NAME );
       delete_option('sam_version');
@@ -112,6 +118,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $wpdb->query($sql.$pTable);
       $wpdb->query($sql.$aTable);
       $wpdb->query($sql.$bTable);
+      $wpdb->query($sql.$eTable);
+      $wpdb->query($sql.$sTable);
 
       if(is_dir(SAM_AD_IMG)) rmdir(SAM_AD_IMG);
     }
