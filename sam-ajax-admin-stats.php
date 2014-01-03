@@ -76,8 +76,8 @@ if(in_array($action, $allowed_actions)) {
           $hitsFull[$i - 1] = array( $i, 0);
           $clicksFull[$i - 1] = array($i, 0);
         }
-        foreach($hits as $hit) $hitsFull[$hit['ed'] - 1][1] = $hit['hits'];
-        foreach($clicks as $click) $clicksFull[$click['ed'] - 1][1] = $click['hits'];
+        foreach($hits as $hit) $hitsFull[$hit['ed'] - 1][1] = (integer) $hit['hits'];
+        foreach($clicks as $click) $clicksFull[$click['ed'] - 1][1] = (integer) $click['hits'];
 
         $sql = "SELECT
                   (SELECT
@@ -120,8 +120,8 @@ if(in_array($action, $allowed_actions)) {
           $hitsFull[$i - 1] = array( $i, 0);
           $clicksFull[$i - 1] = array($i, 0);
         }
-        foreach($hits as $hit) $hitsFull[$hit['ed'] - 1][1] = $hit['hits'];
-        foreach($clicks as $click) $clicksFull[$click['ed'] - 1][1] = $click['hits'];
+        foreach($hits as $hit) $hitsFull[$hit['ed'] - 1][1] = (integer) $hit['hits'];
+        foreach($clicks as $click) $clicksFull[$click['ed'] - 1][1] = (integer) $click['hits'];
 
         $sql = "SELECT
                   (SELECT

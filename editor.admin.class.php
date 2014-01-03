@@ -1543,7 +1543,7 @@ if(!class_exists('SamPlaceEdit')) {
                   </select>
                 </p>
                 <div class="graph-container">
-                  <div id="graph" style="width: 100%; height: 300px; padding: 15px;"></div>
+                  <div id="graph" style="width: 100%; height: 300px;"></div>
                 </div>
                 <p class="totals">
                   <strong><?php echo __('Total', SAM_DOMAIN) . ':'; ?></strong><br>

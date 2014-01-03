@@ -200,7 +200,7 @@ input.button-primary, input.button-secondary,
 }
 
 .sam-section {
-  min-width: 763px;
+  min-width: 255px;
 }
 
 .sam-section textarea, .sam-section input, .sam-section select, .sam-section button {

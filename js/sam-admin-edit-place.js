@@ -90,7 +90,91 @@ var sam = sam || {};
       track: true
     });
 
-    var options = samEditorOptions.options;
+    var options = samEditorOptions.options, plot, plotData = [],
+      plotOptions = {
+        animate: true,
+        // Will animate plot on calls to plot1.replot({resetAxes:true})
+        animateReplot: true,
+        cursor: {
+          //show: true,
+          //zoom: true,
+          //looseZoom: true,
+          showTooltip: false
+        },
+        series:[
+          {
+            pointLabels: {
+              show: true
+            },
+            renderer: $.jqplot.BarRenderer,
+            showHighlight: false,
+            //yaxis: 'y2axis',
+            rendererOptions: {
+              // Speed up the animation a little bit.
+              // This is a number of milliseconds.
+              // Default for bar series is 3000.
+              animation: {
+                speed: 2500
+              },
+              barWidth: 15,
+              barPadding: -15,
+              barMargin: 0,
+              highlightMouseOver: false
+            },
+            label: labels.hits
+          },
+          {
+            label: labels.clicks,
+            rendererOptions: {
+              // speed up the animation a little bit.
+              // This is a number of milliseconds.
+              // Default for a line series is 2500.
+              animation: {
+                speed: 2000
+              }
+            }
+          }
+        ],
+        axesDefaults: {
+          pad: 0
+        },
+        axes: {
+          // These options will set up the x axis like a category axis.
+          xaxis: {
+            tickInterval: 1,
+            drawMajorGridlines: false,
+            drawMinorGridlines: true,
+            drawMajorTickMarks: false,
+            rendererOptions: {
+              tickInset: 1, //0.5,
+              minorTicks: 1
+            },
+            //padMin: 0,
+            min: 1
+          },
+          yaxis: {
+            /*tickOptions: {
+             formatString: "$%'d"
+             },*/
+            rendererOptions: {
+              forceTickAt0: true
+            }
+          }
+        },
+        highlighter: {
+          show: true,
+          showLabel: true,
+          tooltipAxes: 'y',
+          sizeAdjust: 7.5 ,
+          tooltipLocation : 'ne',
+          useAxesFormatters: false,
+          tooltipFormatString: labels.clicks + ': %d'
+        },
+        legend: {
+          show: true,
+          placement: 'ne'
+        }
+      };
 
     fu = new AjaxUpload(btnUpload, {
       action:ajaxurl,
@@ -136,54 +220,20 @@ var sam = sam || {};
       id: itemId,
       sm: sMonth
     }).done(function(data) {
-        var
-          hits = {label: labels.hits, data: data.hits},
-          clicks = {label: labels.clicks, data: data.clicks};
-        statsData = [hits, clicks];
+        plotData = [data.hits, data.clicks];
         $('#total_hits').text(data.total.hits);
         $('#total_clicks').text(data.total.clicks);
-        $.plot('#graph', statsData, {
-          series: {
-            lines: { show: true },
-            points: { show: true }
-          },
-          xaxis: {
-            mode: "categories",
-            tickLength: 0
-          },
-          legend: {
-            backgroundColor: 'rgb(235, 233, 233)'
-          },
-          grid: {
-            backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
-            borderWidth: 1,
-            borderColor: '#DFDFDF'
-          }
-        });
+        plot = $.jqplot('graph', plotData, plotOptions);
       });
 
     $('#tabs').tabs({
       activate: function(ev, ui) {
         var el = ui.newPanel[0].id;
         if(el == 'tabs-3') {
-          $.plot('#graph', statsData, {
-            series: {
-              lines: { show: true },
-              points: { show: true }
-            },
-            xaxis: {
-              mode: "categories",
-              tickLength: 0
-            },
-            legend: {
-              backgroundColor: 'rgb(235, 233, 233)'
-            },
-            grid: {
-              backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
-              borderWidth: 1,
-              borderColor: '#DFDFDF'
-            }
-          });
+          if(plot) {
+            plot.destroy();
+            plot = $.jqplot('graph', plotData, plotOptions);
+          }
         }
       }
     });
@@ -254,30 +304,13 @@ var sam = sam || {};
         id: itemId,
         sm: sMonth
       }).done(function(data) {
-          var
-            hits = {label: labels.hits, data: data.hits},
-            clicks = {label: labels.clicks, data: data.clicks};
-          statsData = [hits, clicks];
+          plotData = [data.hits, data.clicks];
           $('#total_hits').text(data.total.hits);
           $('#total_clicks').text(data.total.clicks);
-          $.plot('#graph', statsData, {
-            series: {
-              lines: { show: true },
-              points: { show: true }
-            },
-            xaxis: {
-              mode: "categories",
-              tickLength: 0
-            },
-            legend: {
-              backgroundColor: 'rgb(235, 233, 233)'
-            },
-            grid: {
-              backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
-              borderWidth: 1,
-              borderColor: '#DFDFDF'
-            }
-          });
+          if(plot) {
+            plot.destroy();
+            plot = $.jqplot('graph', plotData, plotOptions);
+          }
         });
     });
 
