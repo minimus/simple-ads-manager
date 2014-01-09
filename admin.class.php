@@ -207,7 +207,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       
       $output['major'] = (integer)$vArray[0];
       $output['minor'] = (integer)$vArray[1];
-      if(!is_null((integer)$vArray[2])) $output['revision'] = (integer)$vArray[2];
+      if(isset($vArray[2])) $output['revision'] = (integer)$vArray[2];
       else $output['revision'] = 0;
       
       return $output;
