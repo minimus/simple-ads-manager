@@ -524,25 +524,25 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
     }
     
     public function doAdShortcode($atts) {
-      shortcode_atts( array( 'id' => '', 'name' => '', 'codes' => ''), $atts );
+      $atts = shortcode_atts( array( 'id' => '', 'name' => '', 'codes' => ''), $atts );
       $ad = new SamAd(array('id' => $atts['id'], 'name' => $atts['name']), ($atts['codes'] == 'true'), $this->crawler);
       return $ad->ad;
     }
     
     public function doShortcode( $atts ) {
-      shortcode_atts( array( 'id' => '', 'name' => '', 'codes' => ''), $atts );
+      $atts = shortcode_atts( array( 'id' => '', 'name' => '', 'codes' => ''), $atts );
       $ad = new SamAdPlace(array('id' => $atts['id'], 'name' => $atts['name']), ($atts['codes'] == 'true'), $this->crawler);
       return $ad->ad;
     }
     
     public function doZoneShortcode($atts) {
-      shortcode_atts( array( 'id' => '', 'name' => '', 'codes' => ''), $atts );
+      $atts = shortcode_atts( array( 'id' => '', 'name' => '', 'codes' => ''), $atts );
       $ad = new SamAdPlaceZone(array('id' => $atts['id'], 'name' => $atts['name']), ($atts['codes'] == 'true'), $this->crawler);
       return $ad->ad;
     }
     
     public function doBlockShortcode($atts) {
-      shortcode_atts( array( 'id' => '', 'name' => ''), $atts );
+      $atts = shortcode_atts( array( 'id' => '', 'name' => ''), $atts );
       $block = new SamAdBlock(array('id' => $atts['id'], 'name' => $atts['name']), $this->crawler);
       return $block->ad;
     }
