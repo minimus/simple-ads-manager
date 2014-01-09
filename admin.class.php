@@ -966,7 +966,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       echo self::settingsTabsHeader($tabs);
 
       foreach ( (array) $wp_settings_sections[$page] as $section ) {
-        if($this->settingsTabs[ $section['id'] ]['start_tab'])
+        if( isset($this->settingsTabs[ $section['id'] ]['start_tab']) && $this->settingsTabs[ $section['id'] ]['start_tab'] )
           echo "<div id='{$this->settingsTabs[ $section['id'] ]['uri']}'>";
 
         echo "<div class='ui-sortable sam-section'>\n";
@@ -980,7 +980,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         echo '</div>';
         echo '</div>';
         echo '</div>';
-        if($this->settingsTabs[ $section['id'] ]['finish_tab']) echo "</div>";
+        if( isset($this->settingsTabs[ $section['id'] ]['finish_tab']) && $this->settingsTabs[ $section['id'] ]['finish_tab'] ) echo "</div>";
       }
       echo "</div>";
     }
