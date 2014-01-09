@@ -636,21 +636,21 @@ if(!class_exists('SamPlaceEdit')) {
             $itemId = $_POST['item_id'];
             $placeId = $_POST['place_id'];
             $viewPages = $this->buildViewPages(array(
-              ((isset($_POST['is_home'])) ? $_POST['is_home'] : 0),
-              ((isset($_POST['is_singular'])) ? $_POST['is_singular'] : 0),
-              ((isset($_POST['is_single'])) ? $_POST['is_single'] : 0),
-              ((isset($_POST['is_page'])) ? $_POST['is_page'] : 0),
-              ((isset($_POST['is_attachment'])) ? $_POST['is_attachment'] : 0),
-              ((isset($_POST['is_search'])) ? $_POST['is_search'] : 0),
-              ((isset($_POST['is_404'])) ? $_POST['is_404'] : 0),
-              ((isset($_POST['is_archive'])) ? $_POST['is_archive'] : 0),
-              ((isset($_POST['is_tax'])) ? $_POST['is_tax'] : 0),
-              ((isset($_POST['is_category'])) ? $_POST['is_category'] : 0),
-              ((isset($_POST['is_tag'])) ? $_POST['is_tag'] : 0),
-              ((isset($_POST['is_author'])) ? $_POST['is_author'] : 0),
-              ((isset($_POST['is_date'])) ? $_POST['is_date'] : 0),
-              ((isset($_POST['is_posttype'])) ? $_POST['is_posttype'] : 0),
-              ((isset($_POST['is_posttype_archive'])) ? $_POST['is_posttype_archive'] : 0)
+              $_POST['is_home'],
+              $_POST['is_singular'],
+              $_POST['is_single'],
+              $_POST['is_page'],
+              $_POST['is_attachment'],
+              $_POST['is_search'],
+              $_POST['is_404'],
+              $_POST['is_archive'],
+              $_POST['is_tax'],
+              $_POST['is_category'],
+              $_POST['is_tag'],
+              $_POST['is_author'],
+              $_POST['is_date'],
+              $_POST['is_posttype'],
+              $_POST['is_posttype_archive']
             ));
             $updateRow = array(
               'pid' => $_POST['place_id'],

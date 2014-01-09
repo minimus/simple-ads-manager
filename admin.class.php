@@ -28,7 +28,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 				
       register_activation_hook(SAM_MAIN_FILE, array(&$this, 'onActivate'));
       register_deactivation_hook(SAM_MAIN_FILE, array(&$this, 'onDeactivate'));
-      register_uninstall_hook(SAM_MAIN_FILE, array(__CLASS__, 'onUninstall'));
+      register_uninstall_hook(SAM_MAIN_FILE, array(&$this, 'onUninstall'));
 
       $options = parent::getSettings(false);
       if(!empty($options['access'])) $access = $options['access'];
@@ -99,7 +99,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       }
     }
 
-    public static function onUninstall() {
+    public function onUninstall() {
       global $wpdb;
       $zTable = $wpdb->prefix . "sam_zones";
       $pTable = $wpdb->prefix . "sam_places";
@@ -966,7 +966,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       echo self::settingsTabsHeader($tabs);
 
       foreach ( (array) $wp_settings_sections[$page] as $section ) {
-        if(isset($this->settingsTabs[ $section['id'] ]['start_tab']) && $this->settingsTabs[ $section['id'] ]['start_tab'])
+        if($this->settingsTabs[ $section['id'] ]['start_tab'])
           echo "<div id='{$this->settingsTabs[ $section['id'] ]['uri']}'>";
 
         echo "<div class='ui-sortable sam-section'>\n";
@@ -980,7 +980,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         echo '</div>';
         echo '</div>';
         echo '</div>';
-        if(isset($this->settingsTabs[ $section['id'] ]['finish_tab']) && $this->settingsTabs[ $section['id'] ]['finish_tab']) echo "</div>";
+        if($this->settingsTabs[ $section['id'] ]['finish_tab']) echo "</div>";
       }
       echo "</div>";
     }
@@ -1023,36 +1023,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       foreach($rows as $value) array_push($blocks, $value['patch_dfp']);
       
       $output = $input;
-      $boolNames = array(
-        'mailer',
-        'detectBots',
-        'deleteOptions',
-        'deleteDB',
-        'deleteFolder',
-        'beforePost',
-        'bpUseCodes',
-        'bpExcerpt',
-        'bbpBeforePost',
-        'bbpList',
-        'middlePost',
-        'mpUseCodes',
-        'bbpMiddlePost',
-        'afterPost',
-        'apUseCodes',
-        'bbpAfterPost',
-        'useDFP',
-        'useSWF',
-        'errorlog',
-        'errorlogFS',
-        'bbpActive',
-        'bbpEnabled'
-      );
-      foreach($boolNames as $name) {
-        $output[$name] = ((isset($input[$name])) ? 1 : 0);
-      }
       $output['dfpBlocks'] = array_unique($blocks);
-      //$output['mailer'] = (isset($input['mailer'])) ? 1 : 0;
-      //$output['detectBots'] = (isset($input['detectBots'])) ? 1 : 0;
+      $output['mailer'] = (isset($input['mailer'])) ? 1 : 0;
       return $output;
     }
     
