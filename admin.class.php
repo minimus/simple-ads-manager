@@ -28,7 +28,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 				
       register_activation_hook(SAM_MAIN_FILE, array(&$this, 'onActivate'));
       register_deactivation_hook(SAM_MAIN_FILE, array(&$this, 'onDeactivate'));
-      register_uninstall_hook(SAM_MAIN_FILE, array(&$this, 'onUninstall'));
+      register_uninstall_hook(SAM_MAIN_FILE, array(__CLASS__, 'onUninstall'));
 
       $options = parent::getSettings(false);
       if(!empty($options['access'])) $access = $options['access'];
@@ -99,7 +99,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       }
     }
 
-    public function onUninstall() {
+    public static function onUninstall() {
       global $wpdb;
       $zTable = $wpdb->prefix . "sam_zones";
       $pTable = $wpdb->prefix . "sam_places";
@@ -207,7 +207,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       
       $output['major'] = (integer)$vArray[0];
       $output['minor'] = (integer)$vArray[1];
-      if(!is_null((integer)$vArray[2])) $output['revision'] = (integer)$vArray[2];
+      if(isset($vArray[2])) $output['revision'] = (integer)$vArray[2];
       else $output['revision'] = 0;
       
       return $output;
@@ -966,7 +966,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       echo self::settingsTabsHeader($tabs);
 
       foreach ( (array) $wp_settings_sections[$page] as $section ) {
-        if($this->settingsTabs[ $section['id'] ]['start_tab'])
+        if( isset($this->settingsTabs[ $section['id'] ]['start_tab']) && $this->settingsTabs[ $section['id'] ]['start_tab'] )
           echo "<div id='{$this->settingsTabs[ $section['id'] ]['uri']}'>";
 
         echo "<div class='ui-sortable sam-section'>\n";
@@ -980,7 +980,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         echo '</div>';
         echo '</div>';
         echo '</div>';
-        if($this->settingsTabs[ $section['id'] ]['finish_tab']) echo "</div>";
+        if( isset($this->settingsTabs[ $section['id'] ]['finish_tab']) && $this->settingsTabs[ $section['id'] ]['finish_tab'] ) echo "</div>";
       }
       echo "</div>";
     }
