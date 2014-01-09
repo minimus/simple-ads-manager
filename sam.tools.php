@@ -81,10 +81,6 @@ if(!class_exists('SamMailer')) {
         $hits = $wpdb->get_var($wpdb->prepare($sql, $user['adv_mail'], $month, 0));
         $clicks = $wpdb->get_var($wpdb->prepare($sql, $user['adv_mail'], $month, 1));
 
-        $cpm = number_format($ads['e_cpm'], 2);
-        $cpc = number_format($ads['e_cpc'], 2);
-        $ctr = number_format($ads['e_ctr'], 2) . '%';
-
         $mess .= "
 <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'>
 <html>
@@ -148,6 +144,10 @@ if(!class_exists('SamMailer')) {
   <tbody>";
         $k = 0;
         foreach($ads as $ad) {
+          $cpm = number_format($ad['e_cpm'], 2);
+          $cpc = number_format($ad['e_cpc'], 2);
+          $ctr = number_format($ad['e_ctr'], 2) . '%';
+
           $class = ( ($k % 2) == 1 ) ? 'odd' : 'even';
           $mess .= "<tr class='{$class}'><td>{$ad['name']}</td><td>{$ad['description']}</td><td>{$ad['ad_hits']}</td><td>{$ad['ad_clicks']}</td><td>{$cpm}</td><td>{$cpc}</td><td>{$ctr}</td></tr>";
           $k++;

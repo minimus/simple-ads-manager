@@ -521,8 +521,10 @@ if(!class_exists('SamAdPlaceZone')) {
         if((integer)$zone['z_404'] < 0) $zone['z_404'] = $zone['z_default'];
         if((integer)$zone['z_archive'] < 0) $zone['z_archive'] = $zone['z_default'];
         if((integer)$zone['z_tax'] < 0) $zone['z_tax'] = $zone['z_archive'];
-        foreach($taxes as $key => $value) {
-          if($value < 0) $taxes[$key] = $zone['z_tax'];
+        if(!empty($taxes)) {
+          foreach($taxes as $key => $value) {
+            if($value < 0) $taxes[$key] = $zone['z_tax'];
+          }
         }
         if((integer)$zone['z_category'] < 0) $zone['z_category'] = $zone['z_tax'];
         foreach($cats as $key => $value) {
@@ -534,8 +536,10 @@ if(!class_exists('SamAdPlaceZone')) {
           if($value < 0) $authors[$key] = $zone['z_author'];
         }
         if((integer)$zone['z_cts'] < 0) $zone['z_cts'] = $zone['z_archive'];
-        foreach($archiveCT as $key => $value) {
-          if($value < 0) $archiveCT[$key] = $zone['z_cts'];
+        if(!empty($archiveCT)) {
+          foreach($archiveCT as $key => $value) {
+            if($value < 0) $archiveCT[$key] = $zone['z_cts'];
+          }
         }
         if((integer)$zone['z_date'] < 0) $zone['z_date'] = $zone['z_archive'];
         

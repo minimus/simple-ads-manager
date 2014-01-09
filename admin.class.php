@@ -46,7 +46,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_action('admin_init', array(&$this, 'checkCachePlugins'));
       add_action('admin_init', array(&$this, 'checkBbpForum'));
       add_action('admin_init', array(&$this, 'initSettings'), 11);
-      add_filter('image_size_names_choose', array(&$this, 'sizeNamesChoose'));
       if(version_compare($wp_version, '3.3', '<'))
         add_filter('contextual_help', array(&$this, 'help'), 10, 3);
       
@@ -224,7 +223,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       if($vc == 2) {
         $subver = explode('-', $ver[1]);
         $version['minor'] = $subver[0];
-        $version['spec'] = $subver[1];
+        $version['spec'] = (count($subver) > 1) ? $subver[1] : '';
         $version['str'] = $version['major'].'.'.$version['minor'].((!empty($version['spec'])) ? ' ('.$version['spec'].')' : '');
       }
       else {
@@ -444,10 +443,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           array('field' => 'ctax_name', 'caption' => __('Custom Taxonomy Name', SAM_DOMAIN), 'size' => '40%')
         )
       );
-    }
-
-    public function sizeNamesChoose() {
-      return array('full' => __('Full Size'));
     }
 
     private function getGridsData() {

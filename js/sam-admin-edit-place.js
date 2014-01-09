@@ -25,7 +25,7 @@ var sam = sam || {};
         return;
       }
 
-      var Attachment = wp.media.model.Attachment;
+      //var Attachment = wp.media.model.Attachment;
 
       this._frame = media.frame = wp.media({
         title: mediaTexts.title,
@@ -73,11 +73,10 @@ var sam = sam || {};
       status = $("#uploading"),
       srcHelp = $("#uploading-help"),
       loadImg = $('#load_img'),
-      sPointer, statsData, sMonth = 0,
+      sPointer, sMonth = 0,
       grid = $('#ads-grid'),
       samStatsUrl = samEditorOptions.samStatsUrl,
-      labels = samEditorOptions.labels,
-      fileExt = '';
+      labels = samEditorOptions.labels;
 
     sPointer = samEditorOptions.places;
     sPointer.pointer = 'places';
@@ -154,7 +153,7 @@ var sam = sam || {};
           },
           yaxis: {
             /*tickOptions: {
-             formatString: "$%'d"
+             formatString: "%'d"
              },*/
             rendererOptions: {
               forceTickAt0: true
@@ -237,6 +236,14 @@ var sam = sam || {};
         }
       }
     });
+
+    $(window).resize(function() {
+      if(plot) {
+        plot.destroy();
+        plot = $.jqplot('graph', plotData, plotOptions);
+      }
+    });
+
     $('#image_tools').tabs();
 
     $.post(samStatsUrl, {

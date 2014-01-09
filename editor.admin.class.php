@@ -794,8 +794,8 @@ if(!class_exists('SamPlaceEdit')) {
                       sa.hits_limit,
                       sa.limit_clicks,
                       sa.clicks_limit,
-                      (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 0) AS ad_hits,
-                      (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 1) AS ad_clicks,
+                      @ad_hits := (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 0) AS ad_hits,
+                      @ad_clicks := (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 1) AS ad_clicks,
                       sa.ad_weight,
                       sa.ad_weight_hits,
                       sa.adv_nick,
@@ -805,7 +805,9 @@ if(!class_exists('SamPlaceEdit')) {
                       sa.cpc,
                       sa.per_month,
                       sa.trash,
-                      IF(DATEDIFF(sa.ad_end_date, NOW()) IS NULL OR DATEDIFF(sa.ad_end_date, NOW()) > 0, FALSE, TRUE) AS expired,
+                      (IF(sa.ad_schedule, NOT (DATEDIFF(sa.ad_end_date, NOW()) IS NULL OR DATEDIFF(sa.ad_end_date, NOW()) > 0), FALSE) OR
+                      IF(sa.limit_hits = 1 AND sa.hits_limit <= @ad_hits, TRUE, FALSE) OR
+                      IF(sa.limit_clicks AND sa.clicks_limit <= @ad_clicks, TRUE, FALSE)) AS expired,
                       sp.code_before,
                       sp.code_after,
                       sa.ad_custom_tax_terms,

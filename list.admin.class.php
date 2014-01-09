@@ -391,7 +391,9 @@ if(!class_exists('SamPlaceList')) {
                       (sa.cpm * @ad_hits / 1000) AS e_cpm,
                       (sa.cpc * @ad_clicks) AS e_cpc,
                       sa.trash,
-                      IF(DATEDIFF(sa.ad_end_date, NOW()) IS NULL OR DATEDIFF(sa.ad_end_date, NOW()) > 0, FALSE, TRUE) AS expired
+                      (IF(sa.ad_schedule, NOT (DATEDIFF(sa.ad_end_date, NOW()) IS NULL OR DATEDIFF(sa.ad_end_date, NOW()) > 0), FALSE) OR
+                      IF(sa.limit_hits = 1 AND sa.hits_limit <= @ad_hits, TRUE, FALSE) OR
+                      IF(sa.limit_clicks AND sa.clicks_limit <= @ad_clicks, TRUE, FALSE)) AS expired
                      FROM $aTable sa
                      WHERE (pid = $item) $trash
                      LIMIT $offset, $items_per_page";

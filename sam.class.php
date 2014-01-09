@@ -54,7 +54,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '2.1.77');
+      define('SAM_VERSION', '2.1.79');
       define('SAM_DB_VERSION', '2.6');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );
@@ -210,7 +210,9 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       if($settings['adCycle'] == 0) $cycle = 1000;
       else $cycle = $settings['adCycle'];
 
-      global $current_user;
+      global $current_user, $wpdb;
+
+      $sTable = $wpdb->prefix . 'sam_stats';
 
       $viewPages = 0;
       $wcc = '';
@@ -362,9 +364,12 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $whereClause .= " OR (sa.view_type = 0 AND (sa.view_pages+0 & $viewPages))";
       $whereClause .= "$wci)";
       $whereClause .= "$wcc $wca $wct $wcct $wcx $wcxc $wcxa $wcxt $wcxct";
+
+      $hits = "SELECT IFNULL(COUNT(*), 0) FROM $sTable ss WHERE ss.id = sa.id AND ss.event_type = 0";
+      $clicks = "SELECT IFNULL(COUNT(*), 0) FROM $sTable ss WHERE ss.id = sa.id AND ss.event_type = 1";
       $whereClauseT = " AND IF(sa.ad_schedule, CURDATE() BETWEEN sa.ad_start_date AND sa.ad_end_date, TRUE)";
-      $whereClauseT .= " AND IF(sa.limit_hits, sa.hits_limit > sa.ad_hits, TRUE)";
-      $whereClauseT .= " AND IF(sa.limit_clicks, sa.clicks_limit > sa.ad_clicks, TRUE)";
+      $whereClauseT .= " AND IF(sa.limit_hits, sa.hits_limit > ({$hits}), TRUE)";
+      $whereClauseT .= " AND IF(sa.limit_clicks, sa.clicks_limit > ({$clicks}), TRUE)";
 
       $whereClauseW = " AND IF(sa.ad_weight > 0, (sa.ad_weight_hits*10/(sa.ad_weight*$cycle)) < 1, FALSE)";
       $whereClause2W = "AND (sa.ad_weight > 0)";

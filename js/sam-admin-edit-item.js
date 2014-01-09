@@ -25,7 +25,7 @@ var sam = sam || {};
         return;
       }
 
-      var Attachment = wp.media.model.Attachment;
+      //var Attachment = wp.media.model.Attachment;
 
       this._frame = media.frame = wp.media({
         title: mediaTexts.title,
@@ -52,17 +52,17 @@ var sam = sam || {};
     },
 
     handleMediaAttachment: function(a) {
-      var attechment = a.toJSON();
-      $(this.adUrl).val(attechment.url);
-      $(this.adImgId).val(attechment.id);
-      if('' == $(this.adName).val() && '' != attechment.title) $(this.adName).val(attechment.title);
-      if('' == $(this.adDesc).val() && '' != attechment.caption) $(this.adDesc).val(attechment.caption);
-      if('' == $(this.adAlt).val() && '' != attechment.alt) $(this.adAlt).val(attechment.alt);
+      var attachment = a.toJSON();
+      $(this.adUrl).val(attachment.url);
+      $(this.adImgId).val(attachment.id);
+      if('' == $(this.adName).val() && '' != attachment.title) $(this.adName).val(attachment.title);
+      if('' == $(this.adDesc).val() && '' != attachment.caption) $(this.adDesc).val(attachment.caption);
+      if('' == $(this.adAlt).val() && '' != attachment.alt) $(this.adAlt).val(attachment.alt);
     }
   };
 
   $(document).ready(function () {
-    var em = $('#editor_mode').val(), options, fu, title = $('#title');
+    var em = $('#editor_mode').val(), fu, title = $('#title');
 
     var
       rcvt0 = $('#rc-vt0'), rcvt2 = $('#rc-vt2'), xId = $('#x_id'), rcxid = $('#rc-xid'),
@@ -100,7 +100,7 @@ var sam = sam || {};
       samStrs = samEditorOptions.strings,
       sPost = encodeURI(samStrs.posts), sPage = encodeURI(samStrs.page);
 
-    var stats, statsData, itemId = $('#item_id').val(), sMonth = 0;
+    var stats, itemId = $('#item_id').val(), sMonth = 0;
     var plot, plotData = [],
       plotOptions = {
         animate: true,
@@ -391,6 +391,13 @@ var sam = sam || {};
             plot = $.jqplot('graph', plotData, plotOptions);
           }
         }
+      }
+    });
+
+    $(window).resize(function() {
+      if(plot) {
+        plot.destroy();
+        plot = $.jqplot('graph', plotData, plotOptions);
       }
     });
 
