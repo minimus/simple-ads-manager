@@ -10,6 +10,7 @@ if(!class_exists('SamAd')) {
     public $ad = '';
     
     public function __construct($args = null, $useCodes = false, $crawler = false) {
+      if(!defined('SAM_OPTIONS_NAME')) define('SAM_OPTIONS_NAME', 'samPluginOptions');
       $this->args = $args;
       $this->useCodes = $useCodes;
       $this->crawler = $crawler;
@@ -150,6 +151,7 @@ if(!class_exists('SamAdPlace')) {
     public function __construct($args = null, $useCodes = false, $crawler = false, $clauses = null, $ajax = false) {
       global $SAM_Query;
 
+      if(!defined('SAM_OPTIONS_NAME')) define('SAM_OPTIONS_NAME', 'samPluginOptions');
       $this->args = $args;
       $this->useCodes = $useCodes;
       $this->crawler = $crawler;
