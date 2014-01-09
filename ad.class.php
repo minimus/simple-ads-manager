@@ -225,10 +225,10 @@ if(!class_exists('SamAdPlace')) {
       $rId = rand(1111, 9999);
       if($settings['adCycle'] == 0) $cycle = 1000;
       else $cycle = $settings['adCycle'];
-      $el = (integer)$settings['errorlogFS'];
+      $el = isset($settings['errorlogFS']);
       
       global $wpdb;
-      $pTable = $wpdb->prefix . "sam_places";          
+      $pTable = $wpdb->prefix . "sam_places";
       $aTable = $wpdb->prefix . "sam_ads";
       $eTable = $wpdb->prefix . "sam_errors";
 
@@ -296,7 +296,7 @@ if(!class_exists('SamAdPlace')) {
         return $output;
       }
 
-      if(($settings['adShow'] == 'js') && !$this->force) {
+      if(isset($settings['adShow']) && ($settings['adShow'] == 'js') && !$this->force) {
         //$data = "{id: 0, pid: {$place['id']}, codes: $codes}";
         return "<div id='c{$rId}_0_{$place['id']}' class='sam-container sam-place' data-sam='{$data}'></div>";
       }
