@@ -28,7 +28,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 				
       register_activation_hook(SAM_MAIN_FILE, array(&$this, 'onActivate'));
       register_deactivation_hook(SAM_MAIN_FILE, array(&$this, 'onDeactivate'));
-      register_uninstall_hook(SAM_MAIN_FILE, array(&$this, 'onUninstall'));
+      register_uninstall_hook(SAM_MAIN_FILE, array(__CLASS__, 'onUninstall'));
 
       $options = parent::getSettings(false);
       if(!empty($options['access'])) $access = $options['access'];
@@ -99,7 +99,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       }
     }
 
-    public function onUninstall() {
+    public static function onUninstall() {
       global $wpdb;
       $zTable = $wpdb->prefix . "sam_zones";
       $pTable = $wpdb->prefix . "sam_places";
