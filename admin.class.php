@@ -503,7 +503,10 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     }
 
 		public function initSettings() {
-			$scStr = __("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site. Shotcode <code>[month]</code> will be replaced with name of month of reporting period.", SAM_DOMAIN);
+			global $current_user;
+      get_currentuserinfo();
+
+      $scStr = __("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site. Shotcode <code>[month]</code> will be replaced with name of month of reporting period.", SAM_DOMAIN);
 
       register_setting('samOptions', SAM_OPTIONS_NAME);
 
@@ -519,10 +522,15 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       self::starSettingsTab('sam_dfp_section', 'tabs-3', __('Google', SAM_DOMAIN));
       add_settings_section("sam_dfp_section", __("Google DFP Settings", SAM_DOMAIN), array(&$this, "drawDFPSection"), 'sam-settings');
       self::finishSettingsTab('sam_dfp_section');
-      self::starSettingsTab('sam_statistic_section', 'tabs-4', __('Tools', SAM_DOMAIN));
-      add_settings_section("sam_statistic_section", __("Statistics Settings", SAM_DOMAIN), array(&$this, "drawStatisticsSection"), 'sam-settings');
+      self::starSettingsTab('sam_mailer_section', 'tabs-4', __('Mailer', SAM_DOMAIN));
       add_settings_section('sam_mailer_section', __('Mailing System', SAM_DOMAIN), array(&$this, 'drawMailerSection'), 'sam-settings');
-      self::finishSettingsTab('sam_mailer_section');
+      add_settings_section('sam_mailer_data_section', __('Mail Data', SAM_DOMAIN), array(&$this, 'drawMailerDataSection'), 'sam-settings');
+      add_settings_section('sam_mailer_content_section', __('Mail Content', SAM_DOMAIN), array(&$this, 'drawMailerContentSection'), 'sam-settings');
+      add_settings_section('sam_mailer_preview_section', __('Preview', SAM_DOMAIN), array(&$this, 'drawPreviewSection'), 'sam-settings');
+      self::finishSettingsTab('sam_mailer_preview_section');
+      self::starSettingsTab('sam_statistic_section', 'tabs-5', __('Tools', SAM_DOMAIN));
+      add_settings_section("sam_statistic_section", __("Statistics Settings", SAM_DOMAIN), array(&$this, "drawStatisticsSection"), 'sam-settings');
+      self::finishSettingsTab('sam_statistic_section');
 
       add_settings_field('adCycle', __("Views per Cycle", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_general_section', array('description' => __('Number of hits of one ad for a full cycle of rotation (maximal activity).', SAM_DOMAIN)));
       add_settings_field('access', __('Minimum Level for access to menu', SAM_DOMAIN), array(&$this, 'drawJSliderOption'), 'sam-settings', 'sam_general_section', array('description' => __('Who can use menu of plugin - Minimum User Level needed for access to menu of plugin. In any case only Super Admin and Administrator can use Settings Menu of SAM Plugin.', SAM_DOMAIN), 'options' => array('manage_network' => __('Super Admin', SAM_DOMAIN), 'manage_options' => __('Administrator', SAM_DOMAIN), 'edit_others_posts' => __('Editor', SAM_DOMAIN), 'publish_posts' => __('Author', SAM_DOMAIN), 'edit_posts' => __('Contributor', SAM_DOMAIN)), 'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')));
@@ -565,12 +573,22 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_settings_field('deleteFolder', __("Delete custom images folder of plugin during deactivating plugin", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_deactivate_section', array('label_for' => 'deleteFolder', 'checkbox' => true));
 
       add_settings_field('mailer', __('Allow SAM Mailing System to send statistical data to advertisers', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_mailer_section', array('label_for' => 'mailer', 'checkbox' => true));
-      add_settings_field('mail_subject', __('Mail Subject', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Mail subject of sending email.', SAM_DOMAIN), 'width' => '70%'));
-      add_settings_field('mail_greeting', __('Mail Greeting String', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Greeting string of sending email.', SAM_DOMAIN).' '.$scStr, 'width' => '70%'));
-      add_settings_field('mail_text_before', __('Mail Text before statistical data table', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Some text before statistical data table of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '75px'));
-      add_settings_field('mail_text_after', __('Mail Text after statistical data table', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('Some text after statistical data table of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '75px'));
-      add_settings_field('mail_warning', __('Mail Warning 1', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('This text will be placed at the end of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '50px'));
-      add_settings_field('mail_message', __('Mail Warning 2', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_section', array('description' => __('This text will be placed at the very end of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '50px'));
+      add_settings_field('mail_period', __('Periodicity of sending reports', SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_mailer_section', array('options' => array('monthly' => __('Monthly', SAM_DOMAIN), 'weekly' => __('Weekly', SAM_DOMAIN))));
+
+      add_settings_field('mail_hits', __('Ad Hits (Number of shows of the advertisement)', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_mailer_data_section', array('label_for' => 'mail_hits', 'checkbox' => true));
+      add_settings_field('mail_clicks', __('Ad Clicks (Number of clicks on the advertisement)', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_mailer_data_section', array('label_for' => 'mail_clicks', 'checkbox' => true));
+      add_settings_field('mail_cpm', __('CPM (Cost per thousand hits, calculated value)', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_mailer_data_section', array('label_for' => 'mail_cpm', 'checkbox' => true));
+      add_settings_field('mail_cpc', __('CPC (Cost per click)', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_mailer_data_section', array('label_for' => 'mail_cpc', 'checkbox' => true));
+      add_settings_field('mail_ctr', __('CTR (Click through rate, calculated value)', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_mailer_data_section', array('label_for' => 'mail_ctr', 'checkbox' => true));
+
+      add_settings_field('mail_subject', __('Mail Subject', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_mailer_content_section', array('description' => __('Mail subject of sending email.', SAM_DOMAIN), 'width' => '70%'));
+      add_settings_field('mail_greeting', __('Mail Greeting String', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_mailer_content_section', array('description' => __('Greeting string of sending email.', SAM_DOMAIN).' '.$scStr, 'width' => '70%'));
+      add_settings_field('mail_text_before', __('Mail Text before statistical data table', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_content_section', array('description' => __('Some text before statistical data table of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '75px'));
+      add_settings_field('mail_text_after', __('Mail Text after statistical data table', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_content_section', array('description' => __('Some text after statistical data table of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '75px'));
+      add_settings_field('mail_warning', __('Mail Warning 1', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_content_section', array('description' => __('This text will be placed at the end of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '50px'));
+      add_settings_field('mail_message', __('Mail Warning 2', SAM_DOMAIN), array(&$this, 'drawTextareaOption'), 'sam-settings', 'sam_mailer_content_section', array('description' => __('This text will be placed at the very end of sending email.', SAM_DOMAIN).' '.$scStr, 'height' => '50px'));
+
+      add_settings_field('mail_preview', __('Mail Preview', SAM_DOMAIN).':', array(&$this, 'drawPreviewMail'), 'sam-settings', 'sam_mailer_preview_section', array('user' => $current_user->display_name));
 
       register_setting('sam-settings', SAM_OPTIONS_NAME, array(&$this, 'sanitizeSettings'));
 		}
@@ -631,7 +649,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $jqCSS = (version_compare($wp_version, '3.8-RC1', '<')) ? SAM_URL.'css/jquery-ui-sam.css' : SAM_URL.'css/jquery-ui-wp38.css';
 
       if($hook == $this->settingsPage) {
-        wp_enqueue_style('adminSettingsLayout', SAM_URL.'css/sam-admin-edit.css', false, SAM_VERSION);
+        wp_enqueue_style('adminSettingsLayout', SAM_URL.'css/sam-settings.css', false, SAM_VERSION);
         wp_enqueue_style('jSlider', SAM_URL.'css/jslider.css', false, '1.1.0');
         wp_enqueue_style('jSlider-plastic', SAM_URL.'css/jslider.round.plastic.css', false, '1.1.0');
         wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
@@ -1013,6 +1031,26 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 			}
 		}
 
+    public function setTransient( $options ) {
+      if(false === ($mDate = get_transient( 'sam_maintenance_date' )) || $options['mailer']) {
+        $date = new DateTime('now');
+        if($options['mail_period'] == 'monthly') {
+          $date->modify('+1 month');
+          $nextDate = new DateTime($date->format('Y-m-01 02:00'));
+          $diff = $nextDate->format('U') - $_SERVER['REQUEST_TIME'];
+        }
+        else {
+          $dd = 8 - ((integer) $date->format('N'));
+          $date->modify("+{$dd} day");
+          $nextDate = new DateTime($date->format('Y-m-d 02:00'));
+          $diff = (8 - ((integer) $date->format('N'))) * DAY_IN_SECONDS;
+        }
+
+        $format = get_option('date_format').' '.get_option('time_format');
+        set_transient( 'sam_maintenance_date', $nextDate->format($format), $diff );
+      }
+    }
+
     public function sanitizeSettings($input) {
       global $wpdb;
 
@@ -1045,7 +1083,13 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'errorlog',
         'errorlogFS',
         'bbpActive',
-        'bbpEnabled'
+        'bbpEnabled',
+        'mail_hits',
+        'mail_clicks',
+        'mail_cpm',
+        'mail_cpc',
+        'mail_ctr',
+        'mail_preview'
       );
       foreach($boolNames as $name) {
         $output[$name] = ((isset($input[$name])) ? $input[$name] : 0);
@@ -1086,10 +1130,26 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $options = parent::getSettings();
 
       if($options['mailer']) {
+        self::setTransient($options);
+
         $time = get_transient( 'sam_maintenance_date' );
         echo "<p>".__("Next mailing is scheduled on", SAM_DOMAIN)." <code>{$time}</code>... "."</p>";
       }
       else echo "<p>".__("Adjust parameters of Mailing System.", SAM_DOMAIN)."</p>";
+    }
+
+    public function drawMailerDataSection() {
+      $str = __('Adjust Reporting Data. Name and Description of the ad will be included to the reporting data in any case.', SAM_DOMAIN);
+      echo "<p>{$str}</p>";
+    }
+
+    public function drawMailerContentSection() {
+      $str = __('Adjust Mail Content.', SAM_DOMAIN);
+      echo "<p>{$str}</p>";
+    }
+
+    public function drawPreviewSection() {
+      return '';
     }
     
     public function drawTextOption( $id, $args ) {
@@ -1187,6 +1247,15 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         </div>
       </div>
       <?php
+    }
+
+    public function drawPreviewMail( $id, $args ) {
+      include_once('sam.tools.php');
+
+      $mail = new SamMailer($this->samOptions);
+      $prev = $mail->buildPreview($args['user']);
+
+      echo "<div class='graph-container'>{$prev}</div>";
     }
 		
 		public function samAdminPage() {
@@ -1308,7 +1377,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
                 <?php settings_fields('samOptions'); ?>
                 <?php $this->doSettingsSections('sam-settings', $this->settingsTabs); ?>
                 <p class="submit">
-                  <!--<input name="Submit" type="submit" class="button-primary" value="<?php esc_attr_e('Save Changes'); ?>" />-->
                   <button id="submit-button" class="color-btn color-btn-left" name="Submit" type="submit">
                     <b style="background-color: #21759b"></b>
                     <?php esc_attr_e('Save Changes'); ?>

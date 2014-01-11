@@ -4,7 +4,7 @@ Donate link: https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.c
 Tags: ad, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, yahoo, ypn
 Requires at least: 3.5
 Tested up to: 3.8
-Stable tag: 2.1.79
+Stable tag: 2.2.80
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -87,6 +87,9 @@ No questions now...
 
 == Changelog ==
 
+= 2.2.80 =
+* Mailer improved
+* Bugs fixed
 = 2.1.77 =
 * Some minor bugs of mailer are resolved
 * The graphical representation of statistical data is improved
