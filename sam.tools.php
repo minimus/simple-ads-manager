@@ -9,6 +9,9 @@ if(!class_exists('SamMailer')) {
     private $options;
     private $advertisersList;
     private $month;
+    private $first;
+    private $last;
+    private $error;
 
     public function __construct( $settings ) {
       $this->options = $settings;
@@ -30,7 +33,9 @@ if(!class_exists('SamMailer')) {
       $out = str_replace('[name]', $advert, $text);
       $out = str_replace('[site]', get_bloginfo('name'), $out);
       $out = str_replace('Simple Ads Manager', "<a href='http://www.simplelib.com/?p=480' target='_blank'>Simple Ads Manager</a>", $out);
-      $out = str_replace('[month', $this->month, $out);
+      $out = str_replace('[month]', $this->month, $out);
+      $out = str_replace('[first]', $this->first, $out);
+      $out = str_replace('[last]', $this->last, $out);
 
       return $out;
     }
@@ -88,11 +93,11 @@ if(!class_exists('SamMailer')) {
       $options = $this->options;
       $aTable = $wpdb->prefix . 'sam_ads';
       $sTable = $wpdb->prefix . 'sam_stats';
-      $greeting = self::parseText($options['mail_greeting'], $user);
-      $textBefore = self::parseText($options['mail_text_before'], $user);
-      $textAfter = self::parseText($options['mail_text_after'], $user);
-      $warning = self::parseText($options['mail_warning'], $user);
-      $message = self::parseText($options['mail_message'], $user);
+      $greeting = self::parseText($options['mail_greeting'], $user['adv_name']);
+      $textBefore = self::parseText($options['mail_text_before'], $user['adv_name']);
+      $textAfter = self::parseText($options['mail_text_after'], $user['adv_name']);
+      $warning = self::parseText($options['mail_warning'], $user['adv_name']);
+      $message = self::parseText($options['mail_message'], $user['adv_name']);
 
       $columns = array(
         'mail_hits' => 'Hits',
@@ -107,14 +112,19 @@ if(!class_exists('SamMailer')) {
         $date->modify('-1 month');
         $first = $date->format('Y-m-01 00:00:00');
         $last = $date->format('Y-m-t 23:59:59');
+        $this->first = $first;
+        $this->last = $last;
       }
       else {
-        $date->modify('-1 day');
+        $date->modify('-1 week');
         $dd = 7 - ((integer) $date->format('N'));
         if($dd > 0) $date->modify("+{$dd} day");
         $last = $date->format('Y-m-d 23:59:59');
         $date->modify('-6 day');
         $first = $date->format('Y-m-d 00:00:00');
+
+        $this->first = $first;
+        $this->last = $last;
       }
 
       $sql = "SELECT
@@ -131,62 +141,11 @@ if(!class_exists('SamMailer')) {
                 WHERE sa.adv_mail = %s AND sa.trash = FALSE AND NOT (sa.ad_schedule AND sa.ad_end_date <= %s);";
       $ads = $wpdb->get_results($wpdb->prepare($sql, $first, $last, $first, $last, $user['adv_mail'], $last), ARRAY_A);
 
-      /*if($this->options['mail_period'] === 'monthly') {
-        $date = new DateTime('now');
-        $date->modify('-1 month');
-        $month = $date->format('Y-m-d');
-        $monthL = $date->format('Y-m-t');
-        $this->month = $date->format('F');
-
-        $sql = "SELECT
-                  sa.id,
-                  sa.pid,
-                  sa.name,
-                  sa.description,
-                  @ad_hits := (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM %s) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 0) AS ad_hits,
-                  @ad_clicks := (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM %s) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 1) AS ad_clicks,
-                  (sa.cpm / @ad_hits * 1000) AS e_cpm,
-                  sa.cpc AS e_cpc,
-                  (@ad_clicks / @ad_hits * 100) AS e_ctr
-                FROM $aTable sa
-                WHERE sa.adv_mail = %s AND sa.trash = FALSE AND NOT (sa.ad_schedule AND sa.ad_end_date <= %s);";
-        $ads = $wpdb->get_results($wpdb->prepare($sql, $month, $month, $user['adv_mail'], $monthL), ARRAY_A);
-      }
-      else {
-        $date = new DateTime('now');
-        $date->modify('-1 week');
-        $week = $date->format('W');
-        $this->month = $date->format('F');
-        $dd = 7 - ((integer) $date->format('N'));
-        if($dd > 0) $date->modify("+{$dd} day");
-        $weekL = $date->format('Y-m-d 23:59:59');
-
-        $sql = "SELECT
-                  sa.id,
-                  sa.pid,
-                  sa.name,
-                  sa.description,
-                  @ad_hits := (SELECT COUNT(*) FROM $sTable ss WHERE WEEK( ss.event_time, 1) = %d AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 0) AS ad_hits,
-                  @ad_clicks := (SELECT COUNT(*) FROM $sTable ss WHERE WEEK(ss.event_time, 1) = %d AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 1) AS ad_clicks,
-                  (sa.cpm / @ad_hits * 1000) AS e_cpm,
-                  sa.cpc AS e_cpc,
-                  (@ad_clicks / @ad_hits * 100) AS e_ctr
-                FROM $aTable sa
-                WHERE sa.adv_mail = %s AND sa.trash = FALSE AND NOT (sa.ad_schedule AND sa.ad_end_date <= %s);";
-        $ads = $wpdb->get_results($wpdb->prepare($sql, $week, $week, $user['adv_mail'], $weekL), ARRAY_A);
-      }*/
+      $this->error = $wpdb->prepare($sql, $first, $last, $first, $last, $user['adv_mail'], $last); //$wpdb->last_error;
 
       $mess = '';
 
       if(!empty($ads) && is_array($ads)) {
-        /*$sql = "SELECT COUNT(*)
-                  FROM $sTable ss
-                  INNER JOIN $aTable sa
-                    ON ss.id = sa.id
-                  WHERE sa.adv_mail = %s
-                    AND sa.trash = FALSE
-                    AND (EXTRACT(YEAR_MONTH FROM %s) = EXTRACT(YEAR_MONTH FROM ss.event_time))
-                    AND ss.event_type = %d";*/
         $sql = "SELECT COUNT(*)
                   FROM $sTable ss
                   INNER JOIN $aTable sa
@@ -195,6 +154,7 @@ if(!class_exists('SamMailer')) {
                     AND sa.trash = FALSE
                     AND ss.event_time >= %s AND ss.event_time <= %s
                     AND ss.event_type = %d";
+
         $hits = $wpdb->get_var($wpdb->prepare($sql, $user['adv_mail'], $first, $last, 0));
         $clicks = $wpdb->get_var($wpdb->prepare($sql, $user['adv_mail'], $first, $last, 1));
 
@@ -263,12 +223,14 @@ if(!class_exists('SamMailer')) {
         //$headers .= 'From: Tests <wordpress@simplelib.com>' . "\r\n";
         foreach($advertisers as $adv) {
           $subject = self::parseText($this->options['mail_subject'], $adv['adv_name']);
-          $message = self::buildMessage($adv['adv_name']);
-          wp_mail($adv['adv_mail'], $subject, $message, $headers);
-          $k++;
+          $message = self::buildMessage($adv);
+          if(!empty($message)) {
+            wp_mail($adv['adv_mail'], $subject, $message, $headers);
+            $k++;
+          }
         }
       }
-      return $k;
+      return ($k == 0) ? $this->error : $k;
     }
 
     public function buildPreview($user) {

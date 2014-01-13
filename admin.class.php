@@ -1032,7 +1032,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 		}
 
     public function setTransient( $options ) {
-      if(false === ($mDate = get_transient( 'sam_maintenance_date' )) || $options['mailer']) {
+      if(false === ($mDate = get_transient( 'sam_maintenance_date' ))) {
         $date = new DateTime('now');
         if($options['mail_period'] == 'monthly') {
           $date->modify('+1 month');
@@ -1128,6 +1128,10 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
     public function drawMailerSection() {
       $options = parent::getSettings();
+      /*include_once('sam.tools.php');
+      $test = new SamMailer($options);
+      $mails = $test->sendMails();
+      echo "Sending: {$mails} mails";*/
 
       if($options['mailer']) {
         self::setTransient($options);
