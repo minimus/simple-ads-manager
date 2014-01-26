@@ -4,7 +4,7 @@ Donate link: https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.c
 Tags: ad, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, yahoo, ypn
 Requires at least: 3.5
 Tested up to: 3.8
-Stable tag: 2.2.80
+Stable tag: 2.3.81
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,9 +81,7 @@ No questions now...
 1. Ad Editor
 1. Ads Place Editor
 1. Simple Ads Manager Settings
-1. Simple Ads Manager Contextual Help
-1. Ads Zones List
-1. Ads Zone Editor
+1. Ads Place Statistical Data
 
 == Changelog ==
 

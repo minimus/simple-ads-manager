@@ -34,8 +34,11 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'detectBots' => 0,                // bool
       'detectingMode' => 'inexact',
       'currency' => 'auto',             // usd|eur|auto
+      'dfpMode' => 'gam',               // gam|gpt
       'dfpPub' => '',                   // string
+      'dfpNetworkCode' => '',           // string
       'dfpBlocks' => array(),           // array
+      'dfpBlocks2' => array(),           // array
       'editorButtonMode' => 'modern',   // modern|classic
       'useSWF' => 0,                    // bool
       'access' => 'manage_options',     //
@@ -61,7 +64,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '2.2.80');
+      define('SAM_VERSION', '2.3.81');
       define('SAM_DB_VERSION', '2.6');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );
@@ -243,7 +246,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 
       if(is_user_logged_in()) {
         get_currentuserinfo();
-        $uSlug = $current_user->user_login;
+        $uSlug = $current_user->user_nicename;
         $wcul = "IF(sa.ad_users_reg = 1, IF(sa.x_ad_users = 1, NOT FIND_IN_SET(\"$uSlug\", sa.x_view_users), TRUE) AND IF(sa.ad_users_adv = 1, (sa.adv_nick <> \"$uSlug\"), TRUE), FALSE)";
       }
       else {
@@ -319,8 +322,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           $wci = " OR (sa.view_type = 2 AND FIND_IN_SET({$postID}, sa.view_id))";
           $wcx = " AND IF(sa.x_id, NOT FIND_IN_SET({$postID}, sa.x_view_id), TRUE)";
           $author = get_userdata($post->post_author);
-          $wca = " AND IF(sa.view_type < 2 AND sa.ad_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"{$author->user_login}\", sa.view_authors), TRUE)";
-          $wcxa = " AND IF(sa.view_type < 2 AND sa.x_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"{$author->user_login}\", sa.x_view_authors), TRUE)";
+          $wca = " AND IF(sa.view_type < 2 AND sa.ad_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET(\"{$author->user_nicename}\", sa.view_authors), TRUE)";
+          $wcxa = " AND IF(sa.view_type < 2 AND sa.x_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET(\"{$author->user_nicename}\", sa.x_view_authors), TRUE)";
         }
         if(is_page()) {
           global $post;
@@ -359,8 +362,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 
           $viewPages |= SAM_IS_AUTHOR;
           $author = $wp_query->get_queried_object();
-          $wca = " AND IF(sa.view_type < 2 AND sa.ad_authors = 1 AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$author->user_login}', sa.view_authors), TRUE)";
-          $wcxa = " AND IF(sa.view_type < 2 AND sa.x_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$author->user_login}', sa.x_view_authors), TRUE)";
+          $wca = " AND IF(sa.view_type < 2 AND sa.ad_authors = 1 AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), FIND_IN_SET('{$author->user_nicename}', sa.view_authors), TRUE)";
+          $wcxa = " AND IF(sa.view_type < 2 AND sa.x_authors AND IF(sa.view_type = 0, sa.view_pages+0 & $viewPages, TRUE), NOT FIND_IN_SET('{$author->user_nicename}', sa.x_view_authors), TRUE)";
         }
         if(is_post_type_archive()) {
           $viewPages |= SAM_IS_POST_TYPE_ARCHIVE;
@@ -410,13 +413,52 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           'loadurl' => SAM_URL . 'sam-ajax-loader.php',
           'load' => ($this->samOptions['adShow'] == 'js'),
           'level' => count(explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) ))),
+          'mailer' => $options['mailer'],
           'clauses' => $clauses64
         )
       );
     }
+
+    private function getDfpCodes() {
+      $options = self::getSettings();
+      $netCode = $options['dfpNetworkCode'];
+
+      if(($options['useDFP'] == 1) && !empty($netCode) && is_array($options['dfpBlocks'])) {
+        $slots = '';
+        foreach($options['dfpBlocks'] as $value)
+          $slots .= "googletag.defineSlot('/$netCode/$value', [468, 60], 'div-gpt-ad-1390745798945-0').addService(googletag.pubads());";
+        $out = "
+<script type='text/javascript'>
+  var googletag = googletag || {};
+  googletag.cmd = googletag.cmd || [];
+  (function() {
+    var gads = document.createElement('script');
+    gads.async = true;
+    gads.type = 'text/javascript';
+    var useSSL = 'https:' == document.location.protocol;
+    gads.src = (useSSL ? 'https:' : 'http:') + '//www.googletagservices.com/tag/js/gpt.js';
+    var node = document.getElementsByTagName('script')[0];
+    node.parentNode.insertBefore(gads, node);
+  })();
+</script>
+
+<script type='text/javascript'>
+  googletag.cmd.push(function() {
+    googletag.defineSlot('/5043950/Header', [468, 60], 'div-gpt-ad-1390745798945-0').addService(googletag.pubads());
+    googletag.defineSlot('/5043950/Sidebar', [300, 250], 'div-gpt-ad-1390745798945-1').addService(googletag.pubads());
+    googletag.defineSlot('/5043950/SiteTop', [468, 60], 'div-gpt-ad-1390745798945-2').addService(googletag.pubads());
+    googletag.pubads().enableSingleRequest();
+    googletag.enableServices();
+  });
+</script>";
+      }
+      else $out = '';
+
+      return $out;
+    }
     
     public function headerCodes() {
-      $options = $this->getSettings();
+      $options = self::getSettings();
       $pub = $options['dfpPub'];
       
       if(($options['useDFP'] == 1) && !empty($options['dfpPub'])) {

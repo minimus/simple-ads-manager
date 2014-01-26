@@ -291,11 +291,13 @@ var sam = sam || {};
     });
 
     fu = new AjaxUpload(btnUpload, {
-      action:ajaxurl,
+      action: samAjaxUrl,
       name:'uploadfile',
       data:{
-        action:'upload_ad_image'
+        action:'upload_ad_image',
+        path: samStrs.path
       },
+      responseType: 'json',
       onSubmit:function (file, ext) {
         if (!(ext && /^(jpg|png|jpeg|gif|swf)$/.test(ext))) {
           status.text(samStrs.status);
@@ -309,7 +311,7 @@ var sam = sam || {};
         status.text('');
         loadImg.hide();
         $('<div id="files"></div>').appendTo(srcHelp);
-        if (response == "success") {
+        if (response.status == "success") {
           $("#files").text(samStrs.file + ' ' + file + ' ' + samStrs.uploaded)
             .addClass('updated')
             .delay(3000)

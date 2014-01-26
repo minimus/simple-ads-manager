@@ -176,11 +176,13 @@ var sam = sam || {};
       };
 
     fu = new AjaxUpload(btnUpload, {
-      action:ajaxurl,
+      action: options.ajaxurl,
       name:'uploadfile',
       data:{
-        action:'upload_ad_image'
+        action:'upload_ad_image',
+        path: options.path
       },
+      responseType: 'json',
       onSubmit: function (file, ext) {
         if (!(ext && /^(jpg|png|jpeg|gif|swf)$/.test(ext))) {
           status.text(options.status);
@@ -188,12 +190,13 @@ var sam = sam || {};
         }
         loadImg.show();
         status.text(options.uploading);
+        return false;
       },
       onComplete:function (file, response) {
         status.text('');
         loadImg.hide();
         $('<div id="files"></div>').appendTo(srcHelp);
-        if (response == "success") {
+        if (response.status == "success") {
           $("#files").text(options.file + ' ' + file + ' ' + options.uploaded)
             .addClass('updated')
             .delay(3000)
@@ -211,6 +214,7 @@ var sam = sam || {};
               $(this).remove();
             });
         }
+        return false;
       }
     });
 

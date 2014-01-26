@@ -37,9 +37,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       define('SAM_ACCESS', $access);
 
-      add_action('wp_ajax_upload_ad_image', array(&$this, 'uploadHandler'));
+      //add_action('wp_ajax_upload_ad_image', array(&$this, 'uploadHandler'));
       add_action('wp_ajax_close_pointer', array(&$this, 'closePointerHandler'));
-      add_action('wp_ajax_get_error', array(&$this, 'getErrorDataHandler'));
 			add_action('admin_menu', array(&$this, 'regAdminPage'));
       add_filter('tiny_mce_version', array(&$this, 'tinyMCEVersion'));
       add_action('init', array(&$this, 'addButtons'));
@@ -558,7 +557,9 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_settings_field('errorlogFS', __('Turn on/off the error log for Face Side.', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_ext_section', array('label_for' => 'errorlogFS', 'checkbox' => true));
 
       add_settings_field('useDFP', __("Allow using Google DoubleClick for Publishers (DFP) rotator codes", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_dfp_section', array('label_for' => 'useDFP', 'checkbox' => true));
+      add_settings_field('dfpMode', __('Google DFP Mode', SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_dfp_section', array('options' => array('gam' => __('GAM (Google Ad Manager)', SAM_DOMAIN), 'gpt' => __('GPT (Google Publisher Tag)', SAM_DOMAIN)), 'description' => __('Select DFP Tags Mode.', SAM_DOMAIN)));
       add_settings_field('dfpPub', __("Google DFP Pub Code", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_dfp_section', array('description' => __('Your Google DFP Pub code. i.e:', SAM_DOMAIN).' ca-pub-0000000000000000.', 'width' => '200px'));
+      add_settings_field('dfpNetworkCode', __('Google DFP Network Code', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_dfp_section', array('description' => __('Network Code of Your DFP Ad Network.', SAM_DOMAIN), 'width' => '200px'));
 
       add_settings_field('detectBots', __("Allow Bots and Crawlers detection", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_statistic_section', array('label_for' => 'detectBots', 'checkbox' => true));
       add_settings_field('detectingMode', __("Accuracy of Bots and Crawlers Detection", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_statistic_section', array('description' => __("If bot is detected hits of ads won't be counted. Use with caution! More exact detection requires more server resources.", SAM_DOMAIN), 'options' => array( 'inexact' => __('Inexact detection', SAM_DOMAIN), 'exact' => __('Exact detection', SAM_DOMAIN), 'more' => __('More exact detection', SAM_DOMAIN))));
@@ -701,7 +702,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           }
 
           wp_enqueue_script('jquery');
-          wp_enqueue_media( array('post' => 999999) );
+          wp_enqueue_media( array('post' => null) );
           wp_enqueue_script('jquery-ui-core');
           wp_enqueue_script('jquery-effects-core');
           wp_enqueue_script('jquery-ui-widget');
@@ -720,7 +721,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('pointLabels', SAM_URL . 'js/jqplot.pointLabels.min.js', array('jquery', 'jqPlot'), '1.0.2');
 
           wp_enqueue_script('wp-pointer');
-          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-place.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-place.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
           wp_localize_script('adminEditScript', 'samEditorOptions', array(
             'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
             'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
@@ -733,7 +734,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               'status' => __('Only JPG, PNG or GIF files are allowed', SAM_DOMAIN),
               'file' => __('File', SAM_DOMAIN),
               'path' => SAM_AD_IMG,
-              'url' => SAM_AD_URL
+              'url' => SAM_AD_URL,
+              'ajaxurl' => SAM_URL . 'sam-ajax-admin.php'
             ),
             'labels' => array('hits' => __('Hits', SAM_DOMAIN), 'clicks' => __('Clicks', SAM_DOMAIN)),
             'columns' => array(
@@ -769,7 +771,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
           if($options['useSWF']) wp_enqueue_script('swfobject');
           wp_enqueue_script('jquery');
-          wp_enqueue_media();
+          wp_enqueue_media(array('post' => null));
           wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.3');
           wp_enqueue_script('jquery-ui-core');
           wp_enqueue_script('jquery-effects-core');
@@ -796,7 +798,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('pointLabels', SAM_URL . 'js/jqplot.pointLabels.min.js', array('jquery', 'jqPlot'), '1.0.2');
 
           wp_enqueue_script('wp-pointer');
-          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
           wp_localize_script('adminEditScript', 'samEditorOptions', array(
             'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
             'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
@@ -855,6 +857,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       elseif($hook == $this->eLogPage) {
         wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-admin-list.css', false, SAM_VERSION);
         wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
+        wp_enqueue_style('W2UI', SAM_URL . 'css/w2ui.min.css', false, '1.3');
 
         wp_enqueue_script('jquery');
         wp_enqueue_script('jquery-ui-core');
@@ -865,6 +868,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         wp_enqueue_script('jquery-ui-position');
         wp_enqueue_script('jquery-ui-resizable');
         wp_enqueue_script('jquery-ui-dialog');
+
+        wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.3');
         wp_enqueue_script('errorsListScript', SAM_URL.'js/sam-errors-list.js', array('jquery', 'jquery-ui-core'), SAM_VERSION);
         wp_localize_script('errorsListScript', 'options', array(
           'id' => __('Error ID', SAM_DOMAIN),
@@ -874,8 +879,13 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           'sql' => __('Error SQL', SAM_DOMAIN),
           'etype' => __('Type', SAM_DOMAIN),
           'close' => __('Close', SAM_DOMAIN),
+          'title' => __('Error Info', SAM_DOMAIN),
           'imgURL' => SAM_IMG_URL,
-          'alts' => array(__('Warning', SAM_DOMAIN), __('Ok', SAM_DOMAIN))
+          'alts' => array(__('Warning', SAM_DOMAIN), __('Ok', SAM_DOMAIN)),
+          'warning' => __('Warning', SAM_DOMAIN),
+          'update' => __('Update Error', SAM_DOMAIN),
+          'output' => __('Output Error', SAM_DOMAIN),
+          'ajaxurl' => SAM_URL . 'sam-ajax-admin.php'
         ));
       }
     }
@@ -908,7 +918,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       return $output;
     }
 
-    public function uploadHandler() {
+    /*public function uploadHandler() {
       $uploaddir = SAM_AD_IMG;
       $file = $uploaddir . basename($_FILES['uploadfile']['name']);
 
@@ -917,7 +927,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       } else {
         exit("error");
       }
-    }
+    }*/
 
     public function closePointerHandler() {
       $options = self::getPointerOptions();
@@ -928,32 +938,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         $options[$pointer] = false;
         update_option('sam_pointers', $options);
         wp_send_json_success(array('pointer' => $pointer, 'options' => $options));
-      }
-      else wp_send_json_error();
-    }
-
-    public function getErrorDataHandler() {
-      global $wpdb;
-      $eTable = $wpdb->prefix . 'sam_errors';
-      $charset = get_bloginfo('charset');
-      $eTypes = array(__('Warning', SAM_DOMAIN), __('Update Error', SAM_DOMAIN), __('Output Error', SAM_DOMAIN));
-      @header("Content-Type: application/json; charset=$charset");
-      if(isset($_REQUEST['id'])) {
-        $id = $_REQUEST['id'];
-        $eSql = "SELECT
-                  se.id,
-                  se.error_date,
-                  UNIX_TIMESTAMP(se.error_date) as date,
-                  se.table_name as name,
-                  se.error_type,
-                  se.error_msg as msg,
-                  se.error_sql as es,
-                  se.resolved
-                FROM $eTable se WHERE se.id = %d";
-        $out = $wpdb->get_row($wpdb->prepare($eSql, $id), ARRAY_A);
-        if(!empty($out['date'])) $out['date'] = date_i18n(get_option('date_format').' '.get_option('time_format'), $out['date']);
-        $out['type'] = $eTypes[$out['error_type']];
-        wp_send_json_success($out);
       }
       else wp_send_json_error();
     }
@@ -1055,10 +1039,24 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       global $wpdb;
 
       $pTable = $wpdb->prefix . "sam_places";
-      $sql = "SELECT sp.patch_dfp FROM $pTable sp WHERE sp.patch_source = 2";
+      $sql = "SELECT sp.patch_dfp, sp.place_size, sp.place_custom_width, sp.place_custom_height FROM $pTable sp WHERE sp.patch_source = 2";
       $rows = $wpdb->get_results($sql, ARRAY_A);
       $blocks = array();
-      foreach($rows as $value) array_push($blocks, $value['patch_dfp']);
+      $blocks2 = array();
+      $pub = explode('-', $input['dfpPub']);
+      $divStr = (is_array($pub)) ? $pub[count($pub) - 1] : rand(1111111, 9999999);
+      $div = "sam-dfp-{$divStr}";
+      $k = 0;
+      foreach($rows as $value) {
+        array_push($blocks, $value['patch_dfp']);
+
+        if($value['place_custom_width'] == 0) $sizes = explode('x', $value['place_size']);
+        else $sizes = array($value['place_custom_width'], $value['place_custom_height']);
+        array_push($blocks2, array('name' => $value['patch_dfp'], 'size' => $sizes, 'div' => $div.'-'.$k));
+
+        $k++;
+      }
+
 
       $output = $input;
       $boolNames = array(
@@ -1095,6 +1093,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         $output[$name] = ((isset($input[$name])) ? $input[$name] : 0);
       }
       $output['dfpBlocks'] = array_unique($blocks);
+      $output['dfpBlocks2'] = array_unique($blocks2);
       return $output;
     }
     
