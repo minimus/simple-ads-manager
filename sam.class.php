@@ -612,15 +612,15 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       
       if(is_single() || is_page()) {
         if(!empty($options['beforePost']) && !empty($options['bpAdsId'])) 
-          $bpAd = $this->buildAd(array('id' => $options['bpAdsId']), $options['bpUseCodes']);
+          $bpAd = self::buildAd(array('id' => $options['bpAdsId']), $options['bpUseCodes']);
         if(!empty($options['middlePost']) && !empty($options['mpAdsId']))
-          $mpAd = $this->buildAd(array('id' => $options['mpAdsId']), $options['mpUseCodes']);
+          $mpAd = self::buildAd(array('id' => $options['mpAdsId']), $options['mpUseCodes']);
         if(!empty($options['afterPost']) && !empty($options['apAdsId'])) 
-          $apAd = $this->buildAd(array('id' => $options['apAdsId']), $options['apUseCodes']);
+          $apAd = self::buildAd(array('id' => $options['apAdsId']), $options['apUseCodes']);
       }
       elseif($options['bpExcerpt']) {
         if(!empty($options['beforePost']) && !empty($options['bpAdsId']))
-          $bpAd = $this->buildAd(array('id' => $options['bpAdsId']), $options['bpUseCodes']);
+          $bpAd = self::buildAd(array('id' => $options['bpAdsId']), $options['bpUseCodes']);
       }
 
       if(!empty($mpAd)) {
