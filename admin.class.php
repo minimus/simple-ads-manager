@@ -716,7 +716,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('jquery-ui-tabs');
           wp_enqueue_script('jquery-effects-blind');
           wp_enqueue_script('jquery-ui-tooltip');
-          wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
+          //wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
+          wp_enqueue_script('plupload-all');
           wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.3');
 
           wp_enqueue_script('jqPlot', SAM_URL . 'js/jquery.jqplot.min.js', array('jquery'), '1.0.2');
@@ -726,7 +727,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('pointLabels', SAM_URL . 'js/jqplot.pointLabels.min.js', array('jquery', 'jqPlot'), '1.0.2');
 
           wp_enqueue_script('wp-pointer');
-          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-place.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-place.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
           wp_localize_script('adminEditScript', 'samEditorOptions', array(
             'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
             'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
@@ -751,6 +752,11 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               array('field' => 'e_cpm', 'caption' => 'CPM', 'size' => '10%', 'render' => 'float:2'),
               array('field' => 'e_cpc', 'caption' => 'CPC', 'size' => '10%', 'render' => 'float:2'),
               array('field' => 'e_ctr', 'caption' => 'CTR', 'size' => '10%', 'render' => 'percent')
+            ),
+            'uploader' => array(
+              'path' => SAM_AD_IMG,
+              'url' => SAM_URL . 'sam-uploader.php',
+              'adUrl' => SAM_AD_URL
             )
           ));
         }
@@ -791,7 +797,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('jquery-ui-tooltip');
           if(file_exists(SAM_PATH.'/js/i18n/jquery.ui.datepicker-'.$lc.'.js'))
             wp_enqueue_script('jquery-ui-locale', SAM_URL.'js/i18n/jquery.ui.datepicker-'.$lc.'.js', array('jquery'), '1.8.9');
-          wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
+          //wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
+          wp_enqueue_script('plupload-all');
 
           //wp_enqueue_script('cg-props', SAM_URL.'js/jquery.i18n.properties-1.0.9.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), '1.0.9');
           wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.3.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.3');
@@ -803,7 +810,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('pointLabels', SAM_URL . 'js/jqplot.pointLabels.min.js', array('jquery', 'jqPlot'), '1.0.2');
 
           wp_enqueue_script('wp-pointer');
-          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
           wp_localize_script('adminEditScript', 'samEditorOptions', array(
             'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
             'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
@@ -828,6 +835,11 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               'admin' => __('Administrator', SAM_DOMAIN),
               'superAdmin' => __('Super Admin', SAM_DOMAIN),
               'labels' => array('hits' => __('Hits', SAM_DOMAIN), 'clicks' => __('Clicks', SAM_DOMAIN))
+            ),
+            'uploader' => array(
+              'path' => SAM_AD_IMG,
+              'url' => SAM_URL . 'sam-uploader.php',
+              'adUrl' => SAM_AD_URL
             )
           ));
           //wp_enqueue_script('samMedia', SAM_URL . 'js/sam-media.js', array('jquery'), SAM_VERSION, true);

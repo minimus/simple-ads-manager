@@ -273,8 +273,10 @@ if(!class_exists('SamPlaceEdit')) {
               <strong><?php _e('Upload File', SAM_DOMAIN); ?></strong>
             </p>
             <button id="upload-file-button" class="color-btn color-btn-left"><b style="background-color: #21759b"></b><?php _e('Upload', SAM_DOMAIN);?></button>
-            <img id='load_img' src='<?php echo SAM_IMG_URL ?>loader.gif' style='display: none;'>
-            <span id="uploading"></span>
+            <!--<img id='load_img' src='<?php echo SAM_IMG_URL ?>loader.gif' style='display: none;'>
+            <span id="uploading"></span>-->
+            <span id="upload-console"></span>
+            <span id="upload-progress"></span>
             <p>
               <span id="uploading-help"><?php _e("Select and upload file from your local computer.", SAM_DOMAIN); ?></span>
             </p>

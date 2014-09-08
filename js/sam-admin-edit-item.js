@@ -3,7 +3,7 @@
  */
 var sam = sam || {};
 (function ($) {
-  var media, mediaTexts = samEditorOptions.media;
+  var media, mediaTexts = samEditorOptions.media, options = samEditorOptions.strings;
 
   sam.media = media = {
     buttonId: '#banner-media',
@@ -290,7 +290,7 @@ var sam = sam || {};
         plot = $.jqplot('graph', plotData, plotOptions);
     });
 
-    fu = new AjaxUpload(btnUpload, {
+    /*fu = new AjaxUpload(btnUpload, {
       action: samAjaxUrl,
       name:'uploadfile',
       data:{
@@ -330,7 +330,64 @@ var sam = sam || {};
             });
         }
       }
+    });*/
+
+    var
+      uConsole = $('#upload-console'),
+      progress = $('#upload-progress'),
+      uploadOptions = samEditorOptions.uploader;
+    //message = $('#stb-message');
+
+    var uploader = new plupload.Uploader({
+      browse_button: 'upload-file-button',
+      url: uploadOptions.url + '?path=' + uploadOptions.path,
+      multi_selection: false,
+      filters: {
+        max_file_size : '500kb',
+        mime_types: [
+          { title: "Image file", extensions: "jpg,jpeg,gif,png" },
+          { title: "Flash file", extensions: "swf" }
+        ]
+      },
+      init: {
+        PostInit: function() {
+          uConsole.text('');
+          progress.text('');
+        },
+        FilesAdded: function(up, files) {
+          plupload.each(files, function(file) {
+            uConsole.text(file.name);
+          });
+          this.start();
+        },
+        UploadProgress: function(up, file) {
+          progress.text(file.percent + '%');
+        },
+        UploadComplete: function(up, files) {
+          uConsole.text('');
+          progress.text('');
+          $('<div id="files"></div>').appendTo(srcHelp);
+          $("#ad_img").val(uploadOptions.adUrl + files[0].name);
+          $("#files").html('<p>' + options.file + ' ' + files[0].name + ' ' + options.uploaded + '</p>')
+            .addClass('updated')
+            .delay(3000)
+            .fadeOut(1000, function () {
+              $(this).remove();
+            });
+        },
+        Error: function(up, err) {
+          $('<div id="files"></div>').appendTo(srcHelp);
+          $('#files').html( '<p>Error(' +err.code + "): " + err.message + '</p>')
+            .addClass('error')
+            .delay(3000)
+            .fadeOut(1000, function () {
+              $(this).remove();
+            });
+        }
+      }
     });
+
+    uploader.init();
 
     // Advertiser ComboGrid
     $('#adv_nick').combogrid({
@@ -745,44 +802,6 @@ var sam = sam || {};
       dateFormat:'yy-mm-dd',
       showButtonPanel:true
     });
-
-    /*var
-      samAttachment = wp.media.model.Attachment,
-      adImgId = $('#ad_img_id');
-
-    $('#banner-media').click(function(e) {
-      e.preventDefault();
-
-      if(samUploader) {
-        samUploader.open();
-        return;
-      }
-
-      samUploader = wp.media.frames.samBanner = wp.media({
-        title: mediaTexts.title,
-        button: {text: mediaTexts.button},
-        library: {type: 'image'},
-        multiple: false,
-        selection: [samAttachment.get( adImgId.val() )]
-      });
-
-      samUploader.on('select', function() {
-        var
-          adImg = $('#ad_img'),
-          adName = $('#title'),
-          adDesc = $('#item_description'),
-          adAlt = $('#ad_alt');
-
-        var attachment = samUploader.state().get('selection').first().toJSON();
-        adImg.val(attachment.url); // alt, caption, title, description
-        adImgId.val(attachment.id);
-        if('' == adName.val() && '' != attachment.caption) adName.val(attachment.caption);
-        if('' == adDesc.val() && '' != attachment.description) adDesc.val(attachment.description);
-        if('' == adAlt.val() && '' != attachment.alt) adAlt.val(attachment.alt);
-      });
-
-      samUploader.open();
-    });*/
 
     $('#ad_schedule').click(function () {
       if ($('#ad_schedule').is(':checked')) $('#rc-sc').show('blind', {direction:'vertical'}, 500);

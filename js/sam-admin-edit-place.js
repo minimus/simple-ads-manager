@@ -175,7 +175,7 @@ var sam = sam || {};
         }
       };
 
-    fu = new AjaxUpload(btnUpload, {
+    /*fu = new AjaxUpload(btnUpload, {
       action: options.ajaxurl,
       name:'uploadfile',
       data:{
@@ -216,7 +216,64 @@ var sam = sam || {};
         }
         return false;
       }
+    });*/
+
+    var
+      uConsole = $('#upload-console'),
+      progress = $('#upload-progress'),
+      uploadOptions = samEditorOptions.uploader;
+      //message = $('#stb-message');
+
+    var uploader = new plupload.Uploader({
+      browse_button: 'upload-file-button',
+      url: uploadOptions.url + '?path=' + uploadOptions.path,
+      multi_selection: false,
+      filters: {
+        max_file_size : '500kb',
+        mime_types: [
+          { title: "Image file", extensions: "jpg,jpeg,gif,png" },
+          { title: "Flash file", extensions: "swf" }
+        ]
+      },
+      init: {
+        PostInit: function() {
+          uConsole.text('');
+          progress.text('');
+        },
+        FilesAdded: function(up, files) {
+          plupload.each(files, function(file) {
+            uConsole.text(file.name);
+          });
+          this.start();
+        },
+        UploadProgress: function(up, file) {
+          progress.text(file.percent + '%');
+        },
+        UploadComplete: function(up, files) {
+          uConsole.text('');
+          progress.text('');
+          $('<div id="files"></div>').appendTo(srcHelp);
+          $("#patch_img").val(uploadOptions.adUrl + files[0].name);
+          $("#files").html('<p>' + options.file + ' ' + files[0].name + ' ' + options.uploaded + '</p>')
+            .addClass('updated')
+            .delay(3000)
+            .fadeOut(1000, function () {
+              $(this).remove();
+            });
+        },
+        Error: function(up, err) {
+          $('<div id="files"></div>').appendTo(srcHelp);
+          $('#files').html( '<p>Error(' +err.code + "): " + err.message + '</p>')
+            .addClass('error')
+            .delay(3000)
+            .fadeOut(1000, function () {
+              $(this).remove();
+            });
+        }
+      }
     });
+
+    uploader.init();
 
     $.post(samStatsUrl, {
       action: 'load_stats',
