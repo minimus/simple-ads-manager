@@ -1,4 +1,4 @@
-tinyMCE.addI18n("en.samb", {
+tinyMCE.addI18n("en,samb", {
 	insert_samb : 'Insert Advertisement',
   title: 'Insert Advertisement',
   description: 'Select Advertisement Object',

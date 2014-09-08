@@ -38,7 +38,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'dfpPub' => '',                   // string
       'dfpNetworkCode' => '',           // string
       'dfpBlocks' => array(),           // array
-      'dfpBlocks2' => array(),           // array
+      'dfpBlocks2' => array(),          // array
       'editorButtonMode' => 'modern',   // modern|classic
       'useSWF' => 0,                    // bool
       'access' => 'manage_options',     //
@@ -60,7 +60,9 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'mail_cpm' => 1,                   // bool
       'mail_cpc' => 1,                   // bool
       'mail_ctr' => 1,                   // bool
-      'mail_preview' => 0
+      'mail_preview' => 0,               // bool
+      // Statistics
+      'keepStats' => 0                   // int
 	  );
 		
 	  public function __construct() {
@@ -179,7 +181,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 
     public function samMaintenance() {
       $options = self::getSettings();
-      if(false === ($mDate = get_transient( 'sam_maintenance_date' )) && $options['mailer']) {
+      if(false === ($mDate = get_transient( 'sam_maintenance_date' ))) {
         $date = new DateTime('now');
         if($options['mail_period'] == 'monthly') {
           $date->modify('+1 month');
@@ -193,14 +195,22 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           $diff = (8 - ((integer) $date->format('N'))) * DAY_IN_SECONDS;
         }
 
-        if($options['mailer']) {
-          include_once('sam.tools.php');
-          $mailer = new SamMailer($options);
-          $mailer->sendMails();
-        }
-
         $format = get_option('date_format').' '.get_option('time_format');
         set_transient( 'sam_maintenance_date', $nextDate->format($format), $diff );
+
+        if($options['mailer'] || $options['keepStats'] > 0) {
+          include_once('sam.tools.php');
+
+          if($options['mailer']) {
+            $mailer = new SamMailer($options);
+            $mailer->sendMails();
+          }
+
+          if($options['keepStats'] > 0) {
+            $cleaner = new SamStatsCleaner(self::getSettings());
+            $cleaner->clear();
+          }
+        }
       }
     }
 

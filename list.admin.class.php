@@ -113,8 +113,11 @@ if(!class_exists('SamPlaceList')) {
           }
           if($iaction === 'kill-em-all') $wpdb->query("DELETE FROM {$pTable} WHERE trash=true");
           if($iaction === 'clear-stats') {
-            $wpdb->query("UPDATE $pTable SET $pTable.patch_hits = 0;");
-            $wpdb->query("UPDATE $aTable SET $aTable.ad_hits = 0, $aTable.ad_clicks = 0;");
+            //$wpdb->query("UPDATE $pTable SET $pTable.patch_hits = 0;");
+            //$wpdb->query("UPDATE $aTable SET $aTable.ad_hits = 0, $aTable.ad_clicks = 0;");
+            include_once('sam.tools.php');
+            $cleaner = new SamStatsCleaner($this->settings);
+            $cleaner->clear();
           }
           $trash_num = $wpdb->get_var("SELECT COUNT(*) FROM $pTable WHERE trash = TRUE");
           $active_num = $wpdb->get_var("SELECT COUNT(*) FROM $pTable WHERE trash = FALSE");

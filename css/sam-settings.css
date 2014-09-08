@@ -110,8 +110,8 @@
   padding: 1px 10px;
   background-color: #FFFFFF;
   border-left: 4px solid #7AD03A;
-  -webkit-box-shadow:1px 1px 1px 1px rgba(0,0,0,.1);
-  box-shadow:1px 1px 1px 1px rgba(0,0,0,.1);
+  -webkit-box-shadow:0 0 1px 1px rgba(0,0,0,.1);
+  box-shadow:0 0 1px 1px rgba(0,0,0,.1);
 }
 
 .sam2-info p, .sam2-warning p {

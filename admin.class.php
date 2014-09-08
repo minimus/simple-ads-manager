@@ -563,6 +563,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       add_settings_field('detectBots', __("Allow Bots and Crawlers detection", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_statistic_section', array('label_for' => 'detectBots', 'checkbox' => true));
       add_settings_field('detectingMode', __("Accuracy of Bots and Crawlers Detection", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_statistic_section', array('description' => __("If bot is detected hits of ads won't be counted. Use with caution! More exact detection requires more server resources.", SAM_DOMAIN), 'options' => array( 'inexact' => __('Inexact detection', SAM_DOMAIN), 'exact' => __('Exact detection', SAM_DOMAIN), 'more' => __('More exact detection', SAM_DOMAIN))));
+      add_settings_field('keepStats', __('Keep Statistical Data', SAM_DOMAIN), array(&$this, 'drawSelectOption'), 'sam-settings', 'sam_statistic_section', array('description' => __('Period of keeping statistical data (excluding current month).', SAM_DOMAIN), 'options' => array(0 => __('All Time', SAM_DOMAIN), 1 => __('One Month', SAM_DOMAIN), 3 => __('Three Months', SAM_DOMAIN), 6 => __('Six Months', SAM_DOMAIN), 12 => __('One Year'))));
       add_settings_field('currency', __("Display of Currency", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_statistic_section', array('description' => __("Define display of currency. Auto - auto detection of currency from blog settings. USD, EUR - Forcing the display of currency to U.S. dollars or Euro.", SAM_DOMAIN), 'options' => array( 'auto' => __('Auto', SAM_DOMAIN), 'usd' => __('USD', SAM_DOMAIN), 'euro' => __('EUR', SAM_DOMAIN))));
 
       add_settings_field('editorButtonMode', __("TinyMCE Editor Button Mode", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_layout_section', array('description' => __('If you do not want to use the modern dropdown button in your TinyMCE editor, or use of this button causes a problem, you can use classic TinyMCE buttons. In this case select "Classic TinyMCE Buttons".', SAM_DOMAIN), 'options' => array('modern' => __('Modern TinyMCE Button', SAM_DOMAIN), 'classic' => __('Classic TinyMCE Buttons', SAM_DOMAIN))));
@@ -648,6 +649,10 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     public function loadScripts($hook) {
       global $wp_version;
       $jqCSS = (version_compare($wp_version, '3.8-RC1', '<')) ? SAM_URL.'css/jquery-ui-sam.css' : SAM_URL.'css/jquery-ui-wp38.css';
+
+      $sambImage = SAM_URL . 'js/img/sam-icon.png';
+      echo
+      "<style>\n.mce-ico.mce-i-samb {\n  background-image: url($sambImage);\n}\n</style>\n";
 
       if($hook == $this->settingsPage) {
         wp_enqueue_style('adminSettingsLayout', SAM_URL.'css/sam-settings.css', false, SAM_VERSION);
@@ -1092,6 +1097,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       foreach($boolNames as $name) {
         $output[$name] = ((isset($input[$name])) ? $input[$name] : 0);
       }
+      $output['keepStats'] = (integer)$input['keepStats'];
       $output['dfpBlocks'] = array_unique($blocks);
       $output['dfpBlocks2'] = array_unique($blocks2);
       return $output;
@@ -1194,6 +1200,20 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           <?php echo $disabled.$hide; ?>>
 			<?php
 		}
+
+    public function drawSelectOption( $id, $args ) {
+      $options = $args['options'];
+      $settings = parent::getSettings();
+
+      ?>
+      <select id="<?php echo $id; ?>" name="<?php echo SAM_OPTIONS_NAME.'['.$id.']'; ?>">
+        <?php
+        foreach($options as $val=>$name)
+          echo "<option value='$val' ".selected($val, $settings[$id], false).">$name</option>";
+        ?>
+      </select>
+      <?php
+    }
     
     public function drawSelectOptionX( $id, $args ) {
       global $wpdb;
@@ -1385,7 +1405,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
                     <?php esc_attr_e('Save Changes'); ?>
                   </button>
                 </p>
-                <p style='color: #777777; font-size: 12px; font-style: italic;'><?php _ex('Simple Ads Manager plugin for Wordpress.', 'Copyright String', SAM_DOMAIN); ?> Copyright &copy; 2010 - 2014, <a href='http://www.simplelib.com/'>minimus</a>. <?php _ex('All rights reserved.', 'Copyright String', SAM_DOMAIN); ?></p>
+                <p style='color: #777777; font-size: 13px; font-style: italic;'><?php _ex('Simple Ads Manager plugin for Wordpress.', 'Copyright String', SAM_DOMAIN); ?> Copyright &copy; 2010 - 2014, <a href='http://www.simplelib.com/'>minimus</a>. <?php _ex('All rights reserved.', 'Copyright String', SAM_DOMAIN); ?></p>
               </div>
             </div>
           </div>

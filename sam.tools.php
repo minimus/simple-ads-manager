@@ -367,3 +367,75 @@ if(!class_exists('SamMailer')) {
     }
   }
 }
+
+if(!class_exists('SamStatsCleaner')) {
+  class SamStatsCleaner {
+    private $options;
+
+    public function __construct($settings) {
+      $this->options = $settings;
+    }
+
+    private function errorWrite($eTable, $rTable, $eSql = null, $eResult = null, $lastError = null, $date = null) {
+      global $wpdb;
+
+      if(!is_null($eResult)) {
+        if($eResult === false) {
+          $wpdb->insert(
+            $eTable,
+            array(
+              'error_date' => current_time('mysql'),
+              'table_name' => $rTable,
+              'error_type' => 1,
+              'error_msg' => (empty($lastError)) ? __('An error occurred during updating process...', SAM_DOMAIN) : $lastError,
+              'error_sql' => $eSql,
+              'resolved' => 0
+            ),
+            array('%s', '%s', '%d', '%s', '%s', '%d')
+          );
+        }
+        else {
+          $wpdb->insert(
+            $eTable,
+            array(
+              'error_date' => current_time('mysql'),
+              'table_name' => $rTable,
+              'error_type' => 0,
+              'error_msg' => (empty($lastError)) ? sprintf( __('All statistical data before %s is cleared...', SAM_DOMAIN), $date ) : $lastError,
+              'error_sql' => $eSql,
+              'resolved' => 1
+            ),
+            array('%s', '%s', '%d', '%s', '%s', '%d')
+          );
+        }
+      }
+    }
+
+    public function clear($date = null) {
+      if($this->options['keepStats'] == 0) return;
+
+      if($date == null) {
+        $nowDate = new DateTime('now');
+        $modify = ($this->options['keepStats'] < 12) ? '-' . $this->options['keepStats'] . ' month' : '-1 year';
+        $nowDate->modify($modify);
+        $date = $nowDate->format('Y-m-01 00:00');
+        $sDate = $nowDate->format(str_replace(array('d', 'j'), array('01', '1'), get_option('date_format')));
+      }
+      else $sDate = $date;
+
+      global $wpdb;
+      $dbResult = null;
+      $el = (integer)$this->options['errorlog'];
+
+      $sTable = $wpdb->prefix . 'sam_stats';
+      $eTable = $wpdb->prefix . "sam_errors";
+
+      $sql = "DELETE FROM $sTable WHERE event_time < %s;";
+      $dbResult = $wpdb->query($wpdb->prepare($sql, $date));
+      if($el) {
+        self::errorWrite($eTable, $sTable, $wpdb->prepare($sql, $date), $dbResult, $wpdb->last_error, $sDate);
+        $dbResult = null;
+      }
+    }
+  }
+}
