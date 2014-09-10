@@ -716,7 +716,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('jquery-ui-tabs');
           wp_enqueue_script('jquery-effects-blind');
           wp_enqueue_script('jquery-ui-tooltip');
-          //wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
           wp_enqueue_script('plupload-all');
           wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.3');
 
@@ -797,7 +796,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('jquery-ui-tooltip');
           if(file_exists(SAM_PATH.'/js/i18n/jquery.ui.datepicker-'.$lc.'.js'))
             wp_enqueue_script('jquery-ui-locale', SAM_URL.'js/i18n/jquery.ui.datepicker-'.$lc.'.js', array('jquery'), '1.8.9');
-          //wp_enqueue_script('AjaxUpload', SAM_URL.'js/ajaxupload.js', array('jquery'), '3.9');
           wp_enqueue_script('plupload-all');
 
           //wp_enqueue_script('cg-props', SAM_URL.'js/jquery.i18n.properties-1.0.9.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), '1.0.9');
@@ -842,7 +840,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               'adUrl' => SAM_AD_URL
             )
           ));
-          //wp_enqueue_script('samMedia', SAM_URL . 'js/sam-media.js', array('jquery'), SAM_VERSION, true);
         }
       }
       elseif($hook == $this->editZone || $hook == $this->editBlock) {

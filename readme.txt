@@ -2,9 +2,9 @@
 Contributors: minimus
 Donate link: https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.com
 Tags: ad, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, yahoo, ypn
-Requires at least: 3.5
-Tested up to: 3.8
-Stable tag: 2.3.81
+Requires at least: 3.9
+Tested up to: 4.0
+Stable tag: 2.3.85
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,10 @@ No questions now...
 
 == Changelog ==
 
+= 2.3.85 =
+* Scheduled Auto Cleaning of Statistical Data is added
+* Resolved for compatibility with TinyMCE 4
+* Images (Ads) Loader changed to standard Wordpress Loader
 = 2.2.80 =
 * Mailer improved
 * Bugs fixed
