@@ -305,7 +305,7 @@ var sam = sam || {};
         }
         loadImg.show();
         status.text(samStrs.uploading);
-        
+        return false;
       },
       onComplete:function (file, response) {
         status.text('');
