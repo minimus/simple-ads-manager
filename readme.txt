@@ -87,8 +87,10 @@ No questions now...
 
 = 2.3.85 =
 * Scheduled Auto Cleaning of Statistical Data is added
+* Auto inserting is changed (more objects for auto inserting of advertisements)
 * Resolved for compatibility with TinyMCE 4
 * Images (Ads) Loader changed to standard Wordpress Loader
+* Some bugs are fixed
 = 2.2.80 =
 * Mailer improved
 * Bugs fixed
@@ -193,6 +195,8 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 2.3.85 =
+Some major changes of plugin (see change log).
 = 2.0.74 =
 Minor bug is resolved
 = 1.8.72 =

@@ -493,6 +493,23 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       );
     }
 
+    public function getAdsDataX() {
+      global $wpdb;
+
+      $aTable = $wpdb->prefix . 'sam_ads';
+      $pTable = $wpdb->prefix . 'sam_places';
+      $zTable = $wpdb->prefix . 'sam_zones';
+      $bTable = $wpdb->prefix . 'sam_blocks';
+
+      $sql = "SELECT 0 AS parentId, wsa.id AS value, wsa.name AS text FROM $aTable wsa WHERE wsa.trash IS NOT TRUE
+              UNION SELECT 1 AS parentId, wsp.id AS value, wsp.name AS text FROM $pTable wsp WHERE wsp.trash IS NOT TRUE
+              UNION SELECT 2 AS parentId, wsz.id AS value, wsz.name AS text FROM $zTable wsz WHERE wsz.trash IS NOT TRUE
+              UNION SELECT 3 AS parentId, wsb.id AS value, wsb.name AS text FROM $bTable wsb WHERE wsb.trash IS NOT TRUE;";
+      $rows = $wpdb->get_results($sql, ARRAY_A);
+
+      return $rows;
+    }
+
     public function starSettingsTab( $section, $uri, $name ) {
       $this->settingsTabs[$section] = array('start_tab' => true, 'uri' => $uri, 'name' => $name);
     }
@@ -537,17 +554,20 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_settings_field('adDisplay', __("Display Ad Source in", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Target wintow (tab) for advetisement source.', SAM_DOMAIN), 'options' => array('blank' => __('New Window (Tab)', SAM_DOMAIN), 'self' => __('Current Window (Tab)', SAM_DOMAIN))));
       add_settings_field('bbpEnabled', __('Allow displaying ads on bbPress forum pages', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_general_section', array('label_for' => 'bbpEnabled', 'checkbox' => true, 'warning' => 'forum', 'enabled' => ( (defined('SAM_BBP')) ? SAM_BBP  : false )));
 
-      add_settings_field('bpAdsId', __("Ads Place before content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
+      add_settings_field('bpAdsType', __('Ad Object before content', SAM_DOMAIN), array(&$this, 'drawCascadeSelectOption'), 'sam-settings', 'sam_single_section', array('group' => array('slave' => 'bpAdsId', 'master' => true, 'title' => __('Type of Ad Object', SAM_DOMAIN).':')));
+      add_settings_field('bpAdsId', __("Ads Place before content", SAM_DOMAIN), array(&$this, 'drawCascadeSelectOption'), 'sam-settings', 'sam_single_section', array('description' => '', 'group' => array('slave' => null, 'master' => false, 'title' => __('Ad Object', SAM_DOMAIN).':')));
       add_settings_field('beforePost', __("Allow Ads Place auto inserting before post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'beforePost', 'checkbox' => true));
       add_settings_field('bpExcerpt', __('Allow Ads Place auto inserting before post/page or post/page excerpt in the loop', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bpExcerpt', 'checkbox' => true));
       add_settings_field('bbpBeforePost', __("Allow Ads Place auto inserting before bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpBeforePost', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
       add_settings_field('bbpList', __("Allow Ads Place auto inserting into bbPress Forum forums/topics lists", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpList', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
       add_settings_field('bpUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bpUseCodes', 'checkbox' => true));
-      add_settings_field('mpAdsId', __("Ads Place in the middle of content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
+      add_settings_field('mpAdsType', __('Ad Object in the middle of content', SAM_DOMAIN), array(&$this, 'drawCascadeSelectOption'), 'sam-settings', 'sam_single_section', array('group' => array('slave' => 'mpAdsId', 'master' => true, 'title' => __('Type of Ad Object', SAM_DOMAIN).':')));
+      add_settings_field('mpAdsId', __("Ads Place in the middle of content", SAM_DOMAIN), array(&$this, 'drawCascadeSelectOption'), 'sam-settings', 'sam_single_section', array('description' => '', 'group' => array('slave' => null, 'master' => false, 'title' => __('Ad Object', SAM_DOMAIN).':')));
       add_settings_field('middlePost', __("Allow Ads Place auto inserting into the middle of post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'middlePost', 'checkbox' => true));
       add_settings_field('bbpMiddlePost', __("Allow Ads Place auto inserting into the middle of bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpMiddlePost', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
       add_settings_field('mpUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'mpUseCodes', 'checkbox' => true));
-      add_settings_field('apAdsId', __("Ads Place after content", SAM_DOMAIN), array(&$this, 'drawSelectOptionX'), 'sam-settings', 'sam_single_section', array('description' => ''));
+      add_settings_field('apAdsType', __('Ad Object after content', SAM_DOMAIN), array(&$this, 'drawCascadeSelectOption'), 'sam-settings', 'sam_single_section', array('group' => array('slave' => 'apAdsId', 'master' => true, 'title' => __('Type of Ad Object', SAM_DOMAIN).':')));
+      add_settings_field('apAdsId', __("Ads Place after content", SAM_DOMAIN), array(&$this, 'drawCascadeSelectOption'), 'sam-settings', 'sam_single_section', array('description' => '', 'group' => array('slave' => null, 'master' => false, 'title' => __('Ad Object', SAM_DOMAIN).':')));
       add_settings_field('afterPost', __("Allow Ads Place auto inserting after post/page content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'afterPost', 'checkbox' => true));
       add_settings_field('bbpAfterPost', __("Allow Ads Place auto inserting after bbPress Forum topic content", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'bbpAfterPost', 'checkbox' => true, 'hide' => self::hideBbpOptions()));
       add_settings_field('apUseCodes', __("Allow using predefined Ads Place HTML codes (before and after codes)", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_single_section', array('label_for' => 'apUseCodes', 'checkbox' => true));
@@ -660,6 +680,10 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         wp_enqueue_style('jSlider-plastic', SAM_URL.'css/jslider.round.plastic.css', false, '1.1.0');
         wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
         wp_enqueue_style('jquery-ui-css', $jqCSS, false, '1.10.3');
+        wp_enqueue_style('ej-all', SAM_URL.'css/ej/ej.web.all.min.css');
+        wp_enqueue_style('ej-theme', SAM_URL.'css/ej/ej.theme.min.css');
+        wp_enqueue_style('ej-widgets-core', SAM_URL.'css/ej.widgets.core.min.css');
+        wp_enqueue_style('ej-widgets', SAM_URL.'css/ej/ej.widgets.all.min.css');
 
         wp_enqueue_script('jquery');
         wp_enqueue_script('jquery-ui-core');
@@ -674,6 +698,13 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         wp_enqueue_script('draggable', SAM_URL.'js/slider/draggable-0.1.js', array('jquery'), '0.1');
         wp_enqueue_script('jSlider', SAM_URL.'js/slider/jquery.slider.js', array('jquery', 'draggable'), '1.1.0');
 
+        wp_enqueue_script('jq-easing', SAM_URL.'js/jquery.easing.1.3.js', array('jquery'), '1.3');
+        wp_enqueue_script('ej-core', SAM_URL.'js/ej/ej.core.min.js', array('jquery'), '12.2.0.36');
+        wp_enqueue_script('ej-data', SAM_URL.'js/ej/ej.data.min.js', array('jquery', 'ej-core'), '12.2.0.36');
+        wp_enqueue_script('ej-dropdown', SAM_URL.'js/ej/ej.dropdownlist.min.js', array('jquery', 'ej-core', 'ej-data'), '12.2.0.36');
+        wp_enqueue_script('ej-checkbox', SAM_URL.'js/ej/ej.checkbox.min.js', array('jquery', 'ej-core', 'ej-data'), '12.2.0.36');
+        wp_enqueue_script('ej-scroller', SAM_URL.'js/ej/ej.scroller.min.js', array('jquery', 'ej-core', 'ej-data'), '12.2.0.36');
+
         wp_enqueue_script('sam-settings', SAM_URL.'js/sam-settings.min.js', array('jquery', 'draggable'), SAM_VERSION);
         wp_localize_script('sam-settings', 'options', array(
           'roles' => array(
@@ -683,7 +714,14 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
             __('Author', SAM_DOMAIN),
             __('Contributor', SAM_DOMAIN)
           ),
-          'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')
+          'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts'),
+          'adTypes' => array(
+            array('parentId' => 0, 'value' => 0, 'text' => __('Single Ad', SAM_DOMAIN)),
+            array('parentId' => 1, 'value' => 1, 'text' => __('Ads Place', SAM_DOMAIN)),
+            array('parentId' => 2, 'value' => 2, 'text' => __('Ads Zone', SAM_DOMAIN)),
+            array('parentId' => 3, 'value' => 3, 'text' => __('Ads Block', SAM_DOMAIN))
+          ),
+          'adObjects' => self::getAdsDataX()
         ));
       }
       elseif($hook == $this->listPage || $hook == $this->listZone || $hook == $this->listBlock) {
@@ -866,7 +904,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           'zones' => array('enabled' => $pointers['zones'], 'title' => __('Name of Ads Zone', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
           'blocks' => array('enabled' => $pointers['blocks'], 'title' => __('Name of Ads Block', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use plugin\'s widgets.', SAM_DOMAIN))
         ));
-        wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-zb.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+        wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-zb.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
       }
       elseif($hook == $this->eLogPage) {
         wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-admin-list.css', false, SAM_VERSION);
@@ -884,7 +922,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         wp_enqueue_script('jquery-ui-dialog');
 
         wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.3');
-        wp_enqueue_script('errorsListScript', SAM_URL.'js/sam-errors-list.js', array('jquery', 'jquery-ui-core'), SAM_VERSION);
+        wp_enqueue_script('errorsListScript', SAM_URL.'js/sam-errors-list.min.js', array('jquery', 'jquery-ui-core'), SAM_VERSION);
         wp_localize_script('errorsListScript', 'options', array(
           'id' => __('Error ID', SAM_DOMAIN),
           'date' => __('Error Date', SAM_DOMAIN),
@@ -1008,21 +1046,36 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 				return;
 
 			foreach ( (array) $wp_settings_fields[$page][$section] as $field ) {
-				echo '<p>';
 				if ( !empty($field['args']['checkbox']) ) {
-					call_user_func($field['callback'], $field['id'], $field['args']);
-					echo '<label for="' . $field['args']['label_for'] . '"' . ((isset($field['args']['hide']) && $field['args']['hide']) ? 'style="display: none;"' : '' ) . '>' . $field['title'] . '</label>';
+          echo '<p>';
+				  call_user_func($field['callback'], $field['id'], $field['args']);
+				  echo '<label for="' . $field['args']['label_for'] . '"' . ((isset($field['args']['hide']) && $field['args']['hide']) ? 'style="display: none;"' : '' ) . '>' . $field['title'] . '</label>';
           echo '</p>';
 				}
 				else {
-					if ( !empty($field['args']['label_for']) )
-						echo '<label for="' . $field['args']['label_for'] . '">' . $field['title'] . '</label>';
-					else
-						echo '<strong>' . $field['title'] . '</strong><br/>';
-          echo '</p>';
-          echo '<p>';
-					call_user_func($field['callback'], $field['id'], $field['args']);
-          echo '</p>';
+          if(isset($field['args']['group'])) {
+            if($field['args']['group']['master']) {
+              echo "<p><strong>{$field['title']}</strong></p>";
+              echo "<div class='group-frame'><div class='cascade-item'>";
+              call_user_func($field['callback'], $field['id'], $field['args']);
+              echo "</div>";
+            }
+            else {
+              echo "<div class='cascade-item'>";
+              call_user_func($field['callback'], $field['id'], $field['args']);
+              echo "</div><div class='cascade-body'>&nbsp;</div></div>";
+            }
+          }
+          else {
+            echo '<p>';
+            if ( !empty($field['args']['label_for']) )
+					    echo '<label for="' . $field['args']['label_for'] . '">' . $field['title'] . '</label>';
+				    else echo '<strong>' . $field['title'] . '</strong><br>';
+            echo '</p>';
+            echo '<p>';
+				    call_user_func($field['callback'], $field['id'], $field['args']);
+            echo '</p>';
+          }
 				}
         if(!empty($field['args']['description'])) echo '<p>' . $field['args']['description'] . '</p>';
         if(!empty($field['args']['warning'])) echo self::getWarningString($field['args']['warning']);
@@ -1071,6 +1124,15 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         $k++;
       }
 
+      $intNames = array(
+        'keepStats',
+        'bpAdsType',
+        'mpAdsType',
+        'apAdsType'
+      );
+
+      foreach($intNames as $name)
+        $output[$name] = (isset($input[$name])) ? (integer)$input[$name] : 0;
 
       $output = $input;
       $boolNames = array(
@@ -1106,7 +1168,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       foreach($boolNames as $name) {
         $output[$name] = ((isset($input[$name])) ? $input[$name] : 0);
       }
-      $output['keepStats'] = (integer)$input['keepStats'];
+      //$output['keepStats'] = (integer)$input['keepStats'];
       $output['dfpBlocks'] = array_unique($blocks);
       $output['dfpBlocks2'] = array_unique($blocks2);
       return $output;
@@ -1238,6 +1300,17 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           }
         ?>
         </select>
+      <?php
+    }
+
+    public function drawCascadeSelectOption( $id, $args ) {
+      $settings = parent::getSettings();
+      ?>
+      <input
+        id="<?php echo $id; ?>"
+        name="<?php echo SAM_OPTIONS_NAME.'['.$id.']'; ?>"
+        type="text"
+        value="<?php echo $settings[$id]; ?>">
       <?php
     }
     

@@ -272,3 +272,10 @@ input.button-primary, input.button-secondary,
   font-size: 11px;
 }
 .total {font-size: 13px}
+
+.cascade-item {
+  float: left;
+  margin: 3px 10px 3px 0;
+}
+
+.cascade-body {height: 35px;}

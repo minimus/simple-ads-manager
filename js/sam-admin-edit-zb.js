@@ -4,23 +4,23 @@
  */
 (function($) {
   $(document).ready(function() {
-    var sPointer;
+    var sPointer, title = $('#title'), editorMode = $('#editor_mode');
 
-    $('#title').tooltip({
+    title.tooltip({
       track: true
     });
 
-    if ($('#editor_mode').val() == 'zone') {
+    if (editorMode.val() == 'zone') {
       sPointer = samPointer.zones;
       sPointer.pointer = 'zones';
     }
-    if ($('#editor_mode').val() == 'block') {
+    if (editorMode.val() == 'block') {
       sPointer = samPointer.blocks;
       sPointer.pointer = 'blocks';
     }
 
-    if(sPointer.enabled || '' == $('#title').val()) {
-      $('#title').pointer({
+    if(sPointer.enabled || '' == title.val()) {
+      title.pointer({
         content: '<h3>' + sPointer.title + '</h3><p>' + sPointer.content + '</p>',
         position: 'top',
         close: function() {
@@ -36,4 +36,4 @@
       }).pointer('open');
     }
   });
-})(jQuery)
+})(jQuery);

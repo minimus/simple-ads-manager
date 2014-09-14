@@ -51,5 +51,60 @@
         if(bbpAfterPost.is(':visible')) bbpAfterPost.hide('blind', hvOpts, 500);
       }
     });
+
+    var
+      typesDS = options.adTypes, objDS = options.adObjects,
+      bpAdsType = $('#bpAdsType'), bpAdsId = $('#bpAdsId'), 
+      bpTypeVal = bpAdsType.val(), bpObjVal = bpAdsId.val();
+
+    bpAdsType.ejDropDownList({
+      dataSource: typesDS,
+      fields: { value: "parentId", text: 'text' },
+      cascadeTo: 'bpAdsId'
+    });
+
+    bpAdsId.ejDropDownList({
+      dataSource: objDS,
+      fields: { value: "value", text: 'text' }
+    });
+
+    bpAdsType.ejDropDownList('setSelectedValue', bpTypeVal);
+    bpAdsId.ejDropDownList('setSelectedValue', bpObjVal);
+
+    var
+      mpAdsType = $('#mpAdsType'), mpAdsId = $('#mpAdsId'), 
+      mpTypeVal = mpAdsType.val(), mpObjVal = mpAdsId.val();
+
+    mpAdsType.ejDropDownList({
+      dataSource: typesDS,
+      fields: { value: "parentId", text: 'text' },
+      cascadeTo: 'mpAdsId'
+    });
+
+    mpAdsId.ejDropDownList({
+      dataSource: objDS,
+      fields: { value: "value", text: 'text' }
+    });
+
+    mpAdsType.ejDropDownList('setSelectedValue', mpTypeVal);
+    mpAdsId.ejDropDownList('setSelectedValue', mpObjVal);
+
+    var
+      apAdsType = $('#apAdsType'), apAdsId = $('#apAdsId'), 
+      apTypeVal = apAdsType.val(), apObjVal = apAdsId.val();
+
+    apAdsType.ejDropDownList({
+      dataSource: typesDS,
+      fields: { value: "parentId", text: 'text' },
+      cascadeTo: 'apAdsId'
+    });
+
+    apAdsId.ejDropDownList({
+      dataSource: objDS,
+      fields: { value: "value", text: 'text' }
+    });
+
+    apAdsType.ejDropDownList('setSelectedValue', apTypeVal);
+    apAdsId.ejDropDownList('setSelectedValue', apObjVal);
   });
 })(jQuery);

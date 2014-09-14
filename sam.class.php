@@ -18,15 +18,18 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'deleteFolder' => 0,              // bool
       'beforePost' => 0,                // bool
       'bpAdsId' => 0,                   // int
+      'bpAdsType' => 1,
       'bpUseCodes' => 0,                // bool
       'bpExcerpt' => 0,                 // bool
       'bbpBeforePost' => 0,             // bool
       'bbpList' => 0,                   // bool
       'middlePost' => 0,                // bool
+      'mpAdsType' => 1,                 // int
       'mpAdsId' => 0,                   // int
       'mpUseCodes' => 0,                // bool
       'bbpMiddlePost' => 0,             // bool
       'afterPost' => 0,                 // bool
+      'apAdsType' => 1,                 // int
       'apAdsId' => 0,                   // int
       'apUseCodes' => 0,                // bool
       'bbpAfterPost' => 0,              // bool
@@ -417,7 +420,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       
       wp_enqueue_script('jquery');
       if($options['useSWF']) wp_enqueue_script('swfobject');
-      wp_enqueue_script('samLayout', SAM_URL.'js/sam-layout.min.js', array('jquery'), SAM_VERSION);
+      wp_enqueue_script('samLayout', SAM_URL.'js/sam-layout.js', array('jquery'), SAM_VERSION);
       wp_localize_script('samLayout', 'samAjax', array(
           'ajaxurl' => SAM_URL . 'sam-ajax.php',
           'loadurl' => SAM_URL . 'sam-ajax-loader.php',
@@ -503,7 +506,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
                $_SERVER['HTTP_ACCEPT'] == '' ||
                $_SERVER['HTTP_ACCEPT_ENCODING'] == '' ||
                $_SERVER['HTTP_ACCEPT_LANGUAGE'] == '' ||
-               $_SERVER['HTTP_CONNECTION']=='') $crawler == true;
+               $_SERVER['HTTP_CONNECTION']=='') $crawler = true;
             break;
             
           case 'exact':
@@ -551,8 +554,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
     * @param bool|array $useCodes If bool codes 'before' and 'after' from Ads Place record are used. If array codes 'before' and 'after' from array are used
     * @return string value of Ads Place content
     */
-    public function buildAd( $args = null, $useCodes = false ) {
-      $ad = new SamAdPlace($args, $useCodes, $this->crawler);
+    public function buildAd( $args = null, $useCodes = false, $clauses = null ) {
+      $ad = new SamAdPlace($args, $useCodes, $this->crawler, $clauses);
       $output = $ad->ad;
       return $output;
     }
@@ -568,8 +571,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
     * @param bool|array $useCodes If bool codes 'before' and 'after' from Ads Place record are used. If array codes 'before' and 'after' from array are used
     * @return string value of Ads Zone content
     */
-    public function buildAdZone( $args = null, $useCodes = false ) {
-      $ad = new SamAdPlaceZone($args, $useCodes, $this->crawler);
+    public function buildAdZone( $args = null, $useCodes = false, $clauses = null ) {
+      $ad = new SamAdPlaceZone($args, $useCodes, $this->crawler, $clauses);
       $output = $ad->ad;
       return $output;
     }
@@ -584,9 +587,33 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
     * @param array $args 'id' array element: id of Ads Block, 'name' array elemnt: name of Ads Block
     * @return string value of Ads Zone content
     */
-    public function buildAdBlock( $args = null ) {
-      $block = new SamAdBlock($args, $this->crawler);
+    public function buildAdBlock( $args = null, $clauses = null ) {
+      $block = new SamAdBlock($args, $this->crawler, $clauses);
       $output = $block->ad;
+      return $output;
+    }
+
+    public function buildAdObject( $adType, $args = null, $useCodes = false, $clauses = null ) {
+      $output = null;
+      if(is_null($clauses)) $clauses = self::buildWhereClause();
+      switch($adType) {
+        case 0:
+          $output = self::buildSingleAd($args, $useCodes);
+          break;
+        case 1:
+          $output = self::buildAd($args, $useCodes);
+          break;
+        case 2:
+          $output = self::buildAdZone($args, $useCodes);
+          break;
+        case 3:
+          $output = self::buildAdBlock($args);
+          break;
+        default:
+          $output = self::buildAd($args, $useCodes);
+          break;
+      }
+
       return $output;
     }
     
@@ -621,16 +648,16 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $mpAd = '';
       
       if(is_single() || is_page()) {
-        if(!empty($options['beforePost']) && !empty($options['bpAdsId'])) 
-          $bpAd = self::buildAd(array('id' => $options['bpAdsId']), $options['bpUseCodes']);
+        if(!empty($options['beforePost']) && !empty($options['bpAdsId']))
+          $bpAd = self::buildAdObject($options['bpAdsType'], array('id' => $options['bpAdsId']), $options['bpUseCodes']);
         if(!empty($options['middlePost']) && !empty($options['mpAdsId']))
-          $mpAd = self::buildAd(array('id' => $options['mpAdsId']), $options['mpUseCodes']);
+          $mpAd = self::buildAdObject($options['mpAdsType'], array('id' => $options['mpAdsId']), $options['mpUseCodes']);
         if(!empty($options['afterPost']) && !empty($options['apAdsId'])) 
-          $apAd = self::buildAd(array('id' => $options['apAdsId']), $options['apUseCodes']);
+          $apAd = self::buildAdObject($options['apAdsType'], array('id' => $options['apAdsId']), $options['apUseCodes']);
       }
       elseif($options['bpExcerpt']) {
         if(!empty($options['beforePost']) && !empty($options['bpAdsId']))
-          $bpAd = self::buildAd(array('id' => $options['bpAdsId']), $options['bpUseCodes']);
+          $bpAd = self::buildAdObject($options['bpAdsType'], array('id' => $options['bpAdsId']), $options['bpUseCodes']);
       }
 
       if(!empty($mpAd)) {
@@ -668,15 +695,60 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       if(empty($this->whereClauses)) $this->whereClauses = self::buildWhereClause();
 
       if(!empty($options['bbpBeforePost']) && !empty($options['bpAdsId'])) {
-        $oBpAd = new SamAdPlace(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false, $this->whereClauses);
+        switch($options['bpAdsType']) {
+          case 0:
+            $oBpAd = new SamAd(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false);
+            break;
+          case 1:
+            $oBpAd = new SamAdPlace(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false, $this->whereClauses);
+            break;
+          case 2:
+            $oBpAd = new SamAdPlaceZone(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false, $this->whereClauses);
+            break;
+          case 3:
+            $oBpAd = new SamAdBlock(array('id' => $options['bpAdsId']), false, $this->whereClauses);
+            break;
+          default:
+            $oBpAd = new SamAdPlace(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false, $this->whereClauses);
+        }
         $bpAd = $oBpAd->ad;
       }
       if(!empty($options['bbpMiddlePost']) && !empty($options['mpAdsId'])) {
-        $oMpAd = new SamAdPlace(array('id' => $options['mpAdsId']), $options['mpUseCodes'], false, $this->whereClauses);
+        switch($options['mpAdsType']) {
+          case 0:
+            $oMpAd = new SamAd(array('id' => $options['mpAdsId']), $options['mpUseCodes'], false);
+            break;
+          case 1:
+            $oMpAd = new SamAdPlace(array('id' => $options['mpAdsId']), $options['mpUseCodes'], false, $this->whereClauses);
+            break;
+          case 2:
+            $oMpAd = new SamAdPlaceZone(array('id' => $options['mpAdsId']), $options['mpUseCodes'], false, $this->whereClauses);
+            break;
+          case 3:
+            $oMpAd = new SamAdBlock(array('id' => $options['mpAdsId']), false, $this->whereClauses);
+            break;
+          default:
+            $oMpAd = new SamAdPlace(array('id' => $options['mpAdsId']), $options['mpUseCodes'], false, $this->whereClauses);
+        }
         $mpAd = $oMpAd->ad;
       }
       if(!empty($options['bbpAfterPost']) && !empty($options['apAdsId'])) {
-        $oApAd = new SamAdPlace(array('id' => $options['apAdsId']), $options['apUseCodes'], false, $this->whereClauses);
+        switch($options['apAdsType']) {
+          case 0:
+            $oApAd = new SamAd(array('id' => $options['apAdsId']), $options['apUseCodes'], false);
+            break;
+          case 1:
+            $oApAd = new SamAdPlace(array('id' => $options['apAdsId']), $options['apUseCodes'], false, $this->whereClauses);
+            break;
+          case 2:
+            $oApAd = new SamAdPlaceZone(array('id' => $options['apAdsId']), $options['apUseCodes'], false, $this->whereClauses);
+            break;
+          case 3:
+            $oApAd = new SamAdBlock(array('id' => $options['apAdsId']), false, $this->whereClauses);
+            break;
+          default:
+            $oApAd = new SamAdPlace(array('id' => $options['apAdsId']), $options['apUseCodes'], false, $this->whereClauses);
+        }
         $apAd = $oApAd->ad;
       }
 
@@ -700,7 +772,22 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       if(empty($this->whereClauses)) $this->whereClauses = self::buildWhereClause();
 
       if(!empty($options['bbpList']) && !empty($options['bpAdsId'])) {
-        $oBpAd = new SamAdPlace(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false, $this->whereClauses);
+        switch($options['bpAdsType']) {
+          case 0:
+            $oBpAd = new SamAd(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false);
+            break;
+          case 1:
+            $oBpAd = new SamAdPlace(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false, $this->whereClauses);
+            break;
+          case 2:
+            $oBpAd = new SamAdPlaceZone(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false, $this->whereClauses);
+            break;
+          case 3:
+            $oBpAd = new SamAdBlock(array('id' => $options['bpAdsId']), false, $this->whereClauses);
+            break;
+          default:
+            $oBpAd = new SamAdPlace(array('id' => $options['bpAdsId']), $options['bpUseCodes'], false, $this->whereClauses);
+        }
         $bpAd = $oBpAd->ad;
       }
 

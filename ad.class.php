@@ -441,12 +441,14 @@ if(!class_exists('SamAdPlaceZone')) {
     private $args = array();
     private $useCodes = false;
     private $crawler = false;
+    private $clauses = null;
     public $ad = '';
     
-    public function __construct($args = null, $useCodes = false, $crawler = false) {
+    public function __construct($args = null, $useCodes = false, $crawler = false, $clauses = null) {
       $this->args = $args;
       $this->useCodes = $useCodes;
       $this->crawler = $crawler;
+      $this->clauses = $clauses;
       $this->ad = self::buildZone($this->args, $this->useCodes, $this->crawler);
     }
     
@@ -594,7 +596,7 @@ if(!class_exists('SamAdPlaceZone')) {
       }
       
       if($id > 0) {
-        $ad = new SamAdPlace(array('id' => $id), $useCodes, $crawler);
+        $ad = new SamAdPlace(array('id' => $id), $useCodes, $crawler, $this->clauses);
         $output = $ad->ad;
       }
       return $output;
@@ -606,11 +608,13 @@ if(!class_exists('SamAdBlock')) {
   class SamAdBlock {
     private $args = array();
     private $crawler = false;
+    private $clauses = null;
     public $ad = '';
     
-    public function __construct($args = null, $crawler = false) {
+    public function __construct($args = null, $crawler = false, $clauses = null) {
       $this->args = $args;
       $this->crawler = $crawler;
+      $this->clauses = $clauses;
       $this->ad = self::buildBlock($this->args, $this->crawler);
     }
     
@@ -658,7 +662,7 @@ if(!class_exists('SamAdBlock')) {
             $id = $ads[$i][$j]['id'];
             switch($ads[$i][$j]['type']) {
               case 'place':
-                $place = new SamAdPlace(array('id' => $id), false, $crawler);
+                $place = new SamAdPlace(array('id' => $id), false, $crawler, $this->clauses);
                 $iDiv = $place->ad;
                 break;
                 
@@ -668,7 +672,7 @@ if(!class_exists('SamAdBlock')) {
                 break;
                 
               case 'zone':
-                $zone = new SamAdPlaceZone(array('id' => $id), false, $crawler);
+                $zone = new SamAdPlaceZone(array('id' => $id), false, $crawler, $this->clauses);
                 $iDiv = $zone->ad;
                 break;
                 
