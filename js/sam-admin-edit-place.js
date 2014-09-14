@@ -25,7 +25,7 @@ var sam = sam || {};
         return;
       }
 
-      var Attachment = wp.media.model.Attachment;
+      //var Attachment = wp.media.model.Attachment;
 
       this._frame = media.frame = wp.media({
         title: mediaTexts.title,
@@ -73,11 +73,10 @@ var sam = sam || {};
       status = $("#uploading"),
       srcHelp = $("#uploading-help"),
       loadImg = $('#load_img'),
-      sPointer, statsData, sMonth = 0,
+      sPointer, sMonth = 0,
       grid = $('#ads-grid'),
       samStatsUrl = samEditorOptions.samStatsUrl,
-      labels = samEditorOptions.labels,
-      fileExt = '';
+      labels = samEditorOptions.labels;
 
     sPointer = samEditorOptions.places;
     sPointer.pointer = 'places';
@@ -90,14 +89,100 @@ var sam = sam || {};
       track: true
     });
 
-    var options = samEditorOptions.options;
+    var options = samEditorOptions.options, plot, plotData = [],
+      plotOptions = {
+        animate: true,
+        // Will animate plot on calls to plot1.replot({resetAxes:true})
+        animateReplot: true,
+        cursor: {
+          //show: true,
+          //zoom: true,
+          //looseZoom: true,
+          showTooltip: false
+        },
+        series:[
+          {
+            pointLabels: {
+              show: true
+            },
+            renderer: $.jqplot.BarRenderer,
+            showHighlight: false,
+            //yaxis: 'y2axis',
+            rendererOptions: {
+              // Speed up the animation a little bit.
+              // This is a number of milliseconds.
+              // Default for bar series is 3000.
+              animation: {
+                speed: 2500
+              },
+              barWidth: 15,
+              barPadding: -15,
+              barMargin: 0,
+              highlightMouseOver: false
+            },
+            label: labels.hits
+          },
+          {
+            label: labels.clicks,
+            rendererOptions: {
+              // speed up the animation a little bit.
+              // This is a number of milliseconds.
+              // Default for a line series is 2500.
+              animation: {
+                speed: 2000
+              }
+            }
+          }
+        ],
+        axesDefaults: {
+          pad: 0
+        },
+        axes: {
+          // These options will set up the x axis like a category axis.
+          xaxis: {
+            tickInterval: 1,
+            drawMajorGridlines: false,
+            drawMinorGridlines: true,
+            drawMajorTickMarks: false,
+            rendererOptions: {
+              tickInset: 1, //0.5,
+              minorTicks: 1
+            },
+            //padMin: 0,
+            min: 1
+          },
+          yaxis: {
+            /*tickOptions: {
+             formatString: "%'d"
+             },*/
+            rendererOptions: {
+              forceTickAt0: true
+            }
+          }
+        },
+        highlighter: {
+          show: true,
+          showLabel: true,
+          tooltipAxes: 'y',
+          sizeAdjust: 7.5 ,
+          tooltipLocation : 'ne',
+          useAxesFormatters: false,
+          tooltipFormatString: labels.clicks + ': %d'
+        },
+        legend: {
+          show: true,
+          placement: 'ne'
+        }
+      };
 
-    fu = new AjaxUpload(btnUpload, {
-      action:ajaxurl,
+    /*fu = new AjaxUpload(btnUpload, {
+      action: options.ajaxurl,
       name:'uploadfile',
       data:{
-        action:'upload_ad_image'
+        action:'upload_ad_image',
+        path: options.path
       },
+      responseType: 'json',
       onSubmit: function (file, ext) {
         if (!(ext && /^(jpg|png|jpeg|gif|swf)$/.test(ext))) {
           status.text(options.status);
@@ -105,12 +190,13 @@ var sam = sam || {};
         }
         loadImg.show();
         status.text(options.uploading);
+        return false;
       },
       onComplete:function (file, response) {
         status.text('');
         loadImg.hide();
         $('<div id="files"></div>').appendTo(srcHelp);
-        if (response == "success") {
+        if (response.status == "success") {
           $("#files").text(options.file + ' ' + file + ' ' + options.uploaded)
             .addClass('updated')
             .delay(3000)
@@ -128,65 +214,97 @@ var sam = sam || {};
               $(this).remove();
             });
         }
+        return false;
+      }
+    });*/
+
+    var
+      uConsole = $('#upload-console'),
+      progress = $('#upload-progress'),
+      uploadOptions = samEditorOptions.uploader;
+      //message = $('#stb-message');
+
+    var uploader = new plupload.Uploader({
+      browse_button: 'upload-file-button',
+      url: uploadOptions.url + '?path=' + uploadOptions.path,
+      multi_selection: false,
+      filters: {
+        max_file_size : '500kb',
+        mime_types: [
+          { title: "Image file", extensions: "jpg,jpeg,gif,png" },
+          { title: "Flash file", extensions: "swf" }
+        ]
+      },
+      init: {
+        PostInit: function() {
+          uConsole.text('');
+          progress.text('');
+        },
+        FilesAdded: function(up, files) {
+          plupload.each(files, function(file) {
+            uConsole.text(file.name);
+          });
+          this.start();
+        },
+        UploadProgress: function(up, file) {
+          progress.text(file.percent + '%');
+        },
+        UploadComplete: function(up, files) {
+          uConsole.text('');
+          progress.text('');
+          $('<div id="files"></div>').appendTo(srcHelp);
+          $("#patch_img").val(uploadOptions.adUrl + files[0].name);
+          $("#files").html('<p>' + options.file + ' ' + files[0].name + ' ' + options.uploaded + '</p>')
+            .addClass('updated')
+            .delay(3000)
+            .fadeOut(1000, function () {
+              $(this).remove();
+            });
+        },
+        Error: function(up, err) {
+          $('<div id="files"></div>').appendTo(srcHelp);
+          $('#files').html( '<p>Error(' +err.code + "): " + err.message + '</p>')
+            .addClass('error')
+            .delay(3000)
+            .fadeOut(1000, function () {
+              $(this).remove();
+            });
+        }
       }
     });
+
+    uploader.init();
 
     $.post(samStatsUrl, {
       action: 'load_stats',
       id: itemId,
       sm: sMonth
     }).done(function(data) {
-        var
-          hits = {label: labels.hits, data: data.hits},
-          clicks = {label: labels.clicks, data: data.clicks};
-        statsData = [hits, clicks];
+        plotData = [data.hits, data.clicks];
         $('#total_hits').text(data.total.hits);
         $('#total_clicks').text(data.total.clicks);
-        $.plot('#graph', statsData, {
-          series: {
-            lines: { show: true },
-            points: { show: true }
-          },
-          xaxis: {
-            mode: "categories",
-            tickLength: 0
-          },
-          legend: {
-            backgroundColor: 'rgb(235, 233, 233)'
-          },
-          grid: {
-            backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
-            borderWidth: 1,
-            borderColor: '#DFDFDF'
-          }
-        });
+        plot = $.jqplot('graph', plotData, plotOptions);
       });
 
     $('#tabs').tabs({
       activate: function(ev, ui) {
         var el = ui.newPanel[0].id;
         if(el == 'tabs-3') {
-          $.plot('#graph', statsData, {
-            series: {
-              lines: { show: true },
-              points: { show: true }
-            },
-            xaxis: {
-              mode: "categories",
-              tickLength: 0
-            },
-            legend: {
-              backgroundColor: 'rgb(235, 233, 233)'
-            },
-            grid: {
-              backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
-              borderWidth: 1,
-              borderColor: '#DFDFDF'
-            }
-          });
+          if(plot) {
+            plot.destroy();
+            plot = $.jqplot('graph', plotData, plotOptions);
+          }
         }
       }
     });
+
+    $(window).resize(function() {
+      if(plot) {
+        plot.destroy();
+        plot = $.jqplot('graph', plotData, plotOptions);
+      }
+    });
+
     $('#image_tools').tabs();
 
     $.post(samStatsUrl, {
@@ -254,30 +372,13 @@ var sam = sam || {};
         id: itemId,
         sm: sMonth
       }).done(function(data) {
-          var
-            hits = {label: labels.hits, data: data.hits},
-            clicks = {label: labels.clicks, data: data.clicks};
-          statsData = [hits, clicks];
+          plotData = [data.hits, data.clicks];
           $('#total_hits').text(data.total.hits);
           $('#total_clicks').text(data.total.clicks);
-          $.plot('#graph', statsData, {
-            series: {
-              lines: { show: true },
-              points: { show: true }
-            },
-            xaxis: {
-              mode: "categories",
-              tickLength: 0
-            },
-            legend: {
-              backgroundColor: 'rgb(235, 233, 233)'
-            },
-            grid: {
-              backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
-              borderWidth: 1,
-              borderColor: '#DFDFDF'
-            }
-          });
+          if(plot) {
+            plot.destroy();
+            plot = $.jqplot('graph', plotData, plotOptions);
+          }
         });
     });
 

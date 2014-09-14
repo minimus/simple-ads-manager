@@ -1,6 +1,7 @@
 (function($) {
   $(document).ready(function() {
     if(samAjax.load) {
+      if(samAjax.mailer) $.post(samAjax.ajaxurl, {action: 'sam_maintenance'});
       $('div.sam-place').each(function(i, el) {
         var codes = $(el).data('sam');
         if('undefined' == typeof codes) codes = 0;
@@ -20,7 +21,6 @@
           },
           type: 'POST',
           crossDomain: true
-          //dataType: 'jsonp'
         }).done(function(data) {
           $(el).replaceWith(data.ad);
           $.post(samAjax.ajaxurl, {

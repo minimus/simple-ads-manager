@@ -2,9 +2,9 @@
 Contributors: minimus
 Donate link: https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.com
 Tags: ad, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, yahoo, ypn
-Requires at least: 3.5
-Tested up to: 3.8
-Stable tag: 2.0.74
+Requires at least: 3.9
+Tested up to: 4.0
+Stable tag: 2.3.85
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -81,12 +81,23 @@ No questions now...
 1. Ad Editor
 1. Ads Place Editor
 1. Simple Ads Manager Settings
-1. Simple Ads Manager Contextual Help
-1. Ads Zones List
-1. Ads Zone Editor
+1. Ads Place Statistical Data
 
 == Changelog ==
 
+= 2.3.85 =
+* Scheduled Auto Cleaning of Statistical Data is added
+* Auto inserting is changed (more objects for auto inserting of advertisements)
+* Resolved for compatibility with TinyMCE 4
+* Images (Ads) Loader changed to standard Wordpress Loader
+* Some bugs are fixed
+= 2.2.80 =
+* Mailer improved
+* Bugs fixed
+= 2.1.77 =
+* Some minor bugs of mailer are resolved
+* The graphical representation of statistical data is improved
+* Minor bug of banners uploading is fixed
 = 2.0.74 =
 * Minor bug is resolved
 = 2.0.73 =
@@ -184,6 +195,8 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 2.3.85 =
+Some major changes of plugin (see change log).
 = 2.0.74 =
 Minor bug is resolved
 = 1.8.72 =

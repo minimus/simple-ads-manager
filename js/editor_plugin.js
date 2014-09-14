@@ -7,12 +7,85 @@
     
     init : function(ed, url) {
       samUrl = url;
+      this.editor = ed;
+
+      ed.addCommand('samPlace', function() {
+        ed.windowManager.open({
+          file: url + '/dialog.php',
+          width: 450 + parseInt(ed.getLang('samb.delta_width', 0)),
+          height: 280 + parseInt(ed.getLang('samb.delta_height', 0)),
+          inline: 1
+        }, {
+          plugin_url: url
+        });
+      });
+
+      ed.addButton('samb', {
+        title: 'Insert Advertisement',
+        type: 'splitbutton',
+        image: url + '/img/sam.png',
+        //icon: true,
+        cmd: 'samPlace',
+        menu: [
+          {
+            text: 'Insert Single Ad',
+            image: url + '/img/sam.png',
+            onClick: function() {
+              ed.windowManager.open({
+                file: url + '/dialog-ad.php',
+                width: 450 + parseInt(ed.getLang('samb.delta_width', 0)),
+                height : 280 + parseInt(ed.getLang('samb.delta_height', 0)),
+                inline : 1
+              }, {plugin_url: url});
+            }
+          },
+          {
+            text: 'Insert Ads Place',
+            onClick: function() {
+              ed.windowManager.open({
+                file : samUrl + '/dialog.php',
+                width : 450 + parseInt(ed.getLang('samb.delta_width', 0)),
+                height : 280 + parseInt(ed.getLang('samb.delta_height', 0)),
+                inline : 1
+              }, {
+                plugin_url : url
+              });
+            }
+          },
+          {
+            text: 'Insert Ads Zone',
+            onClick: function() {
+              ed.windowManager.open({
+                file : samUrl + '/dialog-zone.php',
+                width : 450 + parseInt(ed.getLang('samb.delta_width', 0)),
+                height : 280 + parseInt(ed.getLang('samb.delta_height', 0)),
+                inline : 1
+              }, {
+                plugin_url : url
+              });
+            }
+          },
+          {
+            text: 'Insert Ads Block',
+            onClick: function() {
+              ed.windowManager.open({
+                file : samUrl + '/dialog-block.php',
+                width : 450 + parseInt(ed.getLang('samb.delta_width', 0)),
+                height : 280 + parseInt(ed.getLang('samb.delta_height', 0)),
+                inline : 1
+              }, {
+                plugin_url : url
+              });
+            }
+          }
+        ]
+      });
     },
     
-    createControl : function(n, cm) {
+    /*createControl : function(n, cm) {
       switch (n) {
         case 'samb':
-          var c = cm.createSplitButton('samb', {
+          var c = cm.ui.createSplitButton('samb', {
             title : 'samb.title',
             image : samUrl + '/img/sam.png',
             onclick : function() {
@@ -95,7 +168,7 @@
         }
 
         return null;      
-    },
+    },*/
     
     
     getInfo : function() {
@@ -104,7 +177,7 @@
           author     : 'minimus',
           authorurl : 'http://blogcoding.ru/',
           infourl   : 'http://www.simplelib.com/',
-          version   : "1.1.38"
+          version   : "2.3.85"
       };
     }
   });

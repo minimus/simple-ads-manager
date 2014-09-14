@@ -230,9 +230,11 @@ if(!class_exists('SamZoneEditor')) {
         $zSingleCT = unserialize($row['z_single_ct']);
         $zArchiveCT = unserialize($row['z_archive_ct']);
 
-        foreach($taxes as $tax) {
-          $val = (!is_null($zTaxes[$tax['slug']])) ? $zTaxes[$tax['slug']]['id'] : -1;
-          array_push($sTaxes, array('name' => $tax['name'], 'slug' => $tax['slug'], 'tax' => $tax['tax'], 'val' => $val));
+        if(is_array($taxes)) {
+          foreach($taxes as $tax) {
+            $val = (isset($zTaxes[$tax['slug']])) ? $zTaxes[$tax['slug']]['id'] : -1;
+            array_push($sTaxes, array('name' => $tax['name'], 'slug' => $tax['slug'], 'tax' => $tax['tax'], 'val' => $val));
+          }
         }
         foreach($cats as $cat) {
           $val = (!is_null($zCats[$cat['slug']])) ? $zCats[$cat['slug']] : -1;
@@ -242,11 +244,13 @@ if(!class_exists('SamZoneEditor')) {
           $val = (!is_null($zAuthors[$author])) ? $zAuthors[$author] : -1;
           array_push($sAuthors, array('id' => $author, 'name' => $key, 'val' => $val));
         }
-        foreach($customs as $custom) {
-          $val = (!is_null($zSingleCT[$custom->name])) ? $zSingleCT[$custom->name] : -1;
-          array_push($sSingleCT, array('label' => $custom->label, 'name' => $custom->name, 'val' => $val));
-          $val = (!is_null($zArchiveCT[$custom->name])) ? $zArchiveCT[$custom->name] : -1;
-          array_push($sArchiveCT, array('label' => $custom->label, 'name' => $custom->name, 'val' => $val));
+        if(is_array($customs)) {
+          foreach($customs as $custom) {
+            $val = (isset($zSingleCT[$custom->name])) ? $zSingleCT[$custom->name] : -1;
+            array_push($sSingleCT, array('label' => $custom->label, 'name' => $custom->name, 'val' => $val));
+            $val = (isset($zArchiveCT[$custom->name])) ? $zArchiveCT[$custom->name] : -1;
+            array_push($sArchiveCT, array('label' => $custom->label, 'name' => $custom->name, 'val' => $val));
+          }
         }
       }
       else {
@@ -258,9 +262,11 @@ if(!class_exists('SamZoneEditor')) {
           $zSingleCT = unserialize($row['z_single_ct']);
           $zArchiveCT = unserialize($row['z_archive_ct']);
 
-          foreach($taxes as $tax) {
-            $val = (!is_null($zTaxes[$tax['slug']])) ? $zTaxes[$tax['slug']]['id'] : -1;
-            array_push($sTaxes, array('name' => $tax['name'], 'slug' => $tax['slug'], 'tax' => $tax['tax'], 'val' => $val));
+          if(is_array($taxes)) {
+            foreach($taxes as $tax) {
+              $val = (isset($zTaxes[$tax['slug']])) ? $zTaxes[$tax['slug']]['id'] : -1;
+              array_push($sTaxes, array('name' => $tax['name'], 'slug' => $tax['slug'], 'tax' => $tax['tax'], 'val' => $val));
+            }
           }
           foreach($cats as $cat) {
             $val = (!is_null($zCats[$cat['slug']])) ? $zCats[$cat['slug']] : -1;
@@ -270,11 +276,13 @@ if(!class_exists('SamZoneEditor')) {
             $val = (!is_null($zAuthors[$author])) ? $zAuthors[$author] : -1;
             array_push($sAuthors, array('id' => $author, 'name' => $key, 'val' => $val));
           }
-          foreach($customs as $custom) {
-            $val = (!is_null($zSingleCT[$custom->name])) ? $zSingleCT[$custom->name] : -1;
-            array_push($sSingleCT, array('label' => $custom->label, 'name' => $custom->name, 'val' => $val));
-            $val = (!is_null($zArchiveCT[$custom->name])) ? $zArchiveCT[$custom->name] : -1;
-            array_push($sArchiveCT, array('label' => $custom->label, 'name' => $custom->name, 'val' => $val));
+          if(is_array($customs)) {
+            foreach($customs as $custom) {
+              $val = (isset($zSingleCT[$custom->name])) ? $zSingleCT[$custom->name] : -1;
+              array_push($sSingleCT, array('label' => $custom->label, 'name' => $custom->name, 'val' => $val));
+              $val = (isset($zArchiveCT[$custom->name])) ? $zArchiveCT[$custom->name] : -1;
+              array_push($sArchiveCT, array('label' => $custom->label, 'name' => $custom->name, 'val' => $val));
+            }
           }
         }
         else {

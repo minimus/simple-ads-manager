@@ -76,8 +76,8 @@ if(in_array($action, $allowed_actions)) {
           $hitsFull[$i - 1] = array( $i, 0);
           $clicksFull[$i - 1] = array($i, 0);
         }
-        foreach($hits as $hit) $hitsFull[$hit['ed'] - 1][1] = $hit['hits'];
-        foreach($clicks as $click) $clicksFull[$click['ed'] - 1][1] = $click['hits'];
+        foreach($hits as $hit) $hitsFull[$hit['ed'] - 1][1] = (integer) $hit['hits'];
+        foreach($clicks as $click) $clicksFull[$click['ed'] - 1][1] = (integer) $click['hits'];
 
         $sql = "SELECT
                   (SELECT
@@ -92,7 +92,7 @@ if(in_array($action, $allowed_actions)) {
                       AND ss.event_type = 1 AND ss.pid = %d) AS clicks;";
         $total = $wpdb->get_row($wpdb->prepare($sql, $month, $pid, $month, $pid));
 
-        $out = array('hits' => $hitsFull, 'clicks' => $clicksFull, 'total' => $total, 'test' => $test);
+        $out = array('hits' => $hitsFull, 'clicks' => $clicksFull, 'total' => $total);
       }
       else $out = array("status" => "error", "message" => "Error");
       break;
@@ -120,8 +120,8 @@ if(in_array($action, $allowed_actions)) {
           $hitsFull[$i - 1] = array( $i, 0);
           $clicksFull[$i - 1] = array($i, 0);
         }
-        foreach($hits as $hit) $hitsFull[$hit['ed'] - 1][1] = $hit['hits'];
-        foreach($clicks as $click) $clicksFull[$click['ed'] - 1][1] = $click['hits'];
+        foreach($hits as $hit) $hitsFull[$hit['ed'] - 1][1] = (integer) $hit['hits'];
+        foreach($clicks as $click) $clicksFull[$click['ed'] - 1][1] = (integer) $click['hits'];
 
         $sql = "SELECT
                   (SELECT

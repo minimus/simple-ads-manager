@@ -7,6 +7,7 @@ if(!class_exists('simple_ads_manager_widget_admin') && class_exists('WP_Widget')
     protected $wTable = '';
     
     function __construct() {
+      if(!defined('SAM_OPTIONS_NAME')) define('SAM_OPTIONS_NAME', 'samPluginOptions');
       $this->crawler = $this->isCrawler();
       $this->aTitle = __('Ads Place:', SAM_DOMAIN);
       $this->wTable = 'sam_places';
@@ -146,6 +147,7 @@ if(!class_exists('simple_ads_manager_zone_widget') && class_exists('WP_Widget'))
     private $wTable = '';
     
     function __construct() {
+      if(!defined('SAM_OPTIONS_NAME')) define('SAM_OPTIONS_NAME', 'samPluginOptions');
       $this->crawler = $this->isCrawler();
       $this->aTitle = __('Ads Zone', SAM_DOMAIN).':';
       $this->wTable = 'sam_zones';
@@ -282,6 +284,7 @@ if(!class_exists('simple_ads_manager_ad_widget') && class_exists('WP_Widget')) {
     private $wTable = '';
     
     function __construct() {
+      if(!defined('SAM_OPTIONS_NAME')) define('SAM_OPTIONS_NAME', 'samPluginOptions');
       $this->crawler = $this->isCrawler();
       $this->aTitle = __('Ad', SAM_DOMAIN).':';
       $this->wTable = 'sam_ads';
@@ -419,6 +422,7 @@ if(!class_exists('simple_ads_manager_block_widget') && class_exists('WP_Widget')
     private $wTable = '';
     
     function __construct() {
+      if(!defined('SAM_OPTIONS_NAME')) define('SAM_OPTIONS_NAME', 'samPluginOptions');
       $this->crawler = $this->isCrawler();
       $this->aTitle = __('Block', SAM_DOMAIN).':';
       $this->wTable = 'sam_blocks';

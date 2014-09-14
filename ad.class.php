@@ -10,6 +10,7 @@ if(!class_exists('SamAd')) {
     public $ad = '';
     
     public function __construct($args = null, $useCodes = false, $crawler = false) {
+      if(!defined('SAM_OPTIONS_NAME')) define('SAM_OPTIONS_NAME', 'samPluginOptions');
       $this->args = $args;
       $this->useCodes = $useCodes;
       $this->crawler = $crawler;
@@ -150,6 +151,7 @@ if(!class_exists('SamAdPlace')) {
     public function __construct($args = null, $useCodes = false, $crawler = false, $clauses = null, $ajax = false) {
       global $SAM_Query;
 
+      if(!defined('SAM_OPTIONS_NAME')) define('SAM_OPTIONS_NAME', 'samPluginOptions');
       $this->args = $args;
       $this->useCodes = $useCodes;
       $this->crawler = $crawler;
@@ -225,7 +227,7 @@ if(!class_exists('SamAdPlace')) {
       $rId = rand(1111, 9999);
       if($settings['adCycle'] == 0) $cycle = 1000;
       else $cycle = $settings['adCycle'];
-      $el = (integer)$settings['errorlogFS'];
+      $el = isset($settings['errorlogFS']);
       
       global $wpdb;
       $pTable = $wpdb->prefix . "sam_places";          
@@ -296,7 +298,7 @@ if(!class_exists('SamAdPlace')) {
         return $output;
       }
 
-      if(($settings['adShow'] == 'js') && !$this->force) {
+      if(isset($settings['adShow']) && ($settings['adShow'] == 'js') && !$this->force) {
         //$data = "{id: 0, pid: {$place['id']}, codes: $codes}";
         return "<div id='c{$rId}_0_{$place['id']}' class='sam-container sam-place' data-sam='{$data}'></div>";
       }
@@ -439,12 +441,14 @@ if(!class_exists('SamAdPlaceZone')) {
     private $args = array();
     private $useCodes = false;
     private $crawler = false;
+    private $clauses = null;
     public $ad = '';
     
-    public function __construct($args = null, $useCodes = false, $crawler = false) {
+    public function __construct($args = null, $useCodes = false, $crawler = false, $clauses = null) {
       $this->args = $args;
       $this->useCodes = $useCodes;
       $this->crawler = $crawler;
+      $this->clauses = $clauses;
       $this->ad = self::buildZone($this->args, $this->useCodes, $this->crawler);
     }
     
@@ -521,8 +525,10 @@ if(!class_exists('SamAdPlaceZone')) {
         if((integer)$zone['z_404'] < 0) $zone['z_404'] = $zone['z_default'];
         if((integer)$zone['z_archive'] < 0) $zone['z_archive'] = $zone['z_default'];
         if((integer)$zone['z_tax'] < 0) $zone['z_tax'] = $zone['z_archive'];
-        foreach($taxes as $key => $value) {
-          if($value < 0) $taxes[$key] = $zone['z_tax'];
+        if(!empty($taxes)) {
+          foreach($taxes as $key => $value) {
+            if($value < 0) $taxes[$key] = $zone['z_tax'];
+          }
         }
         if((integer)$zone['z_category'] < 0) $zone['z_category'] = $zone['z_tax'];
         foreach($cats as $key => $value) {
@@ -534,8 +540,10 @@ if(!class_exists('SamAdPlaceZone')) {
           if($value < 0) $authors[$key] = $zone['z_author'];
         }
         if((integer)$zone['z_cts'] < 0) $zone['z_cts'] = $zone['z_archive'];
-        foreach($archiveCT as $key => $value) {
-          if($value < 0) $archiveCT[$key] = $zone['z_cts'];
+        if(!empty($archiveCT)) {
+          foreach($archiveCT as $key => $value) {
+            if($value < 0) $archiveCT[$key] = $zone['z_cts'];
+          }
         }
         if((integer)$zone['z_date'] < 0) $zone['z_date'] = $zone['z_archive'];
         
@@ -588,7 +596,7 @@ if(!class_exists('SamAdPlaceZone')) {
       }
       
       if($id > 0) {
-        $ad = new SamAdPlace(array('id' => $id), $useCodes, $crawler);
+        $ad = new SamAdPlace(array('id' => $id), $useCodes, $crawler, $this->clauses);
         $output = $ad->ad;
       }
       return $output;
@@ -600,11 +608,13 @@ if(!class_exists('SamAdBlock')) {
   class SamAdBlock {
     private $args = array();
     private $crawler = false;
+    private $clauses = null;
     public $ad = '';
     
-    public function __construct($args = null, $crawler = false) {
+    public function __construct($args = null, $crawler = false, $clauses = null) {
       $this->args = $args;
       $this->crawler = $crawler;
+      $this->clauses = $clauses;
       $this->ad = self::buildBlock($this->args, $this->crawler);
     }
     
@@ -652,7 +662,7 @@ if(!class_exists('SamAdBlock')) {
             $id = $ads[$i][$j]['id'];
             switch($ads[$i][$j]['type']) {
               case 'place':
-                $place = new SamAdPlace(array('id' => $id), false, $crawler);
+                $place = new SamAdPlace(array('id' => $id), false, $crawler, $this->clauses);
                 $iDiv = $place->ad;
                 break;
                 
@@ -662,7 +672,7 @@ if(!class_exists('SamAdBlock')) {
                 break;
                 
               case 'zone':
-                $zone = new SamAdPlaceZone(array('id' => $id), false, $crawler);
+                $zone = new SamAdPlaceZone(array('id' => $id), false, $crawler, $this->clauses);
                 $iDiv = $zone->ad;
                 break;
                 

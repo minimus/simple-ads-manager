@@ -113,8 +113,11 @@ if(!class_exists('SamPlaceList')) {
           }
           if($iaction === 'kill-em-all') $wpdb->query("DELETE FROM {$pTable} WHERE trash=true");
           if($iaction === 'clear-stats') {
-            $wpdb->query("UPDATE $pTable SET $pTable.patch_hits = 0;");
-            $wpdb->query("UPDATE $aTable SET $aTable.ad_hits = 0, $aTable.ad_clicks = 0;");
+            //$wpdb->query("UPDATE $pTable SET $pTable.patch_hits = 0;");
+            //$wpdb->query("UPDATE $aTable SET $aTable.ad_hits = 0, $aTable.ad_clicks = 0;");
+            include_once('sam.tools.php');
+            $cleaner = new SamStatsCleaner($this->settings);
+            $cleaner->clear();
           }
           $trash_num = $wpdb->get_var("SELECT COUNT(*) FROM $pTable WHERE trash = TRUE");
           $active_num = $wpdb->get_var("SELECT COUNT(*) FROM $pTable WHERE trash = FALSE");
@@ -391,7 +394,9 @@ if(!class_exists('SamPlaceList')) {
                       (sa.cpm * @ad_hits / 1000) AS e_cpm,
                       (sa.cpc * @ad_clicks) AS e_cpc,
                       sa.trash,
-                      IF(DATEDIFF(sa.ad_end_date, NOW()) IS NULL OR DATEDIFF(sa.ad_end_date, NOW()) > 0, FALSE, TRUE) AS expired
+                      (IF(sa.ad_schedule, NOT (DATEDIFF(sa.ad_end_date, NOW()) IS NULL OR DATEDIFF(sa.ad_end_date, NOW()) > 0), FALSE) OR
+                      IF(sa.limit_hits = 1 AND sa.hits_limit <= @ad_hits, TRUE, FALSE) OR
+                      IF(sa.limit_clicks AND sa.clicks_limit <= @ad_clicks, TRUE, FALSE)) AS expired
                      FROM $aTable sa
                      WHERE (pid = $item) $trash
                      LIMIT $offset, $items_per_page";

@@ -20,11 +20,11 @@ function insertSAMCode() {
 	var samBA = f.elements.sam_codes.checked;
 	
 	samCode = ' [sam id="' + samId + '"';
-  if(samItem == 1) samCode += ' name="' + samIdObj.options[samIdObj.selectedIndex].text + '"'
+  if(samItem == 1) samCode += ' name="' + samIdObj.options[samIdObj.selectedIndex].text + '"';
   if(samBA == 1) samCode += ' codes="true"]';
   else samCode += ']';
-	
-	window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, samCode);
+
+  window.tinyMCE.activeEditor.execCommand('mceInsertContent', false, samCode);
 	tinyMCEPopup.editor.execCommand('mceRepaint');
 	tinyMCEPopup.close();
 	return;
@@ -44,11 +44,11 @@ function insertSAMZoneCode() {
   var samBA = f.elements.sam_codes.checked;
   
   samCode = ' [sam_zone id="' + samId + '"';
-  if(samItem == 1) samCode += ' name="' + samIdObj.options[samIdObj.selectedIndex].text + '"'
+  if(samItem == 1) samCode += ' name="' + samIdObj.options[samIdObj.selectedIndex].text + '"';
   if(samBA == 1) samCode += ' codes="true"]';
   else samCode += ']';
-  
-  window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, samCode);
+
+  window.tinyMCE.activeEditor.execCommand('mceInsertContent', false, samCode);
   tinyMCEPopup.editor.execCommand('mceRepaint');
   tinyMCEPopup.close();
   return;
@@ -68,11 +68,11 @@ function insertSAMAdCode() {
   var samBA = f.elements.sam_codes.checked;
   
   samCode = ' [sam_ad id="' + samId + '"';
-  if(samItem == 1) samCode += ' name="' + samIdObj.options[samIdObj.selectedIndex].text + '"'
+  if(samItem == 1) samCode += ' name="' + samIdObj.options[samIdObj.selectedIndex].text + '"';
   if(samBA == 1) samCode += ' codes="true"]';
   else samCode += ']';
-  
-  window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, samCode);
+
+  window.tinyMCE.activeEditor.execCommand('mceInsertContent', false, samCode);
   tinyMCEPopup.editor.execCommand('mceRepaint');
   tinyMCEPopup.close();
   return;
@@ -91,10 +91,10 @@ function insertSAMBlockCode() {
   var samIdObj = f.elements.sam_id;
   
   samCode = ' [sam_block id="' + samId + '"';
-  if(samItem == 1) samCode += ' name="' + samIdObj.options[samIdObj.selectedIndex].text + '"'
+  if(samItem == 1) samCode += ' name="' + samIdObj.options[samIdObj.selectedIndex].text + '"';
   samCode += ']';
   
-  window.tinyMCE.execInstanceCommand('content', 'mceInsertContent', false, samCode);
+  window.tinyMCE.activeEditor.execCommand('mceInsertContent', false, samCode);
   tinyMCEPopup.editor.execCommand('mceRepaint');
   tinyMCEPopup.close();
   return;

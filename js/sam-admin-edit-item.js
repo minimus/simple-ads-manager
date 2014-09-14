@@ -3,7 +3,7 @@
  */
 var sam = sam || {};
 (function ($) {
-  var media, mediaTexts = samEditorOptions.media;
+  var media, mediaTexts = samEditorOptions.media, options = samEditorOptions.strings;
 
   sam.media = media = {
     buttonId: '#banner-media',
@@ -25,7 +25,7 @@ var sam = sam || {};
         return;
       }
 
-      var Attachment = wp.media.model.Attachment;
+      //var Attachment = wp.media.model.Attachment;
 
       this._frame = media.frame = wp.media({
         title: mediaTexts.title,
@@ -52,17 +52,17 @@ var sam = sam || {};
     },
 
     handleMediaAttachment: function(a) {
-      var attechment = a.toJSON();
-      $(this.adUrl).val(attechment.url);
-      $(this.adImgId).val(attechment.id);
-      if('' == $(this.adName).val() && '' != attechment.title) $(this.adName).val(attechment.title);
-      if('' == $(this.adDesc).val() && '' != attechment.caption) $(this.adDesc).val(attechment.caption);
-      if('' == $(this.adAlt).val() && '' != attechment.alt) $(this.adAlt).val(attechment.alt);
+      var attachment = a.toJSON();
+      $(this.adUrl).val(attachment.url);
+      $(this.adImgId).val(attachment.id);
+      if('' == $(this.adName).val() && '' != attachment.title) $(this.adName).val(attachment.title);
+      if('' == $(this.adDesc).val() && '' != attachment.caption) $(this.adDesc).val(attachment.caption);
+      if('' == $(this.adAlt).val() && '' != attachment.alt) $(this.adAlt).val(attachment.alt);
     }
   };
 
   $(document).ready(function () {
-    var em = $('#editor_mode').val(), options, fu, title = $('#title');
+    var em = $('#editor_mode').val(), fu, title = $('#title');
 
     var
       rcvt0 = $('#rc-vt0'), rcvt2 = $('#rc-vt2'), xId = $('#x_id'), rcxid = $('#rc-xid'),
@@ -93,7 +93,6 @@ var sam = sam || {};
       xcustGrid = $('#x-cust-grid'), xcustIn = $('#x_view_custom');
 
     var
-      //samUploader, mediaTexts = samEditorOptions.media,
       samAjaxUrl = samEditorOptions.samAjaxUrl,
       samStatsUrl = samEditorOptions.samStatsUrl,
       models = samEditorOptions.models,
@@ -101,7 +100,76 @@ var sam = sam || {};
       samStrs = samEditorOptions.strings,
       sPost = encodeURI(samStrs.posts), sPage = encodeURI(samStrs.page);
 
-    var stats, statsData, itemId = $('#item_id').val(), sMonth = 0;
+    var stats, itemId = $('#item_id').val(), sMonth = 0;
+    var plot, plotData = [],
+      plotOptions = {
+        animate: true,
+        animateReplot: true,
+        cursor: {
+          showTooltip: false
+        },
+        series:[
+          {
+            pointLabels: {
+              show: true
+            },
+            renderer: $.jqplot.BarRenderer,
+            showHighlight: false,
+            rendererOptions: {
+              animation: {
+                speed: 2500
+              },
+              barWidth: 15,
+              barPadding: -15,
+              barMargin: 0,
+              highlightMouseOver: false
+            },
+            label: samStrs.labels.hits
+          },
+          {
+            label: samStrs.labels.clicks,
+            rendererOptions: {
+              animation: {
+                speed: 2000
+              }
+            }
+          }
+        ],
+        axesDefaults: {
+          pad: 0
+        },
+        axes: {
+          xaxis: {
+            tickInterval: 1,
+            drawMajorGridlines: false,
+            drawMinorGridlines: true,
+            drawMajorTickMarks: false,
+            rendererOptions: {
+              tickInset: 1,
+              minorTicks: 1
+            },
+            min: 1
+          },
+          yaxis: {
+            rendererOptions: {
+              forceTickAt0: true
+            }
+          }
+        },
+        highlighter: {
+          show: true,
+          showLabel: true,
+          tooltipAxes: 'y',
+          sizeAdjust: 7.5 ,
+          tooltipLocation : 'ne',
+          useAxesFormatters: false,
+          tooltipFormatString: samStrs.labels.clicks + ': %d'
+        },
+        legend: {
+          show: true,
+          placement: 'ne'
+        }
+      };
 
     function buildLGrid(name, grid, vi, field, gc, url) {
       var iVal = vi.val();
@@ -216,38 +284,20 @@ var sam = sam || {};
       id: itemId,
       sm: sMonth
     }).done(function(data) {
-        var
-          hits = {label: samStrs.labels.hits, data: data.hits},
-          clicks = {label: samStrs.labels.clicks, data: data.clicks};
-        statsData = [hits, clicks];
         $('#total_hits').text(data.total.hits);
         $('#total_clicks').text(data.total.clicks);
-        $.plot('#graph', statsData, {
-          series: {
-            lines: { show: true },
-            points: { show: true }
-          },
-          xaxis: {
-            mode: "categories",
-            tickLength: 0
-          },
-          legend: {
-            backgroundColor: 'rgb(235, 233, 233)'
-          },
-          grid: {
-            backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
-            borderWidth: 1,
-            borderColor: '#DFDFDF'
-          }
-        });
+        plotData = [data.hits, data.clicks];
+        plot = $.jqplot('graph', plotData, plotOptions);
     });
 
-    fu = new AjaxUpload(btnUpload, {
-      action:ajaxurl,
+    /*fu = new AjaxUpload(btnUpload, {
+      action: samAjaxUrl,
       name:'uploadfile',
       data:{
-        action:'upload_ad_image'
+        action:'upload_ad_image',
+        path: samStrs.path
       },
+      responseType: 'json',
       onSubmit:function (file, ext) {
         if (!(ext && /^(jpg|png|jpeg|gif|swf)$/.test(ext))) {
           status.text(samStrs.status);
@@ -261,7 +311,7 @@ var sam = sam || {};
         status.text('');
         loadImg.hide();
         $('<div id="files"></div>').appendTo(srcHelp);
-        if (response == "success") {
+        if (response.status == "success") {
           $("#files").text(samStrs.file + ' ' + file + ' ' + samStrs.uploaded)
             .addClass('updated')
             .delay(3000)
@@ -280,7 +330,64 @@ var sam = sam || {};
             });
         }
       }
+    });*/
+
+    var
+      uConsole = $('#upload-console'),
+      progress = $('#upload-progress'),
+      uploadOptions = samEditorOptions.uploader;
+    //message = $('#stb-message');
+
+    var uploader = new plupload.Uploader({
+      browse_button: 'upload-file-button',
+      url: uploadOptions.url + '?path=' + uploadOptions.path,
+      multi_selection: false,
+      filters: {
+        max_file_size : '500kb',
+        mime_types: [
+          { title: "Image file", extensions: "jpg,jpeg,gif,png" },
+          { title: "Flash file", extensions: "swf" }
+        ]
+      },
+      init: {
+        PostInit: function() {
+          uConsole.text('');
+          progress.text('');
+        },
+        FilesAdded: function(up, files) {
+          plupload.each(files, function(file) {
+            uConsole.text(file.name);
+          });
+          this.start();
+        },
+        UploadProgress: function(up, file) {
+          progress.text(file.percent + '%');
+        },
+        UploadComplete: function(up, files) {
+          uConsole.text('');
+          progress.text('');
+          $('<div id="files"></div>').appendTo(srcHelp);
+          $("#ad_img").val(uploadOptions.adUrl + files[0].name);
+          $("#files").html('<p>' + options.file + ' ' + files[0].name + ' ' + options.uploaded + '</p>')
+            .addClass('updated')
+            .delay(3000)
+            .fadeOut(1000, function () {
+              $(this).remove();
+            });
+        },
+        Error: function(up, err) {
+          $('<div id="files"></div>').appendTo(srcHelp);
+          $('#files').html( '<p>Error(' +err.code + "): " + err.message + '</p>')
+            .addClass('error')
+            .delay(3000)
+            .fadeOut(1000, function () {
+              $(this).remove();
+            });
+        }
+      }
     });
+
+    uploader.init();
 
     // Advertiser ComboGrid
     $('#adv_nick').combogrid({
@@ -337,25 +444,19 @@ var sam = sam || {};
         }
         if(el == 'tabs-3')
           if(xViewUsers.is(':visible') && w2ui['users-grid']) usersGrid.w2render('users-grid');
-        if(el == 'tabs-5')
-          $.plot('#graph', statsData, {
-            series: {
-              lines: { show: true },
-              points: { show: true }
-            },
-            xaxis: {
-              mode: "categories",
-              tickLength: 0
-            },
-            legend: {
-              backgroundColor: 'rgb(235, 233, 233)'
-            },
-            grid: {
-              backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
-              borderWidth: 1,
-              borderColor: '#DFDFDF'
-            }
-          });
+        if(el == 'tabs-5') {
+          if(plot) {
+            plot.destroy();
+            plot = $.jqplot('graph', plotData, plotOptions);
+          }
+        }
+      }
+    });
+
+    $(window).resize(function() {
+      if(plot) {
+        plot.destroy();
+        plot = $.jqplot('graph', plotData, plotOptions);
       }
     });
 
@@ -702,44 +803,6 @@ var sam = sam || {};
       showButtonPanel:true
     });
 
-    /*var
-      samAttachment = wp.media.model.Attachment,
-      adImgId = $('#ad_img_id');
-
-    $('#banner-media').click(function(e) {
-      e.preventDefault();
-
-      if(samUploader) {
-        samUploader.open();
-        return;
-      }
-
-      samUploader = wp.media.frames.samBanner = wp.media({
-        title: mediaTexts.title,
-        button: {text: mediaTexts.button},
-        library: {type: 'image'},
-        multiple: false,
-        selection: [samAttachment.get( adImgId.val() )]
-      });
-
-      samUploader.on('select', function() {
-        var
-          adImg = $('#ad_img'),
-          adName = $('#title'),
-          adDesc = $('#item_description'),
-          adAlt = $('#ad_alt');
-
-        var attachment = samUploader.state().get('selection').first().toJSON();
-        adImg.val(attachment.url); // alt, caption, title, description
-        adImgId.val(attachment.id);
-        if('' == adName.val() && '' != attachment.caption) adName.val(attachment.caption);
-        if('' == adDesc.val() && '' != attachment.description) adDesc.val(attachment.description);
-        if('' == adAlt.val() && '' != attachment.alt) adAlt.val(attachment.alt);
-      });
-
-      samUploader.open();
-    });*/
-
     $('#ad_schedule').click(function () {
       if ($('#ad_schedule').is(':checked')) $('#rc-sc').show('blind', {direction:'vertical'}, 500);
       else $('#rc-sc').hide('blind', {direction:'vertical'}, 500);
@@ -840,30 +903,13 @@ var sam = sam || {};
         id: itemId,
         sm: sMonth
       }).done(function(data) {
-          var
-            hits = {label: samStrs.labels.hits, data: data.hits},
-            clicks = {label: samStrs.labels.clicks, data: data.clicks};
-          statsData = [hits, clicks];
           $('#total_hits').text(data.total.hits);
           $('#total_clicks').text(data.total.clicks);
-          $.plot('#graph', statsData, {
-            series: {
-              lines: { show: true },
-              points: { show: true }
-            },
-            xaxis: {
-              mode: "categories",
-              tickLength: 0
-            },
-            legend: {
-              backgroundColor: 'rgb(235, 233, 233)'
-            },
-            grid: {
-              backgroundColor: { colors: ["#FFFFFF", "#DDDDDD"] },
-              borderWidth: 1,
-              borderColor: '#DFDFDF'
-            }
-          });
+          plotData = [data.hits, data.clicks];
+          if(plot) {
+            plot.destroy();
+            plot = $.jqplot('graph', plotData, plotOptions);
+          }
         });
     });
 

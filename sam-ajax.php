@@ -24,11 +24,17 @@ require_once( $root . '/wp-load.php' );
 global $wpdb;
 
 $oTable = $wpdb->prefix . 'options';
-$oSql = "SELECT $oTable.option_value FROM $oTable WHERE $oTable.option_name = 'blog_charset'";
-$charset = $wpdb->get_var($oSql);
+$oSql = "SELECT wo.option_value FROM $oTable wo WHERE wo.option_name = %s  LIMIT 1;";
+$charset = $wpdb->get_var($wpdb->prepare( $oSql, 'blog_charset' ));
 $aTable = $wpdb->prefix . "sam_ads";
 $pTable = $wpdb->prefix . 'sam_places';
 $sTable = $wpdb->prefix . 'sam_stats';
+
+$options = get_option('samPluginOptions');
+
+function sanitize_option($option, $value) {
+  return $value;
+}
 
 //Typical headers
 @header("Content-Type: application/json; charset=$charset");
@@ -42,7 +48,8 @@ $action = !empty($_POST['action']) ? 'sam_ajax_' . stripslashes($_POST['action']
 //A bit of security
 $allowed_actions = array(
   'sam_ajax_sam_click',
-  'sam_ajax_sam_hit'
+  'sam_ajax_sam_hit',
+  'sam_ajax_sam_maintenance'
 );
 
 if(in_array($action, $allowed_actions)){
@@ -97,6 +104,31 @@ if(in_array($action, $allowed_actions)){
       }
       else echo json_encode(array('success' => false));
       break;
+
+    case 'sam_ajax_sam_maintenance':
+      if(false === ($mDate = get_transient( 'sam_maintenance_date' )) && $options['mailer']) {
+        include_once('sam.tools.php');
+        $mailer = new SamMailer($options);
+        $samSM = $mailer->sendMails();
+        $date = new DateTime('now');
+        if($options['mail_period'] == 'monthly') {
+          $date->modify('+1 month');
+          $nextDate = new DateTime($date->format('Y-m-01 02:00'));
+          $diff = $nextDate->format('U') - $_SERVER['REQUEST_TIME'];
+        }
+        else {
+          $dd = 8 - ((integer) $date->format('N'));
+          $date->modify("+{$dd} day");
+          $nextDate = new DateTime($date->format('Y-m-d 02:00'));
+          $diff = (8 - ((integer) $date->format('N'))) * DAY_IN_SECONDS;
+        }
+        $format = get_option('date_format').' '.get_option('time_format');
+        set_transient( 'sam_maintenance_date', $nextDate->format($format), $diff );
+        echo json_encode(array('success' => true, 'send_mail' => $samSM));
+      }
+      else echo json_encode(array('success' => true, 'send_mail' => false));
+      break;
+
     default:
       echo json_encode(array('success' => false, 'error' => 'Data error'));
       break;

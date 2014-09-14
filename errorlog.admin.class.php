@@ -148,13 +148,13 @@ if(!class_exists('SamErrorLog')) {
             <?php
             if($row['resolved'] == true) {
               ?>
-              <span class="delete"><a href="<?php echo admin_url('admin.php'); ?>?page=sam-errors&action=errors&mode=<?php echo $mode ?>&iaction=untrash&item=<?php echo $row['id'] ?>" title="<?php _e('Restore this Block from the Trash', SAM_DOMAIN) ?>"><?php _e('Not Resolved', SAM_DOMAIN); ?></a> | </span>
-              <span class="delete"><a href="<?php echo admin_url('admin.php'); ?>?page=sam-errors&action=errors&mode=<?php echo $mode ?>&iaction=kill&item=<?php echo $row['id'] ?>" title="<?php _e('Remove this Block permanently', SAM_DOMAIN) ?>"><?php _e('Remove permanently', SAM_DOMAIN); ?></a></span>
+              <span class="delete"><a href="<?php echo admin_url('admin.php'); ?>?page=sam-errors&action=errors&mode=<?php echo $mode ?>&iaction=untrash&item=<?php echo $row['id'] ?>" title="<?php _e('Restore this Error', SAM_DOMAIN) ?>"><?php _e('Not Resolved', SAM_DOMAIN); ?></a> | </span>
+              <span class="delete"><a href="<?php echo admin_url('admin.php'); ?>?page=sam-errors&action=errors&mode=<?php echo $mode ?>&iaction=kill&item=<?php echo $row['id'] ?>" title="<?php _e('Remove permanently', SAM_DOMAIN) ?>"><?php _e('Remove permanently', SAM_DOMAIN); ?></a></span>
             <?php
             }
             else {
               ?>
-              <span class="untrash"><a href="<?php echo admin_url('admin.php'); ?>?page=sam-errors&action=errors&mode=<?php echo $mode ?>&iaction=delete&item=<?php echo $row['id'] ?>" title="<?php _e('Move this Block to the Trash', SAM_DOMAIN) ?>"><?php _e('Resolved', SAM_DOMAIN); ?></a></span>
+              <span class="untrash"><a href="<?php echo admin_url('admin.php'); ?>?page=sam-errors&action=errors&mode=<?php echo $mode ?>&iaction=delete&item=<?php echo $row['id'] ?>" title="<?php _e('Move to Trash', SAM_DOMAIN) ?>"><?php _e('Resolved', SAM_DOMAIN); ?></a></span>
             <?php } ?>
           </div>
         </td>
@@ -179,7 +179,6 @@ if(!class_exists('SamErrorLog')) {
     </div>
   </div>
 </div>
-<div id="dialog" style="display: none;" title="<?php _e('Error Info', SAM_DOMAIN); ?>"></div>
       <?php
       /*$struct = $wpdb->get_results('DESCRIBE wp_sam_blocks;', ARRAY_A);
       foreach($struct as $var) {

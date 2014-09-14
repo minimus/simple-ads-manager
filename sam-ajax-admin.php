@@ -30,6 +30,7 @@ $ttTable = $wpdb->prefix . "term_taxonomy";
 $uTable = $wpdb->base_prefix . "users";
 $umTable = $wpdb->base_prefix . "usermeta";
 $postTable = $wpdb->prefix . "posts";
+$eTable = $wpdb->prefix . 'sam_errors';
 $userLevel = $wpdb->base_prefix . 'user_level';
 
 $oTable = $wpdb->prefix . 'options';
@@ -53,6 +54,8 @@ $allowed_actions = array(
   'sam_ajax_load_posts',
   'sam_ajax_load_users',
   'sam_ajax_load_combo_data',
+  'sam_ajax_get_error',
+  'sam_ajax_upload_ad_image',
   'sam_ajax_load_stats'
 );
 $out = array();
@@ -246,6 +249,44 @@ if(in_array($action, $allowed_actions)) {
       foreach($hits as $hit) $hitsFull[$hit['ed']][1] = $hit['hits'];
       foreach($clicks as $click) $clicksFull[$click['ed']][1] = $click['hits'];
       $out = array('hits' => $hitsFull, 'clicks' => $clicksFull, 'sql' => $sql);
+      break;
+
+    case 'sam_ajax_get_error':
+      $eTypes = array(
+        ((isset($_POST['wa'])) ? $_POST['wa'] : 'Warning'),
+        ((isset($_POST['ue'])) ? $_POST['wa'] : 'Update Error'),
+        ((isset($_POST['oe'])) ? $_POST['wa'] : 'Output Error')
+      );
+      if(isset($_POST['id'])) {
+        $id = $_POST['id'];
+        $eSql = "SELECT
+                  se.id,
+                  se.error_date,
+                  UNIX_TIMESTAMP(se.error_date) as date,
+                  se.table_name as name,
+                  se.error_type,
+                  se.error_msg as msg,
+                  se.error_sql as es,
+                  se.resolved
+                FROM $eTable se WHERE se.id = %d";
+        $out = $wpdb->get_row($wpdb->prepare($eSql, $id), ARRAY_A);
+        if(!empty($out['date'])) $out['date'] = date_i18n(get_option('date_format').' '.get_option('time_format'), $out['date']);
+        $out['type'] = $eTypes[$out['error_type']];
+      }
+      else $out = array("status" => "error", "message" => "ID Error");
+      break;
+
+    case 'sam_ajax_upload_ad_image':
+      if(isset($_POST['path'])) {
+        $uploadDir = $_POST['path'];
+        $file = $uploadDir . basename($_FILES['uploadfile']['name']);
+
+        if ( move_uploaded_file( $_FILES['uploadfile']['tmp_name'], $file )) {
+          $out = array('status' => "success");
+        } else {
+          $out = array('status' => "error");
+        }
+      }
       break;
 
     default:

@@ -273,8 +273,10 @@ if(!class_exists('SamPlaceEdit')) {
               <strong><?php _e('Upload File', SAM_DOMAIN); ?></strong>
             </p>
             <button id="upload-file-button" class="color-btn color-btn-left"><b style="background-color: #21759b"></b><?php _e('Upload', SAM_DOMAIN);?></button>
-            <img id='load_img' src='<?php echo SAM_IMG_URL ?>loader.gif' style='display: none;'>
-            <span id="uploading"></span>
+            <!--<img id='load_img' src='<?php echo SAM_IMG_URL ?>loader.gif' style='display: none;'>
+            <span id="uploading"></span>-->
+            <span id="upload-console"></span>
+            <span id="upload-progress"></span>
             <p>
               <span id="uploading-help"><?php _e("Select and upload file from your local computer.", SAM_DOMAIN); ?></span>
             </p>
@@ -636,21 +638,21 @@ if(!class_exists('SamPlaceEdit')) {
             $itemId = $_POST['item_id'];
             $placeId = $_POST['place_id'];
             $viewPages = $this->buildViewPages(array(
-              $_POST['is_home'],
-              $_POST['is_singular'],
-              $_POST['is_single'],
-              $_POST['is_page'],
-              $_POST['is_attachment'],
-              $_POST['is_search'],
-              $_POST['is_404'],
-              $_POST['is_archive'],
-              $_POST['is_tax'],
-              $_POST['is_category'],
-              $_POST['is_tag'],
-              $_POST['is_author'],
-              $_POST['is_date'],
-              $_POST['is_posttype'],
-              $_POST['is_posttype_archive']
+              ((isset($_POST['is_home'])) ? $_POST['is_home'] : 0),
+              ((isset($_POST['is_singular'])) ? $_POST['is_singular'] : 0),
+              ((isset($_POST['is_single'])) ? $_POST['is_single'] : 0),
+              ((isset($_POST['is_page'])) ? $_POST['is_page'] : 0),
+              ((isset($_POST['is_attachment'])) ? $_POST['is_attachment'] : 0),
+              ((isset($_POST['is_search'])) ? $_POST['is_search'] : 0),
+              ((isset($_POST['is_404'])) ? $_POST['is_404'] : 0),
+              ((isset($_POST['is_archive'])) ? $_POST['is_archive'] : 0),
+              ((isset($_POST['is_tax'])) ? $_POST['is_tax'] : 0),
+              ((isset($_POST['is_category'])) ? $_POST['is_category'] : 0),
+              ((isset($_POST['is_tag'])) ? $_POST['is_tag'] : 0),
+              ((isset($_POST['is_author'])) ? $_POST['is_author'] : 0),
+              ((isset($_POST['is_date'])) ? $_POST['is_date'] : 0),
+              ((isset($_POST['is_posttype'])) ? $_POST['is_posttype'] : 0),
+              ((isset($_POST['is_posttype_archive'])) ? $_POST['is_posttype_archive'] : 0)
             ));
             $updateRow = array(
               'pid' => $_POST['place_id'],
@@ -794,8 +796,8 @@ if(!class_exists('SamPlaceEdit')) {
                       sa.hits_limit,
                       sa.limit_clicks,
                       sa.clicks_limit,
-                      (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 0) AS ad_hits,
-                      (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 1) AS ad_clicks,
+                      @ad_hits := (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 0) AS ad_hits,
+                      @ad_clicks := (SELECT COUNT(*) FROM $sTable ss WHERE (EXTRACT(YEAR_MONTH FROM NOW()) = EXTRACT(YEAR_MONTH FROM ss.event_time)) AND ss.id = sa.id AND ss.pid = sa.pid AND ss.event_type = 1) AS ad_clicks,
                       sa.ad_weight,
                       sa.ad_weight_hits,
                       sa.adv_nick,
@@ -805,7 +807,9 @@ if(!class_exists('SamPlaceEdit')) {
                       sa.cpc,
                       sa.per_month,
                       sa.trash,
-                      IF(DATEDIFF(sa.ad_end_date, NOW()) IS NULL OR DATEDIFF(sa.ad_end_date, NOW()) > 0, FALSE, TRUE) AS expired,
+                      (IF(sa.ad_schedule, NOT (DATEDIFF(sa.ad_end_date, NOW()) IS NULL OR DATEDIFF(sa.ad_end_date, NOW()) > 0), FALSE) OR
+                      IF(sa.limit_hits = 1 AND sa.hits_limit <= @ad_hits, TRUE, FALSE) OR
+                      IF(sa.limit_clicks AND sa.clicks_limit <= @ad_clicks, TRUE, FALSE)) AS expired,
                       sp.code_before,
                       sp.code_after,
                       sa.ad_custom_tax_terms,
@@ -1543,7 +1547,7 @@ if(!class_exists('SamPlaceEdit')) {
                   </select>
                 </p>
                 <div class="graph-container">
-                  <div id="graph" style="width: 100%; height: 300px; padding: 15px;"></div>
+                  <div id="graph" style="width: 100%; height: 300px;"></div>
                 </div>
                 <p class="totals">
                   <strong><?php echo __('Total', SAM_DOMAIN) . ':'; ?></strong><br>
