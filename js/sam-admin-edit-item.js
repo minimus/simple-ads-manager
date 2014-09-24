@@ -175,10 +175,15 @@ var sam = sam || {};
       var iVal = vi.val();
       grid.w2grid({
         name: name,
-        show: {selectColumn: true},
+        show: {
+          selectColumn: true,
+          toolbar: true,
+          footer: true
+        },
         multiSelect: true,
         columns: gc,
         url: url,
+        limit: 10000,
         onSelect: function(event) {
           event.onComplete = function() {
             var out = '', recs = this.getSelection(), data;
@@ -419,7 +424,7 @@ var sam = sam || {};
       postAjax =
         samAjaxUrl +
         '?action=load_posts&cstr=' + samEditorOptions.data.custList +
-          '&sp=' + sPost + '&spg=' + sPage;
+          '&sp=' + sPost + '&spg=' + sPage + '&limit=10000';
     buildLGrid('posts-grid', postsGrid, postsIn, 'id', models.posts, postAjax);
     buildLGrid('x-posts-grid', xpostsGrid, xpostsIn, 'id', models.posts, postAjax);
 

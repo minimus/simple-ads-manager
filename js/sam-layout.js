@@ -19,8 +19,8 @@
             wc: samAjax.clauses,
             level: samAjax.level
           },
-          type: 'POST',
-          crossDomain: true
+          type: 'POST'/*,
+          crossDomain: true*/
         }).done(function(data) {
           $(el).replaceWith(data.ad);
           $.post(samAjax.ajaxurl, {

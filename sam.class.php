@@ -69,7 +69,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '2.3.85');
+      define('SAM_VERSION', '2.4.89');
       define('SAM_DB_VERSION', '2.6');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );
@@ -407,6 +407,13 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 
       return array('WC' => $whereClause, 'WCT' => $whereClauseT, 'WCW' => $whereClauseW, 'WC2W' => $whereClause2W);
     }
+
+	  private function getDirLevel() {
+		  $absPath = str_replace('\\', '/', ABSPATH);
+		  $dirName = str_replace('\\', '/', dirname( __FILE__ ));
+
+		  return count(explode('/', str_replace($absPath, '', $dirName)));
+	  }
     
     public function headerScripts() {
       global $SAM_Query;
@@ -425,9 +432,10 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           'ajaxurl' => SAM_URL . 'sam-ajax.php',
           'loadurl' => SAM_URL . 'sam-ajax-loader.php',
           'load' => ($this->samOptions['adShow'] == 'js'),
-          'level' => count(explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) ))),
+          'level' => self::getDirLevel(), //count(explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) ))),
           'mailer' => $options['mailer'],
-          'clauses' => $clauses64
+          'clauses' => $clauses64,
+		      //'debug' => array(ABSPATH, dirname( __FILE__ ), str_replace( ABSPATH, '', dirname( __FILE__ ) ), explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) )))
         )
       );
     }

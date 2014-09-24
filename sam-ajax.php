@@ -49,6 +49,7 @@ $action = !empty($_POST['action']) ? 'sam_ajax_' . stripslashes($_POST['action']
 $allowed_actions = array(
   'sam_ajax_sam_click',
   'sam_ajax_sam_hit',
+	'sam_ajax_sam_hits',
   'sam_ajax_sam_maintenance'
 );
 

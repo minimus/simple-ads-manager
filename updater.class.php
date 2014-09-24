@@ -74,13 +74,18 @@ if(!class_exists('SamUpdater')) {
       }
     }
 
-    private function getCreateSql( $table, $defTable ) {
+    private function getCreateSql( $table, $defTable, $index ) {
       global $charset_collate;
 
       $add = '';
       $primaryKey = '';
+	    $idx = '';
+	    $indexName = '';
+	    $sIndex = '';
+	    $keyType = 0;
 
-      foreach($defTable as $key => $val) {
+      // Table
+	    foreach($defTable as $key => $val) {
         $add .= ((empty($add)) ? '' : ', ')
           . $key . ' ' . $val['Type']
           . (($val['Null'] == 'NO') ? ' NOT NULL' : '')
@@ -89,8 +94,20 @@ if(!class_exists('SamUpdater')) {
         if($val['Key'] == 'PRI') $primaryKey .= ((empty($primaryKey)) ? '' : ', ') . $key;
       }
 
+	    // Index
+	    foreach($index as $key => $value) {
+		    $indexName = $key;
+		    foreach($value as $name => $val) {
+			    $idx .= ( ( empty( $idx ) ) ? $name : ', ' . $name );
+			    $keyType = $val['Non_unique'];
+		    }
+		    $unique = (!$keyType) ? 'UNIQUE' : '';
+		    $sIndex .= ((empty($sIndex)) ? '' : ', ') . ", {$unique} INDEX {$indexName} ({$idx}) ";
+	    }
+
       if(!empty($add)) {
         $add .= ((!empty($primaryKey)) ? ", PRIMARY KEY ({$primaryKey})" : '');
+	      $add .= ((!empty($sIndex)) ? $sIndex : '');
         $out = "CREATE TABLE {$table} ({$add}) {$charset_collate};";
       }
       else $out = '';
@@ -98,7 +115,59 @@ if(!class_exists('SamUpdater')) {
       return $out;
     }
 
-    private function getUpdateSql($table, $defTable) {
+	  private function checkIndexes( $table, $indexes ) {
+		  global $wpdb;
+
+		  $idx = array();
+		  $sql = "SHOW INDEX FROM $table WHERE Key_name != %s;";
+		  $data = $wpdb->get_results($wpdb->prepare($sql, "PRIMARY"), ARRAY_A);
+		  $add = '';
+		  $sAdd = '';
+		  $modify = '';
+		  $sModify = '';
+		  $keyType = 0;
+
+		  if(!empty($data))
+			  foreach($data as $row)
+				  $idx[$row['Key_name']][$row['Column_name']] = array(
+					  'Non_unique' => $row['Non_unique'],
+					  'Seq_in_index' => $row['Seq_in_index']
+				  );
+
+		  foreach($indexes as $index => $value) {
+			  if(isset($idx[$index])) {
+			    $needModify = false;
+				  foreach($value as $field => $val) {
+				    $needModify = $needModify || (
+					      (!isset($idx[$index][$field])) ||
+						    ($val['Non_unique'] != $idx[$index][$field]['Non_unique']) ||
+						    ($val['Seq_in_index'] != $idx[$index][$field]['Seq_in_index'])
+					    );
+			    }
+				  if($needModify) {
+					  foreach($value as $field => $val) {
+						  $modify .= ((empty($modify)) ? $field : ', ' . $field);
+						  $keyType = $val['Non_unique'];
+					  }
+					  $unique = (!$keyType) ? 'UNIQUE' : '';
+					  $sModify .= ((empty($sModify)) ? '' : ', ') . "DROP INDEX {$index}, ";
+					  $sModify .= "ADD {$unique} INDEX {$index} ({$modify})";
+				  }
+			  }
+			  else {
+				  foreach($value as $field => $val) {
+					  $add .= ((empty($add)) ? $field : ', ' . $field);
+					  $keyType = $val['Non_unique'];
+				  }
+				  $unique = (!$keyType) ? 'UNIQUE' : '';
+				  $sAdd .= ((empty($sAdd)) ? '' : ', ') . "ADD {$unique} INDEX {$index} ({$add})";
+			  }
+		  }
+
+		  return array('add' => $sAdd, 'modify' => $sModify);
+	  }
+
+    public function getUpdateSql($table, $defTable, $defIndex) {
       global $wpdb, $charset_collate;
       $dbv = $this->dbVersion;
       $curTable = array();
@@ -135,6 +204,11 @@ if(!class_exists('SamUpdater')) {
             . (($val['Null'] == 'NO') ? ' NOT NULL' : '');
       }
       $add = (!empty($add)) ? "ADD ($add)" : '';
+
+	    $indexes = self::checkIndexes($table, $defIndex);
+	    if(!empty($indexes['add'])) $add .= ((empty($add)) ? '' : ', ') . $indexes['add'];
+	    if(!empty($indexes['modify'])) $modify .= ((empty($modify)) ? '' : ', ') . $indexes['modify'];
+
       if(!empty($change) && !empty($add)) $add = ', ' . $add;
       if((!empty($add) || !empty($change)) && !empty($modify)) $modify = ', ' . $modify;
 
@@ -265,11 +339,11 @@ if(!class_exists('SamUpdater')) {
 
         // Place Table
         if($wpdb->get_var("SHOW TABLES LIKE '$pTable'") != $pTable) {
-          $pSql = self::getCreateSql($pTable, $sam_tables_defs['places']);
+          $pSql = self::getCreateSql($pTable, $sam_tables_defs['places'], $sam_tables_defs['idxPlaces']);
           dbDelta($pSql);
         }
         else {
-          $pSql = self::getUpdateSql($pTable, $sam_tables_defs['places']);
+          $pSql = self::getUpdateSql($pTable, $sam_tables_defs['places'], $sam_tables_defs['idxPlaces']);
           if(!empty($pSql)) $dbResult = $wpdb->query($pSql);
         }
 
@@ -280,11 +354,11 @@ if(!class_exists('SamUpdater')) {
 
         // Ads Table
         if($wpdb->get_var("SHOW TABLES LIKE '$aTable'") != $aTable) {
-          $aSql = self::getCreateSql($aTable, $sam_tables_defs['ads']);
+          $aSql = self::getCreateSql($aTable, $sam_tables_defs['ads'], $sam_tables_defs['idxAds']);
           dbDelta($aSql);
         }
         else {
-          $aSql = self::getUpdateSql($aTable, $sam_tables_defs['ads']);
+          $aSql = self::getUpdateSql($aTable, $sam_tables_defs['ads'], $sam_tables_defs['idxAds']);
           if(!empty($aSql)) $dbResult = $wpdb->query($aSql);
         }
 
@@ -297,11 +371,11 @@ if(!class_exists('SamUpdater')) {
 
         // Zones Table
         if($wpdb->get_var("SHOW TABLES LIKE '$zTable'") != $zTable) {
-          $zSql = self::getCreateSql($zTable, $sam_tables_defs['zones']);
+          $zSql = self::getCreateSql($zTable, $sam_tables_defs['zones'], $sam_tables_defs['idxZones']);
           dbDelta($zSql);
         }
         else {
-          $zSql = self::getUpdateSql($zTable, $sam_tables_defs['zones']);
+          $zSql = self::getUpdateSql($zTable, $sam_tables_defs['zones'], $sam_tables_defs['idxZones']);
           if(!empty($zSql)) $dbResult = $wpdb->query($zSql);
         }
 
@@ -312,11 +386,11 @@ if(!class_exists('SamUpdater')) {
 
         // Blocks Table
         if($wpdb->get_var("SHOW TABLES LIKE '$bTable'") != $bTable) {
-          $bSql = self::getCreateSql($bTable, $sam_tables_defs['blocks']);
+          $bSql = self::getCreateSql($bTable, $sam_tables_defs['blocks'], $sam_tables_defs['idxBlocks']);
           dbDelta($bSql);
         }
         else {
-          $bSql = self::getUpdateSql($bTable, $sam_tables_defs['blocks']);
+          $bSql = self::getUpdateSql($bTable, $sam_tables_defs['blocks'], $sam_tables_defs['idxBlocks']);
           if(!empty($bSql)) $dbResult = $wpdb->query($bSql);
         }
 
@@ -327,11 +401,11 @@ if(!class_exists('SamUpdater')) {
 
         // Statistics Table
         if($wpdb->get_var("SHOW TABLES LIKE '$sTable'") != $sTable) {
-          $sSql = self::getCreateSql($sTable, $sam_tables_defs['stats']);
+          $sSql = self::getCreateSql($sTable, $sam_tables_defs['stats'], $sam_tables_defs['idxStats']);
           dbDelta($sSql);
         }
         else {
-          $sSql = self::getUpdateSql($sTable, $sam_tables_defs['stats']);
+          $sSql = self::getUpdateSql($sTable, $sam_tables_defs['stats'], $sam_tables_defs['idxStats']);
           if(!empty($sSql)) $dbResult = $wpdb->query($sSql);
         }
 

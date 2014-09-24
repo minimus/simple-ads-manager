@@ -40,6 +40,7 @@ $action = !empty($_POST['action']) ? 'sam_ajax_' . stripslashes($_POST['action']
 //A bit of security
 $allowed_actions = array(
   'sam_ajax_load_place',
+	'sam_ajax_load_places',
   'sam_ajax_load_zone'
 );
 
@@ -62,7 +63,8 @@ if(in_array($action, $allowed_actions)) {
           'id' => $ad->id,
           'pid' => $ad->pid,
           'cid' => $ad->cid,
-          'clauses' => $clauses
+          'clauses' => $clauses,
+	        //'sql' => $ad->sql
         ));
       }
       break;

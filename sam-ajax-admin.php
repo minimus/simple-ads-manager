@@ -22,6 +22,11 @@ define('SHORTINIT', true);
 
 require_once( $root . '/wp-load.php' );
 
+function random_string($chars = 12) {
+	$letters = 'abcefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 ';
+	return substr(str_shuffle($letters), 0, $chars);
+}
+
 global $wpdb;
 
 $sTable = $wpdb->prefix . 'sam_stats';
@@ -52,6 +57,7 @@ $allowed_actions = array(
   'sam_ajax_load_tags',
   'sam_ajax_load_authors',
   'sam_ajax_load_posts',
+	'sam_ajax_load_posts_debug',
   'sam_ajax_load_users',
   'sam_ajax_load_combo_data',
   'sam_ajax_get_error',
@@ -161,6 +167,24 @@ if(in_array($action, $allowed_actions)) {
         'records' => $posts
       );
       break;
+
+	  case "sam_ajax_load_posts_debug":
+		  $posts = array();
+			$types = array('post', 'page');
+		  for($itr = 0; $itr < 5000; ++$itr) {
+			  array_push($posts, array(
+				  'recid' => $itr,
+				  'id' => rand(0, 10000),
+				  'title' => random_string(rand(12, 24)),
+				  'type' => $types[rand(0,1)]
+			  ));
+		  }
+		  $out = array(
+			  'status' => 'success',
+			  'total' => count($posts),
+			  'records' => $posts
+		  );
+		  break;
 
     case 'sam_ajax_load_users':
       $roleSubscriber = (isset($_REQUEST['subscriber'])) ? urldecode($_REQUEST['subscriber']) : 'Subscriber';

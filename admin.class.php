@@ -16,7 +16,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     public function __construct() {
       parent::__construct();
 
-      global $wp_version, $sam_tables_defs;
+      global $wp_version, $sam_tables_defs, $wpdb;
       
 			if ( function_exists( 'load_plugin_textdomain' ) )
 				load_plugin_textdomain( SAM_DOMAIN, false, basename( SAM_PATH ) . '/langs/' );
@@ -24,7 +24,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       if(!is_dir(SAM_AD_IMG)) mkdir(SAM_AD_IMG);
 
       $this->settingsTabs = array();
-      $sam_tables_defs = self::getTablesDefs();
+      $sam_tables_defs = self::getTablesDefs($wpdb->prefix);
 				
       register_activation_hook(SAM_MAIN_FILE, array(&$this, 'onActivate'));
       register_deactivation_hook(SAM_MAIN_FILE, array(&$this, 'onDeactivate'));
@@ -247,7 +247,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $this->getVersions(true);
     }
 
-    public function getTablesDefs() {
+    public function getTablesDefs( $prefix = 'wp_' ) {
       $pTableDef = array(
         'id' => array('Type' => "int(11)", 'Null' => 'NO', 'Key' => 'PRI', 'Default' => '', 'Extra' => 'auto_increment'),
         'name' => array('Type' => "varchar(255)", 'Null' => 'NO', 'Key' => '', 'Default' => '', 'Extra' => ''),
@@ -389,12 +389,50 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'event_type' => array('Type' => 'tinyint(1)', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => '')
       );
 
+	    $pIndexDef = array(
+		    'UK_'.$prefix.'places' => array(
+			    'id' => array('Non_unique' => 0, 'Seq_in_index' => 1, 'Column_name' => 'id')
+		    )
+	    );
+
+	    $aIndexDef = array(
+		    'UK_'.$prefix.'ads' => array(
+		      'pid' => array('Non_unique' => 0, 'Seq_in_index' => 1, 'Column_name' => 'pid'),
+		      'id' => array('Non_unique' => 0, 'Seq_in_index' => 2, 'Column_name' => 'id')
+		    )
+	    );
+
+	    $zIndexDef = array(
+		    'UK_'.$prefix.'zones' => array(
+		      'id' => array('Non_unique' => 0, 'Seq_in_index' => 1, 'Column_name' => 'id')
+		    )
+	    );
+
+	    $bIndexDef = array(
+		    'UK_'.$prefix.'blocks' => array(
+		      'id' => array('Non_unique' => 0, 'Seq_in_index' => 1, 'Column_name' => 'id')
+		    )
+	    );
+
+	    $sIndexDef = array(
+		    'IDX_'.$prefix.'stats' => array(
+		      'id' => array('Non_unique' => 1, 'Seq_in_index' => 1, 'Column_name' => 'id'),
+		      'pid' => array('Non_unique' => 1, 'Seq_in_index' => 2, 'Column_name' => 'pid'),
+		      'event_time' => array('Non_unique' => 1, 'Seq_in_index' => 3, 'Column_name' => 'event_time')
+		    )
+	    );
+
       return array(
         'places' => $pTableDef,
         'ads' => $aTableDef,
         'zones' => $zTableDef,
         'blocks' => $bTableDef,
-        'stats' => $sTableDef
+        'stats' => $sTableDef,
+	      'idxPlaces' => $pIndexDef,
+	      'idxAds' => $aIndexDef,
+	      'idxZones' => $zIndexDef,
+	      'idxBlocks' => $bIndexDef,
+	      'idxStats' => $sIndexDef
       );
     }
 
@@ -803,7 +841,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_style('ComboGrid', SAM_URL.'css/jquery.ui.combogrid.css', false, '1.6.3');
           wp_enqueue_style('wp-pointer');
           wp_enqueue_style('colorButtons', SAM_URL.'css/color-buttons.css', false, SAM_VERSION);
-          wp_enqueue_style('W2UI', SAM_URL . 'css/w2ui.min.css', false, '1.3');
+          wp_enqueue_style('W2UI', SAM_URL . 'css/w2ui.min.css', false, '1.4.1');
           wp_enqueue_style('jqPlot', SAM_URL . 'css/jquery.jqplot.min.css', false, '1.0.2');
 
           $options = parent::getSettings();
@@ -820,7 +858,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           if($options['useSWF']) wp_enqueue_script('swfobject');
           wp_enqueue_script('jquery');
           wp_enqueue_media(array('post' => null));
-          wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.3');
+          wp_enqueue_script('W2UI', SAM_URL . 'js/w2ui.min.js', array('jquery'), '1.4.1');
           wp_enqueue_script('jquery-ui-core');
           wp_enqueue_script('jquery-effects-core');
           //wp_enqueue_script('jquery-ui-mouse');
@@ -846,7 +884,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('pointLabels', SAM_URL . 'js/jqplot.pointLabels.min.js', array('jquery', 'jqPlot'), '1.0.2');
 
           wp_enqueue_script('wp-pointer');
-          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
           wp_localize_script('adminEditScript', 'samEditorOptions', array(
             'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
             'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
@@ -1479,8 +1517,10 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
             </div>
             <div id="post-body">
               <div id="post-body-content">
-                <?php settings_fields('samOptions'); ?>
-                <?php $this->doSettingsSections('sam-settings', $this->settingsTabs); ?>
+                <?php
+                settings_fields('samOptions');
+                $this->doSettingsSections('sam-settings', $this->settingsTabs);
+                ?>
                 <p class="submit">
                   <button id="submit-button" class="color-btn color-btn-left" name="Submit" type="submit">
                     <b style="background-color: #21759b"></b>
