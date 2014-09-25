@@ -40,7 +40,7 @@ $action = !empty($_POST['action']) ? 'sam_ajax_' . stripslashes($_POST['action']
 //A bit of security
 $allowed_actions = array(
   'sam_ajax_load_place',
-	'sam_ajax_load_places',
+	'sam_ajax_load_ads',
   'sam_ajax_load_zone'
 );
 
@@ -67,8 +67,44 @@ if(in_array($action, $allowed_actions)) {
 	        //'sql' => $ad->sql
         ));
       }
+      else json_encode(array('success' => false, 'error' => 'Bad input data.'));
       break;
+
+	  case 'sam_ajax_load_ads':
+		  if((isset($_POST['ads']) && is_array($_POST['ads'])) && isset($_POST['wc'])) {
+			  $clauses = unserialize(base64_decode($_POST['wc']));
+			  $places = $_POST['ads'];
+			  $ads = array();
+			  $ad = null;
+			  include_once('ad.class.php');
+			  foreach($places as $value) {
+				  $placeId = $value[0];
+				  $adId = $value[1];
+				  $codes = $value[2];
+				  $elementId = $value[3];
+				  $args = array('id' => ($adId == 0) ? $placeId : $adId);
+
+				  if($adId == 0) $ad = new SamAdPlace($args, $codes, false, $clauses, true);
+				  else $ad = new SamAd($args, $codes, false, true);
+
+				  array_push($ads, array(
+					  'ad' => $ad->ad,
+					  'id' => $ad->id,
+					  'pid' => $ad->pid,
+					  'cid' => $ad->cid,
+					  'eid' => $elementId,
+					  //'clauses' => $clauses,
+					  //'sql' => $ad->sql
+				  ));
+			  }
+			  echo json_encode(array(
+				  'success' => true,
+				  'ads' => $ads
+			  ));
+		  }
+			else json_encode(array('success' => false, 'error' => 'Bad input data.'));
+		  break;
   }
 }
-else echo json_encode(array('success' => false, 'error' => 'Not allowed'));
+else echo json_encode(array('success' => false, 'error' => 'Not allowed.'));
 wp_die();

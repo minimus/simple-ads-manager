@@ -17,6 +17,14 @@ if(!class_exists('SamAd')) {
       $this->ad = $this->buildAd($this->args, $this->useCodes);
     }
 
+	  public function init($args = null, $useCodes = false, $crawler = false) {
+		  if(!defined('SAM_OPTIONS_NAME')) define('SAM_OPTIONS_NAME', 'samPluginOptions');
+		  $this->args = $args;
+		  $this->useCodes = $useCodes;
+		  $this->crawler = $crawler;
+		  $this->ad = $this->buildAd($this->args, $this->useCodes);
+	  }
+
     private function getSettings() {
       $options = get_option(SAM_OPTIONS_NAME, '');
       return $options;
@@ -160,8 +168,22 @@ if(!class_exists('SamAdPlace')) {
       else $this->clauses = $clauses;
       $this->force = $ajax;
 
-      $this->ad = $this->buildAd2($this->args, $this->useCodes);
+      $this->ad = $this->buildAd($this->args, $this->useCodes);
     }
+
+	  public function init($args = null, $useCodes = false, $crawler = false, $clauses = null, $ajax = false) {
+		  global $SAM_Query;
+
+		  if(!defined('SAM_OPTIONS_NAME')) define('SAM_OPTIONS_NAME', 'samPluginOptions');
+		  $this->args = $args;
+		  $this->useCodes = $useCodes;
+		  $this->crawler = $crawler;
+		  if(is_null( $clauses )) $this->clauses = $SAM_Query['clauses'];
+		  else $this->clauses = $clauses;
+		  $this->force = $ajax;
+
+		  $this->ad = $this->buildAd($this->args, $this->useCodes);
+	  }
     
     private function getSettings() {
       $options = get_option(SAM_OPTIONS_NAME, '');      
@@ -218,7 +240,7 @@ if(!class_exists('SamAdPlace')) {
       //}
     }
     
-    private function buildAd( $args = null, $useCodes = false ) {
+    private function buildAdOld( $args = null, $useCodes = false ) {
       if(is_null($args)) return '';
       if(empty($args['id']) && empty($args['name'])) return '';
       if( is_null($this->clauses) ) return '';
@@ -435,7 +457,7 @@ if(!class_exists('SamAdPlace')) {
       return $output;
     }
 
-    private function buildAd2( $args = null, $useCodes = false ) {
+    private function buildAd( $args = null, $useCodes = false ) {
       if(is_null($args)) return '';
       if(empty($args['id']) && empty($args['name'])) return '';
       if( is_null($this->clauses) ) return '';

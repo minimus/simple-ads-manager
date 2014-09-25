@@ -91,7 +91,7 @@ if(in_array($action, $allowed_actions)){
         /*if($id > 0) $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1 WHERE sa.id = %d;";
         elseif($id == 0) $sql = "UPDATE $pTable sp SET sp.patch_hits = sp.patch_hits + 1 WHERE sp.id = %d;";
         else $sql = '';*/
-        $sql = "INSERT HIGH_PRIORITY INTO $sTable (id, pid, event_time, event_type) VALUES (%d, %d, NOW(), 0);";
+        $sql = "INSERT INTO $sTable (id, pid, event_time, event_type) VALUES (%d, %d, NOW(), 0);";
         if(!empty($sql)) $result = $wpdb->query($wpdb->prepare($sql, $id, $pid));
         if($result === 1) echo json_encode(array('success' => true, 'id' => $id, 'pid' => $pid));
         else echo json_encode(array(
@@ -105,6 +105,27 @@ if(in_array($action, $allowed_actions)){
       }
       else echo json_encode(array('success' => false));
       break;
+
+	  case 'sam_ajax_sam_hits':
+		  if(isset($_POST['hits']) && is_array($_POST['hits'])) {
+			  $hits = $_POST['hits'];
+			  $values = '';
+			  $remoteAddr = $_SERVER['REMOTE_ADDR'];
+			  foreach($hits as $hit) {
+				  $values .= ((empty($values)) ? '' : ', ') . "({$hit[1]}, {$hit[0]}, NOW(), 0, \"{$remoteAddr}\")";
+			  }
+			  $sql = "INSERT INTO $sTable (id, pid, event_time, event_type, remote_addr) VALUES {$values};";
+			  $result = $wpdb->query($sql);
+			  if($result > 0) echo json_encode(array('success' => true, 'sql' => $sql, 'addr' => $_SERVER['REMOTE_ADDR']));
+			  else echo json_encode(array(
+				  'success' => false,
+				  'result' => $result,
+				  'sql' => $sql,
+				  'hits' => $hits,
+				  'values' => $values
+			  ));
+		  }
+		  break;
 
     case 'sam_ajax_sam_maintenance':
       if(false === ($mDate = get_transient( 'sam_maintenance_date' )) && $options['mailer']) {

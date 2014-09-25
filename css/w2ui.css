@@ -1968,6 +1968,8 @@ button.btn-red.clicked {
   width: 100%;
   color: black;
   padding: 0px 15px 0px 5px;
+  line-height: 20px;
+  font-size: 11px;
   -webkit-appearance: none;
   -moz-appearance: none;
   -ms-appearance: none;

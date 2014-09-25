@@ -386,7 +386,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'id' => array('Type' => 'int(10) unsigned', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'pid' => array('Type' => 'int(10) unsigned', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
         'event_time' => array('Type' => 'datetime', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
-        'event_type' => array('Type' => 'tinyint(1)', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => '')
+        'event_type' => array('Type' => 'tinyint(1)', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => ''),
+        'remote_addr' => array('Type' => 'varchar(15)', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => '')
       );
 
 	    $pIndexDef = array(
@@ -435,6 +436,16 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 	      'idxStats' => $sIndexDef
       );
     }
+
+	  private function getSearchesModel() {
+		  return array(
+			  'posts' => array(
+				  array('field' => 'id', 'caption' => 'ID', 'type' => 'int'),
+				  array('field' => 'title', 'caption' => __("Publication Title", SAM_DOMAIN), 'type' => 'text'),
+				  array('field' => 'type', 'caption' => __("Publication Type", SAM_DOMAIN), 'type' => 'text')
+			  )
+		  );
+	  }
 
     private function getColumnsModels() {
       return array(
@@ -884,7 +895,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           wp_enqueue_script('pointLabels', SAM_URL . 'js/jqplot.pointLabels.min.js', array('jquery', 'jqPlot'), '1.0.2');
 
           wp_enqueue_script('wp-pointer');
-          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
+          wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);
           wp_localize_script('adminEditScript', 'samEditorOptions', array(
             'places' => array('enabled' => $pointers['places'], 'title' => __('Name of Ads Place', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks, plugin\'s widgets or autoinserting of ads.', SAM_DOMAIN)),
             'ads' => array('enabled' => $pointers['ads'], 'title' => __('Name of Ad', SAM_DOMAIN), 'content' => __('This is not required parameter. But it is strongly recommended to define it if you plan to use Ads Blocks or plugin\'s widgets.', SAM_DOMAIN)),
@@ -892,6 +903,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
             'samAjaxUrl' => SAM_URL . 'sam-ajax-admin.php',
             'samStatsUrl' => SAM_URL . 'sam-ajax-admin-stats.php',
             'models' => self::getColumnsModels(),
+	          'searches' => self::getSearchesModel(),
             'data' => self::getGridsData(),
             'strings' => array(
               'uploading' => __('Uploading', SAM_DOMAIN).' ...',
