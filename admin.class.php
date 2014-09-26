@@ -632,7 +632,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       add_settings_field('detectBots', __("Allow Bots and Crawlers detection", SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_statistic_section', array('label_for' => 'detectBots', 'checkbox' => true));
       add_settings_field('detectingMode', __("Accuracy of Bots and Crawlers Detection", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_statistic_section', array('description' => __("If bot is detected hits of ads won't be counted. Use with caution! More exact detection requires more server resources.", SAM_DOMAIN), 'options' => array( 'inexact' => __('Inexact detection', SAM_DOMAIN), 'exact' => __('Exact detection', SAM_DOMAIN), 'more' => __('More exact detection', SAM_DOMAIN))));
-      add_settings_field('keepStats', __('Keep Statistical Data', SAM_DOMAIN), array(&$this, 'drawSelectOption'), 'sam-settings', 'sam_statistic_section', array('description' => __('Period of keeping statistical data (excluding current month).', SAM_DOMAIN), 'options' => array(0 => __('All Time', SAM_DOMAIN), 1 => __('One Month', SAM_DOMAIN), 3 => __('Three Months', SAM_DOMAIN), 6 => __('Six Months', SAM_DOMAIN), 12 => __('One Year'))));
+      add_settings_field('stats', __('Allow to collect and to store statistical data', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_statistic_section', array('label_for' => 'stats', 'checkbox' => true));
+			add_settings_field('keepStats', __('Keep Statistical Data', SAM_DOMAIN), array(&$this, 'drawSelectOption'), 'sam-settings', 'sam_statistic_section', array('description' => __('Period of keeping statistical data (excluding current month).', SAM_DOMAIN), 'options' => array(0 => __('All Time', SAM_DOMAIN), 1 => __('One Month', SAM_DOMAIN), 3 => __('Three Months', SAM_DOMAIN), 6 => __('Six Months', SAM_DOMAIN), 12 => __('One Year'))));
       add_settings_field('currency', __("Display of Currency", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_statistic_section', array('description' => __("Define display of currency. Auto - auto detection of currency from blog settings. USD, EUR - Forcing the display of currency to U.S. dollars or Euro.", SAM_DOMAIN), 'options' => array( 'auto' => __('Auto', SAM_DOMAIN), 'usd' => __('USD', SAM_DOMAIN), 'euro' => __('EUR', SAM_DOMAIN))));
 
       add_settings_field('editorButtonMode', __("TinyMCE Editor Button Mode", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_layout_section', array('description' => __('If you do not want to use the modern dropdown button in your TinyMCE editor, or use of this button causes a problem, you can use classic TinyMCE buttons. In this case select "Classic TinyMCE Buttons".', SAM_DOMAIN), 'options' => array('modern' => __('Modern TinyMCE Button', SAM_DOMAIN), 'classic' => __('Classic TinyMCE Buttons', SAM_DOMAIN))));
@@ -1213,7 +1214,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'mail_cpm',
         'mail_cpc',
         'mail_ctr',
-        'mail_preview'
+        'mail_preview',
+	      'stats'
       );
       foreach($boolNames as $name) {
         $output[$name] = ((isset($input[$name])) ? $input[$name] : 0);
@@ -1522,7 +1524,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
                       <li><a target='_blank' href='http://wordpress.org/extend/plugins/wp-special-textboxes/'><strong>Special Text Boxes</strong></a> - <?php _e("Highlights any portion of text as text in the colored boxes.", SAM_DOMAIN); ?></li>
                       <li><a target='_blank' href='http://wordpress.org/extend/plugins/simple-counters/'><strong>Simple Counters</strong></a> - <?php _e("Adds simple counters badge (FeedBurner subscribers and Twitter followers) to your blog.", SAM_DOMAIN); ?></li>
                       <li><a target='_blank' href='http://wordpress.org/extend/plugins/simple-view/'><strong>Simple View</strong></a> - <?php _e("This plugin is WordPress shell for FloatBox library by Byron McGregor.", SAM_DOMAIN); ?></li>
-                      <li><a target='_blank' href='http://wordpress.org/extend/plugins/wp-copyrighted-post/'><strong>Copyrighted Post</strong></a> - <?php _e("Adds copyright notice in the end of each post of your blog. ", SAM_DOMAIN); ?></li>
+                      <li><a target='_blank' href='http://wordpress.org/extend/plugins/wp-copyrighted-post/'><strong>Copyrighted Post</strong></a> - <?php _e("Adds copyright notice to the end of each post of your blog. ", SAM_DOMAIN); ?></li>
                     </ul>
                 </div>
               </div>

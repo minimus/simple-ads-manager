@@ -1,6 +1,6 @@
 (function($) {
   $(document).ready(function() {
-    var hits = [];
+    var hits = [], doStats = ('string' == typeof samAjax.doStats) ? Number(samAjax.doStats) : samAjax.doStats;
     if(samAjax.load) {
       if(samAjax.mailer) $.post(samAjax.ajaxurl, {action: 'sam_maintenance'});
 
@@ -28,17 +28,19 @@
             var hits = [];
             $.each(data.ads, function (i, ad) {
               $('#' + ad.eid).replaceWith(ad.ad);
-              $('#' + ad.cid).find('a').bind('click', function (e) {
-                $.post(samAjax.ajaxurl, {
-                  action: 'sam_click',
-                  id: ad.id,
-                  pid: ad.pid,
-                  level: samAjax.level
+              if(doStats) {
+                $('#' + ad.cid).find('a').bind('click', function (e) {
+                  $.post(samAjax.ajaxurl, {
+                    action: 'sam_click',
+                    id: ad.id,
+                    pid: ad.pid,
+                    level: samAjax.level
+                  });
                 });
-              });
-              hits.push([ad.pid, ad.id]);
+                hits.push([ad.pid, ad.id]);
+              }
             });
-            if (hits.length > 0) {
+            if (hits.length > 0 && doStats) {
               $.post(samAjax.ajaxurl, {
                 action: 'sam_hits',
                 hits: hits,
@@ -50,57 +52,61 @@
       }
 
       // Ads loaded by PHP
-      $('div.sam-ad').each(function(i, el) {
-        var
-          ids = this.id.split('_'),
-          id = ids[1],
-          pid = ids[2];
+      if(doStats) {
+        $('div.sam-ad').each(function (i, el) {
+          var
+            ids = this.id.split('_'),
+            id = ids[1],
+            pid = ids[2];
 
-        hits.push([pid, id]);
+          hits.push([pid, id]);
 
-        $(el).find('a').bind('click', function(e) {
-          $.post(samAjax.ajaxurl, {
-            action: 'sam_click',
-            id: id,
-            pid: pid,
-            level: samAjax.level
+          $(el).find('a').bind('click', function (e) {
+            $.post(samAjax.ajaxurl, {
+              action: 'sam_click',
+              id: id,
+              pid: pid,
+              level: samAjax.level
+            });
           });
         });
-      });
 
-      if(hits.length > 0) {
-        $.post(samAjax.ajaxurl, {
-          action: 'sam_hits',
-          hits: hits,
-          level: samAjax.level
-        });
+        if (hits.length > 0) {
+          $.post(samAjax.ajaxurl, {
+            action: 'sam_hits',
+            hits: hits,
+            level: samAjax.level
+          });
+        }
       }
     }
     else {
-      $('div.sam-container').each(function(i, el) {
-        var
-          ids = this.id.split('_'),
-          id = ids[1],
-          pid = ids[2];
+      if(doStats) {
+        $('div.sam-container').each(function (i, el) {
+          var
+            ids = this.id.split('_'),
+            id = ids[1],
+            pid = ids[2];
 
-        hits.push([pid, id]);
+          hits.push([pid, id]);
 
-        $(el).find('a').bind('click', function(e) {
-          $.post(samAjax.ajaxurl, {
-            action: 'sam_click',
-            id: id,
-            pid: pid,
-            level: samAjax.level
+          $(el).find('a').bind('click', function (e) {
+            $.post(samAjax.ajaxurl, {
+              action: 'sam_click',
+              id: id,
+              pid: pid,
+              level: samAjax.level
+            });
           });
         });
-      });
 
-      if(hits.length > 0) {
-        $.post(samAjax.ajaxurl, {
-          action: 'sam_hits',
-          hits: hits,
-          level: samAjax.level
-        });
+        if (hits.length > 0) {
+          $.post(samAjax.ajaxurl, {
+            action: 'sam_hits',
+            hits: hits,
+            level: samAjax.level
+          });
+        }
       }
     }
   });

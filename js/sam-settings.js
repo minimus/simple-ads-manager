@@ -106,5 +106,11 @@
 
     apAdsType.ejDropDownList('setSelectedValue', apTypeVal);
     apAdsId.ejDropDownList('setSelectedValue', apObjVal);
+
+    var stats = $('#stats'), keepStats = $('#keepStats');
+    keepStats.prop('disabled', (!stats.is(':checked')));
+    stats.on('click', function(e) {
+      keepStats.prop('disabled', (!stats.is(':checked')));
+    })
   });
 })(jQuery);

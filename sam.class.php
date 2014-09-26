@@ -65,11 +65,12 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'mail_ctr' => 1,                   // bool
       'mail_preview' => 0,               // bool
       // Statistics
+      'stats' => 1,                      // bool
       'keepStats' => 0                   // int
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '2.4.89');
+      define('SAM_VERSION', '2.4.90');
       define('SAM_DB_VERSION', '2.7');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );
@@ -435,6 +436,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           'level' => self::getDirLevel(), //count(explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) ))),
           'mailer' => $options['mailer'],
           'clauses' => $clauses64,
+		      'doStats' => $this->samOptions['stats'],
 		      //'debug' => array(ABSPATH, dirname( __FILE__ ), str_replace( ABSPATH, '', dirname( __FILE__ ) ), explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) )))
         )
       );
