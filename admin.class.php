@@ -889,11 +889,11 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           //wp_enqueue_script('cg-props', SAM_URL.'js/jquery.i18n.properties-1.0.9.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), '1.0.9');
           wp_enqueue_script('ComboGrid', SAM_URL.'js/jquery.ui.combogrid-1.6.3.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'/*, 'cg-props'*/), '1.6.3');
 
-          wp_enqueue_script('jqPlot', SAM_URL . 'js/jquery.jqplot.min.js', array('jquery'), '1.0.2');
-          wp_enqueue_script('barRenderer', SAM_URL . 'js/jqplot.barRenderer.min.js', array('jquery', 'jqPlot'), '1.0.2');
-          wp_enqueue_script('highlighter', SAM_URL . 'js/jqplot.highlighter.min.js', array('jquery', 'jqPlot'), '1.0.2');
-          wp_enqueue_script('cursor', SAM_URL . 'js/jqplot.cursor.min.js', array('jquery', 'jqPlot'), '1.0.2');
-          wp_enqueue_script('pointLabels', SAM_URL . 'js/jqplot.pointLabels.min.js', array('jquery', 'jqPlot'), '1.0.2');
+          wp_enqueue_script('jqPlot', SAM_URL . 'js/jquery.jqplot.min.js', array('jquery'), '1.0.8');
+          wp_enqueue_script('barRenderer', SAM_URL . 'js/jqplot.barRenderer.min.js', array('jquery', 'jqPlot'), '1.0.8');
+          wp_enqueue_script('highlighter', SAM_URL . 'js/jqplot.highlighter.min.js', array('jquery', 'jqPlot'), '1.0.8');
+          wp_enqueue_script('cursor', SAM_URL . 'js/jqplot.cursor.min.js', array('jquery', 'jqPlot'), '1.0.8');
+          wp_enqueue_script('pointLabels', SAM_URL . 'js/jqplot.pointLabels.min.js', array('jquery', 'jqPlot'), '1.0.8');
 
           wp_enqueue_script('wp-pointer');
           wp_enqueue_script('adminEditScript', SAM_URL.'js/sam-admin-edit-item.min.js', array('jquery', 'jquery-ui-core', 'jquery-ui-widget', 'jquery-ui-position'), SAM_VERSION);

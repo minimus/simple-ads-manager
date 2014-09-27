@@ -202,7 +202,7 @@ No questions now...
 == Upgrade Notice ==
 
 = 2.4.90 =
-Some major changes of plugin (see change log).
+More faster, fewer bugs... See change log.
 = 2.3.85 =
 Some major changes of plugin (see change log).
 = 2.0.74 =
@@ -296,4 +296,6 @@ Initial upload
 
 == Other Notes ==
 
-This plugin is using jQuery **[AjaxUpload plugin](http://valums.com/ajax-upload/)**.
+This plugin is using jQuery **[jqPlot plugin](http://www.jqplot.com/)**.
+This plugin is using jQuery **[W2UI - JavaScript UI Library](http://w2ui.com/web/)**.
+This plugin is using jQuery **[ComboGrid plugin](http://combogrid.justmybit.com/)**.
