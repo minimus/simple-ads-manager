@@ -245,7 +245,7 @@ if(!class_exists('SamPlaceEdit')) {
           <ul>
             <li><a href="#tab1"><?php _e('Media Library', SAM_DOMAIN); ?></a></li>
             <li><a href="#tab2"><?php _e('Server', SAM_DOMAIN); ?></a></li>
-            <li><a href="#tab3"><?php _e('Local Computer', SAM_DOMAIN); ?></a></li>
+            <!--<li><a href="#tab3"><?php _e('Local Computer', SAM_DOMAIN); ?></a></li>-->
           </ul>
           <div id="tab1">
             <p>
@@ -268,20 +268,21 @@ if(!class_exists('SamPlaceEdit')) {
               <?php _e("Select file from your blog server.", SAM_DOMAIN); ?>
             </p>
           </div>
-          <div id="tab3">
+          <!--<div id="tab3">
             <p>
               <strong><?php _e('Upload File', SAM_DOMAIN); ?></strong>
             </p>
             <button id="upload-file-button" class="color-btn color-btn-left"><b style="background-color: #21759b"></b><?php _e('Upload', SAM_DOMAIN);?></button>
-            <!--<img id='load_img' src='<?php echo SAM_IMG_URL ?>loader.gif' style='display: none;'>
-            <span id="uploading"></span>-->
             <span id="upload-console"></span>
             <span id="upload-progress"></span>
             <p>
               <span id="uploading-help"><?php _e("Select and upload file from your local computer.", SAM_DOMAIN); ?></span>
             </p>
-          </div>
+          </div>-->
         </div>
+	      <div class="sam2-warning">
+		      <p><?php _e("The uploading feature (user's banners without using Media Library) was removed by request of administration of wordpress.org plugins repository. Use \"Select or Upload\" for uploading your ad banners to the server using Media Library. \"Selecting Files from Server\" feature is left for backward compatibility.", SAM_DOMAIN); ?></p>
+	      </div>
       </div>
       <?php
     }

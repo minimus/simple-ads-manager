@@ -209,7 +209,7 @@ if(!class_exists('SamPlaceList')) {
                       (IFNULL((SELECT SUM(IF(sa.ad_schedule AND sa.per_month > 0, DATEDIFF(CURDATE(), sa.ad_start_date) * sa.per_month / 30, 0)) FROM $aTable sa WHERE sa.pid = sp.id), 0)) AS e_month,
                       sp.trash,
                       (SELECT COUNT(*) FROM $aTable sa WHERE sa.pid = sp.id) AS items
-                    FROM $pTable sp".
+                    FROM {$pTable} sp".
                     (($mode !== 'all') ? " WHERE sp.trash = ".(($mode === 'trash') ? 'TRUE' : 'FALSE') : '').
                     " LIMIT $offset, $places_per_page;";
           $places = $wpdb->get_results($pSql, ARRAY_A);          

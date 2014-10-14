@@ -70,7 +70,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '2.4.90');
+      define('SAM_VERSION', '2.4.91');
       define('SAM_DB_VERSION', '2.7');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );
@@ -611,16 +611,16 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           $output = self::buildSingleAd($args, $useCodes);
           break;
         case 1:
-          $output = self::buildAd($args, $useCodes);
+          $output = self::buildAd($args, $useCodes, $clauses);
           break;
         case 2:
-          $output = self::buildAdZone($args, $useCodes);
+          $output = self::buildAdZone($args, $useCodes, $clauses);
           break;
         case 3:
-          $output = self::buildAdBlock($args);
+          $output = self::buildAdBlock($args, $clauses);
           break;
         default:
-          $output = self::buildAd($args, $useCodes);
+          $output = self::buildAd($args, $useCodes, $clauses);
           break;
       }
 

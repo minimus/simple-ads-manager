@@ -298,53 +298,10 @@ var sam = sam || {};
         plot = $.jqplot('graph', plotData, plotOptions);
     });
 
-    /*fu = new AjaxUpload(btnUpload, {
-      action: samAjaxUrl,
-      name:'uploadfile',
-      data:{
-        action:'upload_ad_image',
-        path: samStrs.path
-      },
-      responseType: 'json',
-      onSubmit:function (file, ext) {
-        if (!(ext && /^(jpg|png|jpeg|gif|swf)$/.test(ext))) {
-          status.text(samStrs.status);
-          return false;
-        }
-        loadImg.show();
-        status.text(samStrs.uploading);
-        return false;
-      },
-      onComplete:function (file, response) {
-        status.text('');
-        loadImg.hide();
-        $('<div id="files"></div>').appendTo(srcHelp);
-        if (response.status == "success") {
-          $("#files").text(samStrs.file + ' ' + file + ' ' + samStrs.uploaded)
-            .addClass('updated')
-            .delay(3000)
-            .fadeOut(1000, function () {
-              $(this).remove();
-            });
-          if (em == 'item') $("#ad_img").val(samStrs.url + file);
-          else if (em == 'place') $("#patch_img").val(samStrs.url + file);
-        }
-        else {
-          $('#files').text(file + ' ' + response)
-            .addClass('error')
-            .delay(3000)
-            .fadeOut(1000, function () {
-              $(this).remove();
-            });
-        }
-      }
-    });*/
-
-    var
+    /*var
       uConsole = $('#upload-console'),
       progress = $('#upload-progress'),
       uploadOptions = samEditorOptions.uploader;
-    //message = $('#stb-message');
 
     var uploader = new plupload.Uploader({
       browse_button: 'upload-file-button',
@@ -395,7 +352,7 @@ var sam = sam || {};
       }
     });
 
-    uploader.init();
+    uploader.init();*/
 
     // Advertiser ComboGrid
     $('#adv_nick').combogrid({

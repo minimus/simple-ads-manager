@@ -175,54 +175,10 @@ var sam = sam || {};
         }
       };
 
-    /*fu = new AjaxUpload(btnUpload, {
-      action: options.ajaxurl,
-      name:'uploadfile',
-      data:{
-        action:'upload_ad_image',
-        path: options.path
-      },
-      responseType: 'json',
-      onSubmit: function (file, ext) {
-        if (!(ext && /^(jpg|png|jpeg|gif|swf)$/.test(ext))) {
-          status.text(options.status);
-          return false;
-        }
-        loadImg.show();
-        status.text(options.uploading);
-        return false;
-      },
-      onComplete:function (file, response) {
-        status.text('');
-        loadImg.hide();
-        $('<div id="files"></div>').appendTo(srcHelp);
-        if (response.status == "success") {
-          $("#files").text(options.file + ' ' + file + ' ' + options.uploaded)
-            .addClass('updated')
-            .delay(3000)
-            .fadeOut(1000, function () {
-              $(this).remove();
-            });
-          if (em == 'item') $("#ad_img").val(options.url + file);
-          else if (em == 'place') $("#patch_img").val(options.url + file);
-        }
-        else {
-          $('#files').text(file + ' ' + response)
-            .addClass('error')
-            .delay(3000)
-            .fadeOut(1000, function () {
-              $(this).remove();
-            });
-        }
-        return false;
-      }
-    });*/
-
-    var
+    /*var
       uConsole = $('#upload-console'),
       progress = $('#upload-progress'),
       uploadOptions = samEditorOptions.uploader;
-      //message = $('#stb-message');
 
     var uploader = new plupload.Uploader({
       browse_button: 'upload-file-button',
@@ -273,7 +229,7 @@ var sam = sam || {};
       }
     });
 
-    uploader.init();
+    uploader.init();*/
 
     $.post(samStatsUrl, {
       action: 'load_stats',

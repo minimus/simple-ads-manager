@@ -508,8 +508,8 @@ SELECT
   0 AS code_type,
   IF((sp.patch_source = 1 AND sp.patch_adserver) OR sp.patch_source = 2, -1, 1) AS ad_cycle,
   @aca := IFNULL((SELECT AVG(wsa.ad_weight_hits*10/(wsa.ad_weight*$cycle)) FROM $aTable wsa WHERE wsa.pid = @pid AND wsa.trash IS NOT TRUE), 0) AS aca
-FROM $pTable sp
-WHERE $pId AND sp.trash IS FALSE
+FROM {$pTable} sp
+WHERE {$pId} AND sp.trash IS FALSE
 UNION
 SELECT
   sa.pid,
@@ -534,8 +534,8 @@ SELECT
   sa.code_type,
   IF(sa.ad_weight, (sa.ad_weight_hits*10/(sa.ad_weight*$cycle)), 0) AS ad_cycle,
   @aca AS aca
-FROM $aTable sa
-WHERE sa.pid = @pid AND sa.trash IS FALSE AND $whereClause $whereClauseT $whereClauseW
+FROM {$aTable} sa
+WHERE sa.pid = @pid AND sa.trash IS FALSE AND {$whereClause} {$whereClauseT} {$whereClauseW}
 ORDER BY ad_cycle
 LIMIT 1;";
 
