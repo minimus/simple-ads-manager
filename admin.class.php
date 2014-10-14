@@ -840,11 +840,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               array('field' => 'e_cpc', 'caption' => 'CPC', 'size' => '10%', 'render' => 'float:2'),
               array('field' => 'e_ctr', 'caption' => 'CTR', 'size' => '10%', 'render' => 'percent')
             ),
-            'uploader' => array(
-              'path' => SAM_AD_IMG,
-              'url' => SAM_URL . 'sam-uploader.php',
-              'adUrl' => SAM_AD_URL
-            )
           ));
         }
         if($mode == 'item') {
@@ -923,11 +918,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               'superAdmin' => __('Super Admin', SAM_DOMAIN),
               'labels' => array('hits' => __('Hits', SAM_DOMAIN), 'clicks' => __('Clicks', SAM_DOMAIN))
             ),
-            'uploader' => array(
-              'path' => SAM_AD_IMG,
-              'url' => SAM_URL . 'sam-uploader.php',
-              'adUrl' => SAM_AD_URL
-            )
           ));
         }
       }
