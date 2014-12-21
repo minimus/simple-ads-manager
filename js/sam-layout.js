@@ -1,12 +1,11 @@
 (function($) {
   $(document).ready(function() {
     var hits = [], doStats = ('string' == typeof samAjax.doStats) ? Number(samAjax.doStats) : samAjax.doStats;
+    if(samAjax.mailer) $.post(samAjax.ajaxurl, {action: 'sam_maintenance'});
     if(samAjax.load) {
-      if(samAjax.mailer) $.post(samAjax.ajaxurl, {action: 'sam_maintenance'});
-
       // Loading Ads
       var ads = [];
-      $('div.sam-place').each(function(i, el) {
+      $('div.' + samAjax.place).each(function(i, el) {
         var codes = $(el).data('sam');
         if('undefined' == typeof codes) codes = 0;
         var
@@ -53,7 +52,7 @@
 
       // Ads loaded by PHP
       if(doStats) {
-        $('div.sam-ad').each(function (i, el) {
+        $('div.' + samAjax.ad).each(function (i, el) {
           var
             ids = this.id.split('_'),
             id = ids[1],
@@ -82,7 +81,7 @@
     }
     else {
       if(doStats) {
-        $('div.sam-container').each(function (i, el) {
+        $('div.' + samAjax.container).each(function (i, el) {
           var
             ids = this.id.split('_'),
             id = ids[1],

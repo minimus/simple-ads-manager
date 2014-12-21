@@ -40,15 +40,14 @@ if(!class_exists('SamErrorLog')) {
       if(is_null($active_num)) $active_num = 0;
       if(is_null($resolved_num)) $resolved_num = 0;
       $all_num = $resolved_num + $active_num;
-      $total = (($mode !== 'all') ? (($mode === 'trash') ? $resolved_num : $active_num) : $all_num);
+      $total = (($mode !== 'all') ? (($mode === 'resolved') ? $resolved_num : $active_num) : $all_num);
       $start = $offset = ( $apage - 1 ) * $places_per_page;
 
       $page_links = paginate_links( array(
         'base' => add_query_arg( 'apage', '%#%' ),
-        'format' => '',
         'prev_text' => __('&laquo;'),
         'next_text' => __('&raquo;'),
-        'total' => ceil($total / $places_per_page),
+        'total' => (integer)ceil($total / $places_per_page),
         'current' => $apage
       ));
       ?>

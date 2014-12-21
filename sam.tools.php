@@ -29,6 +29,30 @@ if(!class_exists('SamMailer')) {
       return $list;
     }
 
+    private function writeResult( $input = null ) {
+      if(is_null($input)) return;
+
+      global $wpdb;
+      $eTable = $wpdb->prefix . "sam_errors";
+
+      $wpdb->insert(
+        $eTable,
+        array(
+          'error_date' => current_time('mysql'),
+          'table_name' => "Mailer",
+          'error_type' => 0,
+          'error_msg' => __('Mails were sent...', SAM_DOMAIN),
+          'error_sql' => (
+            (($input['success'] > 0) ? sprintf(_n('One mail was successfully sent. ', '%s mails were successfully sent. ', $input['success'], SAM_DOMAIN), $input['success']) : '') .
+            (($input['errors'] > 0) ? sprintf(_n('There is one error during sending mails.', 'There are %s errors during sending mails.', $input['errors'], SAM_DOMAIN), $input['errors']) : '') .
+            (__(' The success message does not automatically mean that the user received the email successfully. It just only means that the SAM plugin was able to process the request without any errors.', SAM_DOMAIN))
+          ),
+          'resolved' => 1
+        ),
+        array('%s', '%s', '%d', '%s', '%s', '%d')
+      );
+    }
+
     private function getSiteInfo( $info = 'name' ) {
       $infos = array(
         'name' => 'blogname',
@@ -235,24 +259,27 @@ if(!class_exists('SamMailer')) {
     }
 
     public function sendMails() {
-      $k = 0;
+      $k = 0; $s = 0; $e = 0;
       $advertisers = $this->advertisersList;
       if(!empty($advertisers) && is_array($advertisers)) {
         $headers = 'Content-type: text/html; charset=UTF-8' . "\r\n";
         //$headers .= 'From: Tests <wordpress@simplelib.com>' . "\r\n";
         foreach($advertisers as $adv) {
+          $success = false;
           $message = self::buildMessage($adv);
           $subject = self::parseText($this->options['mail_subject'], $adv['adv_name']);
           if(!empty($message)) {
-            if(function_exists('wp_mail')) wp_mail($adv['adv_mail'], $subject, $message, $headers);
+            if(function_exists('wp_mail')) $success = wp_mail($adv['adv_mail'], $subject, $message, $headers);
             else {
               $samAdminMail = self::getSiteInfo('admin_email');
               $headers .= "From: SAM Info <{$samAdminMail}>" . "\r\n";
-              mail($adv['adv_mail'], $subject, $message, $headers);
+              $success = mail($adv['adv_mail'], $subject, $message, $headers);
             }
+            ($success) ? $s++ : $e++;
             $k++;
           }
         }
+        self::writeResult(array('success' => $s, 'errors' => $e));
       }
       return ($k == 0) ? $this->error : $k;
     }

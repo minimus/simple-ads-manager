@@ -133,7 +133,11 @@ if(!class_exists('SamAd')) {
         }
         else $output = $ad['ad_code'];
       }
-      $output = "<div id='c{$rId}_{$ad['id']}_{$ad['pid']}' class='sam-container sam-ad'>{$output}</div>";
+
+      $container = ($settings['samClasses'] == 'custom' && !empty($settings['containerClass'])) ? $settings['containerClass'] : 'sam-container';
+      $samAd = ($settings['samClasses'] == 'custom' && !empty($settings['adClass'])) ? $settings['adClass'] : 'sam-ad';
+
+      $output = "<div id='c{$rId}_{$ad['id']}_{$ad['pid']}' class='{$container} {$samAd}'>{$output}</div>";
       //if(!$this->crawler && !is_admin())
         //$wpdb->query("UPDATE $aTable SET $aTable.ad_hits = $aTable.ad_hits+1 WHERE $aTable.id = {$ad['id']};");
       
@@ -239,223 +243,6 @@ if(!class_exists('SamAdPlace')) {
         }
       //}
     }
-    
-    private function buildAdOld( $args = null, $useCodes = false ) {
-      if(is_null($args)) return '';
-      if(empty($args['id']) && empty($args['name'])) return '';
-      if( is_null($this->clauses) ) return '';
-      
-      $settings = self::getSettings();
-      $data = intval($useCodes);
-      $rId = rand(1111, 9999);
-      if($settings['adCycle'] == 0) $cycle = 1000;
-      else $cycle = $settings['adCycle'];
-      $el = isset($settings['errorlogFS']);
-      
-      global $wpdb;
-      $pTable = $wpdb->prefix . "sam_places";          
-      $aTable = $wpdb->prefix . "sam_ads";
-      $eTable = $wpdb->prefix . "sam_errors";
-
-      $whereClause = $this->clauses['WC'];
-      $whereClauseT = $this->clauses['WCT'];
-      $whereClauseW = $this->clauses['WCW'];
-      $whereClause2W = $this->clauses['WC2W'];
-      
-      if(!empty($args['id'])) $pId = "sp.id = {$args['id']}";
-      else $pId = "sp.name = '{$args['name']}'";
-      
-      $pSql = "SELECT
-                  sp.id,
-                  sp.name,
-                  sp.description,
-                  sp.code_before,
-                  sp.code_after,
-                  sp.place_size,
-                  sp.place_custom_width,
-                  sp.place_custom_height,
-                  sp.patch_img,
-                  sp.patch_link,
-                  sp.patch_code,
-                  sp.patch_adserver,
-                  sp.patch_dfp,
-                  sp.patch_source,
-                  sp.trash,
-                  (SELECT COUNT(*) FROM $aTable sa WHERE sa.pid = sp.id AND sa.trash IS FALSE) AS ad_count,
-                  (SELECT COUNT(*) FROM $aTable sa WHERE sa.pid = sp.id AND sa.trash IS FALSE AND $whereClause $whereClauseT $whereClause2W) AS ad_logic_count,
-                  (SELECT COUNT(*) FROM $aTable sa WHERE sa.pid = sp.id AND sa.trash IS FALSE AND $whereClause $whereClauseT $whereClauseW) AS ad_full_count
-                FROM $pTable sp
-                WHERE $pId AND sp.trash IS FALSE;";
-      
-      $place = $wpdb->get_row($pSql, ARRAY_A);
-
-      if(!$place) {
-        if($el) self::errorWrite($eTable, $pTable, $pSql, $place, $wpdb->last_error);
-        return '';
-      }
-      
-      if($place['patch_source'] == 2) {
-        if(($settings['useDFP'] == 1) && !empty($settings['dfpPub'])) {
-          $output = "<!-- {$place['patch_dfp']} -->"."\n";
-          $output .= "<script type='text/javascript'>"."\n";
-          $output .= "  GA_googleFillSlot('{$place['patch_dfp']}');"."\n";
-          $output .= "</script>"."\n";
-          if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
-          elseif($useCodes) $output = $place['code_before'].$output.$place['code_after'];
-
-          $output = "<div id='c{$rId}_0_{$place['id']}' class='sam-container sam-ad'>{$output}</div>";
-        }
-        else $output = '';
-        //if(!$this->crawler && !is_admin())
-          //$wpdb->query("UPDATE {$pTable} SET {$pTable}.patch_hits = {$pTable}.patch_hits+1 WHERE {$pTable}.id = {$place['id']}");
-        return $output;
-      }
-      
-      if(($place['patch_source'] == 1) && (abs($place['patch_adserver']) == 1)) {
-        $output = self::prepareCodes($place['patch_code'], $rId);
-        if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
-        elseif($useCodes) $output = $place['code_before'].$output.$place['code_after'];
-        //if(!$this->crawler && !is_admin())
-          //$wpdb->query("UPDATE $pTable SET $pTable.patch_hits = $pTable.patch_hits+1 WHERE $pTable.id = {$place['id']}");
-        $output = "<div id='c{$rId}_0_{$place['id']}' class='sam-container sam-ad'>{$output}</div>";
-        return $output;
-      }
-
-      if(isset($settings['adShow']) && ($settings['adShow'] == 'js') && !$this->force) {
-        //$data = "{id: 0, pid: {$place['id']}, codes: $codes}";
-        return "<div id='c{$rId}_0_{$place['id']}' class='sam-container sam-place' data-sam='{$data}'></div>";
-      }
-
-      $this->pid = $place['id'];
-      $this->id = 0;
-      $this->cid = "c{$rId}_0_{$this->pid}";
-                                     
-      if((abs($place['ad_count']) == 0) || (abs($place['ad_logic_count']) == 0)) {
-        if($place['patch_source'] == 0) {
-          $aStart ='';
-          $aEnd ='';
-          $iTag = '';
-          if(!empty($settings['adDisplay'])) $target = '_'.$settings['adDisplay'];
-          else $target = '_blank';  
-          if(!empty($place['patch_link'])) {
-            $aStart = "<a href='{$place['patch_link']}' target='$target'>";
-            $aEnd = "</a>";
-          }
-          if(!empty($place['patch_img'])) $iTag = "<img src='{$place['patch_img']}' />";
-          $output = $aStart.$iTag.$aEnd;
-        }
-        else $output = $place['patch_code'];
-        //if(!$this->crawler && !is_admin())
-          //$wpdb->query("UPDATE $pTable SET $pTable.patch_hits = $pTable.patch_hits+1 WHERE $pTable.id = {$place['id']}");
-        //$data = "{id: 0, pid: {$place['id']}, codes: $codes}";
-        $output = "<div id='c{$rId}_0_{$place['id']}' class='sam-container sam-place' data-sam='{$data}'>{$output}</div>";
-        if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
-        elseif($useCodes) $output = $place['code_before'].$output.$place['code_after'];
-        return $output;
-      }
-      
-      if((abs($place['ad_logic_count']) > 0) && (abs($place['ad_full_count']) == 0)) {
-        $wpdb->update($aTable, array('ad_weight_hits' => 0), array('pid' => $place['id']), array("%d"), array("%d"));
-      }
-      
-      $aSql = "SELECT
-                  sa.id,
-                  sa.pid,
-                  sa.code_mode,
-                  sa.ad_code,
-                  sa.ad_img,
-                  sa.ad_alt,
-                  sa.ad_no,
-                  sa.ad_target,
-                  sa.ad_swf,
-                  sa.ad_swf_flashvars,
-                  sa.ad_swf_params,
-                  sa.ad_swf_attributes,
-                  sa.count_clicks,
-                  sa.code_type,
-                  sa.ad_hits,
-                  sa.ad_weight_hits,
-                  IF(sa.ad_weight, (sa.ad_weight_hits*10/(sa.ad_weight*$cycle)), 0) AS ad_cycle
-                FROM $aTable sa
-                WHERE sa.pid = {$place['id']} AND sa.trash IS FALSE AND $whereClause $whereClauseT $whereClauseW
-                ORDER BY ad_cycle
-                LIMIT 1;";
-
-      if(abs($place['ad_logic_count']) > 0) {
-        $ad = $wpdb->get_row($aSql, ARRAY_A);
-
-        if($ad === false) {
-          if($el) self::errorWrite($eTable, $aTable, $aSql, $ad, $wpdb->last_error);
-          return '';
-        }
-
-        $this->id = $ad['id'];
-        $this->cid = "c{$rId}_{$this->id}_{$this->pid}";
-
-        if($ad['code_mode'] == 0) {
-          if((int)$ad['ad_swf']) {
-            $id = "ad-".$ad['id'].'-'.$rId;
-            $file = $ad['ad_img'];
-            $sizes = self::getSize($place['place_size'], $place['place_custom_width'], $place['place_custom_height']);
-            $width = $sizes['width'];
-            $height = $sizes['height'];
-            $flashvars = (!empty($ad['ad_swf_flashvars'])) ? $ad['ad_swf_flashvars'] : '{}';
-            $params = (!empty($ad['ad_swf_params'])) ? $ad['ad_swf_params'] : '{}';
-            $attributes = (!empty($ad['ad_swf_attributes'])) ? $ad['ad_swf_attributes'] : '{}';
-            $text = 'Flash ad ID:'.$ad['id']; //__('Flash ad').' ID:'.$ad['id'];
-            $output = "
-            <script type='text/javascript'>
-            var
-              flashvars = $flashvars,
-              params = $params,
-              attributes = $attributes;
-            attributes.id = '$id';
-            attributes.styleclass = 'sam_ad';
-            swfobject.embedSWF('$file', '$id', '$width', '$height', '9.0.0', '', flashvars, params, attributes);
-            </script>
-            <div id='$id'>$text</div>
-            ";
-          }
-          else {
-            $outId = ((int) $ad['count_clicks'] == 1) ? " id='a".rand(10, 99)."_".$ad['id']."' class='sam_ad'" : '';
-            $aStart ='';
-            $aEnd ='';
-            $iTag = '';
-            if(!empty($settings['adDisplay'])) $target = '_'.$settings['adDisplay'];
-            else $target = '_blank';
-            if(!empty($ad['ad_target'])) {
-              //$aStart = ((in_array((integer)$ad['ad_no'], array(2,3))) ? '<noindex>' : '')."<a href='{$ad['ad_target']}' target='$target' ".((in_array((integer)$ad['ad_no'], array(1,3))) ? " rel='nofollow'" : '').">";
-              //$aEnd = "</a>".(in_array((integer)$ad['ad_no'], array(2,3))) ? '</noindex>' : '';
-              $aStart = "<a $outId href='{$ad['ad_target']}' target='$target' ".">";
-              $aEnd = "</a>";
-            }
-            if(!empty($ad['ad_img'])) $iTag = "<img src='{$ad['ad_img']}' ".((!empty($ad['ad_alt'])) ? " alt='{$ad['ad_alt']}' " : " alt='' ")." />";
-            $output = $aStart.$iTag.$aEnd;
-          }
-        }
-        else {
-          if($ad['code_type'] == 1) {
-            ob_start();
-            eval('?>'.$ad['ad_code'].'<?');
-            $output = ob_get_contents();
-            ob_end_clean();
-          }
-          else self::prepareCodes($ad['ad_code'], $rId);
-        }
-        //if(!$this->crawler && !is_admin())
-          //$wpdb->query("UPDATE $aTable SET $aTable.ad_hits = $aTable.ad_hits+1, $aTable.ad_weight_hits = $aTable.ad_weight_hits+1 WHERE $aTable.id = {$ad['id']}");
-        //$data = "{id: {$ad['id']}, pid: {$place['id']}, codes: $codes}";
-        if(!$this->crawler && !is_admin()) {
-          $sSql = "UPDATE $aTable sa SET sa.ad_weight_hits = sa.ad_weight_hits + 1 WHERE sa.id = %d;";
-          $wpdb->query($wpdb->prepare($sSql, $ad['id']));
-        }
-        $output = "<div id='c{$rId}_{$ad['id']}_{$ad['pid']}' class='sam-container sam-place' data-sam='{$data}'>{$output}</div>";
-      }
-      
-      if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
-      elseif($useCodes) $output = $place['code_before'].$output.$place['code_after'];
-      return $output;
-    }
 
     private function buildAd( $args = null, $useCodes = false ) {
       if(is_null($args)) return '';
@@ -468,6 +255,10 @@ if(!class_exists('SamAdPlace')) {
       if($settings['adCycle'] == 0) $cycle = 1000;
       else $cycle = $settings['adCycle'];
       $el = isset($settings['errorlogFS']);
+
+      $container = ($settings['samClasses'] == 'custom' && !empty($settings['containerClass'])) ? $settings['containerClass'] : 'sam-container';
+      $samAd = ($settings['samClasses'] == 'custom' && !empty($settings['adClass'])) ? $settings['adClass'] : 'sam-ad';
+      $samPlace = ($settings['samClasses'] == 'custom' && !empty($settings['placeClass'])) ? $settings['placeClass'] : 'sam-place';
 
       global $wpdb;
       $pTable = $wpdb->prefix . "sam_places";
@@ -566,7 +357,7 @@ LIMIT 1;";
           if($useCodes)
             $output = (is_array($useCodes)) ? $useCodes['before'].$output.$useCodes['after'] : $ad['code_before'].$output.$ad['code_after'];
 
-          $output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='sam-container sam-ad'>{$output}</div>";
+          $output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='{$container} {$samAd}'>{$output}</div>";
         }
         else $output = '';
 
@@ -578,14 +369,14 @@ LIMIT 1;";
         $output = self::prepareCodes($ad['ad_code'], $rId);
         if($useCodes)
           $output = (is_array($useCodes)) ? $useCodes['before'].$output.$useCodes['after'] : $ad['code_before'].$output.$ad['code_after'];
-        $output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='sam-container sam-ad'>{$output}</div>";
+        $output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='{$container} {$samAd}'>{$output}</div>";
 
         return $output;
       }
 
       // JS Loading
       if(isset($settings['adShow']) && ($settings['adShow'] == 'js') && !$this->force)
-        return "<div id='c{$rId}_0_{$ad['pid']}' class='sam-container sam-place' data-sam='{$data}'></div>";
+        return "<div id='c{$rId}_0_{$ad['pid']}' class='{$container} {$samPlace}' data-sam='{$data}'></div>";
 
       // Image and Code Modes
       if($ad['code_mode'] == 0) {
@@ -641,7 +432,7 @@ LIMIT 1;";
 
 	    //$this->sql = $output;
 
-      $output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='sam-container sam-place' data-sam='{$data}'>{$output}</div>";
+      $output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='{$container} {$samPlace}' data-sam='{$data}'>{$output}</div>";
 
       if(is_array($useCodes)) $output = $useCodes['before'].$output.$useCodes['after'];
       elseif($useCodes) $output = $ad['code_before'].$output.$ad['code_after'];

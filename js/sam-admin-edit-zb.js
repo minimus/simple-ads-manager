@@ -27,7 +27,7 @@
           $.ajax({
             url: ajaxurl,
             data: {
-              action: 'close_pointer',
+              action: 'close_sam_pointer',
               pointer: sPointer.pointer
             },
             async: true

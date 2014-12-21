@@ -38,7 +38,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       define('SAM_ACCESS', $access);
 
       //add_action('wp_ajax_upload_ad_image', array(&$this, 'uploadHandler'));
-      add_action('wp_ajax_close_pointer', array(&$this, 'closePointerHandler'));
+      add_action('wp_ajax_close_sam_pointer', array(&$this, 'closePointerHandler'));
 			add_action('admin_menu', array(&$this, 'regAdminPage'));
       add_filter('tiny_mce_version', array(&$this, 'tinyMCEVersion'));
       add_action('init', array(&$this, 'addButtons'));
@@ -390,50 +390,12 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
         'remote_addr' => array('Type' => 'varchar(15)', 'Null' => 'YES', 'Key' => '', 'Default' => '', 'Extra' => '')
       );
 
-	    $pIndexDef = array(
-		    'UK_'.$prefix.'places' => array(
-			    'id' => array('Non_unique' => 0, 'Seq_in_index' => 1, 'Column_name' => 'id')
-		    )
-	    );
-
-	    $aIndexDef = array(
-		    'UK_'.$prefix.'ads' => array(
-		      'pid' => array('Non_unique' => 0, 'Seq_in_index' => 1, 'Column_name' => 'pid'),
-		      'id' => array('Non_unique' => 0, 'Seq_in_index' => 2, 'Column_name' => 'id')
-		    )
-	    );
-
-	    $zIndexDef = array(
-		    'UK_'.$prefix.'zones' => array(
-		      'id' => array('Non_unique' => 0, 'Seq_in_index' => 1, 'Column_name' => 'id')
-		    )
-	    );
-
-	    $bIndexDef = array(
-		    'UK_'.$prefix.'blocks' => array(
-		      'id' => array('Non_unique' => 0, 'Seq_in_index' => 1, 'Column_name' => 'id')
-		    )
-	    );
-
-	    $sIndexDef = array(
-		    'IDX_'.$prefix.'stats' => array(
-		      'id' => array('Non_unique' => 1, 'Seq_in_index' => 1, 'Column_name' => 'id'),
-		      'pid' => array('Non_unique' => 1, 'Seq_in_index' => 2, 'Column_name' => 'pid'),
-		      'event_time' => array('Non_unique' => 1, 'Seq_in_index' => 3, 'Column_name' => 'event_time')
-		    )
-	    );
-
       return array(
         'places' => $pTableDef,
         'ads' => $aTableDef,
         'zones' => $zTableDef,
         'blocks' => $bTableDef,
-        'stats' => $sTableDef,
-	      'idxPlaces' => $pIndexDef,
-	      'idxAds' => $aIndexDef,
-	      'idxZones' => $zIndexDef,
-	      'idxBlocks' => $bIndexDef,
-	      'idxStats' => $sIndexDef
+        'stats' => $sTableDef
       );
     }
 
@@ -595,7 +557,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       self::finishSettingsTab('sam_mailer_preview_section');
       self::starSettingsTab('sam_statistic_section', 'tabs-5', __('Tools', SAM_DOMAIN));
       add_settings_section("sam_statistic_section", __("Statistics Settings", SAM_DOMAIN), array(&$this, "drawStatisticsSection"), 'sam-settings');
-      self::finishSettingsTab('sam_statistic_section');
+      add_settings_section("sam_html_section", __("HTML Settings", SAM_DOMAIN), array(&$this, "drawHtmlSection"), "sam-settings");
+      self::finishSettingsTab('sam_html_section');
 
       add_settings_field('adCycle', __("Views per Cycle", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_general_section', array('description' => __('Number of hits of one ad for a full cycle of rotation (maximal activity).', SAM_DOMAIN)));
       add_settings_field('access', __('Minimum Level for access to menu', SAM_DOMAIN), array(&$this, 'drawJSliderOption'), 'sam-settings', 'sam_general_section', array('description' => __('Who can use menu of plugin - Minimum User Level needed for access to menu of plugin. In any case only Super Admin and Administrator can use Settings Menu of SAM Plugin.', SAM_DOMAIN), 'options' => array('manage_network' => __('Super Admin', SAM_DOMAIN), 'manage_options' => __('Administrator', SAM_DOMAIN), 'edit_others_posts' => __('Editor', SAM_DOMAIN), 'publish_posts' => __('Author', SAM_DOMAIN), 'edit_posts' => __('Contributor', SAM_DOMAIN)), 'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')));
@@ -635,6 +598,11 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       add_settings_field('stats', __('Allow to collect and to store statistical data', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_statistic_section', array('label_for' => 'stats', 'checkbox' => true));
 			add_settings_field('keepStats', __('Keep Statistical Data', SAM_DOMAIN), array(&$this, 'drawSelectOption'), 'sam-settings', 'sam_statistic_section', array('description' => __('Period of keeping statistical data (excluding current month).', SAM_DOMAIN), 'options' => array(0 => __('All Time', SAM_DOMAIN), 1 => __('One Month', SAM_DOMAIN), 3 => __('Three Months', SAM_DOMAIN), 6 => __('Six Months', SAM_DOMAIN), 12 => __('One Year'))));
       add_settings_field('currency', __("Display of Currency", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_statistic_section', array('description' => __("Define display of currency. Auto - auto detection of currency from blog settings. USD, EUR - Forcing the display of currency to U.S. dollars or Euro.", SAM_DOMAIN), 'options' => array( 'auto' => __('Auto', SAM_DOMAIN), 'usd' => __('USD', SAM_DOMAIN), 'euro' => __('EUR', SAM_DOMAIN))));
+
+      add_settings_field('samClasses', __("Use Classes:", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_html_section', array('description' => __('Select method of the classes naming.'), 'options' => array('default' => __('Default', SAM_DOMAIN), 'custom' => __('Custom', SAM_DOMAIN))));
+      add_settings_field('containerClass', __('Custom SAM Container Class', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_html_section', array('width' => '200px'));
+      add_settings_field('placeClass', __('Custom Ads Place Class', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_html_section', array('width' => '200px'));
+      add_settings_field('adClass', __('Custom Ad Class', SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_html_section', array('width' => '200px', 'description' => __("Class names should consist of two parts (only letters and numbers) separated by symbol '-', ie 'bla-bla' or 'bye-bye'.", SAM_DOMAIN)));
 
       add_settings_field('editorButtonMode', __("TinyMCE Editor Button Mode", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_layout_section', array('description' => __('If you do not want to use the modern dropdown button in your TinyMCE editor, or use of this button causes a problem, you can use classic TinyMCE buttons. In this case select "Classic TinyMCE Buttons".', SAM_DOMAIN), 'options' => array('modern' => __('Modern TinyMCE Button', SAM_DOMAIN), 'classic' => __('Classic TinyMCE Buttons', SAM_DOMAIN))));
       add_settings_field('placesPerPage', __("Ads Places per Page", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_layout_section', array('description' => __('Ads Places Management grid pagination. How many Ads Places will be shown on one page of grid.', SAM_DOMAIN)));
@@ -1011,17 +979,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       return $output;
     }
 
-    /*public function uploadHandler() {
-      $uploaddir = SAM_AD_IMG;
-      $file = $uploaddir . basename($_FILES['uploadfile']['name']);
-
-      if ( move_uploaded_file( $_FILES['uploadfile']['tmp_name'], $file )) {
-        exit("success");
-      } else {
-        exit("error");
-      }
-    }*/
-
     public function closePointerHandler() {
       $options = self::getPointerOptions();
       $charset = get_bloginfo('charset');
@@ -1243,6 +1200,10 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     public function drawDeactivateSection() {
 			echo '<p>'.__('Are you allow to perform these actions during deactivating plugin?', SAM_DOMAIN).'</p>';
 		}
+
+    public function drawHtmlSection() {
+      echo '<p>'.__("Define HTML classes for plugin's output tags.", SAM_DOMAIN).'</p>';
+    }
 
     public function drawMailerSection() {
       $options = parent::getSettings();

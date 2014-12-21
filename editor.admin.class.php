@@ -268,21 +268,7 @@ if(!class_exists('SamPlaceEdit')) {
               <?php _e("Select file from your blog server.", SAM_DOMAIN); ?>
             </p>
           </div>
-          <!--<div id="tab3">
-            <p>
-              <strong><?php _e('Upload File', SAM_DOMAIN); ?></strong>
-            </p>
-            <button id="upload-file-button" class="color-btn color-btn-left"><b style="background-color: #21759b"></b><?php _e('Upload', SAM_DOMAIN);?></button>
-            <span id="upload-console"></span>
-            <span id="upload-progress"></span>
-            <p>
-              <span id="uploading-help"><?php _e("Select and upload file from your local computer.", SAM_DOMAIN); ?></span>
-            </p>
-          </div>-->
         </div>
-	      <div class="sam2-warning">
-		      <p><?php _e("The uploading feature (user's banners without using Media Library) was removed by request of administration of wordpress.org plugins repository. Use \"Select or Upload\" for uploading your ad banners to the server using Media Library. \"Selecting Files from Server\" feature is left for backward compatibility.", SAM_DOMAIN); ?></p>
-	      </div>
       </div>
       <?php
     }

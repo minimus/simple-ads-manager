@@ -3,8 +3,8 @@ Contributors: minimus
 Donate link: https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.com
 Tags: ad, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, yahoo, ypn
 Requires at least: 3.9
-Tested up to: 4.0
-Stable tag: 2.4.91
+Tested up to: 4.1
+Stable tag: 2.5.94
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,10 @@ No questions now...
 
 == Changelog ==
 
+= 2.5.94 =
+* Indexes of plugin database tables were removed
+* Custom naming of classes of the plugin tags is added
+* Some minor bugs were resolved
 = 2.4.91 =
 * The uploading feature (user's banners without using Media Library) was removed by request of administration of wordpress.org plugins repository.
 = 2.4.90 =
@@ -203,6 +207,8 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 2.5.94 =
+Some problems are solved.
 = 2.4.91 =
 Some functionality of the plugin were cut.
 = 2.4.90 =

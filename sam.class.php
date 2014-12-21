@@ -53,10 +53,10 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'mailer' => 1,                    // bool
       'mail_subject' => 'Ad campaign report ([month])',
       'mail_greeting' => 'Hi! [name]!',
-      'mail_text_before' => 'This is your Ad Campaing Report:',
+      'mail_text_before' => 'This is your Ad Campaign Report:',
       'mail_text_after' => '',
       'mail_warning' => 'You received this mail because you are an advertiser of site [site]. If time of your campaign expires or if you refuse to post your ads on our site, you will be excluded from the mailing list automatically. Thank you for your cooperation.',
-      'mail_message' => 'Do not respond to this mail! This mail was sent automatically by Wordpress plugin Simple Ads Manager.',
+      'mail_message' => 'Do not respond to this mail! This mail was sent automatically by Wordpress plugin Simple Ads Manager (Free Edition).',
       'mail_period' => 'monthly',        // monthly|weekly
       'mail_hits' => 1,                  // bool
       'mail_clicks' => 1,                // bool
@@ -66,12 +66,16 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'mail_preview' => 0,               // bool
       // Statistics
       'stats' => 1,                      // bool
-      'keepStats' => 0                   // int
+      'keepStats' => 0,                  // int
+      'samClasses' => 'default',
+      'containerClass' => 'sam-container',
+      'placeClass' => 'sam-place',
+      'adClass' => 'sam-ad'
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '2.4.91');
-      define('SAM_DB_VERSION', '2.7');
+      define('SAM_VERSION', '2.5.94');
+      define('SAM_DB_VERSION', '2.8');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );
       define('SAM_IMG_URL', SAM_URL.'images/');
@@ -423,6 +427,10 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $options = self::getSettings();
       if(empty($this->whereClauses)) $this->whereClauses = self::buildWhereClause();
 
+      $container = ($options['samClasses'] == 'custom' && !empty($options['containerClass'])) ? $options['containerClass'] : 'sam-container';
+      $samAd = ($options['samClasses'] == 'custom' && !empty($options['adClass'])) ? $options['adClass'] : 'sam-ad';
+      $samPlace = ($options['samClasses'] == 'custom' && !empty($options['placeClass'])) ? $options['placeClass'] : 'sam-place';
+
       $SAM_Query = array('clauses' => $this->whereClauses);
       $clauses64 = base64_encode(serialize($SAM_Query['clauses']));
       
@@ -437,6 +445,9 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           'mailer' => $options['mailer'],
           'clauses' => $clauses64,
 		      'doStats' => $this->samOptions['stats'],
+          'container' => $container,
+          'place' => $samPlace,
+          'ad' => $samAd,
 		      //'debug' => array(ABSPATH, dirname( __FILE__ ), str_replace( ABSPATH, '', dirname( __FILE__ ) ), explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) )))
         )
       );
