@@ -29,11 +29,13 @@ if(!class_exists('simple_ads_manager_widget_admin') && class_exists('WP_Widget')
       if($options['detectBots'] == 1) {
         switch($options['detectingMode']) {
           case 'inexact':
-            if($_SERVER["HTTP_USER_AGENT"] == '' ||
-               $_SERVER['HTTP_ACCEPT'] == '' ||
-               $_SERVER['HTTP_ACCEPT_ENCODING'] == '' ||
-               $_SERVER['HTTP_ACCEPT_LANGUAGE'] == '' ||
-               $_SERVER['HTTP_CONNECTION']=='' || is_admin()) $crawler = true;
+            if(((!isset($_SERVER["HTTP_USER_AGENT"])) ? true : ($_SERVER["HTTP_USER_AGENT"] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT'])) ? true : ($_SERVER['HTTP_ACCEPT'] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT_ENCODING'])) ? true : ($_SERVER['HTTP_ACCEPT_ENCODING'] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) ? true : ($_SERVER['HTTP_ACCEPT_LANGUAGE'] == '')) ||
+               ((!isset($_SERVER['HTTP_CONNECTION'])) ? true : $_SERVER['HTTP_CONNECTION'] == '') ||
+               is_admin())
+	            $crawler = true;
             break;
             
           case 'exact':
@@ -169,11 +171,13 @@ if(!class_exists('simple_ads_manager_zone_widget') && class_exists('WP_Widget'))
       if($options['detectBots'] == 1) {
         switch($options['detectingMode']) {
           case 'inexact':
-            if($_SERVER["HTTP_USER_AGENT"] == '' ||
-               $_SERVER['HTTP_ACCEPT'] == '' ||
-               $_SERVER['HTTP_ACCEPT_ENCODING'] == '' ||
-               $_SERVER['HTTP_ACCEPT_LANGUAGE'] == '' ||
-               $_SERVER['HTTP_CONNECTION']=='' || is_admin()) $crawler = true;
+            if(((!isset($_SERVER["HTTP_USER_AGENT"])) ? true : ($_SERVER["HTTP_USER_AGENT"] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT'])) ? true : ($_SERVER['HTTP_ACCEPT'] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT_ENCODING'])) ? true : ($_SERVER['HTTP_ACCEPT_ENCODING'] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) ? true : ($_SERVER['HTTP_ACCEPT_LANGUAGE'] == '')) ||
+               ((!isset($_SERVER['HTTP_CONNECTION'])) ? true : $_SERVER['HTTP_CONNECTION'] == '') ||
+               is_admin())
+	            $crawler = true;
             break;
             
           case 'exact':
@@ -306,11 +310,13 @@ if(!class_exists('simple_ads_manager_ad_widget') && class_exists('WP_Widget')) {
       if($options['detectBots'] == 1) {
         switch($options['detectingMode']) {
           case 'inexact':
-            if($_SERVER["HTTP_USER_AGENT"] == '' ||
-               $_SERVER['HTTP_ACCEPT'] == '' ||
-               $_SERVER['HTTP_ACCEPT_ENCODING'] == '' ||
-               $_SERVER['HTTP_ACCEPT_LANGUAGE'] == '' ||
-               $_SERVER['HTTP_CONNECTION']=='' || is_admin()) $crawler = true;
+            if(((!isset($_SERVER["HTTP_USER_AGENT"])) ? true : ($_SERVER["HTTP_USER_AGENT"] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT'])) ? true : ($_SERVER['HTTP_ACCEPT'] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT_ENCODING'])) ? true : ($_SERVER['HTTP_ACCEPT_ENCODING'] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) ? true : ($_SERVER['HTTP_ACCEPT_LANGUAGE'] == '')) ||
+               ((!isset($_SERVER['HTTP_CONNECTION'])) ? true : $_SERVER['HTTP_CONNECTION'] == '') ||
+               is_admin())
+	            $crawler = true;
             break;
             
           case 'exact':
@@ -444,11 +450,13 @@ if(!class_exists('simple_ads_manager_block_widget') && class_exists('WP_Widget')
       if($options['detectBots'] == 1) {
         switch($options['detectingMode']) {
           case 'inexact':
-            if($_SERVER["HTTP_USER_AGENT"] == '' ||
-               $_SERVER['HTTP_ACCEPT'] == '' ||
-               $_SERVER['HTTP_ACCEPT_ENCODING'] == '' ||
-               $_SERVER['HTTP_ACCEPT_LANGUAGE'] == '' ||
-               $_SERVER['HTTP_CONNECTION']=='' || is_admin()) $crawler = true;
+            if(((!isset($_SERVER["HTTP_USER_AGENT"])) ? true : ($_SERVER["HTTP_USER_AGENT"] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT'])) ? true : ($_SERVER['HTTP_ACCEPT'] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT_ENCODING'])) ? true : ($_SERVER['HTTP_ACCEPT_ENCODING'] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) ? true : ($_SERVER['HTTP_ACCEPT_LANGUAGE'] == '')) ||
+               ((!isset($_SERVER['HTTP_CONNECTION'])) ? true : $_SERVER['HTTP_CONNECTION'] == '') ||
+               is_admin())
+	            $crawler = true;
             break;
             
           case 'exact':

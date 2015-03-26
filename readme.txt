@@ -4,7 +4,7 @@ Donate link: https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.c
 Tags: ad, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, yahoo, ypn
 Requires at least: 3.9
 Tested up to: 4.1
-Stable tag: 2.5.94
+Stable tag: 2.6.96
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,9 @@ No questions now...
 
 == Changelog ==
 
+= 2.6.96 =
+* Potential vulnerability issue was resolved.
+* Error of detecting bots and crawlers was resolved.
 = 2.5.94 =
 * Indexes of plugin database tables were removed
 * Custom naming of classes of the plugin tags is added
@@ -207,6 +210,8 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 2.6.96
+Some issues with errors were resolved.
 = 2.5.94 =
 Some problems are solved.
 = 2.4.91 =

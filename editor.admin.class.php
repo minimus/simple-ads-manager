@@ -333,13 +333,13 @@ if(!class_exists('SamPlaceEdit')) {
           $aSize = array();
           
           if($action !== 'new') {
-            $row = $wpdb->get_row("SELECT id, name, description, code_before, code_after, place_size, place_custom_width, place_custom_height, patch_img, patch_link, patch_code, patch_adserver, patch_dfp, patch_source, trash FROM ".$pTable." WHERE id = ".$item, ARRAY_A);
+            $row = $wpdb->get_row("SELECT id, name, description, code_before, code_after, place_size, place_custom_width, place_custom_height, patch_img, patch_link, patch_code, patch_adserver, patch_dfp, patch_source, trash FROM {$pTable} WHERE id = ".$item, ARRAY_A);
             if($row['place_size'] === 'custom') $aSize = $this->getAdSize($row['place_size'], $row['place_custom_width'], $row['place_custom_height']);
             else $aSize = $this->getAdSize ($row['place_size']);
           }
           else {
             if($updated) {
-              $row = $wpdb->get_row("SELECT id, name, description, code_before, code_after, place_size, place_custom_width, place_custom_height, patch_img, patch_link, patch_code, patch_adserver, patch_dfp, patch_source, trash FROM ".$pTable." WHERE id = ".$item, ARRAY_A);
+              $row = $wpdb->get_row("SELECT id, name, description, code_before, code_after, place_size, place_custom_width, place_custom_height, patch_img, patch_link, patch_code, patch_adserver, patch_dfp, patch_source, trash FROM {$pTable} WHERE id = ".$item, ARRAY_A);
               if($row['place_size'] === 'custom') $aSize = $this->getAdSize($row['place_size'], $row['place_custom_width'], $row['place_custom_height']);
               else $aSize = $this->getAdSize($row['place_size']);
             }

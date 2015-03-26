@@ -37,7 +37,6 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
       define('SAM_ACCESS', $access);
 
-      //add_action('wp_ajax_upload_ad_image', array(&$this, 'uploadHandler'));
       add_action('wp_ajax_close_sam_pointer', array(&$this, 'closePointerHandler'));
 			add_action('admin_menu', array(&$this, 'regAdminPage'));
       add_filter('tiny_mce_version', array(&$this, 'tinyMCEVersion'));

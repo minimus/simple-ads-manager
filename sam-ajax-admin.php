@@ -61,7 +61,6 @@ $allowed_actions = array(
   'sam_ajax_load_users',
   'sam_ajax_load_combo_data',
   'sam_ajax_get_error',
-  'sam_ajax_upload_ad_image',
   'sam_ajax_load_stats'
 );
 $out = array();
@@ -298,19 +297,6 @@ if(in_array($action, $allowed_actions)) {
         $out['type'] = $eTypes[$out['error_type']];
       }
       else $out = array("status" => "error", "message" => "ID Error");
-      break;
-
-    case 'sam_ajax_upload_ad_image':
-      if(isset($_POST['path'])) {
-        $uploadDir = $_POST['path'];
-        $file = $uploadDir . basename($_FILES['uploadfile']['name']);
-
-        if ( move_uploaded_file( $_FILES['uploadfile']['tmp_name'], $file )) {
-          $out = array('status' => "success");
-        } else {
-          $out = array('status' => "error");
-        }
-      }
       break;
 
     default:

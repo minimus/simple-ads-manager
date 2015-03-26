@@ -74,7 +74,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '2.5.94');
+      define('SAM_VERSION', '2.6.96');
       define('SAM_DB_VERSION', '2.8');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );
@@ -523,11 +523,12 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       if($options['detectBots'] == 1) {
         switch($options['detectingMode']) {
           case 'inexact':
-            if($_SERVER["HTTP_USER_AGENT"] == '' ||
-               $_SERVER['HTTP_ACCEPT'] == '' ||
-               $_SERVER['HTTP_ACCEPT_ENCODING'] == '' ||
-               $_SERVER['HTTP_ACCEPT_LANGUAGE'] == '' ||
-               $_SERVER['HTTP_CONNECTION']=='') $crawler = true;
+            if(((!isset($_SERVER["HTTP_USER_AGENT"])) ? true : ($_SERVER["HTTP_USER_AGENT"] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT'])) ? true : ($_SERVER['HTTP_ACCEPT'] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT_ENCODING'])) ? true : ($_SERVER['HTTP_ACCEPT_ENCODING'] == '')) ||
+               ((!isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])) ? true : ($_SERVER['HTTP_ACCEPT_LANGUAGE'] == '')) ||
+               ((!isset($_SERVER['HTTP_CONNECTION'])) ? true : $_SERVER['HTTP_CONNECTION'] == ''))
+	            $crawler = true;
             break;
             
           case 'exact':
