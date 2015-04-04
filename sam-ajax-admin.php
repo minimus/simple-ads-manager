@@ -125,7 +125,7 @@ if(in_array($action, $allowed_actions)) {
       break;
 
     case 'sam_ajax_load_posts':
-      $custs = (isset($_REQUEST['cstr'])) ? $_REQUEST['cstr'] : '';
+      $custs = mysql_real_escape_string((isset($_REQUEST['cstr'])) ? $_REQUEST['cstr'] : '');
       $sPost = (isset($_REQUEST['sp'])) ? urldecode( $_REQUEST['sp'] ) : 'Post';
       $sPage = (isset($_REQUEST['spg'])) ? urldecode( $_REQUEST['spg'] ) : 'Page';
 
@@ -186,12 +186,12 @@ if(in_array($action, $allowed_actions)) {
 		  break;
 
     case 'sam_ajax_load_users':
-      $roleSubscriber = (isset($_REQUEST['subscriber'])) ? urldecode($_REQUEST['subscriber']) : 'Subscriber';
-      $roleContributor = (isset($_REQUEST['contributor'])) ? urldecode($_REQUEST['contributor']) : 'Contributor';
-      $roleAuthor = (isset($_REQUEST['author'])) ? urldecode($_REQUEST['author']) : 'Author';
-      $roleEditor = (isset($_REQUEST['editor'])) ? urldecode($_REQUEST['editor']) : 'Editor';
-      $roleAdministrator = (isset($_REQUEST["admin"])) ? urldecode($_REQUEST["admin"]) : 'Administrator';
-      $roleSuperAdmin = (isset($_REQUEST['sadmin'])) ? urldecode($_REQUEST['sadmin']) : 'Super Admin';
+      $roleSubscriber = mysql_real_escape_string((isset($_REQUEST['subscriber'])) ? urldecode($_REQUEST['subscriber']) : 'Subscriber');
+      $roleContributor = mysql_real_escape_string((isset($_REQUEST['contributor'])) ? urldecode($_REQUEST['contributor']) : 'Contributor');
+      $roleAuthor = mysql_real_escape_string((isset($_REQUEST['author'])) ? urldecode($_REQUEST['author']) : 'Author');
+      $roleEditor = mysql_real_escape_string((isset($_REQUEST['editor'])) ? urldecode($_REQUEST['editor']) : 'Editor');
+      $roleAdministrator = mysql_real_escape_string((isset($_REQUEST["admin"])) ? urldecode($_REQUEST["admin"]) : 'Administrator');
+      $roleSuperAdmin = mysql_real_escape_string((isset($_REQUEST['sadmin'])) ? urldecode($_REQUEST['sadmin']) : 'Super Admin');
       $sql = "SELECT
                 wu.id,
                 wu.display_name AS title,
@@ -226,6 +226,7 @@ if(in_array($action, $allowed_actions)) {
       $page = $_GET['page'];
       $rows = $_GET['rows'];
       $searchTerm = $_GET['searchTerm'];
+      $searchTerm = mysql_real_escape_string($searchTerm);
       $offset = ((int)$page - 1) * (int)$rows;
 
       $sql = "SELECT
