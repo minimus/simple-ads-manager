@@ -48,7 +48,6 @@ $action = !empty($_POST['action']) ? 'sam_ajax_' . stripslashes($_POST['action']
 //A bit of security
 $allowed_actions = array(
   'sam_ajax_sam_click',
-  'sam_ajax_sam_hit',
 	'sam_ajax_sam_hits',
   'sam_ajax_sam_maintenance'
 );
@@ -81,49 +80,26 @@ if(in_array($action, $allowed_actions)){
       else echo json_encode(array('success' => false, 'id' => $id));
       break;
 
-    case 'sam_ajax_sam_hit':
-      if(isset($_POST['id']) && isset($_POST['pid'])) {
-        $id = $_POST['id'];
-        $pid = $_POST['pid'];
-        $cid = ($id == 0) ? $pid : $id;
-        $result = 0;
-        //if($id > 0) $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1, sa.ad_weight_hits = sa.ad_weight_hits + 1 WHERE sa.id = %d;";
-        /*if($id > 0) $sql = "UPDATE $aTable sa SET sa.ad_hits = sa.ad_hits + 1 WHERE sa.id = %d;";
-        elseif($id == 0) $sql = "UPDATE $pTable sp SET sp.patch_hits = sp.patch_hits + 1 WHERE sp.id = %d;";
-        else $sql = '';*/
-        $sql = "INSERT INTO $sTable (id, pid, event_time, event_type) VALUES (%d, %d, NOW(), 0);";
-        if(!empty($sql)) $result = $wpdb->query($wpdb->prepare($sql, $id, $pid));
-        if($result === 1) echo json_encode(array('success' => true, 'id' => $id, 'pid' => $pid));
-        else echo json_encode(array(
-          'success' => false,
-          'id' => $id,
-          'pid' => $pid,
-          'cid' => $cid,
-          'result' => $result,
-          'sql' => $wpdb->prepare($sql, $cid)
-        ));
-      }
-      else echo json_encode(array('success' => false));
-      break;
-
 	  case 'sam_ajax_sam_hits':
 		  if(isset($_POST['hits']) && is_array($_POST['hits'])) {
 			  $hits = $_POST['hits'];
 			  $values = '';
 			  $remoteAddr = $_SERVER['REMOTE_ADDR'];
 			  foreach($hits as $hit) {
-				  $values .= ((empty($values)) ? '' : ', ') . "({$hit[1]}, {$hit[0]}, NOW(), 0, \"{$remoteAddr}\")";
+				  if(is_numeric($hit[0]) && is_numeric($hit[1])) {
+					  $values .= ((empty($values)) ? '' : ', ') . "({$hit[1]}, {$hit[0]}, NOW(), 0, \"{$remoteAddr}\")";
+				  }
 			  }
-        $values = mysql_real_escape_string($values);
+        //$values = $wpdb->escape($values);
 			  $sql = "INSERT INTO $sTable (id, pid, event_time, event_type, remote_addr) VALUES {$values};";
 			  $result = $wpdb->query($sql);
-			  if($result > 0) echo json_encode(array('success' => true, 'sql' => $sql, 'addr' => $_SERVER['REMOTE_ADDR']));
+			  if($result > 0) echo json_encode(array('success' => true));
 			  else echo json_encode(array(
 				  'success' => false,
-				  'result' => $result,
+				  /*'result' => $result,
 				  'sql' => $sql,
 				  'hits' => $hits,
-				  'values' => $values
+				  'values' => $values*/
 			  ));
 		  }
 		  break;

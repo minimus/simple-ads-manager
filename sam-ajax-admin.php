@@ -18,13 +18,21 @@ else $root = dirname(dirname(dirname(dirname(__FILE__))));
 
 ini_set('html_errors', 0);
 
-define('SHORTINIT', true);
+$validUri = '';
+$validRequest = false;
+if($_REQUEST['action'] !== 'load_combo_data') define('SHORTINIT', true);
 
 require_once( $root . '/wp-load.php' );
 
 function random_string($chars = 12) {
 	$letters = 'abcefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 ';
 	return substr(str_shuffle($letters), 0, $chars);
+}
+
+$action = !empty($_REQUEST['action']) ? 'sam_ajax_' . stripslashes($_REQUEST['action']) : false;
+if( ! SHORTINIT ) {
+	$validUri = admin_url('admin.php') . '?page=sam-edit';
+	$validRequest = strpos($_SERVER['HTTP_REFERER'], $validUri);
 }
 
 global $wpdb;
@@ -48,8 +56,6 @@ $charset = $wpdb->get_var($oSql);
 
 send_nosniff_header();
 nocache_headers();
-
-$action = !empty($_REQUEST['action']) ? 'sam_ajax_' . stripslashes($_REQUEST['action']) : false;
 
 //A bit of security
 $allowed_actions = array(
@@ -125,7 +131,7 @@ if(in_array($action, $allowed_actions)) {
       break;
 
     case 'sam_ajax_load_posts':
-      $custs = mysql_real_escape_string((isset($_REQUEST['cstr'])) ? $_REQUEST['cstr'] : '');
+      $custs = $wpdb->escape((isset($_REQUEST['cstr'])) ? $_REQUEST['cstr'] : '');
       $sPost = (isset($_REQUEST['sp'])) ? urldecode( $_REQUEST['sp'] ) : 'Post';
       $sPage = (isset($_REQUEST['spg'])) ? urldecode( $_REQUEST['spg'] ) : 'Page';
 
@@ -186,12 +192,12 @@ if(in_array($action, $allowed_actions)) {
 		  break;
 
     case 'sam_ajax_load_users':
-      $roleSubscriber = mysql_real_escape_string((isset($_REQUEST['subscriber'])) ? urldecode($_REQUEST['subscriber']) : 'Subscriber');
-      $roleContributor = mysql_real_escape_string((isset($_REQUEST['contributor'])) ? urldecode($_REQUEST['contributor']) : 'Contributor');
-      $roleAuthor = mysql_real_escape_string((isset($_REQUEST['author'])) ? urldecode($_REQUEST['author']) : 'Author');
-      $roleEditor = mysql_real_escape_string((isset($_REQUEST['editor'])) ? urldecode($_REQUEST['editor']) : 'Editor');
-      $roleAdministrator = mysql_real_escape_string((isset($_REQUEST["admin"])) ? urldecode($_REQUEST["admin"]) : 'Administrator');
-      $roleSuperAdmin = mysql_real_escape_string((isset($_REQUEST['sadmin'])) ? urldecode($_REQUEST['sadmin']) : 'Super Admin');
+      $roleSubscriber = $wpdb->escape((isset($_REQUEST['subscriber'])) ? urldecode($_REQUEST['subscriber']) : 'Subscriber');
+      $roleContributor = $wpdb->escape((isset($_REQUEST['contributor'])) ? urldecode($_REQUEST['contributor']) : 'Contributor');
+      $roleAuthor = $wpdb->escape((isset($_REQUEST['author'])) ? urldecode($_REQUEST['author']) : 'Author');
+      $roleEditor = $wpdb->escape((isset($_REQUEST['editor'])) ? urldecode($_REQUEST['editor']) : 'Editor');
+      $roleAdministrator = $wpdb->escape((isset($_REQUEST["admin"])) ? urldecode($_REQUEST["admin"]) : 'Administrator');
+      $roleSuperAdmin = $wpdb->escape((isset($_REQUEST['sadmin'])) ? urldecode($_REQUEST['sadmin']) : 'Super Admin');
       $sql = "SELECT
                 wu.id,
                 wu.display_name AS title,
@@ -223,13 +229,14 @@ if(in_array($action, $allowed_actions)) {
       break;
 
     case 'sam_ajax_load_combo_data':
-      $page = $_GET['page'];
-      $rows = $_GET['rows'];
-      $searchTerm = $_GET['searchTerm'];
-      $searchTerm = mysql_real_escape_string($searchTerm);
-      $offset = ((int)$page - 1) * (int)$rows;
+      if($validRequest !== false) {
+	      $page = $_GET['page'];
+        $rows = $_GET['rows'];
+        $searchTerm = $_GET['searchTerm'];
+        $searchTerm = $wpdb->escape($searchTerm);
+        $offset = ((int)$page - 1) * (int)$rows;
 
-      $sql = "SELECT
+        $sql = "SELECT
                 wu.id,
                 wu.display_name AS title,
                 wu.user_nicename AS slug,
@@ -239,19 +246,28 @@ if(in_array($action, $allowed_actions)) {
               WHERE wu.user_nicename LIKE '{$searchTerm}%'
               ORDER BY wu.id
               LIMIT $offset, $rows;";
-      $users = $wpdb->get_results($sql, ARRAY_A);
+        $users = $wpdb->get_results($sql, ARRAY_A);
 
-      $sql = "SELECT COUNT(*) FROM $uTable wu WHERE wu.user_nicename LIKE '{$searchTerm}%';";
-      $rTotal = $wpdb->get_var($sql);
-      $total = ceil((int)$rTotal/(int)$rows);
+        $sql = "SELECT COUNT(*) FROM $uTable wu WHERE wu.user_nicename LIKE '{$searchTerm}%';";
+        $rTotal = $wpdb->get_var($sql);
+        $total = ceil((int)$rTotal/(int)$rows);
 
-      $out = array(
-        'page' => $page,
-        'records' => count($users),
-        'rows' => $users,
-        'total' => $total,
-        'offset' => $offset
-      );
+        $out = array(
+          'page' => $page,
+          'records' => count($users),
+          'rows' => $users,
+          'total' => $total,
+          'offset' => $offset
+        );
+      }
+			else
+				$out = array(
+					'page' => 0,
+					'records' => 0,
+					'rows' => 0,
+					'total' => 0,
+					'offset' => 0
+				);
 
       break;
 

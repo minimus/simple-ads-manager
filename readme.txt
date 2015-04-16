@@ -3,8 +3,8 @@ Contributors: minimus
 Donate link: https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.com
 Tags: ad, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, yahoo, ypn
 Requires at least: 3.9
-Tested up to: 4.1
-Stable tag: 2.6.96
+Tested up to: 4.2
+Stable tag: 2.7.97
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,8 @@ No questions now...
 
 == Changelog ==
 
+= 2.7.97 =
+* SQL injection fix.
 = 2.6.96 =
 * Potential vulnerability issue was resolved.
 * Error of detecting bots and crawlers was resolved.
@@ -210,7 +212,9 @@ No questions now...
 
 == Upgrade Notice ==
 
-= 2.6.96
+= 2.7.97 =
+SQL injection fix.
+= 2.6.96 =
 Some issues with errors were resolved.
 = 2.5.94 =
 Some problems are solved.
