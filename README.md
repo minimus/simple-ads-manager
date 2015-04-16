@@ -68,6 +68,57 @@ Do not upgrade this plugin from Update page! Upgrade it from Plugins page!
 
 Change log
 ==========
+2.7.97
+* SQL injection fix.
+
+2.6.96
+* Potential vulnerability issue was resolved.
+* Error of detecting bots and crawlers was resolved.
+
+2.5.94
+* Indexes of plugin database tables were removed
+* Custom naming of classes of the plugin tags is added
+* Some minor bugs were resolved
+
+2.4.91
+* The uploading feature (user's banners without using Media Library) was removed by request of administration of wordpress.org plugins repository.
+
+2.4.90
+* The quantity of SQL of requests for each ad was reduced.
+* Indices for plugin's database tables were added.
+* Sequential loading of ads was changed to packet loading.
+* The bug of data loading into the grid is fixed.
+* Added ability to enable/disable the collection and storage of statistical data
+
+2.3.85
+* Scheduled Auto Cleaning of Statistical Data is added
+* Auto inserting is changed (more objects for auto inserting of advertisements)
+* Resolved for compatibility with TinyMCE 4
+* Images (Ads) Loader changed to standard Wordpress Loader
+* Some bugs are fixed
+
+2.2.80
+* Mailer improved
+* Bugs fixed
+
+2.1.77
+* Some minor bugs of mailer are resolved
+* The graphical representation of statistical data is improved
+* Minor bug of banners uploading is fixed
+
+2.0.74
+* Minor bug is resolved
+
+2.0.73
+* Javascript output of ads (for caching compatibility) is added
+* Custom Taxonomies restrictions are added
+* Building query for SQL request is optimised
+* Admin interface is improved
+* Loading/Selecting banners from Wordpress Media Library is added
+* Updater is fixed and improved
+* Language pack folder is added
+* bbPress support is added
+* Some bugs are fixed
 
 1.8.72
 * Javascript output of ads (for caching compatibility) is added
