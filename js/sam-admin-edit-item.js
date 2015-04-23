@@ -3,7 +3,7 @@
  */
 var sam = sam || {};
 (function ($) {
-  var media, mediaTexts = samEditorOptions.media, options = samEditorOptions.strings;
+  var media, mediaTexts = samEditorOptions.media, options = samEditorOptions.strings, iAction = samEditorOptions.action;
 
   sam.media = media = {
     buttonId: '#banner-media',
@@ -292,10 +292,12 @@ var sam = sam || {};
       id: itemId,
       sm: sMonth
     }).done(function(data) {
+      if(iAction != 'new') {
         $('#total_hits').text(data.total.hits);
         $('#total_clicks').text(data.total.clicks);
         plotData = [data.hits, data.clicks];
         plot = $.jqplot('graph', plotData, plotOptions);
+      }
     });
 
     // Advertiser ComboGrid
@@ -354,7 +356,7 @@ var sam = sam || {};
         if(el == 'tabs-3')
           if(xViewUsers.is(':visible') && w2ui['users-grid']) usersGrid.w2render('users-grid');
         if(el == 'tabs-5') {
-          if(plot) {
+          if(plot && iAction != 'new') {
             plot.destroy();
             plot = $.jqplot('graph', plotData, plotOptions);
           }
@@ -363,7 +365,7 @@ var sam = sam || {};
     });
 
     $(window).resize(function() {
-      if(plot) {
+      if(plot && iAction != 'new') {
         plot.destroy();
         plot = $.jqplot('graph', plotData, plotOptions);
       }
@@ -815,7 +817,7 @@ var sam = sam || {};
           $('#total_hits').text(data.total.hits);
           $('#total_clicks').text(data.total.clicks);
           plotData = [data.hits, data.clicks];
-          if(plot) {
+          if(plot && iAction != 'new') {
             plot.destroy();
             plot = $.jqplot('graph', plotData, plotOptions);
           }

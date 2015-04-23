@@ -57,6 +57,11 @@ $charset = $wpdb->get_var($oSql);
 send_nosniff_header();
 nocache_headers();
 
+function esc_sql( $data ) {
+	global $wpdb;
+	return $wpdb->_escape($data);
+}
+
 //A bit of security
 $allowed_actions = array(
   'sam_ajax_load_cats',
@@ -131,7 +136,7 @@ if(in_array($action, $allowed_actions)) {
       break;
 
     case 'sam_ajax_load_posts':
-      $custs = $wpdb->escape((isset($_REQUEST['cstr'])) ? $_REQUEST['cstr'] : '');
+      $custs = esc_sql((isset($_REQUEST['cstr'])) ? $_REQUEST['cstr'] : '');
       $sPost = (isset($_REQUEST['sp'])) ? urldecode( $_REQUEST['sp'] ) : 'Post';
       $sPage = (isset($_REQUEST['spg'])) ? urldecode( $_REQUEST['spg'] ) : 'Page';
 
@@ -192,12 +197,12 @@ if(in_array($action, $allowed_actions)) {
 		  break;
 
     case 'sam_ajax_load_users':
-      $roleSubscriber = $wpdb->escape((isset($_REQUEST['subscriber'])) ? urldecode($_REQUEST['subscriber']) : 'Subscriber');
-      $roleContributor = $wpdb->escape((isset($_REQUEST['contributor'])) ? urldecode($_REQUEST['contributor']) : 'Contributor');
-      $roleAuthor = $wpdb->escape((isset($_REQUEST['author'])) ? urldecode($_REQUEST['author']) : 'Author');
-      $roleEditor = $wpdb->escape((isset($_REQUEST['editor'])) ? urldecode($_REQUEST['editor']) : 'Editor');
-      $roleAdministrator = $wpdb->escape((isset($_REQUEST["admin"])) ? urldecode($_REQUEST["admin"]) : 'Administrator');
-      $roleSuperAdmin = $wpdb->escape((isset($_REQUEST['sadmin'])) ? urldecode($_REQUEST['sadmin']) : 'Super Admin');
+      $roleSubscriber = esc_sql((isset($_REQUEST['subscriber'])) ? urldecode($_REQUEST['subscriber']) : 'Subscriber');
+      $roleContributor = esc_sql((isset($_REQUEST['contributor'])) ? urldecode($_REQUEST['contributor']) : 'Contributor');
+      $roleAuthor = esc_sql((isset($_REQUEST['author'])) ? urldecode($_REQUEST['author']) : 'Author');
+      $roleEditor = esc_sql((isset($_REQUEST['editor'])) ? urldecode($_REQUEST['editor']) : 'Editor');
+      $roleAdministrator = esc_sql((isset($_REQUEST["admin"])) ? urldecode($_REQUEST["admin"]) : 'Administrator');
+      $roleSuperAdmin = esc_sql((isset($_REQUEST['sadmin'])) ? urldecode($_REQUEST['sadmin']) : 'Super Admin');
       $sql = "SELECT
                 wu.id,
                 wu.display_name AS title,
@@ -233,7 +238,7 @@ if(in_array($action, $allowed_actions)) {
 	      $page = $_GET['page'];
         $rows = $_GET['rows'];
         $searchTerm = $_GET['searchTerm'];
-        $searchTerm = $wpdb->escape($searchTerm);
+        $searchTerm = esc_sql($searchTerm);
         $offset = ((int)$page - 1) * (int)$rows;
 
         $sql = "SELECT

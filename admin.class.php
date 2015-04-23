@@ -885,6 +885,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               'superAdmin' => __('Super Admin', SAM_DOMAIN),
               'labels' => array('hits' => __('Hits', SAM_DOMAIN), 'clicks' => __('Clicks', SAM_DOMAIN))
             ),
+	          'action' => ((isset($_GET['action'])) ? $_GET['action'] : 'undefined')
           ));
         }
       }
