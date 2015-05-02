@@ -43,7 +43,7 @@ if(!class_exists('SamZoneList')) {
       $start = $offset = ( $apage - 1 ) * $places_per_page;
 
       $page_links = paginate_links( array(
-        'base' => add_query_arg( 'apage', '%#%' ),
+        'base' => esc_url(add_query_arg( 'apage', '%#%' )),
         'format' => '',
         'prev_text' => __('&laquo;'),
         'next_text' => __('&raquo;'),

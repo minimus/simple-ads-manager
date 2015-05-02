@@ -24,14 +24,14 @@
               '<div style="margin: 10px;">' +
               '<div style="margin: 10px 0;">' +
               '<aside style="float: left; width: 60px;">' +
-              '<img style="margin-right: 5px" src="'+img+'" alt="'+alt+'" />' +
+              '<img style="margin-right: 5px" src="'+img+'" alt="'+alt+'">' +
               '</aside>' +
               '<div style="padding-left: 60px"> ' +
               '<p><strong>'+options.date+'</strong>: '+eDate+'</p>'+
               '<p><strong>'+options.table+'</strong>: '+eTable+'</p>' +
               '<p><strong>'+options.etype+'</strong>: '+eType+'</p>' +
               '</div></div>' +
-                '<p><strong>'+options.msg+'</strong>:<br>'+eMsg+'</p>' +
+              '<p><strong>'+options.msg+'</strong>:<br>'+eMsg+'</p>' +
               '<p><strong>'+options.sql+'</strong>:</p>' +
               '<textarea style="width: 100%; height: 270px;" readonly>'+eSql+'</textarea> ' +
               '</div>',

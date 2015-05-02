@@ -44,7 +44,7 @@ if(!class_exists('SamErrorLog')) {
       $start = $offset = ( $apage - 1 ) * $places_per_page;
 
       $page_links = paginate_links( array(
-        'base' => add_query_arg( 'apage', '%#%' ),
+        'base' => esc_url(add_query_arg( 'apage', '%#%' )),
         'prev_text' => __('&laquo;'),
         'next_text' => __('&raquo;'),
         'total' => (integer)ceil($total / $places_per_page),

@@ -128,10 +128,10 @@ if(!class_exists('SamPlaceList')) {
           $start = $offset = ( $apage - 1 ) * $places_per_page;
 
           $page_links = paginate_links( array(
-            'base' => add_query_arg( 'apage', '%#%' ),
+            'base' => esc_url( add_query_arg( 'apage', '%#%' ) ),
             'format' => '',
-            'prev_text' => __('&laquo;'),
-            'next_text' => __('&raquo;'),
+            //'prev_text' => __('&laquo;'),
+            //'next_text' => __('&raquo;'),
             'total' => ceil($total / $places_per_page),
             'current' => $apage
           ));
@@ -161,12 +161,15 @@ if(!class_exists('SamPlaceList')) {
       <a class="button-secondary" href="<?php echo admin_url('admin.php'); ?>?page=sam-list&action=places&mode=<?php echo $mode; ?>&iaction=clear-stats"><?php _e('Reset Statistics', SAM_DOMAIN); ?></a>
     </div>
     <div class="tablenav-pages">
-      <?php $page_links_text = sprintf( '<span class="displaying-num">' . __( 'Displaying %s&#8211;%s of %s', SAM_DOMAIN ) . '</span>%s',
+      <?php
+      $page_links_text = sprintf( '<span class="displaying-num">' . __( 'Displaying %s&#8211;%s of %s', SAM_DOMAIN ) . '</span>%s',
         number_format_i18n( $start + 1 ),
         number_format_i18n( min( $apage * $places_per_page, $total ) ),
         '<span class="total-type-count">' . number_format_i18n( $total ) . '</span>',
         $page_links
-      ); echo $page_links_text; ?>
+      );
+      echo $page_links_text;
+      ?>
     </div>
   </div>
   <div class="clear"></div>
@@ -311,7 +314,7 @@ if(!class_exists('SamPlaceList')) {
           $start = $offset = ( $apage - 1 ) * $items_per_page;
 
           $page_links = paginate_links( array(
-            'base' => add_query_arg( 'apage', '%#%' ),
+            'base' => esc_url(add_query_arg( 'apage', '%#%' )),
             'format' => '',
             'prev_text' => __('&laquo;'),
             'next_text' => __('&raquo;'),
