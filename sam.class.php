@@ -74,7 +74,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '2.7.99');
+      define('SAM_VERSION', '2.7.101');
       define('SAM_DB_VERSION', '2.8');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );

@@ -275,8 +275,9 @@ if(!class_exists('SamAdPlace')) {
 
       $output = "";
 
+	    // SQL was changed. Bad way, incorrect logic, but it reflects when the cycle is exceed border values for some set of restrictions.
       $aSql = "
-SELECT
+(SELECT
   @pid := sp.id AS pid,
   0 AS aid,
   sp.name,
@@ -298,11 +299,11 @@ SELECT
   0 AS count_clicks,
   0 AS code_type,
   IF((sp.patch_source = 1 AND sp.patch_adserver) OR sp.patch_source = 2, -1, 1) AS ad_cycle,
-  @aca := IFNULL((SELECT AVG(wsa.ad_weight_hits*10/(wsa.ad_weight*$cycle)) FROM $aTable wsa WHERE wsa.pid = @pid AND wsa.trash IS NOT TRUE), 0) AS aca
+  @aca := IFNULL((SELECT AVG(sa.ad_weight_hits*10/(sa.ad_weight*$cycle)) FROM $aTable sa WHERE sa.pid = @pid AND sa.trash IS NOT TRUE AND {$whereClause} {$whereClauseT} {$whereClause2W}), 0) AS aca
 FROM {$pTable} sp
-WHERE {$pId} AND sp.trash IS FALSE
+WHERE {$pId} AND sp.trash IS FALSE)
 UNION
-SELECT
+(SELECT
   sa.pid,
   sa.id AS aid,
   sa.name,
@@ -326,7 +327,7 @@ SELECT
   IF(sa.ad_weight, (sa.ad_weight_hits*10/(sa.ad_weight*$cycle)), 0) AS ad_cycle,
   @aca AS aca
 FROM {$aTable} sa
-WHERE sa.pid = @pid AND sa.trash IS FALSE AND {$whereClause} {$whereClauseT} {$whereClauseW}
+WHERE sa.pid = @pid AND sa.trash IS FALSE AND {$whereClause} {$whereClauseT} {$whereClauseW})
 ORDER BY ad_cycle
 LIMIT 1;";
 
@@ -337,7 +338,7 @@ LIMIT 1;";
         return '';
       }
 
-      if((integer)$ad['aca'] == 1) {
+      if((integer)$ad['aca'] >= 1) {
         $wpdb->update($aTable, array('ad_weight_hits' => 0), array('pid' => $ad['pid']), array("%d"), array("%d"));
         $ad = $wpdb->get_row($aSql, ARRAY_A);
       }
