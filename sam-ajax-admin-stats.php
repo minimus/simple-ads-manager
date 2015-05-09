@@ -55,8 +55,8 @@ if(in_array($action, $allowed_actions)) {
   switch($action) {
     case 'sam_ajax_load_stats':
       if(isset($_POST['id'])) {
-        $pid = $_POST['id'];
-        $sMonth = (isset($_POST['sm'])) ? $_POST['sm'] : 0;
+        $pid = (integer)$_POST['id'];
+        $sMonth = (isset($_POST['sm'])) ? (integer)$_POST['sm'] : 0;
 
         $date = new DateTime('now');
         $si = '-'.$sMonth.' month';
@@ -99,8 +99,8 @@ if(in_array($action, $allowed_actions)) {
 
     case 'sam_ajax_load_item_stats':
       if(isset($_POST['id'])) {
-        $id = $_POST['id'];
-        $sMonth = (isset($_POST['sm'])) ? $_POST['sm'] : 0;
+        $id = (integer)$_POST['id'];
+        $sMonth = (isset($_POST['sm'])) ? (integer)$_POST['sm'] : 0;
 
         $date = new DateTime('now');
         $si = '-'.$sMonth.' month';
@@ -143,8 +143,8 @@ if(in_array($action, $allowed_actions)) {
 
     case 'sam_ajax_load_ads':
       if(isset($_POST['id'])) {
-        $id = $_POST['id'];
-        $sMonth = (isset($_POST['sm'])) ? $_POST['sm'] : 0;
+        $id = (integer)$_POST['id'];
+        $sMonth = (isset($_POST['sm'])) ? (integer)$_POST['sm'] : 0;
 
         $date = new DateTime('now');
         $si = '-'.$sMonth.' month';

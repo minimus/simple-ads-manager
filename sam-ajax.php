@@ -62,8 +62,8 @@ if(in_array($action, $allowed_actions)){
         $id = (integer) $aId[1];
       }
       elseif(isset($_POST['id'])) {
-        $id = $_POST['id'];
-        $pid = $_POST['pid'];
+        $id = (integer)$_POST['id'];
+        $pid = (integer)$_POST['pid'];
       }
       else $id = -100;
 

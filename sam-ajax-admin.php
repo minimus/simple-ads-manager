@@ -17,10 +17,12 @@ if (isset( $_REQUEST['level'] )) {
 else $root = dirname(dirname(dirname(dirname(__FILE__))));
 
 ini_set('html_errors', 0);
+$notShortInit = array('load_combo_data', 'load_users', 'load_authors');
 
 $validUri = '';
 $validRequest = false;
-if($_REQUEST['action'] !== 'load_combo_data') define('SHORTINIT', true);
+//if($_REQUEST['action'] !== 'load_combo_data') define('SHORTINIT', true);
+if( ! in_array($_REQUEST['action'], $notShortInit)) define('SHORTINIT', true);
 
 require_once( $root . '/wp-load.php' );
 
@@ -57,7 +59,7 @@ $charset = $wpdb->get_var($oSql);
 send_nosniff_header();
 nocache_headers();
 
-function esc_sql( $data ) {
+function sam_esc_sql( $data ) {
 	global $wpdb;
 	return $wpdb->_escape($data);
 }
@@ -113,7 +115,8 @@ if(in_array($action, $allowed_actions)) {
       break;
 
     case 'sam_ajax_load_authors':
-      $sql = "SELECT
+      if($validRequest !== false) {
+	      $sql = "SELECT
                 wu.id,
                 wu.display_name AS title,
                 wu.user_nicename AS slug
@@ -126,17 +129,20 @@ if(in_array($action, $allowed_actions)) {
                 wum.meta_value > 1
               ORDER BY wu.id;";
 
-      $auth = $wpdb->get_results($sql, ARRAY_A);
-      $k = 0;
-      foreach($auth as &$val) {
-        $k++;
-        $val['recid'] = $k;
+
+        $auth = $wpdb->get_results($sql, ARRAY_A);
+        $k = 0;
+        foreach($auth as &$val) {
+          $k++;
+          $val['recid'] = $k;
+        }
+        $out = $auth;
       }
-      $out = $auth;
+			else $out = array('success' => false);
       break;
 
     case 'sam_ajax_load_posts':
-      $custs = esc_sql((isset($_REQUEST['cstr'])) ? $_REQUEST['cstr'] : '');
+      $custs = sam_esc_sql((isset($_REQUEST['cstr'])) ? $_REQUEST['cstr'] : '');
       $sPost = (isset($_REQUEST['sp'])) ? urldecode( $_REQUEST['sp'] ) : 'Post';
       $sPage = (isset($_REQUEST['spg'])) ? urldecode( $_REQUEST['spg'] ) : 'Page';
 
@@ -197,13 +203,14 @@ if(in_array($action, $allowed_actions)) {
 		  break;
 
     case 'sam_ajax_load_users':
-      $roleSubscriber = esc_sql((isset($_REQUEST['subscriber'])) ? urldecode($_REQUEST['subscriber']) : 'Subscriber');
-      $roleContributor = esc_sql((isset($_REQUEST['contributor'])) ? urldecode($_REQUEST['contributor']) : 'Contributor');
-      $roleAuthor = esc_sql((isset($_REQUEST['author'])) ? urldecode($_REQUEST['author']) : 'Author');
-      $roleEditor = esc_sql((isset($_REQUEST['editor'])) ? urldecode($_REQUEST['editor']) : 'Editor');
-      $roleAdministrator = esc_sql((isset($_REQUEST["admin"])) ? urldecode($_REQUEST["admin"]) : 'Administrator');
-      $roleSuperAdmin = esc_sql((isset($_REQUEST['sadmin'])) ? urldecode($_REQUEST['sadmin']) : 'Super Admin');
-      $sql = "SELECT
+      if($validRequest !== false) {
+	      $roleSubscriber = sam_esc_sql((isset($_REQUEST['subscriber'])) ? urldecode($_REQUEST['subscriber']) : 'Subscriber');
+        $roleContributor = sam_esc_sql((isset($_REQUEST['contributor'])) ? urldecode($_REQUEST['contributor']) : 'Contributor');
+        $roleAuthor = sam_esc_sql((isset($_REQUEST['author'])) ? urldecode($_REQUEST['author']) : 'Author');
+        $roleEditor = sam_esc_sql((isset($_REQUEST['editor'])) ? urldecode($_REQUEST['editor']) : 'Editor');
+        $roleAdministrator = sam_esc_sql((isset($_REQUEST["admin"])) ? urldecode($_REQUEST["admin"]) : 'Administrator');
+        $roleSuperAdmin = sam_esc_sql((isset($_REQUEST['sadmin'])) ? urldecode($_REQUEST['sadmin']) : 'Super Admin');
+        $sql = "SELECT
                 wu.id,
                 wu.display_name AS title,
                 wu.user_nicename AS slug,
@@ -222,15 +229,17 @@ if(in_array($action, $allowed_actions)) {
               INNER JOIN $umTable wum
                 ON wu.id = wum.user_id AND wum.meta_key = '$userLevel'
               ORDER BY wu.id;";
-      $users = $wpdb->get_results($sql, ARRAY_A);
+        $users = $wpdb->get_results($sql, ARRAY_A);
 
-      $k = 0;
-      foreach($users as &$val) {
-        $k++;
-        $val['recid'] = $k;
+        $k = 0;
+        foreach($users as &$val) {
+          $k++;
+          $val['recid'] = $k;
+        }
+
+        $out = $users;
       }
-
-      $out = $users;
+			else $out = array('success' => false, 'validRequest' => $validRequest);
       break;
 
     case 'sam_ajax_load_combo_data':
@@ -238,7 +247,7 @@ if(in_array($action, $allowed_actions)) {
 	      $page = $_GET['page'];
         $rows = $_GET['rows'];
         $searchTerm = $_GET['searchTerm'];
-        $searchTerm = esc_sql($searchTerm);
+        $searchTerm = sam_esc_sql($searchTerm);
         $offset = ((int)$page - 1) * (int)$rows;
 
         $sql = "SELECT
@@ -303,7 +312,7 @@ if(in_array($action, $allowed_actions)) {
         ((isset($_POST['oe'])) ? $_POST['wa'] : 'Output Error')
       );
       if(isset($_POST['id'])) {
-        $id = $_POST['id'];
+        $id = (integer)$_POST['id'];
         $eSql = "SELECT
                   se.id,
                   se.error_date,

@@ -48,8 +48,8 @@ if(in_array($action, $allowed_actions)) {
   switch($action) {
     case 'sam_ajax_load_place':
       if(isset($_POST['id']) && isset($_POST['pid']) && isset($_POST['wc'])) {
-        $placeId = $_POST['pid'];
-        $adId = $_POST['id'];
+        $placeId = (integer)$_POST['pid'];
+        $adId = (integer)$_POST['id'];
         $clauses = unserialize(base64_decode($_POST['wc']));
         $args = array('id' => ($adId == 0) ? $placeId : $adId);
         if(isset($_POST['codes'])) $codes = (bool)($_POST['codes']);
@@ -63,7 +63,7 @@ if(in_array($action, $allowed_actions)) {
           'id' => $ad->id,
           'pid' => $ad->pid,
           'cid' => $ad->cid,
-          'clauses' => $clauses,
+          //'clauses' => $clauses,
 	        //'sql' => $ad->sql
         ));
       }

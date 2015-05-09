@@ -4,7 +4,7 @@ Donate link: https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.c
 Tags: ad, ads, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks
 Requires at least: 3.9
 Tested up to: 4.2.2
-Stable tag: 2.7.101
+Stable tag: 2.7.102
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,8 @@ No questions now...
 
 == Changelog ==
 
+= 2.7.102 =
+* Potential vulnerability issue was resolved
 = 2.7.101 =
 * Potential vulnerability of the `add_query_arg` was fixed
 * The bug known as "Disappearing Ads" was solved
@@ -218,6 +220,8 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 2.7.102 =
+Potential vulnerability issue was resolved.
 = 2.7.101 =
 The bug known as "Disappearing Ads" was solved.
 = 2.7.99 =
