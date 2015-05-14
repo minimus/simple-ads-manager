@@ -128,10 +128,10 @@ if(!class_exists('SamPlaceList')) {
           $start = $offset = ( $apage - 1 ) * $places_per_page;
 
           $page_links = paginate_links( array(
-            'base' => esc_url( add_query_arg( 'apage', '%#%' ) ),
-            'format' => '',
-            //'prev_text' => __('&laquo;'),
-            //'next_text' => __('&raquo;'),
+            'base' => admin_url('admin.php') . '?page=sam-list&apage=%#%',
+            'format' => '&apage=%#%',
+            'prev_text' => __('&laquo;'),
+            'next_text' => __('&raquo;'),
             'total' => ceil($total / $places_per_page),
             'current' => $apage
           ));
@@ -220,7 +220,7 @@ if(!class_exists('SamPlaceList')) {
           if(!is_array($places) || empty($places)) {
         ?>
       <tr class="no-items">
-        <th class="colspanchange" colspan='7'><?php _e('There are no data ...', SAM_DOMAIN).$pTable; ?></th>
+        <th class="colspanchange" colspan='7'><?php _e('There are no data ...', SAM_DOMAIN); ?></th>
       </tr>
         <?php } else {
           switch($options['currency']) {
@@ -314,8 +314,8 @@ if(!class_exists('SamPlaceList')) {
           $start = $offset = ( $apage - 1 ) * $items_per_page;
 
           $page_links = paginate_links( array(
-            'base' => esc_url(add_query_arg( 'apage', '%#%' )),
-            'format' => '',
+            'base' => admin_url('admin.php') . '?page=sam-list&apage=%#%',
+            'format' => '&apage=%#%',
             'prev_text' => __('&laquo;'),
             'next_text' => __('&raquo;'),
             'total' => ceil($total / $items_per_page),

@@ -1,10 +1,10 @@
 === Simple Ads Manager ===
 Contributors: minimus
-Donate link: https://load.payoneer.com/LoadToPage.aspx?email=minimus@simplelib.com
+Donate link: http://www.simplelib.com/archives/wordpress-plugin-simple-ads-manager/
 Tags: ad, ads, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks
 Requires at least: 3.9
 Tested up to: 4.2.2
-Stable tag: 2.7.102
+Stable tag: 2.8.0.105
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -59,7 +59,7 @@ Simple Ads Manager is easy to use plugin providing a flexible logic of displayin
 
 If you have created your own language pack, or have an update of an existing one, you can send **.po** and **.mo files** to me (minimus AT simplelib.com) so that I can bundle it into **Simple Ads Manager** plugin pack.
   
-Read more about **Simple Ads Manager** on the [plugin page](http://www.simplelib.com/?p=480)...
+Read more about **Simple Ads Manager** on the [plugin page](http://www.simplelib.com/archives/wordpress-plugin-simple-ads-manager/)...
 
 == Installation ==
 
@@ -85,6 +85,10 @@ No questions now...
 
 == Changelog ==
 
+= 2.8.0.105 =
+* The list of advertisers was added
+* The Ads Zone Editor was improved
+* The bug of pagination was resolved
 = 2.7.102 =
 * Potential vulnerability issue was resolved
 = 2.7.101 =
@@ -220,6 +224,8 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 2.8.0.105 =
+Some improvements...
 = 2.7.102 =
 Potential vulnerability issue was resolved.
 = 2.7.101 =

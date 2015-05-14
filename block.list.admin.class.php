@@ -43,8 +43,8 @@ if(!class_exists('SamBlockList')) {
       $start = $offset = ( $apage - 1 ) * $places_per_page;
 
       $page_links = paginate_links( array(
-        'base' => esc_url(add_query_arg( 'apage', '%#%' )),
-        'format' => '',
+        'base' => admin_url('admin.php') . '?page=sam-block-list&apage=%#%',
+        'format' => '&apage=%#%',
         'prev_text' => __('&laquo;'),
         'next_text' => __('&raquo;'),
         'total' => ceil($total / $places_per_page),

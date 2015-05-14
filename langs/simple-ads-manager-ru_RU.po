@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Simple Ads Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2014-12-20 20:03+0300\n"
+"POT-Creation-Date: 2015-05-14 17:09+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: minimus <minimus@blogcoding.ru>\n"
 "Language-Team: minimus <minimus@blogcoding.ru>\n"
@@ -19,7 +19,7 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;__ngettext:1,2;__ngettext_noop:1,2;__ngettext;"
 "_n:1,2;_nc:4c,1,2;esc_attr__;_en:1,2;_ex:1,2c;_x:1,2c\n"
 "X-Poedit-Basepath: .\n"
-"X-Generator: Poedit 1.7.1\n"
+"X-Generator: Poedit 1.7.6\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPath-1: ..\n"
 
@@ -107,11 +107,12 @@ msgstr "Ярлык пользовательского типа"
 msgid "Role"
 msgstr "Роль"
 
-#: ../admin.class.php:451 ../block.list.admin.class.php:88
-#: ../block.list.admin.class.php:94 ../errorlog.admin.class.php:82
-#: ../errorlog.admin.class.php:92 ../list.admin.class.php:176
-#: ../list.admin.class.php:187 ../list.admin.class.php:363
-#: ../list.admin.class.php:373 ../zone.list.admin.class.php:88
+#: ../admin.class.php:451 ../adv.list.admin.class.php:186
+#: ../adv.list.admin.class.php:194 ../block.list.admin.class.php:88
+#: ../block.list.admin.class.php:94 ../errorlog.admin.class.php:85
+#: ../errorlog.admin.class.php:95 ../list.admin.class.php:179
+#: ../list.admin.class.php:190 ../list.admin.class.php:366
+#: ../list.admin.class.php:376 ../zone.list.admin.class.php:88
 #: ../zone.list.admin.class.php:94
 msgid "ID"
 msgstr "ID"
@@ -229,23 +230,23 @@ msgstr ""
 "необходимый для доступа к меню плагина. В любом случае, доступ к меню "
 "настроек плагина имеют только Администратор и Супер Администратор."
 
-#: ../admin.class.php:564 ../admin.class.php:729 ../admin.class.php:886
+#: ../admin.class.php:564 ../admin.class.php:730 ../admin.class.php:887
 msgid "Super Admin"
 msgstr "Супер Админ"
 
-#: ../admin.class.php:564 ../admin.class.php:730 ../admin.class.php:885
+#: ../admin.class.php:564 ../admin.class.php:731 ../admin.class.php:886
 msgid "Administrator"
 msgstr "Администратор"
 
-#: ../admin.class.php:564 ../admin.class.php:731 ../admin.class.php:884
+#: ../admin.class.php:564 ../admin.class.php:732 ../admin.class.php:885
 msgid "Editor"
 msgstr "Редактор"
 
-#: ../admin.class.php:564 ../admin.class.php:732 ../admin.class.php:883
+#: ../admin.class.php:564 ../admin.class.php:733 ../admin.class.php:884
 msgid "Author"
 msgstr "Автор"
 
-#: ../admin.class.php:564 ../admin.class.php:733 ../admin.class.php:882
+#: ../admin.class.php:564 ../admin.class.php:734 ../admin.class.php:883
 msgid "Contributor"
 msgstr "Участник"
 
@@ -765,46 +766,55 @@ msgstr "Редактор рекламного блока"
 msgid "New Block"
 msgstr "Новый блок"
 
-#: ../admin.class.php:646 ../admin.class.php:1380
+#: ../admin.class.php:646
+msgid "Advertisers List"
+msgstr "Список рекламодателей"
+
+#: ../admin.class.php:646 ../adv.list.admin.class.php:46
+msgid "Advertisers"
+msgstr "Рекламодатели"
+
+#: ../admin.class.php:647 ../admin.class.php:1382
 msgid "Simple Ads Manager Settings"
 msgstr "Параметры Simple Ads Manager"
 
-#: ../admin.class.php:646
+#: ../admin.class.php:647
 msgid "Settings"
 msgstr "Параметры"
 
-#: ../admin.class.php:647
+#: ../admin.class.php:648
 msgid "Simple Ads Manager Error Log"
 msgstr "Журнал ошибок Simple Ads Manager"
 
-#: ../admin.class.php:647 ../errorlog.admin.class.php:56
+#: ../admin.class.php:648 ../errorlog.admin.class.php:57
 msgid "Error Log"
 msgstr "Журнал ошибок"
 
-#: ../admin.class.php:737 ../block.editor.admin.class.php:90
-#: ../widget.class.php:294
+#: ../admin.class.php:738 ../block.editor.admin.class.php:90
+#: ../widget.class.php:298
 msgid "Single Ad"
 msgstr "Рекламное объявление"
 
-#: ../admin.class.php:738 ../block.editor.admin.class.php:77
+#: ../admin.class.php:739 ../adv.list.admin.class.php:188
+#: ../adv.list.admin.class.php:196 ../block.editor.admin.class.php:77
 #: ../help.class.php:125 ../js/dialog.php:53 ../widget.class.php:17
 msgid "Ads Place"
 msgstr "Рекламное место"
 
-#: ../admin.class.php:739 ../block.editor.admin.class.php:103
-#: ../js/dialog-zone.php:53 ../widget.class.php:152 ../widget.class.php:157
+#: ../admin.class.php:740 ../block.editor.admin.class.php:103
+#: ../js/dialog-zone.php:53 ../widget.class.php:154 ../widget.class.php:159
 msgid "Ads Zone"
 msgstr "Рекламная зона"
 
-#: ../admin.class.php:740 ../js/dialog-block.php:53 ../widget.class.php:432
+#: ../admin.class.php:741 ../js/dialog-block.php:53 ../widget.class.php:438
 msgid "Ads Block"
 msgstr "Рекламный блок"
 
-#: ../admin.class.php:787 ../admin.class.php:864 ../editor.admin.class.php:449
+#: ../admin.class.php:788 ../admin.class.php:865 ../editor.admin.class.php:449
 msgid "Name of Ads Place"
 msgstr "Имя рекламного места"
 
-#: ../admin.class.php:787 ../admin.class.php:864
+#: ../admin.class.php:788 ../admin.class.php:865
 msgid ""
 "This is not required parameter. But it is strongly recommended to define it "
 "if you plan to use Ads Blocks, plugin's widgets or autoinserting of ads."
@@ -813,11 +823,11 @@ msgstr ""
 "если вы планируете использовать блоки рекламных объявлений, виджеты плагина "
 "или автовставку объявлений."
 
-#: ../admin.class.php:788 ../admin.class.php:865 ../editor.admin.class.php:979
+#: ../admin.class.php:789 ../admin.class.php:866 ../editor.admin.class.php:979
 msgid "Name of Ad"
 msgstr "Имя рекламного объявления"
 
-#: ../admin.class.php:788 ../admin.class.php:865 ../admin.class.php:913
+#: ../admin.class.php:789 ../admin.class.php:866 ../admin.class.php:915
 msgid ""
 "This is not required parameter. But it is strongly recommended to define it "
 "if you plan to use Ads Blocks or plugin's widgets."
@@ -826,73 +836,73 @@ msgstr ""
 "если вы планируете использовать блоки рекламных объявлений или виджеты "
 "плагина."
 
-#: ../admin.class.php:789 ../admin.class.php:866
+#: ../admin.class.php:790 ../admin.class.php:867
 msgid "Select Banner Image"
 msgstr "Выбор изображения баннера"
 
-#: ../admin.class.php:789 ../admin.class.php:866
+#: ../admin.class.php:790 ../admin.class.php:867
 msgid "Select"
 msgstr "Выбрать"
 
-#: ../admin.class.php:793 ../admin.class.php:873
+#: ../admin.class.php:794 ../admin.class.php:874
 msgid "Uploading"
 msgstr "Загружается"
 
-#: ../admin.class.php:794 ../admin.class.php:874
+#: ../admin.class.php:795 ../admin.class.php:875
 msgid "Uploaded."
 msgstr "загружен."
 
-#: ../admin.class.php:795 ../admin.class.php:875
+#: ../admin.class.php:796 ../admin.class.php:876
 msgid "Only JPG, PNG or GIF files are allowed"
 msgstr "Разрешается загрузка файлов формата JPG, PNG или GIF"
 
-#: ../admin.class.php:796 ../admin.class.php:876
+#: ../admin.class.php:797 ../admin.class.php:877
 msgid "File"
 msgstr "Файл"
 
-#: ../admin.class.php:801 ../admin.class.php:805 ../admin.class.php:887
+#: ../admin.class.php:802 ../admin.class.php:806 ../admin.class.php:888
 #: ../editor.admin.class.php:598 ../editor.admin.class.php:930
-#: ../editor.admin.class.php:1541 ../list.admin.class.php:179
-#: ../list.admin.class.php:190 ../list.admin.class.php:238
-#: ../list.admin.class.php:366 ../list.admin.class.php:376
-#: ../list.admin.class.php:430
+#: ../editor.admin.class.php:1541 ../list.admin.class.php:182
+#: ../list.admin.class.php:193 ../list.admin.class.php:241
+#: ../list.admin.class.php:369 ../list.admin.class.php:379
+#: ../list.admin.class.php:433
 msgid "Hits"
 msgstr "Показы"
 
-#: ../admin.class.php:801 ../admin.class.php:806 ../admin.class.php:887
+#: ../admin.class.php:802 ../admin.class.php:807 ../admin.class.php:888
 #: ../editor.admin.class.php:599 ../editor.admin.class.php:932
-#: ../editor.admin.class.php:1542 ../list.admin.class.php:239
-#: ../list.admin.class.php:367 ../list.admin.class.php:377
-#: ../list.admin.class.php:431
+#: ../editor.admin.class.php:1542 ../list.admin.class.php:242
+#: ../list.admin.class.php:370 ../list.admin.class.php:380
+#: ../list.admin.class.php:434
 msgid "Clicks"
 msgstr "Клики"
 
-#: ../admin.class.php:804 ../block.editor.admin.class.php:308
-#: ../editor.admin.class.php:448 ../zone.editor.admin.class.php:389
+#: ../admin.class.php:805 ../block.editor.admin.class.php:308
+#: ../editor.admin.class.php:448 ../zone.editor.admin.class.php:396
 msgid "Name"
 msgstr "Наименование"
 
-#: ../admin.class.php:879
+#: ../admin.class.php:880
 msgid "Post"
 msgstr "Статья"
 
-#: ../admin.class.php:880 ../editor.admin.class.php:1127
+#: ../admin.class.php:881 ../editor.admin.class.php:1127
 msgid "Page"
 msgstr "Страница"
 
-#: ../admin.class.php:881
+#: ../admin.class.php:882
 msgid "Subscriber"
 msgstr "Подписчик"
 
-#: ../admin.class.php:913 ../zone.editor.admin.class.php:390
+#: ../admin.class.php:915 ../zone.editor.admin.class.php:397
 msgid "Name of Ads Zone"
 msgstr "Имя рекламной зоны"
 
-#: ../admin.class.php:914 ../block.editor.admin.class.php:309
+#: ../admin.class.php:916 ../block.editor.admin.class.php:309
 msgid "Name of Ads Block"
 msgstr "Имя рекламного блока"
 
-#: ../admin.class.php:914
+#: ../admin.class.php:916
 msgid ""
 "This is not required parameter. But it is strongly recommended to define it "
 "if you plan to use plugin's widgets."
@@ -900,62 +910,62 @@ msgstr ""
 "Необязательный параметр. Однако, настоятельно рекомендуется определить его, "
 "если вы планируете использовать виджеты плагина."
 
-#: ../admin.class.php:936
+#: ../admin.class.php:938
 msgid "Error ID"
 msgstr "ID ошибки"
 
-#: ../admin.class.php:937
+#: ../admin.class.php:939
 msgid "Error Date"
 msgstr "Дата ошибки"
 
-#: ../admin.class.php:938 ../errorlog.admin.class.php:85
-#: ../errorlog.admin.class.php:95
+#: ../admin.class.php:940 ../errorlog.admin.class.php:88
+#: ../errorlog.admin.class.php:98
 msgid "Table"
 msgstr "Таблица"
 
-#: ../admin.class.php:939
+#: ../admin.class.php:941
 msgid "Error Message"
 msgstr "Сообщение об ошибке"
 
-#: ../admin.class.php:940
+#: ../admin.class.php:942
 msgid "Error SQL"
 msgstr "SQL вызвавший ошибку"
 
-#: ../admin.class.php:941 ../errorlog.admin.class.php:86
-#: ../errorlog.admin.class.php:96
+#: ../admin.class.php:943 ../errorlog.admin.class.php:89
+#: ../errorlog.admin.class.php:99
 msgid "Type"
 msgstr "Тип ошибки"
 
-#: ../admin.class.php:942
+#: ../admin.class.php:944
 msgid "Close"
 msgstr "Закрыть"
 
-#: ../admin.class.php:943
+#: ../admin.class.php:945
 msgid "Error Info"
 msgstr "Подробно"
 
-#: ../admin.class.php:945 ../admin.class.php:946
-#: ../errorlog.admin.class.php:115 ../errorlog.admin.class.php:131
+#: ../admin.class.php:947 ../admin.class.php:948
+#: ../errorlog.admin.class.php:118 ../errorlog.admin.class.php:134
 msgid "Warning"
 msgstr "Внимание"
 
-#: ../admin.class.php:945 ../errorlog.admin.class.php:135
+#: ../admin.class.php:947 ../errorlog.admin.class.php:138
 msgid "Ok"
 msgstr "Ok"
 
-#: ../admin.class.php:947 ../errorlog.admin.class.php:115
+#: ../admin.class.php:949 ../errorlog.admin.class.php:118
 msgid "Update Error"
 msgstr "Ошибка обновления"
 
-#: ../admin.class.php:948 ../errorlog.admin.class.php:115
+#: ../admin.class.php:950 ../errorlog.admin.class.php:118
 msgid "Output Error"
 msgstr "Ошибка вывода"
 
-#: ../admin.class.php:1177
+#: ../admin.class.php:1179
 msgid "There are general options."
 msgstr "Основные параметры плагина."
 
-#: ../admin.class.php:1181
+#: ../admin.class.php:1183
 msgid ""
 "Single post/page auto inserting options. Use these parameters for allowing/"
 "defining Ads Places which will be automatically inserted before/after post/"
@@ -965,37 +975,37 @@ msgstr ""
 "Используйте эти параметры для разрешения/определения рекламных мест, которые "
 "будут автоматически вставлены до/после контента статьи/страницы."
 
-#: ../admin.class.php:1189
+#: ../admin.class.php:1191
 msgid "Adjust parameters of your Google DFP account."
 msgstr "Настройте параметры вашей учётной записи Google DFP."
 
-#: ../admin.class.php:1193
+#: ../admin.class.php:1195
 msgid "Adjust parameters of plugin statistics."
 msgstr "Настройте параметры статистики плагина."
 
-#: ../admin.class.php:1197
+#: ../admin.class.php:1199
 msgid "This options define layout for Ads Managin Pages."
 msgstr ""
 "Эти параметры определяют внешний вид страниц управления рекламными "
 "объявлениями и рекламными местами."
 
-#: ../admin.class.php:1201
+#: ../admin.class.php:1203
 msgid "Are you allow to perform these actions during deactivating plugin?"
 msgstr "Вы разрешаете выполнение этих деиствий в ходе деактивации плагина?"
 
-#: ../admin.class.php:1205
+#: ../admin.class.php:1207
 msgid "Define HTML classes for plugin's output tags."
 msgstr "Определите классы HTML для вывода тегов плагина."
 
-#: ../admin.class.php:1219
+#: ../admin.class.php:1221
 msgid "Next mailing is scheduled on"
 msgstr "Следующая рассылка запланирована на"
 
-#: ../admin.class.php:1221
+#: ../admin.class.php:1223
 msgid "Adjust parameters of Mailing System."
 msgstr "Настройте параметры Системы рассылки."
 
-#: ../admin.class.php:1225
+#: ../admin.class.php:1227
 msgid ""
 "Adjust Reporting Data. Name and Description of the ad will be included to "
 "the reporting data in any case."
@@ -1003,61 +1013,61 @@ msgstr ""
 "Настройка данных отчёта. В любом случае, Имя и Описание рекламного "
 "объявления будут включены в отчёт."
 
-#: ../admin.class.php:1230
+#: ../admin.class.php:1232
 msgid "Adjust Mail Content."
 msgstr "Настройте контент письма."
 
-#: ../admin.class.php:1394
+#: ../admin.class.php:1396
 msgid "Simple Ads Manager Settings Updated."
 msgstr "Параметры Simple Ads Manager сохранены."
 
-#: ../admin.class.php:1402
+#: ../admin.class.php:1404
 msgid "System Info"
 msgstr "Системная информация"
 
-#: ../admin.class.php:1409
+#: ../admin.class.php:1411
 msgid "Wordpress Version"
 msgstr "Версия Wordpress"
 
-#: ../admin.class.php:1410
+#: ../admin.class.php:1412
 msgid "SAM Version"
 msgstr "Версия плагина"
 
-#: ../admin.class.php:1411
+#: ../admin.class.php:1413
 msgid "SAM DB Version"
 msgstr "Версия таблиц БД плагина"
 
-#: ../admin.class.php:1412
+#: ../admin.class.php:1414
 msgid "PHP Version"
 msgstr "Версия PHP"
 
-#: ../admin.class.php:1413
+#: ../admin.class.php:1415
 msgid "MySQL Version"
 msgstr "Версия MySQL"
 
-#: ../admin.class.php:1414
+#: ../admin.class.php:1416
 msgid "Memory Limit"
 msgstr "Лимит памяти"
 
-#: ../admin.class.php:1418
+#: ../admin.class.php:1420
 msgid "Note! If you have detected a bug, include this data to bug report."
 msgstr ""
 "Обратите внимание! Если вы обнаружили ошибку, не забудьте включить эти "
 "данные в отчет об ошибке."
 
-#: ../admin.class.php:1423
+#: ../admin.class.php:1425
 msgid "Resources"
 msgstr "Ресурсы"
 
-#: ../admin.class.php:1426
+#: ../admin.class.php:1428
 msgid "Wordpress Plugin Page"
 msgstr "Страница плагина на Wordpress"
 
-#: ../admin.class.php:1427
+#: ../admin.class.php:1429
 msgid "Author Plugin Page"
 msgstr "Страница плагина"
 
-#: ../admin.class.php:1428 ../help.class.php:34 ../help.class.php:51
+#: ../admin.class.php:1430 ../help.class.php:34 ../help.class.php:51
 #: ../help.class.php:58 ../help.class.php:72 ../help.class.php:105
 #: ../help.class.php:113 ../help.class.php:124 ../help.class.php:141
 #: ../help.class.php:150 ../help.class.php:166 ../help.class.php:182
@@ -1065,15 +1075,15 @@ msgstr "Страница плагина"
 msgid "Support Forum"
 msgstr "Форум поддержки"
 
-#: ../admin.class.php:1429
+#: ../admin.class.php:1431
 msgid "Author's Blog"
 msgstr "Блог автора"
 
-#: ../admin.class.php:1434
+#: ../admin.class.php:1436
 msgid "Donations"
 msgstr "Пожертвования"
 
-#: ../admin.class.php:1446
+#: ../admin.class.php:1448
 #, php-format
 msgid ""
 "If you have found this plugin useful, please consider making a %s to help "
@@ -1083,28 +1093,28 @@ msgstr ""
 "%s, чтобы поддержать дальнейшие работы по разработке плагина. Ваша поддержка "
 "будет оценена по достоинству. Спасибо!"
 
-#: ../admin.class.php:1447
+#: ../admin.class.php:1449
 msgid "Donate Now!"
 msgstr "Пожертвовать!"
 
-#: ../admin.class.php:1447
+#: ../admin.class.php:1449
 msgid "donation"
 msgstr "пожертвование"
 
-#: ../admin.class.php:1465
+#: ../admin.class.php:1467
 msgid "Another Plugins"
 msgstr "Другие плагины"
 
-#: ../admin.class.php:1469
+#: ../admin.class.php:1471
 #, php-format
 msgid "Another plugins from %s"
 msgstr "Другие плагины от %s'а"
 
-#: ../admin.class.php:1475
+#: ../admin.class.php:1477
 msgid "Highlights any portion of text as text in the colored boxes."
 msgstr "Подсветка любой части текста в виде текста в цветной рамке."
 
-#: ../admin.class.php:1476
+#: ../admin.class.php:1478
 msgid ""
 "Adds simple counters badge (FeedBurner subscribers and Twitter followers) to "
 "your blog."
@@ -1112,24 +1122,166 @@ msgstr ""
 "Добавляет бейджик счётчиков (подписчики Feedburner и последователи Twitter) "
 "на все страницы блога."
 
-#: ../admin.class.php:1477
+#: ../admin.class.php:1479
 msgid "This plugin is WordPress shell for FloatBox library by Byron McGregor."
 msgstr "Wordpress оболочка для плагина FloatBox от Байрона МакГрегора."
 
-#: ../admin.class.php:1478
+#: ../admin.class.php:1480
 msgid "Adds copyright notice to the end of each post of your blog. "
 msgstr ""
 "Добавляет строку уведомления об авторском праве в конец каждой статьи блога."
 
-#: ../admin.class.php:1495
+#: ../admin.class.php:1497
 msgctxt "Copyright String"
 msgid "Simple Ads Manager plugin for Wordpress."
 msgstr "Wordpress плагин Simple Ads Manager"
 
-#: ../admin.class.php:1495
+#: ../admin.class.php:1497
 msgctxt "Copyright String"
 msgid "All rights reserved."
 msgstr "Все права защищены."
+
+#: ../adv.list.admin.class.php:39 ../adv.list.admin.class.php:153
+#: ../block.list.admin.class.php:48 ../errorlog.admin.class.php:49
+#: ../list.admin.class.php:133 ../list.admin.class.php:319
+#: ../zone.list.admin.class.php:48
+msgid "&laquo;"
+msgstr "&laquo;"
+
+#: ../adv.list.admin.class.php:40 ../adv.list.admin.class.php:154
+#: ../block.list.admin.class.php:49 ../errorlog.admin.class.php:50
+#: ../list.admin.class.php:134 ../list.admin.class.php:320
+#: ../zone.list.admin.class.php:49
+msgid "&raquo;"
+msgstr "&raquo;"
+
+#: ../adv.list.admin.class.php:51 ../adv.list.admin.class.php:122
+#: ../adv.list.admin.class.php:172 ../adv.list.admin.class.php:251
+#: ../block.list.admin.class.php:76 ../block.list.admin.class.php:150
+#: ../errorlog.admin.class.php:72 ../errorlog.admin.class.php:175
+#: ../list.admin.class.php:165 ../list.admin.class.php:287
+#: ../list.admin.class.php:352 ../list.admin.class.php:472
+#: ../zone.list.admin.class.php:76 ../zone.list.admin.class.php:150
+#, php-format
+msgid "Displaying %s&#8211;%s of %s"
+msgstr "Показано %s&#8211;%s из %s"
+
+#: ../adv.list.admin.class.php:66 ../adv.list.admin.class.php:76
+msgid "Nick Name"
+msgstr "Ник рекламодателя"
+
+#: ../adv.list.admin.class.php:68 ../adv.list.admin.class.php:78
+msgctxt "User Name"
+msgid "Name"
+msgstr "Имя"
+
+#: ../adv.list.admin.class.php:70 ../adv.list.admin.class.php:80
+msgctxt "User Ads"
+msgid "Ads"
+msgstr "Объявления"
+
+#: ../adv.list.admin.class.php:89 ../adv.list.admin.class.php:218
+#: ../block.list.admin.class.php:113 ../errorlog.admin.class.php:123
+#: ../list.admin.class.php:223 ../list.admin.class.php:412
+#: ../zone.list.admin.class.php:113
+msgid "There are no data ..."
+msgstr "Нет данных для показа ..."
+
+#: ../adv.list.admin.class.php:103
+msgid "View List of Ads"
+msgstr "Посмотреть список объявлений"
+
+#: ../adv.list.admin.class.php:103 ../list.admin.class.php:261
+msgid "View Ads"
+msgstr "Объявления"
+
+#: ../adv.list.admin.class.php:104
+msgid "Send Report"
+msgstr "Отправить отчет"
+
+#: ../adv.list.admin.class.php:160
+msgid "Ads associated with the advertiser "
+msgstr "Объявления, связанные с рекламодателем "
+
+#: ../adv.list.admin.class.php:162 ../block.list.admin.class.php:63
+#: ../errorlog.admin.class.php:59 ../list.admin.class.php:148
+#: ../list.admin.class.php:334 ../zone.list.admin.class.php:63
+msgid "All"
+msgstr "Все"
+
+#: ../adv.list.admin.class.php:163 ../block.list.admin.class.php:64
+#: ../errorlog.admin.class.php:60 ../list.admin.class.php:149
+#: ../list.admin.class.php:335 ../zone.list.admin.class.php:64
+msgid "Active"
+msgstr "Активные"
+
+#: ../adv.list.admin.class.php:164 ../block.list.admin.class.php:65
+#: ../list.admin.class.php:150 ../list.admin.class.php:336
+#: ../zone.list.admin.class.php:65
+msgid "Trash"
+msgstr "Корзина"
+
+#: ../adv.list.admin.class.php:168 ../adv.list.admin.class.php:247
+msgid "Back to Advertisers List"
+msgstr "Вернуться к списку рекламодателей"
+
+#: ../adv.list.admin.class.php:187 ../adv.list.admin.class.php:195
+#: ../help.class.php:151 ../list.admin.class.php:367
+#: ../list.admin.class.php:377
+msgid "Advertisement"
+msgstr "Рекламное объявление"
+
+#: ../adv.list.admin.class.php:189 ../adv.list.admin.class.php:197
+#: ../editor.admin.class.php:408 ../editor.admin.class.php:936
+#: ../list.admin.class.php:181 ../list.admin.class.php:192
+msgid "Size"
+msgstr "Размеры"
+
+#: ../adv.list.admin.class.php:226 ../block.list.admin.class.php:121
+#: ../list.admin.class.php:248 ../list.admin.class.php:440
+#: ../zone.list.admin.class.php:121
+msgid "in Trash"
+msgstr "в корзине"
+
+#: ../adv.list.admin.class.php:228 ../list.admin.class.php:442
+msgid "Edit this Item of Ads Place"
+msgstr "Изменить этот элемент рекламного места"
+
+#: ../adv.list.admin.class.php:228 ../block.list.admin.class.php:123
+#: ../list.admin.class.php:250 ../list.admin.class.php:442
+#: ../zone.list.admin.class.php:123
+msgid "Edit"
+msgstr "Изменить"
+
+#: ../adv.list.admin.class.php:232 ../list.admin.class.php:446
+msgid "Restore this Ad from the Trash"
+msgstr "Восстановить это объявление из корзины"
+
+#: ../adv.list.admin.class.php:232 ../block.list.admin.class.php:127
+#: ../list.admin.class.php:254 ../list.admin.class.php:446
+#: ../zone.list.admin.class.php:127
+msgid "Restore"
+msgstr "Восстановить"
+
+#: ../adv.list.admin.class.php:233 ../list.admin.class.php:447
+msgid "Remove this Ad permanently"
+msgstr "Удалить это рекламное объявление навсегда"
+
+#: ../adv.list.admin.class.php:233 ../block.list.admin.class.php:128
+#: ../errorlog.admin.class.php:154 ../list.admin.class.php:255
+#: ../list.admin.class.php:447 ../zone.list.admin.class.php:128
+msgid "Remove permanently"
+msgstr "Удалить навсегда"
+
+#: ../adv.list.admin.class.php:234 ../list.admin.class.php:448
+msgid "Move this item to the Trash"
+msgstr "Поместить этот элемент в корзину"
+
+#: ../adv.list.admin.class.php:234 ../block.list.admin.class.php:133
+#: ../list.admin.class.php:260 ../list.admin.class.php:448
+#: ../zone.list.admin.class.php:133
+msgid "Delete"
+msgstr "Удалить"
 
 #: ../block.editor.admin.class.php:73 ../block.editor.admin.class.php:253
 #: ../block.editor.admin.class.php:314 ../block.editor.admin.class.php:328
@@ -1142,8 +1294,8 @@ msgstr "Все права защищены."
 #: ../editor.admin.class.php:1078 ../editor.admin.class.php:1178
 #: ../editor.admin.class.php:1423 ../editor.admin.class.php:1470
 #: ../editor.admin.class.php:1490 ../editor.admin.class.php:1551
-#: ../zone.editor.admin.class.php:334 ../zone.editor.admin.class.php:395
-#: ../zone.editor.admin.class.php:409
+#: ../zone.editor.admin.class.php:341 ../zone.editor.admin.class.php:402
+#: ../zone.editor.admin.class.php:416
 msgid "Click to toggle"
 msgstr "Кликнуть для переключения"
 
@@ -1163,8 +1315,8 @@ msgstr "Не выбрано"
 #: ../editor.admin.class.php:375 ../editor.admin.class.php:716
 #: ../editor.admin.class.php:817 ../editor.admin.class.php:885
 #: ../editor.admin.class.php:886 ../editor.admin.class.php:887
-#: ../zone.editor.admin.class.php:172 ../zone.editor.admin.class.php:290
-#: ../zone.editor.admin.class.php:324
+#: ../zone.editor.admin.class.php:179 ../zone.editor.admin.class.php:297
+#: ../zone.editor.admin.class.php:331
 msgid "Undefined"
 msgstr "Не определено"
 
@@ -1181,8 +1333,8 @@ msgid "Edit Ads Block"
 msgstr "Изменить рекламный блок"
 
 #: ../block.editor.admin.class.php:254 ../editor.admin.class.php:386
-#: ../editor.admin.class.php:905 ../errorlog.admin.class.php:83
-#: ../errorlog.admin.class.php:93 ../zone.editor.admin.class.php:335
+#: ../editor.admin.class.php:905 ../errorlog.admin.class.php:86
+#: ../errorlog.admin.class.php:96 ../zone.editor.admin.class.php:342
 msgid "Status"
 msgstr "Статус"
 
@@ -1195,12 +1347,12 @@ msgid "Ads Block ID"
 msgstr "ID рекламного блока"
 
 #: ../block.editor.admin.class.php:276 ../editor.admin.class.php:416
-#: ../zone.editor.admin.class.php:357
+#: ../zone.editor.admin.class.php:364
 msgid "Is Active"
 msgstr "Активно"
 
 #: ../block.editor.admin.class.php:277 ../editor.admin.class.php:417
-#: ../editor.admin.class.php:947 ../zone.editor.admin.class.php:358
+#: ../editor.admin.class.php:947 ../zone.editor.admin.class.php:365
 msgid "Is In Trash"
 msgstr "В корзине"
 
@@ -1208,27 +1360,27 @@ msgstr "В корзине"
 #: ../editor.admin.class.php:424 ../editor.admin.class.php:429
 #: ../editor.admin.class.php:954 ../editor.admin.class.php:959
 #: ../js/dialog-ad.php:94 ../js/dialog-block.php:84 ../js/dialog-zone.php:94
-#: ../js/dialog.php:94 ../zone.editor.admin.class.php:365
-#: ../zone.editor.admin.class.php:371
+#: ../js/dialog.php:94 ../zone.editor.admin.class.php:372
+#: ../zone.editor.admin.class.php:378
 msgid "Cancel"
 msgstr "Отмена"
 
 #: ../block.editor.admin.class.php:293 ../block.editor.admin.class.php:295
 #: ../editor.admin.class.php:433 ../editor.admin.class.php:435
 #: ../editor.admin.class.php:963 ../editor.admin.class.php:965
-#: ../zone.editor.admin.class.php:368 ../zone.editor.admin.class.php:375
+#: ../zone.editor.admin.class.php:375 ../zone.editor.admin.class.php:382
 msgid "Save"
 msgstr "Сохранить"
 
 #: ../block.editor.admin.class.php:309 ../editor.admin.class.php:979
-#: ../zone.editor.admin.class.php:390
+#: ../zone.editor.admin.class.php:397
 msgid "Required for SAM widgets."
 msgstr "Требуется для виджетов плагина."
 
 #: ../block.editor.admin.class.php:315 ../block.editor.admin.class.php:319
 #: ../editor.admin.class.php:455 ../editor.admin.class.php:459
-#: ../editor.admin.class.php:988 ../zone.editor.admin.class.php:396
-#: ../zone.editor.admin.class.php:400
+#: ../editor.admin.class.php:988 ../zone.editor.admin.class.php:403
+#: ../zone.editor.admin.class.php:407
 msgid "Description"
 msgstr "Описание"
 
@@ -1237,7 +1389,7 @@ msgid "Enter description of this Ads Block."
 msgstr "Введите описание для этого рекламного блока."
 
 #: ../block.editor.admin.class.php:322 ../editor.admin.class.php:462
-#: ../editor.admin.class.php:992 ../zone.editor.admin.class.php:403
+#: ../editor.admin.class.php:992 ../zone.editor.admin.class.php:410
 msgid ""
 "This description is not used anywhere and is added solely for the "
 "convenience of managing advertisements."
@@ -1342,42 +1494,13 @@ msgstr "Настройте элементы для этого рекламног
 msgid "Block Editor."
 msgstr "Редактор рекламного блока."
 
-#: ../block.list.admin.class.php:48 ../errorlog.admin.class.php:48
-#: ../list.admin.class.php:133 ../list.admin.class.php:316
-#: ../zone.list.admin.class.php:48
-msgid "&laquo;"
-msgstr "&laquo;"
-
-#: ../block.list.admin.class.php:49 ../errorlog.admin.class.php:49
-#: ../list.admin.class.php:134 ../list.admin.class.php:317
-#: ../zone.list.admin.class.php:49
-msgid "&raquo;"
-msgstr "&raquo;"
-
 #: ../block.list.admin.class.php:56
 msgid "Managing Ads Blocks"
 msgstr "Управление рекламными блоками"
 
-#: ../block.list.admin.class.php:63 ../errorlog.admin.class.php:58
-#: ../list.admin.class.php:148 ../list.admin.class.php:331
-#: ../zone.list.admin.class.php:63
-msgid "All"
-msgstr "Все"
-
-#: ../block.list.admin.class.php:64 ../errorlog.admin.class.php:59
-#: ../list.admin.class.php:149 ../list.admin.class.php:332
-#: ../zone.list.admin.class.php:64
-msgid "Active"
-msgstr "Активные"
-
-#: ../block.list.admin.class.php:65 ../list.admin.class.php:150
-#: ../list.admin.class.php:333 ../zone.list.admin.class.php:65
-msgid "Trash"
-msgstr "Корзина"
-
 #: ../block.list.admin.class.php:70 ../block.list.admin.class.php:144
-#: ../list.admin.class.php:155 ../list.admin.class.php:275
-#: ../list.admin.class.php:339 ../list.admin.class.php:460
+#: ../list.admin.class.php:155 ../list.admin.class.php:278
+#: ../list.admin.class.php:342 ../list.admin.class.php:463
 #: ../zone.list.admin.class.php:70 ../zone.list.admin.class.php:144
 msgid "Clear Trash"
 msgstr "Очистить корзину"
@@ -1386,66 +1509,25 @@ msgstr "Очистить корзину"
 msgid "Add New Block"
 msgstr "Добавить новый блок"
 
-#: ../block.list.admin.class.php:76 ../block.list.admin.class.php:150
-#: ../errorlog.admin.class.php:70 ../errorlog.admin.class.php:172
-#: ../list.admin.class.php:164 ../list.admin.class.php:284
-#: ../list.admin.class.php:349 ../list.admin.class.php:469
-#: ../zone.list.admin.class.php:76 ../zone.list.admin.class.php:150
-#, php-format
-msgid "Displaying %s&#8211;%s of %s"
-msgstr "Показано %s&#8211;%s из %s"
-
 #: ../block.list.admin.class.php:89 ../block.list.admin.class.php:95
 msgid "Block Name"
 msgstr "Имя блока"
-
-#: ../block.list.admin.class.php:113 ../errorlog.admin.class.php:120
-#: ../list.admin.class.php:220 ../list.admin.class.php:409
-#: ../zone.list.admin.class.php:113
-msgid "There are no data ..."
-msgstr "Нет данных для показа ..."
-
-#: ../block.list.admin.class.php:121 ../list.admin.class.php:245
-#: ../list.admin.class.php:437 ../zone.list.admin.class.php:121
-msgid "in Trash"
-msgstr "в корзине"
 
 #: ../block.list.admin.class.php:123
 msgid "Edit Block"
 msgstr "Изменить рекламный блок"
 
-#: ../block.list.admin.class.php:123 ../list.admin.class.php:247
-#: ../list.admin.class.php:439 ../zone.list.admin.class.php:123
-msgid "Edit"
-msgstr "Изменить"
-
 #: ../block.list.admin.class.php:127
 msgid "Restore this Block from the Trash"
 msgstr "Восстановить этот блок из корзины"
-
-#: ../block.list.admin.class.php:127 ../list.admin.class.php:251
-#: ../list.admin.class.php:443 ../zone.list.admin.class.php:127
-msgid "Restore"
-msgstr "Восстановить"
 
 #: ../block.list.admin.class.php:128
 msgid "Remove this Block permanently"
 msgstr "Удалить этот рекламный блок навсегда"
 
-#: ../block.list.admin.class.php:128 ../errorlog.admin.class.php:151
-#: ../list.admin.class.php:252 ../list.admin.class.php:444
-#: ../zone.list.admin.class.php:128
-msgid "Remove permanently"
-msgstr "Удалить навсегда"
-
 #: ../block.list.admin.class.php:133
 msgid "Move this Block to the Trash"
 msgstr "Поместить этот блок в корзину"
-
-#: ../block.list.admin.class.php:133 ../list.admin.class.php:257
-#: ../list.admin.class.php:445 ../zone.list.admin.class.php:133
-msgid "Delete"
-msgstr "Удалить"
 
 #: ../editor.admin.class.php:71 ../editor.admin.class.php:191
 #: ../list.admin.class.php:23
@@ -1736,7 +1818,7 @@ msgstr ""
 msgid "Select File"
 msgstr "Выберите файл"
 
-#: ../editor.admin.class.php:266
+#: ../editor.admin.class.php:266 ../sam.list.table.class.php:448
 msgid "Apply"
 msgstr "Применить"
 
@@ -1763,11 +1845,6 @@ msgstr "Назад, к списку мест"
 #: ../editor.admin.class.php:402 ../js/dialog.php:71
 msgid "Ads Place ID"
 msgstr "ID рекламного места"
-
-#: ../editor.admin.class.php:408 ../editor.admin.class.php:936
-#: ../list.admin.class.php:178 ../list.admin.class.php:189
-msgid "Size"
-msgstr "Размеры"
 
 #: ../editor.admin.class.php:410 ../editor.admin.class.php:938
 msgid "Width"
@@ -1933,7 +2010,7 @@ msgid "Previous Month"
 msgstr "Предыдущий месяц"
 
 #: ../editor.admin.class.php:597 ../editor.admin.class.php:1540
-#: ../list.admin.class.php:240 ../list.admin.class.php:432
+#: ../list.admin.class.php:243 ../list.admin.class.php:435
 msgid "Total"
 msgstr "Всего"
 
@@ -1961,8 +2038,8 @@ msgstr "Назад, к списку объявлений"
 msgid "Advertisement ID"
 msgstr "ID объявления"
 
-#: ../editor.admin.class.php:928 ../list.admin.class.php:365
-#: ../list.admin.class.php:375
+#: ../editor.admin.class.php:928 ../list.admin.class.php:368
+#: ../list.admin.class.php:378
 msgid "Activity"
 msgstr "Активность"
 
@@ -2526,40 +2603,40 @@ msgstr ""
 msgid "Ad Preview"
 msgstr "Предварительный просмотр объявления"
 
-#: ../errorlog.admin.class.php:60 ../errorlog.admin.class.php:144
-#: ../errorlog.admin.class.php:156
+#: ../errorlog.admin.class.php:61 ../errorlog.admin.class.php:147
+#: ../errorlog.admin.class.php:159
 msgid "Resolved"
 msgstr "Исправлено"
 
-#: ../errorlog.admin.class.php:64 ../errorlog.admin.class.php:166
+#: ../errorlog.admin.class.php:65 ../errorlog.admin.class.php:169
 msgid "Clear Error Log"
 msgstr "Очистить журнал ошибок"
 
-#: ../errorlog.admin.class.php:67 ../errorlog.admin.class.php:169
+#: ../errorlog.admin.class.php:68 ../errorlog.admin.class.php:172
 msgid "Clear Resolved"
 msgstr "Очистить исправленные"
 
-#: ../errorlog.admin.class.php:84 ../errorlog.admin.class.php:94
+#: ../errorlog.admin.class.php:87 ../errorlog.admin.class.php:97
 msgid "Date"
 msgstr "Дата"
 
-#: ../errorlog.admin.class.php:87 ../errorlog.admin.class.php:97
+#: ../errorlog.admin.class.php:90 ../errorlog.admin.class.php:100
 msgid "Error Massage"
 msgstr "Сообщение об ошибке"
 
-#: ../errorlog.admin.class.php:146
+#: ../errorlog.admin.class.php:149
 msgid "More Info"
 msgstr "Подробнее"
 
-#: ../errorlog.admin.class.php:150
+#: ../errorlog.admin.class.php:153
 msgid "Restore this Error"
 msgstr "Восстановить эту ошибку"
 
-#: ../errorlog.admin.class.php:150
+#: ../errorlog.admin.class.php:153
 msgid "Not Resolved"
 msgstr "Не исправлено"
 
-#: ../errorlog.admin.class.php:156
+#: ../errorlog.admin.class.php:159
 msgid "Move to Trash"
 msgstr "Поместить в корзину"
 
@@ -2924,11 +3001,6 @@ msgstr ""
 "ограничения показа, от “показывать на всех страницах” до “показывать в "
 "статьях с ID …” и показывать с … по (расписание)."
 
-#: ../help.class.php:151 ../list.admin.class.php:364
-#: ../list.admin.class.php:374
-msgid "Advertisement"
-msgstr "Рекламное объявление"
-
 #: ../help.class.php:172
 msgid "<strong>Additional restrictions</strong>"
 msgstr "<strong>Доплнительные ограничения</strong>"
@@ -2946,7 +3018,7 @@ msgstr "Вставить рекламное объявление"
 msgid "Basic Settings"
 msgstr "Основные параметры"
 
-#: ../js/dialog-ad.php:53 ../widget.class.php:289
+#: ../js/dialog-ad.php:53 ../widget.class.php:293
 msgid "Ad"
 msgstr "Рекламное объявление"
 
@@ -2979,7 +3051,7 @@ msgstr "Имя блока"
 msgid "Insert Ads Zone"
 msgstr "Вставить рекламную зону"
 
-#: ../js/dialog-zone.php:71 ../zone.editor.admin.class.php:351
+#: ../js/dialog-zone.php:71 ../zone.editor.admin.class.php:358
 msgid "Ads Zone ID"
 msgstr "ID рекламноой зоны"
 
@@ -2999,106 +3071,167 @@ msgstr "Имя места"
 msgid "Managing Ads Places"
 msgstr "Управление рекламными местами"
 
-#: ../list.admin.class.php:157 ../list.admin.class.php:277
+#: ../list.admin.class.php:157 ../list.admin.class.php:280
 msgid "Add New Place"
 msgstr "Добавить новое место"
 
-#: ../list.admin.class.php:161 ../list.admin.class.php:281
+#: ../list.admin.class.php:161 ../list.admin.class.php:284
 msgid "Reset Statistics"
 msgstr "Очистить статистику"
 
-#: ../list.admin.class.php:177 ../list.admin.class.php:188
+#: ../list.admin.class.php:180 ../list.admin.class.php:191
 msgid "Place Name"
 msgstr "Имя места"
 
-#: ../list.admin.class.php:180 ../list.admin.class.php:191
+#: ../list.admin.class.php:183 ../list.admin.class.php:194
 msgid "Total Hits"
 msgstr "Всего показов"
 
-#: ../list.admin.class.php:181 ../list.admin.class.php:192
+#: ../list.admin.class.php:184 ../list.admin.class.php:195
 msgid "Total Ads"
 msgstr "Объявлений"
 
-#: ../list.admin.class.php:182 ../list.admin.class.php:193
-#: ../list.admin.class.php:368 ../list.admin.class.php:378
+#: ../list.admin.class.php:185 ../list.admin.class.php:196
+#: ../list.admin.class.php:371 ../list.admin.class.php:381
 msgid "Earnings"
 msgstr "Доходы"
 
-#: ../list.admin.class.php:237 ../list.admin.class.php:429
+#: ../list.admin.class.php:240 ../list.admin.class.php:432
 msgid "Placement"
 msgstr "Размещение"
 
-#: ../list.admin.class.php:240 ../list.admin.class.php:432
+#: ../list.admin.class.php:243 ../list.admin.class.php:435
 msgid "N/A"
 msgstr "Нет"
 
-#: ../list.admin.class.php:247
+#: ../list.admin.class.php:250
 msgid "Edit Place"
 msgstr "Изменить рекламное место"
 
-#: ../list.admin.class.php:251
+#: ../list.admin.class.php:254
 msgid "Restore this Place from the Trash"
 msgstr "Восстановить это место из корзины"
 
-#: ../list.admin.class.php:252
+#: ../list.admin.class.php:255
 msgid "Remove this Place permanently"
 msgstr "Удалить это рекламное место навсегда"
 
-#: ../list.admin.class.php:257
+#: ../list.admin.class.php:260
 msgid "Move this Place to the Trash"
 msgstr "Поместить это место в корзину"
 
-#: ../list.admin.class.php:258
+#: ../list.admin.class.php:261
 msgid "View List of Place Ads"
 msgstr "Показать список рекламных мест"
 
-#: ../list.admin.class.php:258
-msgid "View Ads"
-msgstr "Объявления"
-
-#: ../list.admin.class.php:259
+#: ../list.admin.class.php:262
 msgid "Create New Ad"
 msgstr "Создать новое объявление"
 
-#: ../list.admin.class.php:259
+#: ../list.admin.class.php:262
 msgid "New Ad"
 msgstr "Новое объявление"
 
-#: ../list.admin.class.php:324
+#: ../list.admin.class.php:327
 msgid "Managing Items of Ads Place"
 msgstr "Управление объявлениями рекламного места"
 
-#: ../list.admin.class.php:341 ../list.admin.class.php:462
+#: ../list.admin.class.php:344 ../list.admin.class.php:465
 msgid "Add New Ad"
 msgstr "Добавить новое рекламное объявление"
 
-#: ../list.admin.class.php:345 ../list.admin.class.php:466
+#: ../list.admin.class.php:348 ../list.admin.class.php:469
 msgid "Back to Ads Places Management"
 msgstr "Назад, к списку мест"
 
-#: ../list.admin.class.php:423
+#: ../list.admin.class.php:426
 msgid "Yes"
 msgstr "Да"
 
-#: ../list.admin.class.php:424
+#: ../list.admin.class.php:427
 msgid "No"
 msgstr "Нет"
 
-#: ../list.admin.class.php:439
-msgid "Edit this Item of Ads Place"
-msgstr "Изменить этот элемент рекламного места"
+#: ../sam.list.table.class.php:142
+msgid "List View"
+msgstr ""
 
-#: ../list.admin.class.php:443
-msgid "Restore this Ad from the Trash"
-msgstr "Восстановить это объявление из корзины"
+#: ../sam.list.table.class.php:143
+msgid "Excerpt View"
+msgstr ""
 
-#: ../list.admin.class.php:444
-msgid "Remove this Ad permanently"
-msgstr "Удалить это рекламное объявление навсегда"
+#: ../sam.list.table.class.php:310
+msgid "No items found."
+msgstr ""
 
-#: ../list.admin.class.php:445
-msgid "Move this item to the Trash"
-msgstr "Поместить этот элемент в корзину"
+#: ../sam.list.table.class.php:436
+msgid "Select bulk action"
+msgstr ""
+
+#: ../sam.list.table.class.php:438
+msgid "Bulk Actions"
+msgstr ""
+
+#: ../sam.list.table.class.php:548
+msgid "Filter by date"
+msgstr ""
+
+#: ../sam.list.table.class.php:550
+msgid "All dates"
+msgstr ""
+
+#. translators: 1: month name, 2: 4-digit year
+#: ../sam.list.table.class.php:563
+#, php-format
+msgid "%1$s %2$d"
+msgstr ""
+
+#: ../sam.list.table.class.php:610
+#, php-format
+msgid "%s pending"
+msgstr ""
+
+#: ../sam.list.table.class.php:689 ../sam.list.table.class.php:1113
+#, php-format
+msgid "1 item"
+msgid_plural "%s items"
+msgstr[0] ""
+msgstr[1] ""
+msgstr[2] ""
+
+#: ../sam.list.table.class.php:708
+msgid "Go to the first page"
+msgstr ""
+
+#: ../sam.list.table.class.php:715
+msgid "Go to the previous page"
+msgstr ""
+
+#: ../sam.list.table.class.php:724
+msgid "Select Page"
+msgstr ""
+
+#: ../sam.list.table.class.php:725
+msgid "Current page"
+msgstr ""
+
+#: ../sam.list.table.class.php:731
+#, php-format
+msgctxt "paging"
+msgid "%1$s of %2$s"
+msgstr ""
+
+#: ../sam.list.table.class.php:735
+msgid "Go to the next page"
+msgstr ""
+
+#: ../sam.list.table.class.php:742
+msgid "Go to the last page"
+msgstr ""
+
+#: ../sam.list.table.class.php:879
+msgid "Select All"
+msgstr ""
 
 #: ../sam.tools.php:44
 msgid "Mails were sent..."
@@ -3152,40 +3285,40 @@ msgid "Ads Place rotator serviced by Simple Ads Manager."
 msgstr ""
 "Ротатор рекламных объявлений, обслуживаемый плагином Simple Ads Manager."
 
-#: ../widget.class.php:102 ../widget.class.php:239 ../widget.class.php:377
-#: ../widget.class.php:513
+#: ../widget.class.php:104 ../widget.class.php:243 ../widget.class.php:383
+#: ../widget.class.php:521
 msgid "Title:"
 msgstr "Заголовок:"
 
-#: ../widget.class.php:125 ../widget.class.php:262 ../widget.class.php:400
-#: ../widget.class.php:536
+#: ../widget.class.php:127 ../widget.class.php:266 ../widget.class.php:406
+#: ../widget.class.php:544
 msgid "Hide widget style."
 msgstr "Скрывать стиль виджета."
 
-#: ../widget.class.php:134 ../widget.class.php:271 ../widget.class.php:409
+#: ../widget.class.php:136 ../widget.class.php:275 ../widget.class.php:415
 msgid ""
 "Allow using previously defined \"before\" and \"after\" codes of Ads Place.."
 msgstr ""
 "Разрешить использование ранее определённых кодов \"до\" и \"после\" для "
 "рекламного места."
 
-#: ../widget.class.php:155
+#: ../widget.class.php:157
 msgid "Ads Zone selector serviced by Simple Ads Manager."
 msgstr ""
 "Селектор \"Зона рекламных объявлений\", обслуживаемый плагином Simple Ads "
 "Manager."
 
-#: ../widget.class.php:292
+#: ../widget.class.php:296
 msgid "Non-rotating single ad serviced by Simple Ads Manager."
 msgstr ""
 "Неротируемое одиночное рекламное объявление, обслуживаемое плагином Simple "
 "Ads Manager."
 
-#: ../widget.class.php:427
+#: ../widget.class.php:433
 msgid "Block"
 msgstr "Блок"
 
-#: ../widget.class.php:430
+#: ../widget.class.php:436
 msgid "Ads Block collector serviced by Simple Ads Manager."
 msgstr ""
 "Коллектор \"Блок рекламных объявлений\", обслуживаемый плагином Simple Ads "
@@ -3195,35 +3328,35 @@ msgstr ""
 msgid "None"
 msgstr "Нет"
 
-#: ../zone.editor.admin.class.php:183
+#: ../zone.editor.admin.class.php:190
 msgid "Ads Zone Data Updated."
 msgstr "Данные рекламной зоны сохранены."
 
-#: ../zone.editor.admin.class.php:324
+#: ../zone.editor.admin.class.php:331
 msgid "New Ads Zone"
 msgstr "Новая рекламная зона"
 
-#: ../zone.editor.admin.class.php:324
+#: ../zone.editor.admin.class.php:331
 msgid "Edit Ads Zone"
 msgstr "Изменить рекламную зону"
 
-#: ../zone.editor.admin.class.php:344
+#: ../zone.editor.admin.class.php:351
 msgid "Back to Zones List"
 msgstr "Назад, к списку зон"
 
-#: ../zone.editor.admin.class.php:398
+#: ../zone.editor.admin.class.php:405
 msgid "Enter description of this Ads Zone."
 msgstr "Введите описание для этой рекламной зоны."
 
-#: ../zone.editor.admin.class.php:410
+#: ../zone.editor.admin.class.php:417
 msgid "Ads Zone Settings"
 msgstr "Параметры зоны рекламных объявлений"
 
-#: ../zone.editor.admin.class.php:413
+#: ../zone.editor.admin.class.php:420
 msgid "Default Ads Place"
 msgstr "Рекламное место по умолчанию"
 
-#: ../zone.editor.admin.class.php:419
+#: ../zone.editor.admin.class.php:426
 msgid ""
 "Select the Ads Place by default. This Ads Place will be displayed in the "
 "event that for the page of a given type the Ads Place value is set to "
@@ -3233,89 +3366,89 @@ msgstr ""
 "экран для тех страниц, для которых параметр рекламного места установлен в "
 "значение \"По умолчанию\"."
 
-#: ../zone.editor.admin.class.php:423
+#: ../zone.editor.admin.class.php:430
 msgid "Home Page Ads Place"
 msgstr "Рекламное место главной страницы"
 
-#: ../zone.editor.admin.class.php:429
+#: ../zone.editor.admin.class.php:436
 msgid "Default Ads Place for Singular Pages"
 msgstr "Рекламное место по умолчанию для сингулярных страниц"
 
-#: ../zone.editor.admin.class.php:436
+#: ../zone.editor.admin.class.php:443
 msgid "Single Post Ads Place"
 msgstr "Рекламное место статьи"
 
-#: ../zone.editor.admin.class.php:445
+#: ../zone.editor.admin.class.php:452
 msgid "Default Ads Place for Single Custom Type Post"
 msgstr ""
 "Рекламное место по умолчанию для одиночных статей пользовательских типов"
 
-#: ../zone.editor.admin.class.php:456
+#: ../zone.editor.admin.class.php:463
 msgid "Ads Place for Single Post of Custom Type"
 msgstr "Рекламное место для одиночной статьи пользовательского типа"
 
-#: ../zone.editor.admin.class.php:465
+#: ../zone.editor.admin.class.php:472
 msgid "Page Ads Place"
 msgstr "Рекламное место страницы"
 
-#: ../zone.editor.admin.class.php:471
+#: ../zone.editor.admin.class.php:478
 msgid "Attachment Ads Place"
 msgstr "Рекламное место страницы вложения"
 
-#: ../zone.editor.admin.class.php:478
+#: ../zone.editor.admin.class.php:485
 msgid "Search Pages Ads Place"
 msgstr "Рекламное место страницы вывода результата поиска"
 
-#: ../zone.editor.admin.class.php:484
+#: ../zone.editor.admin.class.php:491
 msgid "404 Page Ads Place"
 msgstr "Рекламное место страницы ошибки 404"
 
-#: ../zone.editor.admin.class.php:490
+#: ../zone.editor.admin.class.php:497
 msgid "Default Ads Place for Archive Pages"
 msgstr "Рекламное место по умолчанию для страниц архивов"
 
-#: ../zone.editor.admin.class.php:497
+#: ../zone.editor.admin.class.php:504
 msgid "Default Ads Place for Taxonomies Pages"
 msgstr "Рекламное место по умолчанию для странц таксономий"
 
-#: ../zone.editor.admin.class.php:510
+#: ../zone.editor.admin.class.php:517
 msgid "Ads Place for Custom Taxonomy Term"
 msgstr "Рекламное место для термина пользовательской таксономии"
 
-#: ../zone.editor.admin.class.php:523
+#: ../zone.editor.admin.class.php:530
 msgid "Default Ads Place for Category Archive Pages"
 msgstr "Рекламное место по умолчанию для страниц архивов рубрик"
 
-#: ../zone.editor.admin.class.php:536
+#: ../zone.editor.admin.class.php:543
 msgid "Ads Place for Category"
 msgstr "Рекламное место для рубрики"
 
-#: ../zone.editor.admin.class.php:552
+#: ../zone.editor.admin.class.php:559
 msgid "Default Ads Place for Archives of Custom Type Posts"
 msgstr ""
 "Рекламное место по умолчанию для страниц архивов пользовательских типов"
 
-#: ../zone.editor.admin.class.php:562
+#: ../zone.editor.admin.class.php:569
 msgid "Ads Place for Custom Type Posts Archive"
 msgstr "Рекламное место по умолчанию для страниц архива пользовательского типа"
 
-#: ../zone.editor.admin.class.php:571
+#: ../zone.editor.admin.class.php:578
 msgid "Tags Archive Pages Ads Place"
 msgstr "Рекламное место страницы архивов меток"
 
-#: ../zone.editor.admin.class.php:577
+#: ../zone.editor.admin.class.php:584
 msgid "Default Ads Place for Author Archive Pages"
 msgstr "Рекламное место по умолчанию для страниц архивов авторов"
 
-#: ../zone.editor.admin.class.php:586
+#: ../zone.editor.admin.class.php:593
 msgid "Ads Place for author"
 msgstr "Рекламное место для автора"
 
-#: ../zone.editor.admin.class.php:595
+#: ../zone.editor.admin.class.php:602
 msgid "Date Archive Pages Ads Place"
 msgstr "Рекламное место страницы архивов дат"
 
-#: ../zone.editor.admin.class.php:602
+#: ../zone.editor.admin.class.php:609
 msgid ""
 "Ads Places for Singular pages, for Pages of Taxonomies and for Archive pages "
 "are Ads Places by default for the low level pages of relevant pages."
@@ -3351,6 +3484,9 @@ msgstr "Удалить эту зону навсегда"
 #: ../zone.list.admin.class.php:133
 msgid "Move this Zone to the Trash"
 msgstr "Поместить эту зону в корзину"
+
+#~ msgid "Ads associated with "
+#~ msgstr "Объявления, связанные с рекламодателем "
 
 #~ msgid "Upload File"
 #~ msgstr "Загрузить файл"
@@ -3416,9 +3552,6 @@ msgstr "Поместить эту зону в корзину"
 
 #~ msgid "Info"
 #~ msgstr "Подробно"
-
-#~ msgid "Nick Name"
-#~ msgstr "Ник рекламодателя"
 
 #~ msgid "User e-mail"
 #~ msgstr "e-mail рекламодателя"

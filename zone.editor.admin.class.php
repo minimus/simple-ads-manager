@@ -120,23 +120,19 @@ if(!class_exists('SamZoneEditor')) {
       if(isset($_POST['update_zone'])) {
         $zoneId = $_POST['zone_id'];
         foreach($taxes as $tax) {
-          if(isset($_POST['z_taxes_'.$tax['slug']])) {
-            $value = (integer) $_POST['z_taxes_'.$tax['slug']];
-            $uTaxes[$tax['slug']] = array('id' => $value, 'tax' => $tax['tax']);
-          }
+	        $value = (isset($_POST['z_taxes_'.$tax['slug']])) ? (integer) $_POST['z_taxes_'.$tax['slug']] : -1;
+	        $uTaxes[$tax['slug']] = array('id' => $value, 'tax' => $tax['tax']);
         }
         foreach($cats as $cat) {
-          if(isset($_POST['z_cats_'.$cat['slug']])) {
-            $value = (integer) $_POST['z_cats_'.$cat['slug']];
-            $uCats[$cat['slug']] = $value;
-          }          
+	        $value = (isset($_POST['z_cats_'.$cat['slug']])) ? (integer) $_POST['z_cats_'.$cat['slug']] : -1;
+	        $uCats[$cat['slug']] = $value;
         }
         foreach($authors as $key => $author) {
-          if(isset($_POST['z_authors_'.$author])) $uAuthors[$author] = $_POST['z_authors_'.$author];
+	        $uAuthors[$author] = (isset($_POST['z_authors_'.$author])) ? $_POST['z_authors_'.$author] : -1;
         }
         foreach($customs as $custom) {
-          if(isset($_POST['z_single_ct_'.$custom->name])) $uSingleCT[$custom->name] = $_POST['z_single_ct_'.$custom->name];
-          if(isset($_POST['z_archive_ct_'.$custom->name])) $uArchiveCT[$custom->name] = $_POST['z_archive_ct_'.$custom->name];
+	        $uSingleCT[$custom->name] = (isset($_POST['z_single_ct_'.$custom->name])) ? $_POST['z_single_ct_'.$custom->name] : -1;
+	        $uArchiveCT[$custom->name] = (isset($_POST['z_archive_ct_'.$custom->name])) ? $_POST['z_archive_ct_'.$custom->name] : -1;
         }
         $updateRow = array(
           'name' => $_POST['zone_name'],

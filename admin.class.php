@@ -8,6 +8,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     private $listZone;
     private $editBlock;
     private $listBlock;
+	  private $listAdvert;
     private $eLogPage;
     private $cmsVer;
     private $settingsTabs;
@@ -642,6 +643,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $this->editZone = add_submenu_page('sam-list', __('Ads Zone Editor', SAM_DOMAIN), __('New Zone', SAM_DOMAIN), SAM_ACCESS, 'sam-zone-edit', array(&$this, 'samZoneEditPage'));
       $this->listBlock = add_submenu_page('sam-list', __('Ads Blocks List', SAM_DOMAIN), __('Ads Blocks', SAM_DOMAIN), SAM_ACCESS, 'sam-block-list', array(&$this, 'samBlockListPage'));
       $this->editBlock = add_submenu_page('sam-list', __('Ads Block Editor', SAM_DOMAIN), __('New Block', SAM_DOMAIN), SAM_ACCESS, 'sam-block-edit', array(&$this, 'samBlockEditPage'));
+	    $this->listAdvert = add_submenu_page('sam-list', __('Advertisers List', SAM_DOMAIN), __('Advertisers', SAM_DOMAIN), SAM_ACCESS, 'sam-adverts', array(&$this, 'samAdvListPage'));
       $this->settingsPage = add_submenu_page('sam-list', __('Simple Ads Manager Settings', SAM_DOMAIN), __('Settings', SAM_DOMAIN), 'manage_options', 'sam-settings', array(&$this, 'samAdminPage'));
       $this->eLogPage = add_submenu_page('sam-list', __('Simple Ads Manager Error Log', SAM_DOMAIN), __('Error Log', SAM_DOMAIN), SAM_ACCESS, 'sam-errors', array(&$this, 'samErrorLog'));
 
@@ -1570,6 +1572,13 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $editor = new SamBlockEditor($settings);
       $editor->page();
     }
+
+	  public function samAdvListPage() {
+		  include_once('adv.list.admin.class.php');
+		  $settings = parent::getSettings();
+		  $list = new SamAdvertisersList($settings);
+		  $list->page();
+	  }
 
     public function samErrorLog() {
       include_once('errorlog.admin.class.php');

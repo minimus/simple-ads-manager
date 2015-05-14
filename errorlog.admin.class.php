@@ -44,7 +44,8 @@ if(!class_exists('SamErrorLog')) {
       $start = $offset = ( $apage - 1 ) * $places_per_page;
 
       $page_links = paginate_links( array(
-        'base' => esc_url(add_query_arg( 'apage', '%#%' )),
+        'base' => admin_url('admin.php') . '?page=sam-errors&apage=%#%',
+	      'format' => '&apage=%#%',
         'prev_text' => __('&laquo;'),
         'next_text' => __('&raquo;'),
         'total' => (integer)ceil($total / $places_per_page),
@@ -67,12 +68,14 @@ if(!class_exists('SamErrorLog')) {
       <a class="button-secondary" href="<?php echo admin_url('admin.php'); ?>?page=sam-errors&action=errors&mode=resolved&iaction=kill-resolved"><?php _e('Clear Resolved', SAM_DOMAIN); ?></a>
     </div>
     <div class="tablenav-pages">
-      <?php $page_links_text = sprintf( '<span class="displaying-num">' . __( 'Displaying %s&#8211;%s of %s', SAM_DOMAIN ) . '</span>%s',
+      <?php
+      $page_links_text = sprintf( '<span class="displaying-num">' . __( 'Displaying %s&#8211;%s of %s', SAM_DOMAIN ) . '</span>%s',
         number_format_i18n( $start + 1 ),
         number_format_i18n( min( $apage * $places_per_page, $total ) ),
         '<span class="total-type-count">' . number_format_i18n( $total ) . '</span>',
         $page_links
-      ); echo $page_links_text; ?>
+      );
+      echo $page_links_text; ?>
     </div>
   </div>
   <div class="clear"></div>
