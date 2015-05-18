@@ -34,7 +34,7 @@ var sam = sam || {};
         },
         multiple: false,
         library: {
-          type: 'image'
+          type: 'image, *flash*'
         }/*,
          selection: [ Attachment.get( $(this.adImgId).val() ) ]*/
       });
