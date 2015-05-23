@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Simple Ads Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-14 17:09+0300\n"
+"POT-Creation-Date: 2015-05-16 20:26+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: minimus <minimus@blogcoding.ru>\n"
 "Language-Team: minimus <minimus@blogcoding.ru>\n"
@@ -878,7 +878,7 @@ msgid "Clicks"
 msgstr "Клики"
 
 #: ../admin.class.php:805 ../block.editor.admin.class.php:308
-#: ../editor.admin.class.php:448 ../zone.editor.admin.class.php:396
+#: ../editor.admin.class.php:448 ../zone.editor.admin.class.php:385
 msgid "Name"
 msgstr "Наименование"
 
@@ -894,7 +894,7 @@ msgstr "Страница"
 msgid "Subscriber"
 msgstr "Подписчик"
 
-#: ../admin.class.php:915 ../zone.editor.admin.class.php:397
+#: ../admin.class.php:915 ../zone.editor.admin.class.php:386
 msgid "Name of Ads Zone"
 msgstr "Имя рекламной зоны"
 
@@ -1294,8 +1294,8 @@ msgstr "Удалить"
 #: ../editor.admin.class.php:1078 ../editor.admin.class.php:1178
 #: ../editor.admin.class.php:1423 ../editor.admin.class.php:1470
 #: ../editor.admin.class.php:1490 ../editor.admin.class.php:1551
-#: ../zone.editor.admin.class.php:341 ../zone.editor.admin.class.php:402
-#: ../zone.editor.admin.class.php:416
+#: ../zone.editor.admin.class.php:330 ../zone.editor.admin.class.php:391
+#: ../zone.editor.admin.class.php:405
 msgid "Click to toggle"
 msgstr "Кликнуть для переключения"
 
@@ -1315,8 +1315,8 @@ msgstr "Не выбрано"
 #: ../editor.admin.class.php:375 ../editor.admin.class.php:716
 #: ../editor.admin.class.php:817 ../editor.admin.class.php:885
 #: ../editor.admin.class.php:886 ../editor.admin.class.php:887
-#: ../zone.editor.admin.class.php:179 ../zone.editor.admin.class.php:297
-#: ../zone.editor.admin.class.php:331
+#: ../zone.editor.admin.class.php:168 ../zone.editor.admin.class.php:286
+#: ../zone.editor.admin.class.php:320
 msgid "Undefined"
 msgstr "Не определено"
 
@@ -1334,7 +1334,7 @@ msgstr "Изменить рекламный блок"
 
 #: ../block.editor.admin.class.php:254 ../editor.admin.class.php:386
 #: ../editor.admin.class.php:905 ../errorlog.admin.class.php:86
-#: ../errorlog.admin.class.php:96 ../zone.editor.admin.class.php:342
+#: ../errorlog.admin.class.php:96 ../zone.editor.admin.class.php:331
 msgid "Status"
 msgstr "Статус"
 
@@ -1347,12 +1347,12 @@ msgid "Ads Block ID"
 msgstr "ID рекламного блока"
 
 #: ../block.editor.admin.class.php:276 ../editor.admin.class.php:416
-#: ../zone.editor.admin.class.php:364
+#: ../zone.editor.admin.class.php:353
 msgid "Is Active"
 msgstr "Активно"
 
 #: ../block.editor.admin.class.php:277 ../editor.admin.class.php:417
-#: ../editor.admin.class.php:947 ../zone.editor.admin.class.php:365
+#: ../editor.admin.class.php:947 ../zone.editor.admin.class.php:354
 msgid "Is In Trash"
 msgstr "В корзине"
 
@@ -1360,27 +1360,27 @@ msgstr "В корзине"
 #: ../editor.admin.class.php:424 ../editor.admin.class.php:429
 #: ../editor.admin.class.php:954 ../editor.admin.class.php:959
 #: ../js/dialog-ad.php:94 ../js/dialog-block.php:84 ../js/dialog-zone.php:94
-#: ../js/dialog.php:94 ../zone.editor.admin.class.php:372
-#: ../zone.editor.admin.class.php:378
+#: ../js/dialog.php:94 ../zone.editor.admin.class.php:361
+#: ../zone.editor.admin.class.php:367
 msgid "Cancel"
 msgstr "Отмена"
 
 #: ../block.editor.admin.class.php:293 ../block.editor.admin.class.php:295
 #: ../editor.admin.class.php:433 ../editor.admin.class.php:435
 #: ../editor.admin.class.php:963 ../editor.admin.class.php:965
-#: ../zone.editor.admin.class.php:375 ../zone.editor.admin.class.php:382
+#: ../zone.editor.admin.class.php:364 ../zone.editor.admin.class.php:371
 msgid "Save"
 msgstr "Сохранить"
 
 #: ../block.editor.admin.class.php:309 ../editor.admin.class.php:979
-#: ../zone.editor.admin.class.php:397
+#: ../zone.editor.admin.class.php:386
 msgid "Required for SAM widgets."
 msgstr "Требуется для виджетов плагина."
 
 #: ../block.editor.admin.class.php:315 ../block.editor.admin.class.php:319
 #: ../editor.admin.class.php:455 ../editor.admin.class.php:459
-#: ../editor.admin.class.php:988 ../zone.editor.admin.class.php:403
-#: ../zone.editor.admin.class.php:407
+#: ../editor.admin.class.php:988 ../zone.editor.admin.class.php:392
+#: ../zone.editor.admin.class.php:396
 msgid "Description"
 msgstr "Описание"
 
@@ -1389,7 +1389,7 @@ msgid "Enter description of this Ads Block."
 msgstr "Введите описание для этого рекламного блока."
 
 #: ../block.editor.admin.class.php:322 ../editor.admin.class.php:462
-#: ../editor.admin.class.php:992 ../zone.editor.admin.class.php:410
+#: ../editor.admin.class.php:992 ../zone.editor.admin.class.php:399
 msgid ""
 "This description is not used anywhere and is added solely for the "
 "convenience of managing advertisements."
@@ -3051,7 +3051,7 @@ msgstr "Имя блока"
 msgid "Insert Ads Zone"
 msgstr "Вставить рекламную зону"
 
-#: ../js/dialog-zone.php:71 ../zone.editor.admin.class.php:358
+#: ../js/dialog-zone.php:71 ../zone.editor.admin.class.php:347
 msgid "Ads Zone ID"
 msgstr "ID рекламноой зоны"
 
@@ -3154,84 +3154,84 @@ msgstr "Нет"
 
 #: ../sam.list.table.class.php:142
 msgid "List View"
-msgstr ""
+msgstr "В виде списка"
 
 #: ../sam.list.table.class.php:143
 msgid "Excerpt View"
-msgstr ""
+msgstr "Просмотр отрывка"
 
 #: ../sam.list.table.class.php:310
 msgid "No items found."
-msgstr ""
+msgstr "Ничего не найдено"
 
 #: ../sam.list.table.class.php:436
 msgid "Select bulk action"
-msgstr ""
+msgstr "Выберите массовое действие"
 
 #: ../sam.list.table.class.php:438
 msgid "Bulk Actions"
-msgstr ""
+msgstr "Массовые действия"
 
 #: ../sam.list.table.class.php:548
 msgid "Filter by date"
-msgstr ""
+msgstr "Фильтровать по дате"
 
 #: ../sam.list.table.class.php:550
 msgid "All dates"
-msgstr ""
+msgstr "Все даты"
 
 #. translators: 1: month name, 2: 4-digit year
 #: ../sam.list.table.class.php:563
 #, php-format
 msgid "%1$s %2$d"
-msgstr ""
+msgstr "%1$s %2$d"
 
 #: ../sam.list.table.class.php:610
 #, php-format
 msgid "%s pending"
-msgstr ""
+msgstr "%s  в ожидании"
 
 #: ../sam.list.table.class.php:689 ../sam.list.table.class.php:1113
 #, php-format
 msgid "1 item"
 msgid_plural "%s items"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%s элемент"
+msgstr[1] "%s элемента"
+msgstr[2] "%s элементов"
 
 #: ../sam.list.table.class.php:708
 msgid "Go to the first page"
-msgstr ""
+msgstr "Перейти на первую страницу"
 
 #: ../sam.list.table.class.php:715
 msgid "Go to the previous page"
-msgstr ""
+msgstr "Перейдите на предыдущую страницу"
 
 #: ../sam.list.table.class.php:724
 msgid "Select Page"
-msgstr ""
+msgstr "Выбрать страницу"
 
 #: ../sam.list.table.class.php:725
 msgid "Current page"
-msgstr ""
+msgstr "Текущая страница"
 
 #: ../sam.list.table.class.php:731
 #, php-format
 msgctxt "paging"
 msgid "%1$s of %2$s"
-msgstr ""
+msgstr "%1$s из %2$s"
 
 #: ../sam.list.table.class.php:735
 msgid "Go to the next page"
-msgstr ""
+msgstr "Перейти на следующую страницу"
 
 #: ../sam.list.table.class.php:742
 msgid "Go to the last page"
-msgstr ""
+msgstr "Перейти к последней странице."
 
 #: ../sam.list.table.class.php:879
 msgid "Select All"
-msgstr ""
+msgstr "Выбрать все"
 
 #: ../sam.tools.php:44
 msgid "Mails were sent..."
@@ -3239,17 +3239,17 @@ msgstr "Письма были отправлены ..."
 
 #: ../sam.tools.php:46
 #, php-format
-msgid "One mail was successfully sent. "
+msgid "%s mail was successfully sent. "
 msgid_plural "%s mails were successfully sent. "
-msgstr[0] "Успешно отправлено одно сообщение."
+msgstr[0] "Успешно отправлено %s сообщение."
 msgstr[1] "Успешно отправлено %s сообщения."
 msgstr[2] "Успешно отправлено %s сообщений."
 
 #: ../sam.tools.php:47
 #, php-format
-msgid "There is one error during sending mails."
+msgid "There is %s error during sending mails."
 msgid_plural "There are %s errors during sending mails."
-msgstr[0] "При отправке почты произошла одна ошибка."
+msgstr[0] "При отправке почты произошла %s ошибка."
 msgstr[1] "При отправке почты произошло %s ошибки."
 msgstr[2] "При отправке почты произошло %s ошибок."
 
@@ -3328,35 +3328,35 @@ msgstr ""
 msgid "None"
 msgstr "Нет"
 
-#: ../zone.editor.admin.class.php:190
+#: ../zone.editor.admin.class.php:179
 msgid "Ads Zone Data Updated."
 msgstr "Данные рекламной зоны сохранены."
 
-#: ../zone.editor.admin.class.php:331
+#: ../zone.editor.admin.class.php:320
 msgid "New Ads Zone"
 msgstr "Новая рекламная зона"
 
-#: ../zone.editor.admin.class.php:331
+#: ../zone.editor.admin.class.php:320
 msgid "Edit Ads Zone"
 msgstr "Изменить рекламную зону"
 
-#: ../zone.editor.admin.class.php:351
+#: ../zone.editor.admin.class.php:340
 msgid "Back to Zones List"
 msgstr "Назад, к списку зон"
 
-#: ../zone.editor.admin.class.php:405
+#: ../zone.editor.admin.class.php:394
 msgid "Enter description of this Ads Zone."
 msgstr "Введите описание для этой рекламной зоны."
 
-#: ../zone.editor.admin.class.php:417
+#: ../zone.editor.admin.class.php:406
 msgid "Ads Zone Settings"
 msgstr "Параметры зоны рекламных объявлений"
 
-#: ../zone.editor.admin.class.php:420
+#: ../zone.editor.admin.class.php:409
 msgid "Default Ads Place"
 msgstr "Рекламное место по умолчанию"
 
-#: ../zone.editor.admin.class.php:426
+#: ../zone.editor.admin.class.php:415
 msgid ""
 "Select the Ads Place by default. This Ads Place will be displayed in the "
 "event that for the page of a given type the Ads Place value is set to "
@@ -3366,89 +3366,89 @@ msgstr ""
 "экран для тех страниц, для которых параметр рекламного места установлен в "
 "значение \"По умолчанию\"."
 
-#: ../zone.editor.admin.class.php:430
+#: ../zone.editor.admin.class.php:419
 msgid "Home Page Ads Place"
 msgstr "Рекламное место главной страницы"
 
-#: ../zone.editor.admin.class.php:436
+#: ../zone.editor.admin.class.php:425
 msgid "Default Ads Place for Singular Pages"
 msgstr "Рекламное место по умолчанию для сингулярных страниц"
 
-#: ../zone.editor.admin.class.php:443
+#: ../zone.editor.admin.class.php:432
 msgid "Single Post Ads Place"
 msgstr "Рекламное место статьи"
 
-#: ../zone.editor.admin.class.php:452
+#: ../zone.editor.admin.class.php:441
 msgid "Default Ads Place for Single Custom Type Post"
 msgstr ""
 "Рекламное место по умолчанию для одиночных статей пользовательских типов"
 
-#: ../zone.editor.admin.class.php:463
+#: ../zone.editor.admin.class.php:452
 msgid "Ads Place for Single Post of Custom Type"
 msgstr "Рекламное место для одиночной статьи пользовательского типа"
 
-#: ../zone.editor.admin.class.php:472
+#: ../zone.editor.admin.class.php:461
 msgid "Page Ads Place"
 msgstr "Рекламное место страницы"
 
-#: ../zone.editor.admin.class.php:478
+#: ../zone.editor.admin.class.php:467
 msgid "Attachment Ads Place"
 msgstr "Рекламное место страницы вложения"
 
-#: ../zone.editor.admin.class.php:485
+#: ../zone.editor.admin.class.php:474
 msgid "Search Pages Ads Place"
 msgstr "Рекламное место страницы вывода результата поиска"
 
-#: ../zone.editor.admin.class.php:491
+#: ../zone.editor.admin.class.php:480
 msgid "404 Page Ads Place"
 msgstr "Рекламное место страницы ошибки 404"
 
-#: ../zone.editor.admin.class.php:497
+#: ../zone.editor.admin.class.php:486
 msgid "Default Ads Place for Archive Pages"
 msgstr "Рекламное место по умолчанию для страниц архивов"
 
-#: ../zone.editor.admin.class.php:504
+#: ../zone.editor.admin.class.php:493
 msgid "Default Ads Place for Taxonomies Pages"
 msgstr "Рекламное место по умолчанию для странц таксономий"
 
-#: ../zone.editor.admin.class.php:517
+#: ../zone.editor.admin.class.php:506
 msgid "Ads Place for Custom Taxonomy Term"
 msgstr "Рекламное место для термина пользовательской таксономии"
 
-#: ../zone.editor.admin.class.php:530
+#: ../zone.editor.admin.class.php:519
 msgid "Default Ads Place for Category Archive Pages"
 msgstr "Рекламное место по умолчанию для страниц архивов рубрик"
 
-#: ../zone.editor.admin.class.php:543
+#: ../zone.editor.admin.class.php:532
 msgid "Ads Place for Category"
 msgstr "Рекламное место для рубрики"
 
-#: ../zone.editor.admin.class.php:559
+#: ../zone.editor.admin.class.php:548
 msgid "Default Ads Place for Archives of Custom Type Posts"
 msgstr ""
 "Рекламное место по умолчанию для страниц архивов пользовательских типов"
 
-#: ../zone.editor.admin.class.php:569
+#: ../zone.editor.admin.class.php:558
 msgid "Ads Place for Custom Type Posts Archive"
 msgstr "Рекламное место по умолчанию для страниц архива пользовательского типа"
 
-#: ../zone.editor.admin.class.php:578
+#: ../zone.editor.admin.class.php:567
 msgid "Tags Archive Pages Ads Place"
 msgstr "Рекламное место страницы архивов меток"
 
-#: ../zone.editor.admin.class.php:584
+#: ../zone.editor.admin.class.php:573
 msgid "Default Ads Place for Author Archive Pages"
 msgstr "Рекламное место по умолчанию для страниц архивов авторов"
 
-#: ../zone.editor.admin.class.php:593
+#: ../zone.editor.admin.class.php:582
 msgid "Ads Place for author"
 msgstr "Рекламное место для автора"
 
-#: ../zone.editor.admin.class.php:602
+#: ../zone.editor.admin.class.php:591
 msgid "Date Archive Pages Ads Place"
 msgstr "Рекламное место страницы архивов дат"
 
-#: ../zone.editor.admin.class.php:609
+#: ../zone.editor.admin.class.php:598
 msgid ""
 "Ads Places for Singular pages, for Pages of Taxonomies and for Archive pages "
 "are Ads Places by default for the low level pages of relevant pages."
@@ -3484,6 +3484,18 @@ msgstr "Удалить эту зону навсегда"
 #: ../zone.list.admin.class.php:133
 msgid "Move this Zone to the Trash"
 msgstr "Поместить эту зону в корзину"
+
+#~ msgid "One mail was successfully sent. "
+#~ msgid_plural "%s mails were successfully sent. "
+#~ msgstr[0] "Успешно отправлено одно сообщение."
+#~ msgstr[1] "Успешно отправлено %s сообщения."
+#~ msgstr[2] "Успешно отправлено %s сообщений."
+
+#~ msgid "There is one error during sending mails."
+#~ msgid_plural "There are %s errors during sending mails."
+#~ msgstr[0] "При отправке почты произошла одна ошибка."
+#~ msgstr[1] "При отправке почты произошло %s ошибки."
+#~ msgstr[2] "При отправке почты произошло %s ошибок."
 
 #~ msgid "Ads associated with "
 #~ msgstr "Объявления, связанные с рекламодателем "

@@ -43,8 +43,8 @@ if(!class_exists('SamMailer')) {
           'error_type' => 0,
           'error_msg' => __('Mails were sent...', SAM_DOMAIN),
           'error_sql' => (
-            (($input['success'] > 0) ? sprintf(_n('One mail was successfully sent. ', '%s mails were successfully sent. ', $input['success'], SAM_DOMAIN), $input['success']) : '') .
-            (($input['errors'] > 0) ? sprintf(_n('There is one error during sending mails.', 'There are %s errors during sending mails.', $input['errors'], SAM_DOMAIN), $input['errors']) : '') .
+            (($input['success'] > 0) ? sprintf(_n('%s mail was successfully sent. ', '%s mails were successfully sent. ', $input['success'], SAM_DOMAIN), $input['success']) : '') .
+            (($input['errors'] > 0) ? sprintf(_n('There is %s error during sending mails.', 'There are %s errors during sending mails.', $input['errors'], SAM_DOMAIN), $input['errors']) : '') .
             (__(' The success message does not automatically mean that the user received the email successfully. It just only means that the SAM plugin was able to process the request without any errors.', SAM_DOMAIN))
           ),
           'resolved' => 1

@@ -46,6 +46,7 @@ $uTable = $wpdb->base_prefix . "users";
 $umTable = $wpdb->base_prefix . "usermeta";
 $postTable = $wpdb->prefix . "posts";
 $eTable = $wpdb->prefix . 'sam_errors';
+$aTable = $wpdb->prefix . 'sam_ads';
 $userLevel = $wpdb->base_prefix . 'user_level';
 
 $oTable = $wpdb->prefix . 'options';
@@ -250,28 +251,40 @@ if(in_array($action, $allowed_actions)) {
         $searchTerm = sam_esc_sql($searchTerm);
         $offset = ((int)$page - 1) * (int)$rows;
 
-        $sql = "SELECT
-                wu.id,
-                wu.display_name AS title,
-                wu.user_nicename AS slug,
-                wu.user_email AS email
-              FROM
-                $uTable wu
-              WHERE wu.user_nicename LIKE '{$searchTerm}%'
-              ORDER BY wu.id
-              LIMIT $offset, $rows;";
+        $sql = "(SELECT
+  wu.display_name AS title,
+  wu.user_nicename AS slug,
+  wu.user_email AS email
+FROM
+  $uTable wu
+WHERE wu.user_nicename LIKE '%{$searchTerm}%')
+UNION
+(SELECT
+  wsa.adv_name AS title,
+  wsa.adv_nick AS slug,
+  wsa.adv_mail AS email
+FROM {$aTable} wsa
+WHERE wsa.adv_nick IS NOT NULL AND wsa.adv_nick <> '' AND wsa.adv_nick LIKE '%{$searchTerm}%'
+GROUP BY wsa.adv_nick)
+LIMIT $offset, $rows;";
         $users = $wpdb->get_results($sql, ARRAY_A);
 
-        $sql = "SELECT COUNT(*) FROM $uTable wu WHERE wu.user_nicename LIKE '{$searchTerm}%';";
-        $rTotal = $wpdb->get_var($sql);
+        $sql = "SELECT COUNT(*) AS total FROM $uTable wu WHERE wu.user_nicename LIKE '%{$searchTerm}%'";
+	      $sql .= " UNION ";
+	      $sql .= "SELECT COUNT(DISTINCT wsa.adv_nick) AS total FROM {$aTable} wsa WHERE wsa.adv_nick IS NOT NULL AND wsa.adv_nick <> '' AND wsa.adv_nick LIKE '%{$searchTerm}%' GROUP BY wsa.adv_nick;";
+        $raTotal = $wpdb->get_results($sql, ARRAY_A);
+	      $rTotal = 0;
+	      foreach($raTotal as $val) $rTotal += $val['total'];
         $total = ceil((int)$rTotal/(int)$rows);
 
         $out = array(
           'page' => $page,
-          'records' => count($users),
+          'records' => $rTotal,//count($users),
           'rows' => $users,
           'total' => $total,
-          'offset' => $offset
+          'offset' => $offset,
+	        'raTotal' => $raTotal,
+	        'sql' => $sql
         );
       }
 			else
