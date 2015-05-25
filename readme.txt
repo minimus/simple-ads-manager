@@ -4,7 +4,7 @@ Donate link: http://www.simplelib.com/archives/wordpress-plugin-simple-ads-manag
 Tags: ad, ads, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks
 Requires at least: 3.9
 Tested up to: 4.2.2
-Stable tag: 2.8.0.105
+Stable tag: 2.9.0.107
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -85,6 +85,9 @@ No questions now...
 
 == Changelog ==
 
+= 2.9.0.107 =
+* Advertisers List was improved
+* WPtouch compatibility was added
 = 2.8.0.105 =
 * The list of advertisers was added
 * The Ads Zone Editor was improved
@@ -224,6 +227,8 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 2.9.0.107 =
+WPtouch compatibility was added. Advertisers List was improved.
 = 2.8.0.105 =
 Some improvements...
 = 2.7.102 =

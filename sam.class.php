@@ -18,7 +18,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'deleteFolder' => 0,              // bool
       'beforePost' => 0,                // bool
       'bpAdsId' => 0,                   // int
-      'bpAdsType' => 1,
+      'bpAdsType' => 1,                 // int
       'bpUseCodes' => 0,                // bool
       'bpExcerpt' => 0,                 // bool
       'bbpBeforePost' => 0,             // bool
@@ -33,6 +33,9 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'apAdsId' => 0,                   // int
       'apUseCodes' => 0,                // bool
       'bbpAfterPost' => 0,              // bool
+	    'wptAdsType' => 1,                // int
+	    'wptAdsId' => 0,                  // int
+	    'wptAd' => 0,                     // bool
       'useDFP' => 0,                    // bool
       'detectBots' => 0,                // bool
       'detectingMode' => 'inexact',
@@ -49,6 +52,8 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       'errorlogFS' => 1,                // bool
       'bbpActive' => 0,                 // bool
       'bbpEnabled' => 0,                // bool
+	    //'wptouchActive' => 0,             // bool
+	    'wptouchEnabled' => 0,            // bool
       // Mailer
       'mailer' => 1,                    // bool
       'mail_subject' => 'Ad campaign report ([month])',
@@ -74,7 +79,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '2.8.0.105');
+      define('SAM_VERSION', '2.9.0.107');
       define('SAM_DB_VERSION', '2.8');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );
@@ -122,6 +127,10 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           add_action('bbp_theme_after_forum_sub_forums', array(&$this, 'addBbpForumAds'));
           add_action('bbp_theme_before_topic_started_by', array(&$this, 'addBbpForumAds'));
         }
+	      if($this->samOptions['wptouchEnabled']) {
+		      if($this->samOptions['wptAd'] && $this->samOptions['wptAdsId'] > 0)
+			      add_action('wptouch_advertising_top', array(&$this, 'drawWptAd'), 9999);
+	      }
 
         // For backward compatibility
         add_shortcode('sam-ad', array(&$this, 'doAdShortcode'));
@@ -815,6 +824,35 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 
       echo $bpAd;
     }
+
+	  public function drawWptAd() {
+		  $options = self::getSettings();
+		  $ad = '';
+
+		  if(empty($this->whereClauses)) $this->whereClauses = self::buildWhereClause();
+
+		  if(isset($options['wptAdsId'])) {
+			  switch($options['wptAdsType']) {
+				  case 0:
+					  $wptAd = new SamAd(array('id' => $options['wptAdsId']), false, false);
+					  break;
+				  case 1:
+					  $wptAd = new SamAdPlace(array('id' => $options['wptAdsId']), false, false, $this->whereClauses);
+					  break;
+				  case 2:
+					  $wptAd = new SamAdPlaceZone(array('id' => $options['wptAdsId']), false, false, $this->whereClauses);
+					  break;
+				  case 3:
+					  $wptAd = new SamAdBlock(array('id' => $options['wptAdsId']), false, $this->whereClauses);
+					  break;
+				  default:
+					  $wptAd = new SamAdPlace(array('id' => $options['wptAdsId']), false, false, $this->whereClauses);
+					  break;
+			  }
+			  $ad = "<div style='margin:0 0 -4px'>{$wptAd->ad}</div>";
+		  }
+		  echo $ad;
+	  }
   } // end of class definition
 } // end of if not class SimpleAdsManager exists
 ?>

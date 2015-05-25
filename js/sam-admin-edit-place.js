@@ -305,7 +305,7 @@ var sam = sam || {};
     });
 
     if(sPointer.enabled || '' == title.val()) {
-      $('#title').pointer({
+      title.pointer({
         content: '<h3>' + sPointer.title + '</h3><p>' + sPointer.content + '</p>',
         position: 'top',
         close: function() {

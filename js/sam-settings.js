@@ -107,6 +107,24 @@
     apAdsType.ejDropDownList('setSelectedValue', apTypeVal);
     apAdsId.ejDropDownList('setSelectedValue', apObjVal);
 
+    var
+      wptAdsType = $('#wptAdsType'), wptAdsId = $('#wptAdsId'),
+      wptTypeVal = wptAdsType.val(), wptObjVal = wptAdsId.val();
+
+    wptAdsType.ejDropDownList({
+      dataSource: typesDS,
+      fields: {value: 'parentId', text: 'text'},
+      cascadeTo: 'wptAdsId'
+    });
+
+    wptAdsId.ejDropDownList({
+      dataSource: objDS,
+      fields: {value: 'value', text: 'text'}
+    });
+
+    wptAdsType.ejDropDownList('setSelectedValue', wptTypeVal);
+    wptAdsId.ejDropDownList('setSelectedValue', wptObjVal);
+
     var stats = $('#stats'), keepStats = $('#keepStats');
     keepStats.prop('disabled', (!stats.is(':checked')));
     stats.on('click', function(e) {
