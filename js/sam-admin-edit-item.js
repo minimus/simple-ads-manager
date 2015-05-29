@@ -12,13 +12,18 @@ var sam = sam || {};
     adName: '#title',
     adDesc: '#item_description',
     adAlt: '#ad_alt',
+    adTarget: '#ad_target',
+    fbBtnId: '#fallback-code',
+    adFallback: '#ad_swf_fallback',
 
     init: function() {
       $(this.buttonId).on( 'click', this.openMediaDialog );
+      $(this.fbBtnId).on( 'click', this.openMediaDialog );
     },
 
     openMediaDialog: function( e ) {
       e.preventDefault();
+      var btnId = '#' + e.currentTarget.id;
 
       if ( this._frame ) {
         this._frame.open();
@@ -45,19 +50,30 @@ var sam = sam || {};
 
       this._frame.state( 'library' ).on('select', function() {
         var attachment = this.get( 'selection' ).single();
-        media.handleMediaAttachment( attachment );
+        media.handleMediaAttachment( attachment, btnId );
       });
 
       this._frame.open();
     },
 
-    handleMediaAttachment: function(a) {
+    handleMediaAttachment: function(a, id) {
       var attachment = a.toJSON();
-      $(this.adUrl).val(attachment.url);
-      $(this.adImgId).val(attachment.id);
-      if('' == $(this.adName).val() && '' != attachment.title) $(this.adName).val(attachment.title);
-      if('' == $(this.adDesc).val() && '' != attachment.caption) $(this.adDesc).val(attachment.caption);
-      if('' == $(this.adAlt).val() && '' != attachment.alt) $(this.adAlt).val(attachment.alt);
+      if(id == this.buttonId) {
+        $(this.adUrl).val(attachment.url);
+        $(this.adImgId).val(attachment.id);
+        if('' == $(this.adName).val() && '' != attachment.title) $(this.adName).val(attachment.title);
+        if('' == $(this.adDesc).val() && '' != attachment.caption) $(this.adDesc).val(attachment.caption);
+        if('' == $(this.adAlt).val() && '' != attachment.alt) $(this.adAlt).val(attachment.alt);
+      }
+      else if(id == this.fbBtnId) {
+        var
+          target = $(this.adTarget).val(),
+          anchor = (target != '') ? '<a href="' + target + '">' : '',
+          image = '<img src="' + attachment.url + '">',
+          anchorE = (target != '') ? '</a>' : '',
+          code = anchor + image + anchorE;
+        $(this.adFallback).val(code);
+      }
     }
   };
 

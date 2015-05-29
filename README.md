@@ -52,9 +52,9 @@ Available languages
 * Belarusian by Alexander Ovsov ([Web Geek Sciense](http://webhostinggeeks.com/science/))
 * Spanish by [xiaobai_wp](http://wordpress.org/extend/plugins/profile/xiaobai_wp)
 
-If you have created your own language pack, or have an update of an existing one, you can send **.po** and **.mo files** to me (minimus AT simplelib.com) so that I can bundle it into **Simple Ads Manager** plugin pack.
+If you have created your own language pack, or have an update of an existing one, you can send **.po** and **.mo files** to me (minimus AT simplelib.com) so that I can bundle it into **Simple Ads Manager** plugin pack.  Also you can translate SAM on [Transifex](https://www.transifex.com/projects/p/simple-ads-manager/) site.  Just register on Transifex and make your SAM localization.
   
-Read more about **Simple Ads Manager** on the [plugin page](http://www.simplelib.com/?p=480)...
+Read more about **Simple Ads Manager** on the [plugin page](http://www.simplelib.com/archives/wordpress-plugin-simple-ads-manager/)...
 
 Installation
 ============
@@ -68,6 +68,27 @@ Do not upgrade this plugin from Update page! Upgrade it from Plugins page!
 
 Change log
 ==========
+2.9.0.108
+* The list of advertisers was improved
+* Supporting for the plugin WPtouch (Free Edition) is provided
+* Fallback code for Flash Banners is added
+
+2.8.0.105
+* The list of advertisers was added
+* The Ads Zone Editor was improved
+* The bug of pagination was resolved
+
+2.7.102
+* Potential vulnerability issue was resolved
+
+2.7.101
+* Potential vulnerability of the `add_query_arg` was fixed
+* The bug known as "Disappearing Ads" was solved
+
+2.7.99
+* A bug of the statistics graph is fixed
+* A bug of the using of deprecated functions is fixed
+
 2.7.97
 * SQL injection fix.
 

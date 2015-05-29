@@ -4,7 +4,7 @@ Donate link: http://www.simplelib.com/archives/wordpress-plugin-simple-ads-manag
 Tags: ad, ads, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks
 Requires at least: 3.9
 Tested up to: 4.2.2
-Stable tag: 2.9.0.107
+Stable tag: 2.9.0.108
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,7 +57,9 @@ Simple Ads Manager is easy to use plugin providing a flexible logic of displayin
 * Belarusian by Alexander Ovsov ([Web Geek Sciense](http://webhostinggeeks.com/science/))
 * Spanish by [xiaobai_wp](http://wordpress.org/extend/plugins/profile/xiaobai_wp)
 
-If you have created your own language pack, or have an update of an existing one, you can send **.po** and **.mo files** to me (minimus AT simplelib.com) so that I can bundle it into **Simple Ads Manager** plugin pack.
+If you have created your own language pack, or have an update of an existing one, you can send **.po** and **.mo files** to me (minimus AT simplelib.com) so that I can bundle it into **Simple Ads Manager** plugin pack.  Also you can translate SAM on [Transifex](https://www.transifex.com/projects/p/simple-ads-manager/) site.  Just register on Transifex and make your SAM localization.
+
+SAM Free also available at [GitHub](https://github.com/minimus/simple-ads-manager). You can fork it and make your own improvements.
   
 Read more about **Simple Ads Manager** on the [plugin page](http://www.simplelib.com/archives/wordpress-plugin-simple-ads-manager/)...
 
@@ -85,9 +87,10 @@ No questions now...
 
 == Changelog ==
 
-= 2.9.0.107 =
-* Advertisers List was improved
-* WPtouch compatibility was added
+= 2.9.0.108 =
+* The list of advertisers was improved
+* Supporting for the plugin WPtouch (Free Edition) is provided
+* Fallback code for Flash Banners is added
 = 2.8.0.105 =
 * The list of advertisers was added
 * The Ads Zone Editor was improved
@@ -227,8 +230,8 @@ No questions now...
 
 == Upgrade Notice ==
 
-= 2.9.0.107 =
-WPtouch compatibility was added. Advertisers List was improved.
+= 2.9.0.108 =
+The list of advertisers was improved. Supporting for the plugin WPtouch is provided.
 = 2.8.0.105 =
 Some improvements...
 = 2.7.102 =

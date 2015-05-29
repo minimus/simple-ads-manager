@@ -656,6 +656,7 @@ if(!class_exists('SamPlaceEdit')) {
               'ad_swf_flashvars' => (!empty($_POST['ad_swf_flashvars'])) ? stripslashes($_POST['ad_swf_flashvars']) : '{}',
               'ad_swf_params' => (!empty($_POST['ad_swf_params'])) ? stripslashes($_POST['ad_swf_params']) : '{}',
               'ad_swf_attributes' => (!empty($_POST['ad_swf_attributes'])) ? stripslashes($_POST['ad_swf_attributes']) : '{}',
+	            'ad_swf_fallback' => ((!empty($_POST['ad_swf_fallback'])) ? stripslashes($_POST['ad_swf_fallback']) : ''),
               'count_clicks' => (isset($_POST['count_clicks']) ? $_POST['count_clicks'] : 0),
               'ad_users' => $_POST['ad_users'],
               'ad_users_unreg' => (isset($_POST['ad_users_unreg']) ? $_POST['ad_users_unreg'] : 0),
@@ -705,13 +706,13 @@ if(!class_exists('SamPlaceEdit')) {
               'x_view_custom_tax_terms' => self::removeTrailingComma(stripslashes($_POST['x_view_custom_tax_terms']))
             );
             $formatRow = array(
-              '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s',
-              '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s',
-              '%d', '%d', '%s', '%s', '%d', '%s', '%d', '%s', '%d', '%s',
-              '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s',
-              '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d',
-              '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d',
-              '%s'
+              '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s',         // pid - ad_target
+              '%d', '%s', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s',   // ad_swf - x_view_users
+              '%d', '%d', '%s', '%s', '%d', '%s', '%d', '%s', '%d', '%s',         // ad_users_adv - view_tags
+              '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s', '%d', '%s',         // ad_custom - x_view_tags
+              '%d', '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%d',         // x_custom - clicks_limit
+              '%s', '%s', '%s', '%d', '%d', '%d', '%d', '%d', '%s', '%d',         // adv_nick - x_ad_custom_tax_terms
+              '%s'                                                                // x_view_custom_tax_terms
             );
             if($itemId === __('Undefined', SAM_DOMAIN)) {
               $wpdb->insert($aTable, $updateRow);
@@ -745,6 +746,7 @@ if(!class_exists('SamPlaceEdit')) {
                       sa.ad_swf_flashvars,
                       sa.ad_swf_params,
                       sa.ad_swf_attributes,
+                      sa.ad_swf_fallback,
                       sa.count_clicks,
                       sa.ad_users,
                       sa.ad_users_unreg,
@@ -803,10 +805,10 @@ if(!class_exists('SamPlaceEdit')) {
                       sa.view_custom_tax_terms,
                       sa.x_ad_custom_tax_terms,
                       sa.x_view_custom_tax_terms
-                  FROM $aTable sa
-                  INNER JOIN $pTable sp
+                  FROM {$aTable} sa
+                  INNER JOIN {$pTable} sp
                   ON sa.pid = sp.id
-                  WHERE sa.id = $item;",
+                  WHERE sa.id = {$item};",
               ARRAY_A);
               
             if($row['ad_size'] === 'custom') $aSize = $this->getAdSize($row['ad_size'], $row['ad_custom_width'], $row['ad_custom_height']);
@@ -829,6 +831,7 @@ if(!class_exists('SamPlaceEdit')) {
               'ad_swf_flashvars' => '{}',
               'ad_swf_params' => '{}',
               'ad_swf_attributes' => '{}',
+	            'ad_swf_fallback' => '',
               'count_clicks' => 0,
               'ad_users' => 0,
               'ad_users_unreg' => 0,
@@ -1037,14 +1040,18 @@ if(!class_exists('SamPlaceEdit')) {
                       </p>
                       <div id="swf-params" class="radio-content" style="<?php if((int)$row['ad_swf'] != 1) echo 'display: none;'; ?>">
                         <label for="ad_swf_flashvars"><strong><?php _e('Flash banner "flashvars"', SAM_DOMAIN) ?>:</strong></label>
-                        <textarea type="text" name="ad_swf_flashvars" id="ad_swf_flashvars" rows="3" style="width:100%;"><?php echo $row['ad_swf_flashvars']; ?></textarea>
+                        <textarea name="ad_swf_flashvars" id="ad_swf_flashvars" rows="3" style="width:100%;"><?php echo $row['ad_swf_flashvars']; ?></textarea>
                         <p><?php _e('Insert "flashvars" parameters between braces...', SAM_DOMAIN); ?></p>
                         <label for="ad_swf_params"><strong><?php _e('Flash banner "params"', SAM_DOMAIN) ?>:</strong></label>
-                        <textarea type="text" name="ad_swf_params" id="ad_swf_params" rows="3" style="width:100%;"><?php echo $row['ad_swf_params']; ?></textarea>
+                        <textarea name="ad_swf_params" id="ad_swf_params" rows="3" style="width:100%;"><?php echo $row['ad_swf_params']; ?></textarea>
                         <p><?php _e('Insert "params" parameters between braces...', SAM_DOMAIN); ?></p>
                         <label for="ad_swf_attributes"><strong><?php _e('Flash banner "attributes"', SAM_DOMAIN) ?>:</strong></label>
-                        <textarea type="text" name="ad_swf_attributes" id="ad_swf_attributes" rows="3" style="width:100%;"><?php echo $row['ad_swf_attributes']; ?></textarea>
+                        <textarea name="ad_swf_attributes" id="ad_swf_attributes" rows="3" style="width:100%;"><?php echo $row['ad_swf_attributes']; ?></textarea>
                         <p><?php _e('Insert "attributes" parameters between braces...', SAM_DOMAIN); ?></p>
+	                      <label for="ad_swf_fallback"><strong><?php _e('Flash banner fallback code', SAM_DOMAIN); ?>:</strong></label>
+	                      <textarea name="ad_swf_fallback" id="ad_swf_fallback" rows="3" style="width: 100%;"><?php echo $row['ad_swf_fallback']; ?></textarea>
+	                      <button class="button-secondary" id="fallback-code" style="font-size: 11px;"><?php _e('Generate Fallback Code', SAM_DOMAIN); ?></button>
+	                      <p><?php _e('The fallback code will be displayed in case of impossibility to display a flash banner. Click on the "Generate Fallback Code" button to automatically generate fallback code for this ad. Do not forget to fill the "Ad Target" field before clicking the button.', SAM_DOMAIN); ?></p>
                       </div>
                       <p>
                         <label for='ad_no'><strong><?php echo __('Add to ad', SAM_DOMAIN).':'; ?></strong></label>

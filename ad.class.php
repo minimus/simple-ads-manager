@@ -66,6 +66,7 @@ if(!class_exists('SamAd')) {
                   sa.ad_swf_flashvars,
                   sa.ad_swf_params,
                   sa.ad_swf_attributes,
+                  sa.ad_swf_fallback,
                   sa.count_clicks,
                   sa.code_type,
                   sp.code_before,
@@ -93,7 +94,7 @@ if(!class_exists('SamAd')) {
           $flashvars = (!empty($ad['ad_swf_flashvars'])) ? $ad['ad_swf_flashvars'] : '{}';
           $params = (!empty($ad['ad_swf_params'])) ? $ad['ad_swf_params'] : '{}';
           $attributes = (!empty($ad['ad_swf_attributes'])) ? $ad['ad_swf_attributes'] : '{}';
-          $text = __('Flash ad').' ID:'.$ad['id'];
+          $text = (isset($ad['ad_swf_fallback'])) ? $ad['ad_swf_fallback'] : __('Flash ad').' ID:'.$ad['id'];
           $output = "
           <script type='text/javascript'>
           var
@@ -294,6 +295,7 @@ if(!class_exists('SamAdPlace')) {
   \"\" AS ad_swf_flashvars,
   \"\" AS ad_swf_params,
   \"\" AS ad_swf_attributes,
+  \"\" AS ad_swf_fallback,
   sp.patch_adserver AS ad_adserver,
   sp.patch_dfp AS ad_dfp,
   0 AS count_clicks,
@@ -320,6 +322,7 @@ UNION
   sa.ad_swf_flashvars,
   sa.ad_swf_params,
   sa.ad_swf_attributes,
+  sa.ad_swf_fallback,
   0 AS ad_adserver,
   0 AS ad_dfp,
   sa.count_clicks,
@@ -390,7 +393,7 @@ LIMIT 1;";
           $flashvars = (!empty($ad['ad_swf_flashvars'])) ? $ad['ad_swf_flashvars'] : '{}';
           $params = (!empty($ad['ad_swf_params'])) ? $ad['ad_swf_params'] : '{}';
           $attributes = (!empty($ad['ad_swf_attributes'])) ? $ad['ad_swf_attributes'] : '{}';
-          $text = 'Flash ad ID:'.$ad['aid']; //__('Flash ad').' ID:'.$ad['aid'];
+          $text = (isset($ad['ad_swf_fallback'])) ? $ad['ad_swf_fallback'] : "Flash ad ID: {$ad['aid']}"; //__('Flash ad').' ID:'.$ad['aid'];
           $output = "
             <script type='text/javascript'>
             var
