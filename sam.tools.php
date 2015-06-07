@@ -9,6 +9,7 @@ if(!class_exists('SamMailer')) {
     private $options;
     private $advertisersList;
     private $month;
+	  private $year;
     private $first;
     private $last;
     private $error;
@@ -78,6 +79,7 @@ if(!class_exists('SamMailer')) {
       $out = str_replace('[month]', $this->month, $out);
       $out = str_replace('[first]', $this->first, $out);
       $out = str_replace('[last]', $this->last, $out);
+	    $out = str_replace('[year]', $this->year, $out);
 
       return $out;
     }
@@ -163,6 +165,8 @@ if(!class_exists('SamMailer')) {
         $this->first = $first;
         $this->last = $last;
       }
+	    $this->month = $date->format('M');
+	    $this->year = $date->format('Y');
 
       $greeting = self::parseText($options['mail_greeting'], $user['adv_name']);
       $textBefore = self::parseText($options['mail_text_before'], $user['adv_name']);
@@ -304,6 +308,9 @@ if(!class_exists('SamMailer')) {
         $this->first = $first;
         $this->last = $last;
       }
+
+	    $this->month = $date->format('M');
+	    $this->year = $date->format('Y');
 
       $options = $this->options;
       $greeting = self::parseText($options['mail_greeting'], $user);
