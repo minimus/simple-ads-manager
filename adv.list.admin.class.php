@@ -13,6 +13,8 @@ if( ! class_exists( 'SamAdvertisersList' ) ) {
 		private $mode;
 		private $view;
 		private $apage;
+		private $action;
+		private $mailSent = false;
 
 		public function __construct( $options ) {
 			$this->settings = $options;
@@ -20,6 +22,7 @@ if( ! class_exists( 'SamAdvertisersList' ) ) {
 			$this->view = (isset($_GET['view'])) ? $_GET['view'] : 'active';
 			$this->advertiser = (isset($_GET['adv'])) ? $_GET['adv'] : null;
 			$this->apage = (isset($_GET['apage'])) ? absint($_GET['apage']) : 1;
+			$this->action = (isset($_GET['action'])) ? $_GET['action'] : 'view';
 		}
 
 		public function page() {
@@ -31,6 +34,11 @@ if( ! class_exists( 'SamAdvertisersList' ) ) {
 
 			switch($this->mode) {
 				case 'list':
+					if($this->action == 'send') {
+						include_once('sam.tools.php');
+						$mailer = new SamMailer($this->settings);
+						$this->mailSent = $mailer->sendMail($this->advertiser, 'nick');
+					}
 					$advNum     = $wpdb->get_var( "SELECT COUNT(DISTINCT wsa.adv_nick) FROM {$aTable} wsa WHERE wsa.adv_nick IS NOT NULL AND wsa.adv_nick <> '';" );
 					$start      = $offset = ( $this->apage - 1 ) * $places_per_page;
 					$page_links = paginate_links( array(
@@ -44,7 +52,19 @@ if( ! class_exists( 'SamAdvertisersList' ) ) {
 					?>
 					<div class='wrap'>
 						<h2><?php _e( 'Advertisers', SAM_DOMAIN ); ?></h2>
-
+						<?php
+						if($this->action == 'send') {
+							if($this->mailSent) {
+								$class = 'updated below-h2';
+								$mess = __('The report has been sent to', SAM_DOMAIN) . ' ' . $this->advertiser . '.';
+							}
+							else {
+								$class = 'error below-h2';
+								$mess = __('Unexpected error. The report has not been sent to') . ' ' . $this->advertiser . '.';
+							}
+							echo "<div class='{$class}'><p>{$mess}</p></div>";
+						}
+						?>
 						<div class="tablenav">
 							<div class="tablenav-pages">
 								<?php
@@ -98,10 +118,17 @@ if( ! class_exists( 'SamAdvertisersList' ) ) {
 													href="<?php echo admin_url( 'admin.php' ); ?>?page=sam-adverts&mode=ads&adv=<?php echo $row['adv_nick']; ?>"><?php echo $row['adv_nick']; ?></a></strong>
 
 											<div class="row-actions">
-												<span class="edit"><a
-														href="<?php echo admin_url( 'admin.php' ); ?>?page=sam-adverts&mode=ads&adv=<?php echo $row['adv_nick']; ?>"
-														title="<?php _e( 'View List of Ads', SAM_DOMAIN ) ?>"><?php _e( 'View Ads', SAM_DOMAIN ); ?></a> | </span>
-												<span class="mail"><?php _e('Send Report', SAM_DOMAIN); ?></span>
+												<span class="edit">
+													<a href="<?php echo admin_url( 'admin.php' ); ?>?page=sam-adverts&mode=ads&adv=<?php echo $row['adv_nick']; ?>"
+														title="<?php _e( 'View List of Ads', SAM_DOMAIN ) ?>">
+														<?php _e( 'View Ads', SAM_DOMAIN ); ?>
+													</a> | </span>
+												<span class="mail">
+													<a href="<?php echo admin_url('admin.php'); ?>?page=sam-adverts<?php if($this->apage > 1) echo "&apage={$this->apage}" ?>&action=send&adv=<?php echo $row['adv_nick']; ?>"
+														title="<?php echo __('Send Report to', SAM_DOMAIN) . ' ' . $row['adv_nick']; ?>">
+														<?php _e('Send Report', SAM_DOMAIN); ?>
+													</a>
+												</span>
 											</div>
 										</th>
 										<th class="post-title column-title"><?php echo $row['adv_name']; ?></th>
