@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Simple Ads Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2015-05-29 17:53+0300\n"
+"POT-Creation-Date: 2015-06-09 16:25+0300\n"
 "PO-Revision-Date: \n"
 "Last-Translator: minimus <minimus@blogcoding.ru>\n"
 "Language-Team: minimus <minimus@blogcoding.ru>\n"
@@ -111,8 +111,8 @@ msgstr "Ярлык пользовательского типа"
 msgid "Role"
 msgstr "Роль"
 
-#: ../admin.class.php:468 ../adv.list.admin.class.php:186
-#: ../adv.list.admin.class.php:194 ../block.list.admin.class.php:88
+#: ../admin.class.php:468 ../adv.list.admin.class.php:213
+#: ../adv.list.admin.class.php:221 ../block.list.admin.class.php:88
 #: ../block.list.admin.class.php:94 ../errorlog.admin.class.php:85
 #: ../errorlog.admin.class.php:95 ../list.admin.class.php:179
 #: ../list.admin.class.php:190 ../list.admin.class.php:366
@@ -779,7 +779,7 @@ msgstr "Новый блок"
 msgid "Advertisers List"
 msgstr "Список рекламодателей"
 
-#: ../admin.class.php:667 ../adv.list.admin.class.php:46
+#: ../admin.class.php:667 ../adv.list.admin.class.php:54
 msgid "Advertisers"
 msgstr "Рекламодатели"
 
@@ -804,8 +804,8 @@ msgstr "Журнал ошибок"
 msgid "Single Ad"
 msgstr "Рекламное объявление"
 
-#: ../admin.class.php:760 ../adv.list.admin.class.php:188
-#: ../adv.list.admin.class.php:196 ../block.editor.admin.class.php:77
+#: ../admin.class.php:760 ../adv.list.admin.class.php:215
+#: ../adv.list.admin.class.php:223 ../block.editor.admin.class.php:77
 #: ../help.class.php:125 ../js/dialog.php:53 ../widget.class.php:17
 msgid "Ads Place"
 msgstr "Рекламное место"
@@ -1150,22 +1150,30 @@ msgctxt "Copyright String"
 msgid "All rights reserved."
 msgstr "Все права защищены."
 
-#: ../adv.list.admin.class.php:39 ../adv.list.admin.class.php:153
+#: ../adv.list.admin.class.php:47 ../adv.list.admin.class.php:180
 #: ../block.list.admin.class.php:48 ../errorlog.admin.class.php:49
 #: ../list.admin.class.php:133 ../list.admin.class.php:319
 #: ../zone.list.admin.class.php:48
 msgid "&laquo;"
 msgstr "&laquo;"
 
-#: ../adv.list.admin.class.php:40 ../adv.list.admin.class.php:154
+#: ../adv.list.admin.class.php:48 ../adv.list.admin.class.php:181
 #: ../block.list.admin.class.php:49 ../errorlog.admin.class.php:50
 #: ../list.admin.class.php:134 ../list.admin.class.php:320
 #: ../zone.list.admin.class.php:49
 msgid "&raquo;"
 msgstr "&raquo;"
 
-#: ../adv.list.admin.class.php:51 ../adv.list.admin.class.php:122
-#: ../adv.list.admin.class.php:172 ../adv.list.admin.class.php:251
+#: ../adv.list.admin.class.php:59
+msgid "The report has been sent to"
+msgstr "Отправлен отчет для"
+
+#: ../adv.list.admin.class.php:63
+msgid "Unexpected error. The report has not been sent to"
+msgstr "Непредвиденная ошибка. Отчет не был отправлен для"
+
+#: ../adv.list.admin.class.php:71 ../adv.list.admin.class.php:149
+#: ../adv.list.admin.class.php:199 ../adv.list.admin.class.php:278
 #: ../block.list.admin.class.php:76 ../block.list.admin.class.php:150
 #: ../errorlog.admin.class.php:72 ../errorlog.admin.class.php:175
 #: ../list.admin.class.php:165 ../list.admin.class.php:287
@@ -1175,118 +1183,122 @@ msgstr "&raquo;"
 msgid "Displaying %s&#8211;%s of %s"
 msgstr "Показано %s&#8211;%s из %s"
 
-#: ../adv.list.admin.class.php:66 ../adv.list.admin.class.php:76
+#: ../adv.list.admin.class.php:86 ../adv.list.admin.class.php:96
 msgid "Nick Name"
 msgstr "Ник рекламодателя"
 
-#: ../adv.list.admin.class.php:68 ../adv.list.admin.class.php:78
+#: ../adv.list.admin.class.php:88 ../adv.list.admin.class.php:98
 msgctxt "User Name"
 msgid "Name"
 msgstr "Имя"
 
-#: ../adv.list.admin.class.php:70 ../adv.list.admin.class.php:80
+#: ../adv.list.admin.class.php:90 ../adv.list.admin.class.php:100
 msgctxt "User Ads"
 msgid "Ads"
 msgstr "Объявления"
 
-#: ../adv.list.admin.class.php:89 ../adv.list.admin.class.php:218
+#: ../adv.list.admin.class.php:109 ../adv.list.admin.class.php:245
 #: ../block.list.admin.class.php:113 ../errorlog.admin.class.php:123
 #: ../list.admin.class.php:223 ../list.admin.class.php:412
 #: ../zone.list.admin.class.php:113
 msgid "There are no data ..."
 msgstr "Нет данных для показа ..."
 
-#: ../adv.list.admin.class.php:103
+#: ../adv.list.admin.class.php:123
 msgid "View List of Ads"
 msgstr "Посмотреть список объявлений"
 
-#: ../adv.list.admin.class.php:103 ../list.admin.class.php:261
+#: ../adv.list.admin.class.php:124 ../list.admin.class.php:261
 msgid "View Ads"
 msgstr "Объявления"
 
-#: ../adv.list.admin.class.php:104
+#: ../adv.list.admin.class.php:128
+msgid "Send Report to"
+msgstr "Отправить отчет для"
+
+#: ../adv.list.admin.class.php:129
 msgid "Send Report"
 msgstr "Отправить отчет"
 
-#: ../adv.list.admin.class.php:160
+#: ../adv.list.admin.class.php:187
 msgid "Ads associated with the advertiser "
 msgstr "Объявления, связанные с рекламодателем "
 
-#: ../adv.list.admin.class.php:162 ../block.list.admin.class.php:63
+#: ../adv.list.admin.class.php:189 ../block.list.admin.class.php:63
 #: ../errorlog.admin.class.php:59 ../list.admin.class.php:148
 #: ../list.admin.class.php:334 ../zone.list.admin.class.php:63
 msgid "All"
 msgstr "Все"
 
-#: ../adv.list.admin.class.php:163 ../block.list.admin.class.php:64
+#: ../adv.list.admin.class.php:190 ../block.list.admin.class.php:64
 #: ../errorlog.admin.class.php:60 ../list.admin.class.php:149
 #: ../list.admin.class.php:335 ../zone.list.admin.class.php:64
 msgid "Active"
 msgstr "Активные"
 
-#: ../adv.list.admin.class.php:164 ../block.list.admin.class.php:65
+#: ../adv.list.admin.class.php:191 ../block.list.admin.class.php:65
 #: ../list.admin.class.php:150 ../list.admin.class.php:336
 #: ../zone.list.admin.class.php:65
 msgid "Trash"
 msgstr "Корзина"
 
-#: ../adv.list.admin.class.php:168 ../adv.list.admin.class.php:247
+#: ../adv.list.admin.class.php:195 ../adv.list.admin.class.php:274
 msgid "Back to Advertisers List"
 msgstr "Вернуться к списку рекламодателей"
 
-#: ../adv.list.admin.class.php:187 ../adv.list.admin.class.php:195
+#: ../adv.list.admin.class.php:214 ../adv.list.admin.class.php:222
 #: ../help.class.php:151 ../list.admin.class.php:367
 #: ../list.admin.class.php:377
 msgid "Advertisement"
 msgstr "Рекламное объявление"
 
-#: ../adv.list.admin.class.php:189 ../adv.list.admin.class.php:197
+#: ../adv.list.admin.class.php:216 ../adv.list.admin.class.php:224
 #: ../editor.admin.class.php:408 ../editor.admin.class.php:939
 #: ../list.admin.class.php:181 ../list.admin.class.php:192
 msgid "Size"
 msgstr "Размеры"
 
-#: ../adv.list.admin.class.php:226 ../block.list.admin.class.php:121
+#: ../adv.list.admin.class.php:253 ../block.list.admin.class.php:121
 #: ../list.admin.class.php:248 ../list.admin.class.php:440
 #: ../zone.list.admin.class.php:121
 msgid "in Trash"
 msgstr "в корзине"
 
-#: ../adv.list.admin.class.php:228 ../list.admin.class.php:442
+#: ../adv.list.admin.class.php:255 ../list.admin.class.php:442
 msgid "Edit this Item of Ads Place"
 msgstr "Изменить этот элемент рекламного места"
 
-#: ../adv.list.admin.class.php:228 ../block.list.admin.class.php:123
+#: ../adv.list.admin.class.php:255 ../block.list.admin.class.php:123
 #: ../list.admin.class.php:250 ../list.admin.class.php:442
 #: ../zone.list.admin.class.php:123
 msgid "Edit"
 msgstr "Изменить"
 
-#: ../adv.list.admin.class.php:232 ../list.admin.class.php:446
+#: ../adv.list.admin.class.php:259 ../list.admin.class.php:446
 msgid "Restore this Ad from the Trash"
 msgstr "Восстановить это объявление из корзины"
 
-#: ../adv.list.admin.class.php:232 ../block.list.admin.class.php:127
+#: ../adv.list.admin.class.php:259 ../block.list.admin.class.php:127
 #: ../list.admin.class.php:254 ../list.admin.class.php:446
 #: ../zone.list.admin.class.php:127
 msgid "Restore"
 msgstr "Восстановить"
 
-#: ../adv.list.admin.class.php:233 ../list.admin.class.php:447
+#: ../adv.list.admin.class.php:260 ../list.admin.class.php:447
 msgid "Remove this Ad permanently"
 msgstr "Удалить это рекламное объявление навсегда"
 
-#: ../adv.list.admin.class.php:233 ../block.list.admin.class.php:128
+#: ../adv.list.admin.class.php:260 ../block.list.admin.class.php:128
 #: ../errorlog.admin.class.php:154 ../list.admin.class.php:255
 #: ../list.admin.class.php:447 ../zone.list.admin.class.php:128
 msgid "Remove permanently"
 msgstr "Удалить навсегда"
 
-#: ../adv.list.admin.class.php:234 ../list.admin.class.php:448
+#: ../adv.list.admin.class.php:261 ../list.admin.class.php:448
 msgid "Move this item to the Trash"
 msgstr "Поместить этот элемент в корзину"
 
-#: ../adv.list.admin.class.php:234 ../block.list.admin.class.php:133
+#: ../adv.list.admin.class.php:261 ../block.list.admin.class.php:133
 #: ../list.admin.class.php:260 ../list.admin.class.php:448
 #: ../zone.list.admin.class.php:133
 msgid "Delete"
@@ -3262,11 +3274,11 @@ msgstr "Перейти к последней странице."
 msgid "Select All"
 msgstr "Выбрать все"
 
-#: ../sam.tools.php:44
+#: ../sam.tools.php:141
 msgid "Mails were sent..."
 msgstr "Письма были отправлены ..."
 
-#: ../sam.tools.php:46
+#: ../sam.tools.php:143
 #, php-format
 msgid "One mail was successfully sent. "
 msgid_plural "%s mails were successfully sent. "
@@ -3274,7 +3286,7 @@ msgstr[0] "Успешно отправлено одно сообщение."
 msgstr[1] "Успешно отправлено %s сообщения."
 msgstr[2] "Успешно отправлено %s сообщений."
 
-#: ../sam.tools.php:47
+#: ../sam.tools.php:144
 #, php-format
 msgid "There is one error during sending mails."
 msgid_plural "There are %s errors during sending mails."
@@ -3282,7 +3294,7 @@ msgstr[0] "При отправке почты произошла одна оши
 msgstr[1] "При отправке почты произошло %s ошибки."
 msgstr[2] "При отправке почты произошло %s ошибок."
 
-#: ../sam.tools.php:48
+#: ../sam.tools.php:145
 msgid ""
 " The success message does not automatically mean that the user received the "
 "email successfully. It just only means that the SAM plugin was able to "
@@ -3292,11 +3304,11 @@ msgstr ""
 "получил письмо по электронной почте. Это означает только то, что плагин SAM "
 "смог обработать запрос без каких-либо ошибок."
 
-#: ../sam.tools.php:417 ../updater.class.php:53
+#: ../sam.tools.php:544 ../updater.class.php:53
 msgid "An error occurred during updating process..."
 msgstr "Произошла ошибка во время процесса обновления ..."
 
-#: ../sam.tools.php:431
+#: ../sam.tools.php:558
 #, php-format
 msgid "All statistical data before %s is cleared..."
 msgstr "Все статистические данные до %s были удалены ..."

@@ -1195,7 +1195,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       }
       //$output['keepStats'] = (integer)$input['keepStats'];
       $output['dfpBlocks'] = array_unique($blocks);
-      $output['dfpBlocks2'] = array_unique($blocks2);
+      $output['dfpBlocks2'] = $blocks2;
       return $output;
     }
     

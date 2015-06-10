@@ -79,7 +79,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '2.9.2.110');
+      define('SAM_VERSION', '2.9.2.111');
       define('SAM_DB_VERSION', '2.9');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );
@@ -466,30 +466,22 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $options = self::getSettings();
       $netCode = $options['dfpNetworkCode'];
 
-      if(($options['useDFP'] == 1) && !empty($netCode) && is_array($options['dfpBlocks'])) {
+      if(($options['useDFP'] == 1) && !empty($netCode) && is_array($options['dfpBlocks2'])) {
         $slots = '';
-        foreach($options['dfpBlocks'] as $value)
-          $slots .= "googletag.defineSlot('/$netCode/$value', [468, 60], 'div-gpt-ad-1390745798945-0').addService(googletag.pubads());";
+        foreach($options['dfpBlocks2'] as $value)
+          $slots .= "googletag.defineSlot('/{$netCode}/{$value['name']}', [{$value['size'][0]}, {$value['size'][1]}], '{$value['div']}').addService(googletag.pubads());\n";
         $out = "
 <script type='text/javascript'>
-  var googletag = googletag || {};
-  googletag.cmd = googletag.cmd || [];
   (function() {
-    var gads = document.createElement('script');
-    gads.async = true;
-    gads.type = 'text/javascript';
     var useSSL = 'https:' == document.location.protocol;
-    gads.src = (useSSL ? 'https:' : 'http:') + '//www.googletagservices.com/tag/js/gpt.js';
-    var node = document.getElementsByTagName('script')[0];
-    node.parentNode.insertBefore(gads, node);
+    var src = (useSSL ? 'https:' : 'http:') + '//www.googletagservices.com/tag/js/gpt.js';
+    document.write('<scr' + 'ipt src=\"' + src + '\"></scr' + 'ipt>');
   })();
 </script>
 
 <script type='text/javascript'>
   googletag.cmd.push(function() {
-    googletag.defineSlot('/5043950/Header', [468, 60], 'div-gpt-ad-1390745798945-0').addService(googletag.pubads());
-    googletag.defineSlot('/5043950/Sidebar', [300, 250], 'div-gpt-ad-1390745798945-1').addService(googletag.pubads());
-    googletag.defineSlot('/5043950/SiteTop', [468, 60], 'div-gpt-ad-1390745798945-2').addService(googletag.pubads());
+    {$slots}
     googletag.pubads().enableSingleRequest();
     googletag.enableServices();
   });
@@ -504,25 +496,33 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $options = self::getSettings();
       $pub = $options['dfpPub'];
       
-      if(($options['useDFP'] == 1) && !empty($options['dfpPub'])) {
-        $output = "<!-- Start of SAM ".SAM_VERSION." scripts -->"."\n";
-        $output .= "<script type='text/javascript' src='http://partner.googleadservices.com/gampad/google_service.js'></script>"."\n";
-        $output .= "<script type='text/javascript'>"."\n";
-        $output .= "  GS_googleAddAdSenseService('$pub');"."\n";
-        $output .= "  GS_googleEnableAllServices();"."\n";
-        $output .= "</script>"."\n";
-        $output .= "<script type='text/javascript'>"."\n";
-        foreach($options['dfpBlocks'] as $value)
-          $output .= "  GA_googleAddSlot('$pub', '$value');"."\n";
-        $output .= "</script>"."\n";
-        $output .= "<script type='text/javascript'>"."\n";
-        $output .= "  GA_googleFetchAds();"."\n";
-        $output .= "</script>"."\n";
-        $output .= "<!-- End of SAM ".SAM_VERSION." scripts -->"."\n";
+      if($options['dfpMode'] == 'gam') {
+	      if ( ( $options['useDFP'] == 1 ) && ! empty( $options['dfpPub'] ) ) {
+		      $output = "<!-- Start of SAM " . SAM_VERSION . " scripts -->" . "\n";
+		      $output .= "<script type='text/javascript' src='http://partner.googleadservices.com/gampad/google_service.js'></script>" . "\n";
+		      $output .= "<script type='text/javascript'>" . "\n";
+		      $output .= "  GS_googleAddAdSenseService('$pub');" . "\n";
+		      $output .= "  GS_googleEnableAllServices();" . "\n";
+		      $output .= "</script>" . "\n";
+		      $output .= "<script type='text/javascript'>" . "\n";
+		      foreach ( $options['dfpBlocks'] as $value ) {
+			      $output .= "  GA_googleAddSlot('$pub', '$value');" . "\n";
+		      }
+		      $output .= "</script>" . "\n";
+		      $output .= "<script type='text/javascript'>" . "\n";
+		      $output .= "  GA_googleFetchAds();" . "\n";
+		      $output .= "</script>" . "\n";
+		      $output .= "<!-- End of SAM " . SAM_VERSION . " scripts -->" . "\n";
+	      } else {
+		      $output = '';
+	      }
       }
-      else $output = '';
-      
-      echo $output;
+	    elseif($options['dfpMode'] == 'gpt') {
+		    $output = self::getDfpCodes();
+	    }
+	    else $output = '';
+
+	    echo $output;
     }
     
     private function isCrawler() {

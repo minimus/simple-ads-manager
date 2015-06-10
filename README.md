@@ -37,6 +37,7 @@ Features
 * Customizable accuracy of bots and crawlers detection
 * Counting revenue from ads placement, display ads and clicks on advertisement
 * Compatible with all caching plugins
+* Compatible with the WPtouch plugin (Free Edition)
 
 Requirements
 ------------
@@ -68,6 +69,13 @@ Do not upgrade this plugin from Update page! Upgrade it from Plugins page!
 
 Change log
 ==========
+2.9.2.111
+* Added manual sending reports to advertisers
+* GPT tags of Google DFP now is supported
+
+2.9.1.109
+* Minor bug resolved
+
 2.9.0.108
 * The list of advertisers was improved
 * Supporting for the plugin WPtouch (Free Edition) is provided

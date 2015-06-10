@@ -11,13 +11,25 @@ if(!class_exists('SamPlaceEdit')) {
       global $wpdb;
       
       $pTable = $wpdb->prefix . "sam_places";
-      $sql = "SELECT sp.patch_dfp FROM $pTable sp WHERE sp.patch_source = 2";
+      $sql = "SELECT sp.patch_dfp, sp.place_size, sp.place_custom_width, sp.place_custom_height FROM $pTable sp WHERE sp.patch_source = 2";
       $rows = $wpdb->get_results($sql, ARRAY_A);
-      $blocks = array();      
-      foreach($rows as $value) array_push($blocks, $value['patch_dfp']);
-      
+      $blocks = array();
+	    $blocks2 = array();
+	    $pub = explode('-', $input['dfpPub']);
+	    $divStr = (is_array($pub)) ? $pub[count($pub) - 1] : rand(1111111, 9999999);
+	    $div = "sam-dfp-{$divStr}";
+	    $k = 0;
+      foreach($rows as $value) {
+	      array_push($blocks, $value['patch_dfp']);
+	      if($value['place_custom_width'] == 0) $sizes = explode('x', $value['place_size']);
+	      else $sizes = array($value['place_custom_width'], $value['place_custom_height']);
+	      array_push($blocks2, array('name' => $value['patch_dfp'], 'size' => $sizes, 'div' => $div.'-'.$k));
+	      $k++;
+      }
+
       $output = $input;
       $output['dfpBlocks'] = array_unique($blocks);
+	    $output['dfpBlocks2'] = $blocks2;
       return $output;
     }
     

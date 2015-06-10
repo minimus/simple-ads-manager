@@ -353,17 +353,34 @@ LIMIT 1;";
       
       // DFP
       if($ad['code_mode'] == 2) {
-        if(($settings['useDFP'] == 1) && !empty($settings['dfpPub'])) {
-          $output = "<!-- {$ad['ad_dfp']} -->"."\n";
-          $output .= "<script type='text/javascript'>"."\n";
-          $output .= "  GA_googleFillSlot('{$ad['ad_dfp']}');"."\n";
-          $output .= "</script>"."\n";
-          if($useCodes)
-            $output = (is_array($useCodes)) ? $useCodes['before'].$output.$useCodes['after'] : $ad['code_before'].$output.$ad['code_after'];
+        if($settings['dfpMode'] == 'gam') {
+	        if ( ( $settings['useDFP'] == 1 ) && ! empty( $settings['dfpPub'] ) ) {
+		        $output = "<!-- {$ad['ad_dfp']} -->" . "\n";
+		        $output .= "<script type='text/javascript'>" . "\n";
+		        $output .= "  GA_googleFillSlot('{$ad['ad_dfp']}');" . "\n";
+		        $output .= "</script>" . "\n";
+		        if ( $useCodes ) {
+			        $output = ( is_array( $useCodes ) ) ? $useCodes['before'] . $output . $useCodes['after'] : $ad['code_before'] . $output . $ad['code_after'];
+		        }
 
-          $output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='{$container} {$samAd}'>{$output}</div>";
+		        $output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='{$container} {$samAd}'>{$output}</div>";
+	        } else {
+		        $output = '';
+	        }
         }
-        else $output = '';
+	      elseif($settings['dfpMode'] == 'gpt') {
+		      if($settings['useDFP'] == 1 && !empty($settings['dfpNetworkCode'])) {
+			      include_once('sam.functions.php');
+			      $key = array_search($ad['ad_dfp'], array_column($settings['dfpBlocks2'], 'name'));
+			      $block = $settings['dfpBlocks2'][$key];
+			      $output = "<!-- /{$settings['dfpNetworkCode']}/{$block['name']} -->
+<div id='{$block['div']}' style='height:{$block['size'][1]}px; width:{$block['size'][0]}px;'>
+<script type='text/javascript'>
+googletag.cmd.push(function() { googletag.display('{$block['div']}'); });
+</script>
+</div>";
+		      }
+	      }
 
         return $output;
       }
