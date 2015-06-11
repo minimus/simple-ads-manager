@@ -429,13 +429,17 @@ googletag.cmd.push(function() { googletag.display('{$block['div']}'); });
           $aStart ='';
           $aEnd ='';
           $iTag = '';
+	        $robo = (integer)$ad['ad_no'];
+	        $rel = ((in_array($robo, array(1,2,4))) ? ((in_array($robo, array(1,4))) ? " rel='nofollow'" : " rel='dofollow'") : '');
+	        $niStart = ((in_array($robo, array(3,4))) ? '<noindex>' : '');
+	        $niEnd = ((in_array($robo, array(3,4))) ? '</noindex>' : '');
           if(!empty($settings['adDisplay'])) $target = '_'.$settings['adDisplay'];
           else $target = '_blank';
           if(!empty($ad['ad_target'])) {
             //$aStart = ((in_array((integer)$ad['ad_no'], array(2,3))) ? '<noindex>' : '')."<a href='{$ad['ad_target']}' target='$target' ".((in_array((integer)$ad['ad_no'], array(1,3))) ? " rel='nofollow'" : '').">";
             //$aEnd = "</a>".(in_array((integer)$ad['ad_no'], array(2,3))) ? '</noindex>' : '';
-            $aStart = "<a $outId href='{$ad['ad_target']}' target='$target' ".">";
-            $aEnd = "</a>";
+            $aStart = "{$niStart}<a $outId href='{$ad['ad_target']}' target='{$target}'{$rel}>";
+            $aEnd = "</a>{$niEnd}";
           }
           if(!empty($ad['ad_img'])) $iTag = "<img src='{$ad['ad_img']}' ".((!empty($ad['ad_alt'])) ? " alt='{$ad['ad_alt']}' " : " alt='' ")." />";
           $output = $aStart.$iTag.$aEnd;

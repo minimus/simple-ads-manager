@@ -88,6 +88,8 @@ No questions now...
 
 == Changelog ==
 
+= 2.9.2.112 =
+* noindex, nofollow
 = 2.9.2.111 =
 * Added manual sending reports to advertisers
 * GPT tags of Google DFP now is supported

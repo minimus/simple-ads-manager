@@ -1067,11 +1067,12 @@ if(!class_exists('SamPlaceEdit')) {
                       </div>
                       <p>
                         <label for='ad_no'><strong><?php echo __('Add to ad', SAM_DOMAIN).':'; ?></strong></label>
-                        <select name='ad_no' id='ad_no' disabled='disabled'>
+                        <select name='ad_no' id='ad_no'>
                           <option value='0' <?php selected(0, $row['ad_no']); ?>><?php _e('Non Selected', SAM_DOMAIN) ?></option>
                           <option value='1' <?php selected(1, $row['ad_no']); ?>><?php _e('nofollow', SAM_DOMAIN) ?></option>
-                          <option value='2' <?php selected(2, $row['ad_no']); ?>><?php _e('noindex', SAM_DOMAIN) ?></option>
-                          <option value='3' <?php selected(3, $row['ad_no']); ?>><?php _e('nofollow and noindex', SAM_DOMAIN) ?></option>
+	                        <option value='2' <?php selected(2, $row['ad_no']); ?>><?php _e('dofollow', SAM_DOMAIN) ?></option>
+                          <option value='3' <?php selected(3, $row['ad_no']); ?>><?php _e('noindex', SAM_DOMAIN) ?></option>
+                          <option value='4' <?php selected(4, $row['ad_no']); ?>><?php _e('nofollow and noindex', SAM_DOMAIN) ?></option>
                         </select>
                       </p>
                       <div class="clear"></div>
