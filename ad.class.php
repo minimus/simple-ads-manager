@@ -145,7 +145,7 @@ HTML;
 <div class="sam-swf-container" style="position: relative;">
 	<div class="sam-flash-overlay" style="position:absolute;z-index:100;top:0;left:0;bottom:0;right:0;">
 		$aStart
-		<img src="$blank_image" width="$width" height="$height" alt="" style="max-width:100%;" />
+		<img src="$blank_image" alt="" style="width:100%;height:100%;" />
 		$aEnd
 	</div>
 	$banner_html
@@ -522,7 +522,7 @@ HTML;
 <div class="sam-swf-container" style="position: relative;">
 	<div class="sam-flash-overlay" style="position:absolute;z-index:100;top:0;left:0;bottom:0;right:0;">
 		$aStart
-		<img src="$blank_image" width="$width" height="$height" alt="" style="max-width:100%;" />
+		<img src="$blank_image" alt="" style="width:100%;height:100%;" />
 		$aEnd
 	</div>
 	$banner_html
