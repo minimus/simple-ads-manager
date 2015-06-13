@@ -151,8 +151,8 @@ HTML;
 	$banner_html
 </div>
 HTML;
-						$output .= $banner_html;
 					}
+					$output .= $banner_html;
 				} else {
 					if ( ! empty( $ad['ad_img'] ) ) {
 						$iTag =
