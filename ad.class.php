@@ -470,22 +470,22 @@ googletag.cmd.push(function() { googletag.display('{$block['div']}'); });
 			// Image and Code Modes
 			if ( $ad['code_mode'] == 0 ) {
 				// generate link tag
-				$outId   = ( (int) $ad['count_clicks'] == 1 ) ?
+				$outId  = ( (int) $ad['count_clicks'] == 1 ) ?
 					" id='a" . rand( 10, 99 ) . "_" . $ad['aid'] . "' class='sam_ad'" : '';
-				$aStart  = '';
-				$aEnd    = '';
-				$iTag    = '';
-				$robo    = (integer) $ad['ad_no'];
-				$rel     = ( ( in_array( $robo, array( 1, 2, 4 ) ) ) ? ( ( in_array( $robo, array( 1, 4 ) ) )
-					? " rel='nofollow'" : " rel='dofollow'" ) : '' );
-				$niStart = ( ( in_array( $robo, array( 3, 4 ) ) ) ? '<noindex>' : '' );
-				$niEnd   = ( ( in_array( $robo, array( 3, 4 ) ) ) ? '</noindex>' : '' );
-				if ( ! empty( $settings['adDisplay'] ) ) {
-					$target = '_' . $settings['adDisplay'];
-				} else {
-					$target = '_blank';
-				}
+				$aStart = '';
+				$aEnd   = '';
+				$iTag   = '';
 				if ( ! empty( $ad['ad_target'] ) ) {
+					$robo    = (integer) $ad['ad_no'];
+					$rel     = ( ( in_array( $robo, array( 1, 2, 4 ) ) ) ? ( ( in_array( $robo, array( 1, 4 ) ) )
+						? " rel='nofollow'" : " rel='dofollow'" ) : '' );
+					$niStart = ( ( in_array( $robo, array( 3, 4 ) ) ) ? '<noindex>' : '' );
+					$niEnd   = ( ( in_array( $robo, array( 3, 4 ) ) ) ? '</noindex>' : '' );
+					if ( ! empty( $settings['adDisplay'] ) ) {
+						$target = '_' . $settings['adDisplay'];
+					} else {
+						$target = '_blank';
+					}
 					//$aStart = ((in_array((integer)$ad['ad_no'], array(2,3))) ? '<noindex>' : '')."<a href='{$ad['ad_target']}' target='$target' ".((in_array((integer)$ad['ad_no'], array(1,3))) ? " rel='nofollow'" : '').">";
 					//$aEnd = "</a>".(in_array((integer)$ad['ad_no'], array(2,3))) ? '</noindex>' : '';
 					$aStart = "{$niStart}<a $outId href='{$ad['ad_target']}' target='{$target}'{$rel}>";
@@ -528,43 +528,44 @@ HTML;
 	$banner_html
 </div>
 HTML;
-						$output .= $banner_html;
-					} else {
-						if ( ! empty( $ad['ad_img'] ) ) {
-							$iTag = "<img src='{$ad['ad_img']}' " . ( ( ! empty( $ad['ad_alt'] ) )
-									? " alt='{$ad['ad_alt']}' " : " alt='' " ) . " />";
-						}
-						$output = $aStart . $iTag . $aEnd;
 					}
-				} elseif ( $ad['code_mode'] == 1 ) {
-					if ( $ad['code_type'] == 1 ) {
-						ob_start();
-						eval( '?>' . $ad['ad_code'] . '<?' );
-						$output = ob_get_contents();
-						ob_end_clean();
-					} else {
-						$output = self::prepareCodes( $ad['ad_code'], $rId );
+					$output .= $banner_html;
+				} else {
+					if ( ! empty( $ad['ad_img'] ) ) {
+						$iTag =
+							"<img src='{$ad['ad_img']}' " . ( ( ! empty( $ad['ad_alt'] ) ) ? " alt='{$ad['ad_alt']}' "
+								: " alt='' " ) . " />";
 					}
+					$output = $aStart . $iTag . $aEnd;
 				}
-
-				//$this->sql = $output;
-
-				$output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='{$container} {$samPlace}' data-sam='{$data}'>{$output}</div>";
-
-				if ( is_array( $useCodes ) ) {
-					$output = $useCodes['before'] . $output . $useCodes['after'];
-				} elseif ( $useCodes ) {
-					$output = $ad['code_before'] . $output . $ad['code_after'];
+			} elseif ( $ad['code_mode'] == 1 ) {
+				if ( $ad['code_type'] == 1 ) {
+					ob_start();
+					eval( '?>' . $ad['ad_code'] . '<?' );
+					$output = ob_get_contents();
+					ob_end_clean();
+				} else {
+					$output = self::prepareCodes( $ad['ad_code'], $rId );
 				}
-
-				// Updating Display Cycle
-				if ( ! $this->crawler && ! is_admin() ) {
-					$sSql = "UPDATE $aTable sa SET sa.ad_weight_hits = sa.ad_weight_hits + 1 WHERE sa.id = %d;";
-					$wpdb->query( $wpdb->prepare( $sSql, $ad['aid'] ) );
-				}
-
-				return $output;
 			}
+
+			//$this->sql = $output;
+
+			$output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='{$container} {$samPlace}' data-sam='{$data}'>{$output}</div>";
+
+			if ( is_array( $useCodes ) ) {
+				$output = $useCodes['before'] . $output . $useCodes['after'];
+			} elseif ( $useCodes ) {
+				$output = $ad['code_before'] . $output . $ad['code_after'];
+			}
+
+			// Updating Display Cycle
+			if ( ! $this->crawler && ! is_admin() ) {
+				$sSql = "UPDATE $aTable sa SET sa.ad_weight_hits = sa.ad_weight_hits + 1 WHERE sa.id = %d;";
+				$wpdb->query( $wpdb->prepare( $sSql, $ad['aid'] ) );
+			}
+
+			return $output;
 		}
 	}
 }
