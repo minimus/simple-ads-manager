@@ -69,6 +69,10 @@ Do not upgrade this plugin from Update page! Upgrade it from Plugins page!
 
 Change log
 ==========
+2.9.3.113
+* Overlay link for SWF banners is added. So it is possible to track views and clicks for flash banners. And also make flash banner clickable without having to edit banners in Adobe Flash. If the link for banner is not set, the swf banner is displayed as usual. Thanks for [*h8every1* aka **Anton Syuvaev**](http://h8every1.ru/).
+* *noindex*, *nofollow*, *dofollow* are added.
+
 2.9.2.111
 * Added manual sending reports to advertisers
 * GPT tags of Google DFP now is supported

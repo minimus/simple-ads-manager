@@ -4,7 +4,7 @@ Donate link: http://www.simplelib.com/archives/wordpress-plugin-simple-ads-manag
 Tags: ad, ads, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, wptouch
 Requires at least: 3.9
 Tested up to: 4.2.2
-Stable tag: 2.9.2.111
+Stable tag: 2.9.3.113
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -88,8 +88,9 @@ No questions now...
 
 == Changelog ==
 
-= 2.9.2.112 =
-* noindex, nofollow
+= 2.9.3.113 =
+* Overlay link for SWF banners is added. So it is possible to track views and clicks for flash banners. And also make flash banner clickable without having to edit banners in Adobe Flash. If the link for banner is not set, the swf banner is displayed as usual. Thanks for [*h8every1* aka **Anton Syuvaev**](http://h8every1.ru/).
+* *noindex*, *nofollow*, *dofollow* are added.
 = 2.9.2.111 =
 * Added manual sending reports to advertisers
 * GPT tags of Google DFP now is supported
@@ -238,6 +239,8 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 2.9.3.113 =
+Overlay link for SWF banners is added. *noindex*, *nofollow*, *dofollow* are added.
 = 2.9.2.111 =
 Added manual sending reports to advertisers. GPT tags of Google DFP now is supported.
 = 2.9.1.109 =

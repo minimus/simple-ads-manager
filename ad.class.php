@@ -124,9 +124,8 @@ if ( ! class_exists( 'SamAd' ) ) {
 					$flashvars   = ( ! empty( $ad['ad_swf_flashvars'] ) ) ? $ad['ad_swf_flashvars'] : '{}';
 					$params      = ( ! empty( $ad['ad_swf_params'] ) ) ? $ad['ad_swf_params'] : '{}';
 					$attributes  = ( ! empty( $ad['ad_swf_attributes'] ) ) ? $ad['ad_swf_attributes'] : '{}';
-					$text        = ( isset( $ad['ad_swf_fallback'] ) ) ? $ad['ad_swf_fallback']
-						: __( 'Flash ad' ) . ' ID:' . $ad['id'];
-					$blank_image = plugin_dir_url( __FILE__ ) . "images/blank.gif";
+					$text        = ( isset( $ad['ad_swf_fallback'] ) ) ? $ad['ad_swf_fallback']	: "Flash ad ID: {$ad['id']}";
+					$blank_image = SAM_IMG_URL . "blank.gif";
 
 					$output = <<<HTML
 <script type="text/javascript">
@@ -486,8 +485,6 @@ googletag.cmd.push(function() { googletag.display('{$block['div']}'); });
 					} else {
 						$target = '_blank';
 					}
-					//$aStart = ((in_array((integer)$ad['ad_no'], array(2,3))) ? '<noindex>' : '')."<a href='{$ad['ad_target']}' target='$target' ".((in_array((integer)$ad['ad_no'], array(1,3))) ? " rel='nofollow'" : '').">";
-					//$aEnd = "</a>".(in_array((integer)$ad['ad_no'], array(2,3))) ? '</noindex>' : '';
 					$aStart = "{$niStart}<a $outId href='{$ad['ad_target']}' target='{$target}'{$rel}>";
 					$aEnd   = "</a>{$niEnd}";
 				}
@@ -501,9 +498,8 @@ googletag.cmd.push(function() { googletag.display('{$block['div']}'); });
 					$flashvars   = ( ! empty( $ad['ad_swf_flashvars'] ) ) ? $ad['ad_swf_flashvars'] : '{}';
 					$params      = ( ! empty( $ad['ad_swf_params'] ) ) ? $ad['ad_swf_params'] : '{}';
 					$attributes  = ( ! empty( $ad['ad_swf_attributes'] ) ) ? $ad['ad_swf_attributes'] : '{}';
-					$text        = ( isset( $ad['ad_swf_fallback'] ) ) ? $ad['ad_swf_fallback']
-						: "Flash ad ID: {$ad['aid']}"; //__('Flash ad').' ID:'.$ad['aid'];
-					$blank_image = plugin_dir_url( __FILE__ ) . "images/blank.gif";
+					$text        = ( isset( $ad['ad_swf_fallback'] ) ) ? $ad['ad_swf_fallback']	: "Flash ad ID: {$ad['aid']}";
+					$blank_image = SAM_IMG_URL . "blank.gif";
 
 					$output = <<<HTML
 <script type="text/javascript">
