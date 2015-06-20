@@ -439,15 +439,20 @@ if(!class_exists('SamStatsCleaner')) {
     private function errorWrite($eTable, $rTable, $eSql = null, $eResult = null, $lastError = null, $date = null) {
       global $wpdb;
 
+	    $errorMsg = '';
+	    $error = false;
+
       if(!is_null($eResult)) {
         if($eResult === false) {
-          $wpdb->insert(
+          $errorMsg = (empty($lastError)) ? __('An error occurred during updating process...', SAM_DOMAIN) : $lastError;
+	        $error = true;
+	        $wpdb->insert(
             $eTable,
             array(
               'error_date' => current_time('mysql'),
               'table_name' => $rTable,
               'error_type' => 1,
-              'error_msg' => (empty($lastError)) ? __('An error occurred during updating process...', SAM_DOMAIN) : $lastError,
+              'error_msg' => $errorMsg,
               'error_sql' => $eSql,
               'resolved' => 0
             ),
@@ -455,13 +460,14 @@ if(!class_exists('SamStatsCleaner')) {
           );
         }
         else {
-          $wpdb->insert(
+          $errorMsg = (empty($lastError)) ? sprintf( __('All statistical data before %s is cleared...', SAM_DOMAIN), $date ) : $lastError;
+	        $wpdb->insert(
             $eTable,
             array(
               'error_date' => current_time('mysql'),
               'table_name' => $rTable,
               'error_type' => 0,
-              'error_msg' => (empty($lastError)) ? sprintf( __('All statistical data before %s is cleared...', SAM_DOMAIN), $date ) : $lastError,
+              'error_msg' => $errorMsg,
               'error_sql' => $eSql,
               'resolved' => 1
             ),
@@ -469,6 +475,8 @@ if(!class_exists('SamStatsCleaner')) {
           );
         }
       }
+
+	    return array('error' => $error, 'msg' => $errorMsg);
     }
 
     public function clear($date = null) {
@@ -486,6 +494,7 @@ if(!class_exists('SamStatsCleaner')) {
       global $wpdb;
       $dbResult = null;
       $el = (integer)$this->options['errorlog'];
+	    $error = false;
 
       $sTable = $wpdb->prefix . 'sam_stats';
       $eTable = $wpdb->prefix . "sam_errors";
@@ -493,9 +502,37 @@ if(!class_exists('SamStatsCleaner')) {
       $sql = "DELETE FROM $sTable WHERE event_time < %s;";
       $dbResult = $wpdb->query($wpdb->prepare($sql, $date));
       if($el) {
-        self::errorWrite($eTable, $sTable, $wpdb->prepare($sql, $date), $dbResult, $wpdb->last_error, $sDate);
+        $out = self::errorWrite($eTable, $sTable, $wpdb->prepare($sql, $date), $dbResult, $wpdb->last_error, $sDate);
         $dbResult = null;
       }
+	    else $out = array('error' => $error, 'msg' => __('Statistical data were cleared.', SAM_DOMAIN));
+
+	    return $out;
     }
+
+	  public function kill() {
+		  global $wpdb;
+		  $dbResult = null;
+		  $el = (integer)$this->options['errorlog'];
+		  $error = false;
+
+		  $nowDate = new DateTime('now');
+		  $sDate = $nowDate->format(str_replace(array('d', 'j'), array('01', '1'), get_option('date_format')));
+
+		  $sTable = $wpdb->prefix . 'sam_stats';
+		  $eTable = $wpdb->prefix . "sam_errors";
+
+		  $sql = "DELETE FROM {$sTable};";
+		  $dbResult = $wpdb->query($sql);
+		  if($el) {
+			  $out = self::errorWrite($eTable, $sTable, $sql, $dbResult, $wpdb->last_error, $sDate);
+			  $dbResult = null;
+		  }
+		  else $out = array('error' => $error, 'msg' => __('All statistical data are completely removed.', SAM_DOMAIN));
+
+		  if(!$out['error']) $out['msg'] = __('All statistical data are completely removed.', SAM_DOMAIN);
+
+		  return $out;
+	  }
   }
 }

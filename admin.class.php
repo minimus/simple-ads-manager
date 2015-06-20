@@ -10,6 +10,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     private $listBlock;
 	  private $listAdvert;
     private $eLogPage;
+	  private $toolsPage;
     private $cmsVer;
     private $settingsTabs;
     private $samPointerOptions = array('places' => true, 'ads' => true, 'zones' => true, 'blocks' => true);
@@ -665,7 +666,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $this->listBlock = add_submenu_page('sam-list', __('Ads Blocks List', SAM_DOMAIN), __('Ads Blocks', SAM_DOMAIN), SAM_ACCESS, 'sam-block-list', array(&$this, 'samBlockListPage'));
       $this->editBlock = add_submenu_page('sam-list', __('Ads Block Editor', SAM_DOMAIN), __('New Block', SAM_DOMAIN), SAM_ACCESS, 'sam-block-edit', array(&$this, 'samBlockEditPage'));
 	    $this->listAdvert = add_submenu_page('sam-list', __('Advertisers List', SAM_DOMAIN), __('Advertisers', SAM_DOMAIN), SAM_ACCESS, 'sam-adverts', array(&$this, 'samAdvListPage'));
-      $this->settingsPage = add_submenu_page('sam-list', __('Simple Ads Manager Settings', SAM_DOMAIN), __('Settings', SAM_DOMAIN), 'manage_options', 'sam-settings', array(&$this, 'samAdminPage'));
+      $this->toolsPage = add_submenu_page('sam-list', __('SAM Tools', SAM_DOMAIN), __('Tools', SAM_DOMAIN), SAM_ACCESS, 'sam-tools', array(&$this, 'samToolsPage'));
+	    $this->settingsPage = add_submenu_page('sam-list', __('Simple Ads Manager Settings', SAM_DOMAIN), __('Settings', SAM_DOMAIN), 'manage_options', 'sam-settings', array(&$this, 'samAdminPage'));
       $this->eLogPage = add_submenu_page('sam-list', __('Simple Ads Manager Error Log', SAM_DOMAIN), __('Error Log', SAM_DOMAIN), SAM_ACCESS, 'sam-errors', array(&$this, 'samErrorLog'));
 
       add_action('admin_enqueue_scripts', array(&$this, 'loadScripts'));
@@ -972,6 +974,9 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           'ajaxurl' => SAM_URL . 'sam-ajax-admin.php'
         ));
       }
+	    elseif($hook == $this->toolsPage) {
+		    wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-tools.css', false, SAM_VERSION);
+	    }
     }
 
     public function getCategories($valueType = 'array') {
@@ -1046,7 +1051,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
         echo "<div class='ui-sortable sam-section'>\n";
         echo "<div class='postbox opened'>\n";
-        echo "<h3>{$section['title']}</h3>\n";
+        echo "<h3 class='hndle'>{$section['title']}</h3>\n";
         echo '<div class="inside">';
         call_user_func($section['callback'], $section);
         if ( !isset($wp_settings_fields) || !isset($wp_settings_fields[$page]) || !isset($wp_settings_fields[$page][$section['id']]) )
@@ -1425,7 +1430,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           <div id='poststuff' class='metabox-holder has-right-sidebar'>
             <div id="side-info-column" class="inner-sidebar">
               <div class='postbox opened'>
-                <h3><?php _e('System Info', SAM_DOMAIN) ?></h3>
+                <h3 class="hndle"><?php _e('System Info', SAM_DOMAIN) ?></h3>
                 <div class="inside">
                   <p>
                     <?php 
@@ -1446,7 +1451,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
                 </div>
               </div>
               <div class='postbox opened'>
-                <h3><?php _e('Resources', SAM_DOMAIN) ?></h3>
+                <h3 class="hndle"><?php _e('Resources', SAM_DOMAIN) ?></h3>
                 <div class="inside">
                   <ul>
                     <li><a target='_blank' href='http://wordpress.org/extend/plugins/simple-ads-manager/'><?php _e("Wordpress Plugin Page", SAM_DOMAIN); ?></a></li>
@@ -1457,7 +1462,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
                 </div>
               </div>  
               <div class='postbox opened'>
-                <h3><?php _e('Donations', SAM_DOMAIN) ?></h3>
+                <h3 class="hndle"><?php _e('Donations', SAM_DOMAIN) ?></h3>
                 <div class="inside">
                   <div style="text-align: center; margin-top: 10px;">
                     <script type="text/javascript">
@@ -1488,7 +1493,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
                 </div>
               </div>
               <div class='postbox opened'>
-                <h3><?php _e('Another Plugins', SAM_DOMAIN) ?></h3>
+                <h3 class="hndle"><?php _e('Another Plugins', SAM_DOMAIN) ?></h3>
                 <div class="inside">
                   <p>
                     <?php
@@ -1610,6 +1615,13 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       $list = new SamErrorLog($settings);
       $list->page();
     }
+
+	  public function samToolsPage() {
+		  include_once('sam.tools.page.php');
+		  $settings = parent::getSettings();
+		  $tools = new SamToolsPage($settings);
+		  $tools->page();
+	  }
   } // end of class definition
 } // end of if not class SimpleAdsManager exists
 ?>

@@ -137,7 +137,6 @@ if(!class_exists('SamPlaceList')) {
           ));
           ?>
 <div class='wrap'>
-  <div class="icon32" style="background: url('<?php echo SAM_IMG_URL.'sam-list.png' ?>') no-repeat transparent; "><br/></div>
   <h2><?php _e('Managing Ads Places', SAM_DOMAIN); ?></h2>
   <?php
     include_once('errors.class.php');
