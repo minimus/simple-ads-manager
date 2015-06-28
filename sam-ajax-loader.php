@@ -22,13 +22,27 @@ define('SHORTINIT', true);
 
 require_once( $root . '/wp-load.php' );
 
-require_once( ABSPATH . WPINC . '/default-constants.php' );
+/** @see wp_plugin_directory_constants() */
+if ( ! defined( 'WP_CONTENT_URL' ) ) {
+	define( 'WP_CONTENT_URL', get_option( 'siteurl' ) . '/wp-content' );
+}
+if ( ! defined( 'WP_PLUGIN_DIR' ) ) {
+	define( 'WP_PLUGIN_DIR', WP_CONTENT_DIR . '/plugins' );
+}
+if ( ! defined( 'WP_PLUGIN_URL' ) ) {
+	define( 'WP_PLUGIN_URL', WP_CONTENT_URL . '/plugins' );
+}
+
+if ( ! defined( 'WPMU_PLUGIN_DIR' ) ) {
+	define( 'WPMU_PLUGIN_DIR', WP_CONTENT_DIR . '/mu-plugins' );
+}
+if ( ! defined( 'WPMU_PLUGIN_URL' ) ) {
+	define( 'WPMU_PLUGIN_URL', WP_CONTENT_URL . '/mu-plugins' );
+}
 require_once( ABSPATH . WPINC . '/formatting.php' );
 require_once( ABSPATH . WPINC . '/link-template.php' );
-wp_plugin_directory_constants();
 global $wp_plugin_paths;
 $wp_plugin_paths = array();
-wp_register_plugin_realpath( __FILE__ );
 
 if (!defined('SAM_URL')) {
 	define( 'SAM_URL', plugin_dir_url( __FILE__ ));
