@@ -22,6 +22,21 @@ define('SHORTINIT', true);
 
 require_once( $root . '/wp-load.php' );
 
+require_once( ABSPATH . WPINC . '/default-constants.php' );
+require_once( ABSPATH . WPINC . '/formatting.php' );
+require_once( ABSPATH . WPINC . '/link-template.php' );
+wp_plugin_directory_constants();
+global $wp_plugin_paths;
+$wp_plugin_paths = array();
+wp_register_plugin_realpath( __FILE__ );
+
+if (!defined('SAM_URL')) {
+	define( 'SAM_URL', plugin_dir_url( __FILE__ ));
+}
+if (!defined('SAM_IMG_URL')) {
+	define( 'SAM_IMG_URL', SAM_URL . 'images/' );
+}
+
 global $wpdb;
 
 $oTable = $wpdb->prefix . 'options';
