@@ -69,6 +69,10 @@ Do not upgrade this plugin from Update page! Upgrade it from Plugins page!
 
 Change log
 ==========
+2.9.4.116
+* Possibility of DoS attacks is eliminated
+* Flash overlay image URL is fixed
+
 2.9.3.114
 * Overlay link for SWF banners is added. So it is possible to track views and clicks for flash banners. And also make flash banner clickable without having to edit banners in Adobe Flash. If the link for banner is not set, the swf banner is displayed as usual. Thanks for [**h8every1** aka **Anton Syuvaev**](http://h8every1.ru/).
 * *noindex*, *nofollow*, *dofollow* are added

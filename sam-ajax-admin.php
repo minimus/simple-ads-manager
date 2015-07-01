@@ -9,22 +9,34 @@
 define('DOING_AJAX', true);
 
 if (!isset( $_REQUEST['action'])) die('-1');
-if (isset( $_REQUEST['level'] )) {
-  $rootLevel = intval($_REQUEST['level']);
-  $root = dirname( __FILE__ );
-  for( $i = 0; $i < $rootLevel; $i++ ) $root = dirname( $root );
+
+function samCheckLevel() {
+	$level = 0;
+	$upPath = '';
+	$file = 'wp-load.php';
+	$fe = false;
+
+	while(!$fe && $level < 6) {
+		$fe = file_exists($upPath . $file);
+		if(!$fe) {
+			$upPath .= '../';
+			$level++;
+		}
+	}
+	if($fe) return realpath($upPath . $file);
+	else return dirname(dirname(dirname(dirname(__FILE__))));
 }
-else $root = dirname(dirname(dirname(dirname(__FILE__))));
+
+$wpLoadPath = samCheckLevel();
 
 ini_set('html_errors', 0);
 $notShortInit = array('load_combo_data', 'load_users', 'load_authors');
 
 $validUri = '';
 $validRequest = false;
-//if($_REQUEST['action'] !== 'load_combo_data') define('SHORTINIT', true);
 if( ! in_array($_REQUEST['action'], $notShortInit)) define('SHORTINIT', true);
 
-require_once( $root . '/wp-load.php' );
+require_once( $wpLoadPath );
 
 function random_string($chars = 12) {
 	$letters = 'abcefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 ';

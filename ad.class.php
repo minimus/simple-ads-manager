@@ -506,8 +506,7 @@ googletag.cmd.push(function() { googletag.display('{$block['div']}'); });
 	var flashvars = $flashvars, params = $params, attributes = $attributes;
 	attributes.id = "$id";
 	attributes.styleclass = "sam_ad";
-	swfobject.embedSWF("$file", "$id", "$width", "$height", "9.0.0", "",
-	                   flashvars, params, attributes);
+	swfobject.embedSWF("$file", "$id", "$width", "$height", "9.0.0", "", flashvars, params, attributes);
 </script>
 HTML;
 
@@ -517,9 +516,7 @@ HTML;
 						$banner_html = <<<HTML
 <div class="sam-swf-container" style="position: relative;">
 	<div class="sam-flash-overlay" style="position:absolute;z-index:100;top:0;left:0;bottom:0;right:0;">
-		$aStart
-		<img src="$blank_image" alt="" style="width:100%;height:100%;" />
-		$aEnd
+		{$aStart}<img src="$blank_image" alt="" style="width:100%;height:100%;padding:0;border:0;background-color:transparent;">{$aEnd}
 	</div>
 	$banner_html
 </div>

@@ -11,21 +11,33 @@ define( 'DOING_AJAX', true );
 if ( ! isset( $_POST['action'] ) ) {
 	die( '-1' );
 }
-if ( isset( $_POST['level'] ) ) {
-	$rootLevel = intval( $_POST['level'] );
-	$root      = dirname( __FILE__ );
-	for ( $i = 0; $i < $rootLevel; $i ++ ) {
-		$root = dirname( $root );
+
+function samCheckLevel() {
+	$level = 0;
+	$upPath = '';
+	$file = 'wp-load.php';
+	$out = false;
+
+	while(!$out && $level < 6) {
+		$out = file_exists($upPath . $file);
+		if(!$out) {
+			$upPath .= '../';
+			$level++;
+		}
 	}
-} else {
-	$root = dirname( dirname( dirname( dirname( __FILE__ ) ) ) );
+	if($out) return realpath($upPath . $file);
+	else return dirname(dirname(dirname(dirname(__FILE__))));
 }
+
+$wpLoadPath = samCheckLevel();
 
 ini_set( 'html_errors', 0 );
 
 define( 'SHORTINIT', true );
 
-require_once( $root . '/wp-load.php' );
+require_once( $wpLoadPath );
+require_once( ABSPATH . WPINC . '/formatting.php' );
+require_once( ABSPATH . WPINC . '/link-template.php' );
 
 /** @see wp_plugin_directory_constants() */
 if ( ! defined( 'WP_CONTENT_URL' ) ) {
@@ -44,8 +56,6 @@ if ( ! defined( 'WPMU_PLUGIN_DIR' ) ) {
 if ( ! defined( 'WPMU_PLUGIN_URL' ) ) {
 	define( 'WPMU_PLUGIN_URL', WP_CONTENT_URL . '/mu-plugins' );
 }
-require_once( ABSPATH . WPINC . '/formatting.php' );
-require_once( ABSPATH . WPINC . '/link-template.php' );
 global $wp_plugin_paths;
 $wp_plugin_paths = array();
 
