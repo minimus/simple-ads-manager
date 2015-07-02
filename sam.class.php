@@ -450,7 +450,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           'ajaxurl' => SAM_URL . 'sam-ajax.php',
           'loadurl' => SAM_URL . 'sam-ajax-loader.php',
           'load' => ($this->samOptions['adShow'] == 'js'),
-          'level' => self::getDirLevel(), //count(explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) ))),
+          //'level' => self::getDirLevel(),
           'mailer' => $options['mailer'],
           'clauses' => $clauses64,
 		      'doStats' => $this->samOptions['stats'],

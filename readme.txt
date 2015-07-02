@@ -90,7 +90,7 @@ No questions now...
 
 = 2.9.4.116 =
 * Possibility of DoS attacks is eliminated
-* Flash overlay image URL is fixed
+* Flash overlay image URL is fixed ([**h8every1** aka **Anton Syuvaev**](http://h8every1.ru/))
 = 2.9.3.114 =
 * Overlay link for SWF banners is added. So it is possible to track views and clicks for flash banners. And also make flash banner clickable without having to edit banners in Adobe Flash. If the link for banner is not set, the swf banner is displayed as usual. Thanks for [**h8every1** aka **Anton Syuvaev**](http://h8every1.ru/).
 * *noindex*, *nofollow*, *dofollow* are added.

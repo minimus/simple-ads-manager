@@ -437,8 +437,7 @@ var sam = sam || {};
     var authRequest = $.ajax({
       url:samAjaxUrl,
       data: {
-        action: 'load_authors',
-        level: 3
+        action: 'load_authors'
       },
       type: 'POST'
     }), authData;
@@ -471,8 +470,7 @@ var sam = sam || {};
     var catsRequest = $.ajax({
       url: samAjaxUrl,
       data: {
-        action: 'load_cats',
-        level: 3
+        action: 'load_cats'
       },
       type: 'POST'
     }), catsData;
@@ -486,8 +484,7 @@ var sam = sam || {};
     var tagsRequest = $.ajax({
       url: samAjaxUrl,
       data: {
-        action: 'load_tags',
-        level: 3
+        action: 'load_tags'
       },
       type: 'POST'
     }), tagsData;

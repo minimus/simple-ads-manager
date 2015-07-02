@@ -20,8 +20,7 @@
         $.post(samAjax.loadurl, {
           action: 'load_ads',
           ads: ads,
-          wc: samAjax.clauses,
-          level: samAjax.level
+          wc: samAjax.clauses
         }).done(function (data) {
           if (data.success) {
             var hits = [];
@@ -32,8 +31,7 @@
                   $.post(samAjax.ajaxurl, {
                     action: 'sam_click',
                     id: ad.id,
-                    pid: ad.pid,
-                    level: samAjax.level
+                    pid: ad.pid
                   });
                 });
                 hits.push([ad.pid, ad.id]);
@@ -42,8 +40,7 @@
             if (hits.length > 0 && doStats) {
               $.post(samAjax.ajaxurl, {
                 action: 'sam_hits',
-                hits: hits,
-                level: samAjax.level
+                hits: hits
               });
             }
           }
@@ -64,8 +61,7 @@
             $.post(samAjax.ajaxurl, {
               action: 'sam_click',
               id: id,
-              pid: pid,
-              level: samAjax.level
+              pid: pid
             });
           });
         });
@@ -73,8 +69,7 @@
         if (hits.length > 0) {
           $.post(samAjax.ajaxurl, {
             action: 'sam_hits',
-            hits: hits,
-            level: samAjax.level
+            hits: hits
           });
         }
       }
@@ -93,8 +88,7 @@
             $.post(samAjax.ajaxurl, {
               action: 'sam_click',
               id: id,
-              pid: pid,
-              level: samAjax.level
+              pid: pid
             });
           });
         });
@@ -102,8 +96,7 @@
         if (hits.length > 0) {
           $.post(samAjax.ajaxurl, {
             action: 'sam_hits',
-            hits: hits,
-            level: samAjax.level
+            hits: hits
           });
         }
       }
