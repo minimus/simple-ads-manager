@@ -25,7 +25,7 @@ $places = $wpdb->get_results("SELECT id, name FROM {$pTable} WHERE trash IS FALS
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<title><?php _e('Insert Ads Place', SAM_DOMAIN); ?></title>
-  <meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php echo bloginfo('charset'); ?>" />
+  <meta http-equiv="Content-Type" content="<?php bloginfo('html_type'); ?>; charset=<?php bloginfo('charset'); ?>">
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/tiny_mce_popup.js"></script>
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/utils/form_utils.js"></script>
 	<script language="javascript" type="text/javascript" src="<?php echo get_option('siteurl') ?>/wp-includes/js/tinymce/utils/mctabs.js"></script>

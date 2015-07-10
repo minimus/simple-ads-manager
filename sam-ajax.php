@@ -102,18 +102,18 @@ if(in_array($action, $allowed_actions)){
 					  $values .= ((empty($values)) ? '' : ', ') . "({$hit[1]}, {$hit[0]}, NOW(), 0, \"{$remoteAddr}\")";
 				  }
 			  }
-        //$values = $wpdb->escape($values);
-			  $sql = "INSERT INTO $sTable (id, pid, event_time, event_type, remote_addr) VALUES {$values};";
-			  $result = $wpdb->query($sql);
-			  if($result > 0) echo json_encode(array('success' => true));
-			  else echo json_encode(array(
-				  'success' => false,
-				  /*'result' => $result,
-				  'sql' => $sql,
-				  'hits' => $hits,
-				  'values' => $values*/
-			  ));
+        if(!empty($values)) {
+	        $sql    = "INSERT INTO $sTable (id, pid, event_time, event_type, remote_addr) VALUES {$values};";
+	        $result = $wpdb->query( $sql );
+	        if ( $result > 0 ) {
+		        echo json_encode( array( 'success' => true ) );
+	        } else {
+		        echo json_encode( array( 'success' => false ) );
+	        }
+        }
+			  else echo json_encode( array( 'success' => false ) );
 		  }
+		  else echo json_encode( array( 'success' => false ) );
 		  break;
 
     case 'sam_ajax_sam_maintenance':
