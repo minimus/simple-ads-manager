@@ -91,34 +91,7 @@ $allowed_actions = array(
 if ( in_array( $action, $allowed_actions ) ) {
 	switch ( $action ) {
 		case 'sam_ajax_load_place':
-			if ( isset( $_POST['id'] ) && isset( $_POST['pid'] ) && isset( $_POST['wc'] ) ) {
-				$placeId = (integer) $_POST['pid'];
-				$adId    = (integer) $_POST['id'];
-				$clauses = unserialize( base64_decode( $_POST['wc'] ) );
-				$args    = array( 'id' => ( $adId == 0 ) ? $placeId : $adId );
-				if ( isset( $_POST['codes'] ) ) {
-					$codes = (bool) ( $_POST['codes'] );
-				} else {
-					$codes = false;
-				}
-				include_once( 'ad.class.php' );
-				if ( $adId == 0 ) {
-					$ad = new SamAdPlace( $args, $codes, false, $clauses, true );
-				} else {
-					$ad = new SamAd( $args, $codes, false, true );
-				}
-				echo json_encode( array(
-					'success' => true,
-					'ad'      => $ad->ad,
-					'id'      => $ad->id,
-					'pid'     => $ad->pid,
-					'cid'     => $ad->cid,
-					//'clauses' => $clauses,
-					//'sql' => $ad->sql
-				) );
-			} else {
-				json_encode( array( 'success' => false, 'error' => 'Bad input data.' ) );
-			}
+			echo json_encode( array( 'success' => false, 'error' => 'Deprecated...' ) );
 			break;
 
 		case 'sam_ajax_load_ads':
@@ -129,9 +102,9 @@ if ( in_array( $action, $allowed_actions ) ) {
 				$ad      = null;
 				include_once( 'ad.class.php' );
 				foreach ( $places as $value ) {
-					$placeId   = $value[0];
-					$adId      = $value[1];
-					$codes     = $value[2];
+					$placeId   = (int)$value[0];
+					$adId      = (int)$value[1];
+					$codes     = (int)$value[2];
 					$elementId = $value[3];
 					$args      = array( 'id' => ( $adId == 0 ) ? $placeId : $adId );
 
@@ -146,9 +119,7 @@ if ( in_array( $action, $allowed_actions ) ) {
 						'id'  => $ad->id,
 						'pid' => $ad->pid,
 						'cid' => $ad->cid,
-						'eid' => $elementId,
-						//'clauses' => $clauses,
-						//'sql' => $ad->sql
+						'eid' => $elementId
 					) );
 				}
 				echo json_encode( array(
@@ -156,7 +127,7 @@ if ( in_array( $action, $allowed_actions ) ) {
 					'ads'     => $ads
 				) );
 			} else {
-				json_encode( array( 'success' => false, 'error' => 'Bad input data.' ) );
+				echo json_encode( array( 'success' => false, 'error' => 'Bad input data.' ) );
 			}
 			break;
 	}

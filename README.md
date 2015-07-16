@@ -69,6 +69,10 @@ Do not upgrade this plugin from Update page! Upgrade it from Plugins page!
 
 Change log
 ==========
+2.9.5.118
+* Possibility of SQL injection is fixed. Thanks for [Kacper Szurek](http://security.szurek.pl/).
+* Minor bug resolved
+
 2.9.4.116
 * Possibility of DoS attacks is eliminated
 * Flash overlay image URL is fixed

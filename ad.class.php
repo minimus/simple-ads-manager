@@ -410,8 +410,8 @@ LIMIT 1;";
 				$ad = $wpdb->get_row( $aSql, ARRAY_A );
 			}
 
-			$this->pid = $ad['pid'];
-			$this->id  = $ad['aid'];
+			$this->pid = (int)$ad['pid'];
+			$this->id  = (int)$ad['aid'];
 			$this->cid = "c{$rId}_{$this->id}_{$this->pid}";
 			//$this->sql = $aSql;
 
@@ -428,7 +428,7 @@ LIMIT 1;";
 								: $ad['code_before'] . $output . $ad['code_after'];
 						}
 
-						$output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='{$container} {$samAd}'>{$output}</div>";
+						$output = "<div id='{$this->cid}' class='{$container} {$samAd}'>{$output}</div>";
 					} else {
 						$output = '';
 					}
@@ -456,7 +456,7 @@ googletag.cmd.push(function() { googletag.display('{$block['div']}'); });
 					$output = ( is_array( $useCodes ) ) ? $useCodes['before'] . $output . $useCodes['after']
 						: $ad['code_before'] . $output . $ad['code_after'];
 				}
-				$output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='{$container} {$samAd}'>{$output}</div>";
+				$output = "<div id='{$this->cid}' class='{$container} {$samAd}'>{$output}</div>";
 
 				return $output;
 			}
@@ -470,7 +470,7 @@ googletag.cmd.push(function() { googletag.display('{$block['div']}'); });
 			if ( $ad['code_mode'] == 0 ) {
 				// generate link tag
 				$outId  = ( (int) $ad['count_clicks'] == 1 ) ?
-					" id='a" . rand( 10, 99 ) . "_" . $ad['aid'] . "' class='sam_ad'" : '';
+					" id='a" . rand( 10, 99 ) . "_" . (int)$ad['aid'] . "' class='sam_ad'" : '';
 				$aStart = '';
 				$aEnd   = '';
 				$iTag   = '';
@@ -490,7 +490,7 @@ googletag.cmd.push(function() { googletag.display('{$block['div']}'); });
 				}
 
 				if ( (int) $ad['ad_swf'] ) {
-					$id          = "ad-" . $ad['aid'] . '-' . $rId;
+					$id          = "ad-" . (int)$ad['aid'] . '-' . $rId;
 					$file        = $ad['ad_img'];
 					$sizes       = self::getSize( $ad['ad_size'], null, null );
 					$width       = $sizes['width'];
@@ -544,7 +544,7 @@ HTML;
 
 			//$this->sql = $output;
 
-			$output = "<div id='c{$rId}_{$ad['aid']}_{$ad['pid']}' class='{$container} {$samPlace}' data-sam='{$data}'>{$output}</div>";
+			$output = "<div id='{$this->cid}' class='{$container} {$samPlace}' data-sam='{$data}'>{$output}</div>";
 
 			if ( is_array( $useCodes ) ) {
 				$output = $useCodes['before'] . $output . $useCodes['after'];
