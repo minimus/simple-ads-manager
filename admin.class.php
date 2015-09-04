@@ -13,7 +13,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 	  private $toolsPage;
     private $cmsVer;
     private $settingsTabs;
-    private $samPointerOptions = array('places' => true, 'ads' => true, 'zones' => true, 'blocks' => true);
+    private $samPointerOptions = array('places' => true, 'ads' => true, 'zones' => true, 'blocks' => true, 'all' => true);
     
     public function __construct() {
       parent::__construct();
@@ -205,17 +205,35 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
 
     public function  getPointerOptions($force = false) {
       if($force) {
-        $pointers = get_option('sam_pointers', '');
-        if($pointers == '') {
-          $pointers = get_option('sam_pointers', $this->samPointerOptions);
-          update_option('sam_pointers', $pointers);
-        }
+        $pts = get_option('sam_pointers', array());
+	      $pointers = wp_parse_args($pts, $this->samPointerOptions);
+        if(empty($pts)) update_option('sam_pointers', $pointers);
         $this->samPointerOptions = $pointers;
       }
       else $pointers = $this->samPointerOptions;
 
       return $pointers;
     }
+
+	  private function getPointerContent( $pointer = false ) {
+		  $alt   = __( 'Upgrade Now', SAM_DOMAIN );
+		  $image = SAM_URL . 'images/upgrade-380.jpg';
+		  $about = __( 'About SAM Pro Lite...', SAM_DOMAIN );
+		  $docs  = __( 'SAM Pro Lite Documentation', SAM_DOMAIN );
+		  $intro = __('Get the extended feature set of the <strong>Simple Ads Manager</strong> plugin.', SAM_DOMAIN);
+		  $intro2 = __('Upgrade to the SAM Pro Lite now!', SAM_DOMAIN);
+		  $margin = (($pointer) ? " margin: 20px 15px 0;" : '');
+
+		  return
+			  "<div style='text-align: center;{$margin}'>" .
+			  "<a href='http://codecanyon.net/item/sam-pro-lite/12721925' target='_blank'>" .
+			  "<img src='{$image}' alt='{$alt}'>" .
+			  "</a>" .
+			  "</div>" .
+			  "<p>{$intro}<br><a href='http://codecanyon.net/item/sam-pro-lite/12721925'><strong>{$intro2}</strong></a></p>" .
+			  "<p><a target='_blank' href='http://uncle-sam.info/sam-pro-lite/sam-pro-lite-info/features/'>{$about}</a><br>" .
+			  "<a href='http://uncle-sam.info/category/sam-pro-lite/sam-pro-lite-docs/' target='_blank'>{$docs}</a>";
+	  }
 
     private function getVersionData($version) {
       $output = array();
@@ -579,7 +597,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       self::finishSettingsTab('sam_html_section');
 
       add_settings_field('adCycle', __("Views per Cycle", SAM_DOMAIN), array(&$this, 'drawTextOption'), 'sam-settings', 'sam_general_section', array('description' => __('Number of hits of one ad for a full cycle of rotation (maximal activity).', SAM_DOMAIN)));
-      add_settings_field('access', __('Minimum Level for access to menu', SAM_DOMAIN), array(&$this, 'drawJSliderOption'), 'sam-settings', 'sam_general_section', array('description' => __('Who can use menu of plugin - Minimum User Level needed for access to menu of plugin. In any case only Super Admin and Administrator can use Settings Menu of SAM Plugin.', SAM_DOMAIN), 'options' => array('manage_network' => __('Super Admin', SAM_DOMAIN), 'manage_options' => __('Administrator', SAM_DOMAIN), 'edit_others_posts' => __('Editor', SAM_DOMAIN), 'publish_posts' => __('Author', SAM_DOMAIN), 'edit_posts' => __('Contributor', SAM_DOMAIN)), 'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')));
+      add_settings_field('access', __('Minimum Level for access to menu', SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Who can use menu of plugin - Minimum User Level needed for access to menu of plugin. In any case only Super Admin and Administrator can use Settings Menu of SAM Plugin.', SAM_DOMAIN), 'options' => array('manage_network' => __('Super Admin', SAM_DOMAIN), 'manage_options' => __('Administrator', SAM_DOMAIN), 'edit_others_posts' => __('Editor', SAM_DOMAIN), 'publish_posts' => __('Author', SAM_DOMAIN), 'edit_posts' => __('Contributor', SAM_DOMAIN)), 'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')));
+			//add_settings_field('access', __('Minimum Level for access to menu', SAM_DOMAIN), array(&$this, 'drawJSliderOption'), 'sam-settings', 'sam_general_section', array('description' => __('Who can use menu of plugin - Minimum User Level needed for access to menu of plugin. In any case only Super Admin and Administrator can use Settings Menu of SAM Plugin.', SAM_DOMAIN), 'options' => array('manage_network' => __('Super Admin', SAM_DOMAIN), 'manage_options' => __('Administrator', SAM_DOMAIN), 'edit_others_posts' => __('Editor', SAM_DOMAIN), 'publish_posts' => __('Author', SAM_DOMAIN), 'edit_posts' => __('Contributor', SAM_DOMAIN)), 'values' => array('manage_network', 'manage_options', 'edit_others_posts', 'publish_posts', 'edit_posts')));
       add_settings_field('adShow', __("Ad Output Mode", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Standard (PHP) mode is more faster but is not compatible with caching plugins. If your blog use caching plugin (i.e WP Super Cache or W3 Total Cache) select "Caching Compatible (Javascript)" mode. Due to the confusion around "mfunc" in caching plugins, I decided to refrain from development of special support of these plugins.', SAM_DOMAIN), 'options' => array('php' => __('Standard (PHP)', SAM_DOMAIN), 'js' => __('Caching Compatible (Javascript)', SAM_DOMAIN)), 'warning' => 'cache'));
       add_settings_field('adDisplay', __("Display Ad Source in", SAM_DOMAIN), array(&$this, 'drawRadioOption'), 'sam-settings', 'sam_general_section', array('description' => __('Target wintow (tab) for advetisement source.', SAM_DOMAIN), 'options' => array('blank' => __('New Window (Tab)', SAM_DOMAIN), 'self' => __('Current Window (Tab)', SAM_DOMAIN))));
       add_settings_field('bbpEnabled', __('Allow displaying ads on bbPress forum pages', SAM_DOMAIN), array(&$this, 'drawCheckboxOption'), 'sam-settings', 'sam_general_section', array('label_for' => 'bbpEnabled', 'checkbox' => true, 'warning' => 'forum', 'enabled' => ( (defined('SAM_BBP')) ? SAM_BBP  : false )));
@@ -976,6 +995,25 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       }
 	    elseif($hook == $this->toolsPage) {
 		    wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-tools.css', false, SAM_VERSION);
+	    }
+	    else {
+		    $pointers = self::getPointerOptions(true);
+		    if((int)$pointers['all']) {
+			    wp_enqueue_style( 'wp-pointer' );
+
+			    wp_enqueue_script( 'jquery' );
+			    wp_enqueue_script( 'wp-pointer' );
+			    wp_enqueue_script( 'sam-all', SAM_URL . 'js/sam-admin-all.min.js', array('jquery', 'wp-pointer'), SAM_VERSION );
+			    wp_localize_script( 'sam-all', 'samPointer', array(
+				    'pointer' => array(
+					    'enabled' => (int)$pointers['all'],
+					    'title'   => __( 'Upgrade to SAM Pro Lite', SAM_DOMAIN ),
+					    'content' => self::getPointerContent(true),
+					    'position' => ((is_rtl()) ? 'right' : 'left' ),
+					    'pointer' => 'all'
+				    )
+			    ) );
+		    }
 	    }
     }
 
@@ -1453,8 +1491,18 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               <div class='postbox opened'>
                 <h3 class="hndle"><?php _e('Resources', SAM_DOMAIN) ?></h3>
                 <div class="inside">
-                  <ul>
-                    <li><a target='_blank' href='http://wordpress.org/extend/plugins/simple-ads-manager/'><?php _e("Wordpress Plugin Page", SAM_DOMAIN); ?></a></li>
+                  <a href="http://codecanyon.net/item/sam-pro-lite/12721925" target="_blank">
+	                  <img src="<?php echo SAM_IMG_URL; ?>upgrade-sidebar.jpg">
+                  </a>
+	                <p>
+		                <?php _e('New semi-professional version of the <strong>Simple Ads Manager</strong> plugin.', SAM_DOMAIN); ?><br>
+		                <strong><a href="http://uncle-sam.info/sam-pro-lite/sam-pro-lite-info/features/"><?php _e('Info', SAM_DOMAIN); ?></a></strong> |
+		                <strong><a href="http://uncle-sam.info/category/sam-pro-lite/sam-pro-lite-docs/"><?php _e('Documentation', SAM_DOMAIN); ?></a></strong> |
+		                <strong><a href="http://codecanyon.net/item/sam-pro-lite/12721925"><?php _e('Purchase', SAM_DOMAIN); ?></a></strong>
+	                </p>
+	                <ul>
+                    <li><a target="_blank" href="http://uncle-sam.info/"><?php _e('UncleSAM Project', SAM_DOMAIN); ?></a></li>
+		                <li><a target='_blank' href='http://wordpress.org/extend/plugins/simple-ads-manager/'><?php _e("Wordpress Plugin Page", SAM_DOMAIN); ?></a></li>
                     <li><a target='_blank' href='http://www.simplelib.com/?p=480'><?php _e("Author Plugin Page", SAM_DOMAIN); ?></a></li>
                     <li><a target='_blank' href='http://forum.simplelib.com/index.php?forums/simple-ads-manager.13/'><?php _e("Support Forum", SAM_DOMAIN); ?></a></li>
                     <li><a target='_blank' href='http://www.simplelib.com/'><?php _e("Author's Blog", SAM_DOMAIN); ?></a></li>

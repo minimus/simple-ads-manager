@@ -74,6 +74,27 @@ if ( ! class_exists( 'SamToolsPage' ) ) {
 								</p>
 							</div>
 						</div>
+						<div class='postbox opened'>
+							<h3 class="hndle"><?php _e('Resources', SAM_DOMAIN) ?></h3>
+							<div class="inside">
+								<a href="http://codecanyon.net/item/sam-pro-lite/12721925" target="_blank">
+									<img src="<?php echo SAM_IMG_URL; ?>upgrade-sidebar.jpg">
+								</a>
+								<p>
+									<?php _e('New semi-professional version of the <strong>Simple Ads Manager</strong> plugin.', SAM_DOMAIN); ?><br>
+									<strong><a href="http://uncle-sam.info/sam-pro-lite/sam-pro-lite-info/features/"><?php _e('Info', SAM_DOMAIN); ?></a></strong> |
+									<strong><a href="http://uncle-sam.info/category/sam-pro-lite/sam-pro-lite-docs/"><?php _e('Documentation', SAM_DOMAIN); ?></a></strong> |
+									<strong><a href="http://codecanyon.net/item/sam-pro-lite/12721925"><?php _e('Purchase', SAM_DOMAIN); ?></a></strong>
+								</p>
+								<ul>
+									<li><a target="_blank" href="http://uncle-sam.info/"><?php _e('UncleSAM Project', SAM_DOMAIN); ?></a></li>
+									<li><a target='_blank' href='http://wordpress.org/extend/plugins/simple-ads-manager/'><?php _e("Wordpress Plugin Page", SAM_DOMAIN); ?></a></li>
+									<li><a target='_blank' href='http://www.simplelib.com/?p=480'><?php _e("Author Plugin Page", SAM_DOMAIN); ?></a></li>
+									<li><a target='_blank' href='http://forum.simplelib.com/index.php?forums/simple-ads-manager.13/'><?php _e("Support Forum", SAM_DOMAIN); ?></a></li>
+									<li><a target='_blank' href='http://www.simplelib.com/'><?php _e("Author's Blog", SAM_DOMAIN); ?></a></li>
+								</ul>
+							</div>
+						</div>
 					</div>
 					<div id="post-body">
 						<div id="post-body-content">

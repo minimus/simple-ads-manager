@@ -6,6 +6,10 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
     private $crawler = false;
     public $samNonce;
     private $whereClauses;
+    public $isHome;
+    public $isArchive;
+    public $isSingle;
+    public $isPage;
     
     private $defaultSettings = array(
       'adCycle' => 1000,
@@ -79,7 +83,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '2.9.5.118');
+      define('SAM_VERSION', '2.9.6.121');
       define('SAM_DB_VERSION', '2.9');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );
@@ -113,6 +117,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 
       if(!is_admin()) {
         add_action('wp_enqueue_scripts', array(&$this, 'headerScripts'));
+        add_action('template_redirect', array(&$this, 'setVars'));
         add_action('wp_head', array(&$this, 'headerCodes'));
         
         add_shortcode('sam', array(&$this, 'doShortcode'));
@@ -194,6 +199,13 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
         }
       }
       return $out;
+    }
+
+    public function setVars() {
+      $this->isHome = (is_home() || is_front_page());
+      $this->isArchive = is_archive();
+      $this->isPage = is_page();
+      $this->isSingle = is_single();
     }
 
     public function samMaintenance() {
@@ -678,7 +690,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $apAd = '';
       $mpAd = '';
       
-      if(is_single() || is_page()) {
+      if($this->isSingle || $this->isPage) {
         if(!empty($options['beforePost']) && !empty($options['bpAdsId']))
           $bpAd = self::buildAdObject($options['bpAdsType'], array('id' => $options['bpAdsId']), $options['bpUseCodes']);
         if(!empty($options['middlePost']) && !empty($options['mpAdsId']))
@@ -705,7 +717,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
     public function addExcerptAds( $excerpt ) {
       $options = self::getSettings();
       $bpAd = '';
-      if(!is_single()) {
+      if(!$this->isSingle) {
         if(empty($this->whereClauses)) $this->whereClauses = self::buildWhereClause();
 
         if(!empty($options['beforePost']) && !empty($options['bpExcerpt']) && !empty($options['bpAdsId'])) {

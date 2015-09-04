@@ -4,7 +4,7 @@ Donate link: http://www.simplelib.com/archives/wordpress-plugin-simple-ads-manag
 Tags: ad, ads, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, wptouch
 Requires at least: 3.9
 Tested up to: 4.3
-Stable tag: 2.9.5.118
+Stable tag: 2.9.6.121
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -57,6 +57,7 @@ Simple Ads Manager is easy to use plugin providing a flexible logic of displayin
 * German by [Fabian Krenzler](http://www.ktraces.de/) and **Ulrich Simon**
 * Belarusian by Alexander Ovsov ([Web Geek Sciense](http://webhostinggeeks.com/science/))
 * Spanish by [xiaobai_wp](http://wordpress.org/extend/plugins/profile/xiaobai_wp)
+* Italian by [Alfredo](https://www.transifex.com/user/profile/alfredotranchedone/)
 
 If you have created your own language pack, or have an update of an existing one, you can send **.po** and **.mo files** to me (minimus AT simplelib.com) so that I can bundle it into **Simple Ads Manager** plugin pack.  Also you can translate SAM on [Transifex](https://www.transifex.com/projects/p/simple-ads-manager/) site.  Just register on Transifex and make your SAM localization.
 
@@ -88,6 +89,10 @@ No questions now...
 
 == Changelog ==
 
+= 2.9.6.121 =
+* The problem of arbitrary automatic insertion of ads on the main page is solved.
+* According to numerous requests from users the modern control element "Slider" of the option "Access Level" was changed to the classical control element "Radio Button".
+* Language pack is updated. Italian by Alfredo is added
 = 2.9.5.118 =
 * Possibility of SQL injection is fixed. Thanks for [Kacper Szurek](http://security.szurek.pl/).
 * Minor bug resolved
@@ -246,6 +251,8 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 2.9.6.121 =
+Minor errors are eliminated. Italian language was added into the language pack.
 = 2.9.5.118 =
 Possibility of SQL injection is fixed. Minor bug resolved.
 = 2.9.4.116 =
