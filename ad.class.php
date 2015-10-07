@@ -857,7 +857,17 @@ if ( ! class_exists( 'SamAdBlock' ) ) {
 				$ads      = unserialize( $block['block_data'] );
 				$lines    = (integer) $block['b_lines'];
 				$cols     = (integer) $block['b_cols'];
-				$blockDiv = "<div style='margin: {$block['b_margin']}; padding: {$block['b_padding']}; background: {$block['b_background']}; border: {$block['b_border']}'>";
+
+				$classes = " sam-block sam-block-lines-{$lines} sam-block-cols-{$cols}";
+
+				$styles = '';
+				if (!empty($block['b_margin'])) 	$styles .= "margin: {$block['b_margin']};";
+				if (!empty($block['b_padding'])) 	$styles .= "padding: {$block['b_padding']};";
+				if (!empty($block['b_background'])) $styles .= "background: {$block['b_background']};";
+				if (!empty($block['b_border'])) 	$styles .= "border: {$block['b_border']}";
+				if (!empty($styles))  $styles = "style='{$styles}'";
+
+				$blockDiv = "<div class='{$classes}'{$styles}>";
 				$lineDiv  = "<div class='sam-block-line' style='margin: 0px; padding: 0px;'>";
 				$itemDiv  = "<div class='sam-block-item' style='display: inline-block; margin: {$block['i_margin']}; padding: {$block['i_padding']}; background: {$block['i_background']}; border: {$block['i_border']}'>";
 
