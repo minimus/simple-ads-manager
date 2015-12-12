@@ -3,7 +3,9 @@
  */
 (function($) {
   $(document).ready(function() {
-    var sPointer = samPointer.pointer, pObject = $('#toplevel_page_sam-list');
+    var
+      sPointer = (samPointer.pointer.enabled) ? samPointer.pointer : samPointer.pointer2,
+      pObject = $('#toplevel_page_sam-list');
 
     if(sPointer.enabled) {
       pObject.pointer({

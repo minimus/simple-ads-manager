@@ -2,9 +2,9 @@
 Contributors: minimus
 Donate link: http://www.simplelib.com/archives/wordpress-plugin-simple-ads-manager/
 Tags: ad, ads, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, wptouch
-Requires at least: 3.9
-Tested up to: 4.3
-Stable tag: 2.9.6.121
+Requires at least: 4.1
+Tested up to: 4.4
+Stable tag: 2.9.7.123
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,9 @@ No questions now...
 
 == Changelog ==
 
+= 2.9.7.123 =
+* Wordpress 4.4 compatibility tested
+* Some minor bugs resolved
 = 2.9.6.121 =
 * The problem of arbitrary automatic insertion of ads on the main page is solved.
 * According to numerous requests from users the modern control element "Slider" of the option "Access Level" was changed to the classical control element "Radio Button".
@@ -251,6 +254,8 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 2.9.7.123 =
+Wordpress 4.4 compatibility tested. Some minor bugs resolved.
 = 2.9.6.121 =
 Minor errors are eliminated. Italian language was added into the language pack.
 = 2.9.5.118 =
