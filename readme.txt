@@ -14,7 +14,7 @@ Advertisement rotation system with a flexible logic of displaying advertisements
 
 Simple Ads Manager is easy to use plugin providing a flexible logic of displaying advertisements.
 
-[![endorse](https://api.coderwall.com/minimus/endorsecount.png)](https://coderwall.com/minimus)
+> __Note__: Now this plugin is partially deprecated. If your site works under PHP 5.3 or later version (include PHP 7.0) it is better to use [__SAM Pro (Free Edition)__](https://wordpress.org/plugins/sam-pro-free/).
 
 = Features =
 * Flexible logic of advertisements rotation based on defined weight of each advertisement in group (Ads Place)
