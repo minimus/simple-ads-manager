@@ -596,8 +596,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     }
 
 		public function initSettings() {
-			global $current_user;
-      get_currentuserinfo();
+			$current_user = wp_get_current_user();
 
       $scStr = __("Shortcode <code>[name]</code> will be replaced with advertiser's name. Shortcode <code>[site]</code> will be replaced with name of your site. Shotcode <code>[month]</code> will be replaced with name of month of reporting period.", SAM_DOMAIN);
 
@@ -707,7 +706,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
     public function regAdminPage() {
 			global $wp_version;
 
-      $menuPage = add_object_page(__('Ads', SAM_DOMAIN), __('Ads', SAM_DOMAIN), SAM_ACCESS, 'sam-list', array(&$this, 'samTablePage'), WP_PLUGIN_URL.'/simple-ads-manager/images/sam-icon.png');
+      $menuPage = add_menu_page(__('Ads', SAM_DOMAIN), __('Ads', SAM_DOMAIN), SAM_ACCESS, 'sam-list', array(&$this, 'samTablePage'), WP_PLUGIN_URL.'/simple-ads-manager/images/sam-icon.png');
 			$this->listPage = add_submenu_page('sam-list', __('Ads List', SAM_DOMAIN), __('Ads Places', SAM_DOMAIN), SAM_ACCESS, 'sam-list', array(&$this, 'samTablePage'));
 			$this->editPage = add_submenu_page('sam-list', __('Ad Editor', SAM_DOMAIN), __('New Place', SAM_DOMAIN), SAM_ACCESS, 'sam-edit', array(&$this, 'samEditPage'));
       $this->listZone = add_submenu_page('sam-list', __('Ads Zones List', SAM_DOMAIN), __('Ads Zones', SAM_DOMAIN), SAM_ACCESS, 'sam-zone-list', array(&$this, 'samZoneListPage'));

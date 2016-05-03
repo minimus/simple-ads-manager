@@ -4,7 +4,7 @@ Donate link: http://www.simplelib.com/archives/wordpress-plugin-simple-ads-manag
 Tags: ad, ads, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, wptouch
 Requires at least: 4.1
 Tested up to: 4.5
-Stable tag: 2.9.8.124
+Stable tag: 2.9.8.125
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,8 @@ No questions now...
 
 == Changelog ==
 
+= 2.9.8.125 =
+* Avoiding the use of deprecated functions `add_object_page` and `get_currentuserinfo`.
 = 2.9.8.124 =
 * Wordpress 4.5 compatibility
 = 2.9.7.123 =
@@ -256,6 +258,8 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 2.9.8.125 =
+* Avoiding the use of deprecated functions.
 = 2.9.8.124 =
 Wordpress 4.5 compatibility.
 = 2.9.7.123 =

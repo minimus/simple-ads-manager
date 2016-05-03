@@ -4,5 +4,15 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library name="PHP">
+        <CLASSES>
+          <root url="file://C:/Bitnami/wampstack-7.0.0-0/apache2/htdocs/wp-source" />
+        </CLASSES>
+        <SOURCES>
+          <root url="file://C:/Bitnami/wampstack-7.0.0-0/apache2/htdocs/wp-source" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
