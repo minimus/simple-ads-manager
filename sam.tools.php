@@ -4,7 +4,7 @@
  * Date: 23.12.13
  * Time: 18:25
  */
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 include_once('sam.functions.php');
 if(!class_exists('SamMailer')) {
   class SamMailer {

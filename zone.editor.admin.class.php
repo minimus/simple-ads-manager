@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 if(!class_exists('SamZoneEditor')) {
   class SamZoneEditor {
     private $settings = array();
@@ -34,7 +35,7 @@ if(!class_exists('SamZoneEditor')) {
     }
     
     private function getTaxes($type = 'category') {
-      if(empty($type)) return;
+      if(empty($type)) return null;
 
       if($type === 'custom_tax_terms') $wc = "NOT FIND_IN_SET(wtt.taxonomy, 'category,post_tag,nav_menu,link_category,post_format')";
       else $wc = "wtt.taxonomy = '$type'";
@@ -149,19 +150,19 @@ if(!class_exists('SamZoneEditor')) {
       $uSingleCT = array();
       $uArchiveCT = array();
       
-      if(isset($_GET['action'])) $action = $_GET['action'];
+      if(isset($_GET['action'])) $action = sanitize_text_field($_GET['action']);
       else $action = 'new';
-      if(isset($_GET['mode'])) $mode = $_GET['mode'];
+      if(isset($_GET['mode'])) $mode = sanitize_text_field($_GET['mode']);
       else $mode = 'zone';
-      if(isset($_GET['item'])) $item = $_GET['item'];
+      if(isset($_GET['item'])) $item = (int)$_GET['item'];
       else $item = null;
-      if(isset($_GET['zone'])) $zone = $_GET['zone'];
+      if(isset($_GET['zone'])) $zone = (int)$_GET['zone'];
       else $zone = null;
       
       $updated = false;
           
       if(isset($_POST['update_zone'])) {
-        $zoneId = $_POST['zone_id'];
+        $zoneId = (int)$_POST['zone_id'];
         foreach($taxes as $tax) {
 	        $value = (isset($_POST['z_taxes_'.$tax['slug']])) ? (integer) $_POST['z_taxes_'.$tax['slug']] : -1;
 	        $uTaxes[$tax['slug']] = array('id' => $value, 'tax' => $tax['tax']);
@@ -171,36 +172,36 @@ if(!class_exists('SamZoneEditor')) {
 	        $uCats[$cat['slug']] = $value;
         }
         foreach($authors as $key => $author) {
-	        $uAuthors[$author] = (isset($_POST['z_authors_'.$author])) ? $_POST['z_authors_'.$author] : -1;
+	        $uAuthors[$author] = (isset($_POST['z_authors_'.$author])) ? (int)$_POST['z_authors_'.$author] : -1;
         }
         foreach($customs as $custom) {
-	        $uSingleCT[$custom->name] = (isset($_POST['z_single_ct_'.$custom->name])) ? $_POST['z_single_ct_'.$custom->name] : -1;
-	        $uArchiveCT[$custom->name] = (isset($_POST['z_archive_ct_'.$custom->name])) ? $_POST['z_archive_ct_'.$custom->name] : -1;
+	        $uSingleCT[$custom->name] = (isset($_POST['z_single_ct_'.$custom->name])) ? (int)$_POST['z_single_ct_'.$custom->name] : -1;
+	        $uArchiveCT[$custom->name] = (isset($_POST['z_archive_ct_'.$custom->name])) ? (int)$_POST['z_archive_ct_'.$custom->name] : -1;
         }
         $updateRow = array(
-          'name' => $_POST['zone_name'],
-          'description' => $_POST['description'],
-          'z_default' => $_POST['z_default'],
-          'z_home' => $_POST['z_home'],
-          'z_singular' => $_POST['z_singular'],
-          'z_single' => $_POST['z_single'],
-          'z_ct' => (isset($_POST['z_ct']) ? $_POST['z_ct'] : -1),
+          'name' => sanitize_text_field($_POST['zone_name']),
+          'description' => sanitize_text_field($_POST['description']),
+          'z_default' => (int)$_POST['z_default'],
+          'z_home' => (int)$_POST['z_home'],
+          'z_singular' => (int)$_POST['z_singular'],
+          'z_single' => (int)$_POST['z_single'],
+          'z_ct' => (isset($_POST['z_ct']) ? (int)$_POST['z_ct'] : -1),
           'z_single_ct' => serialize($uSingleCT),
-          'z_page' => $_POST['z_page'],
-          'z_attachment' => $_POST['z_attachment'],
-          'z_search' => $_POST['z_search'],
-          'z_404' => $_POST['z_404'],
-          'z_archive' => $_POST['z_archive'],
-          'z_tax' => $_POST['z_tax'],
+          'z_page' => (int)$_POST['z_page'],
+          'z_attachment' => (int)$_POST['z_attachment'],
+          'z_search' => (int)$_POST['z_search'],
+          'z_404' => (int)$_POST['z_404'],
+          'z_archive' => (int)$_POST['z_archive'],
+          'z_tax' => (int)$_POST['z_tax'],
           'z_taxes' => serialize($uTaxes),
-          'z_category' => $_POST['z_category'],
+          'z_category' => (int)$_POST['z_category'],
           'z_cats' => serialize($uCats),
-          'z_tag' => $_POST['z_tag'],
-          'z_author' => $_POST['z_author'],
+          'z_tag' => (int)$_POST['z_tag'],
+          'z_author' => (int)$_POST['z_author'],
           'z_authors' => serialize($uAuthors),
-          'z_cts' => (isset($_POST['z_cts']) ? $_POST['z_cts'] : -1),
+          'z_cts' => (isset($_POST['z_cts']) ? (int)$_POST['z_cts'] : -1),
           'z_archive_ct' => serialize($uArchiveCT),
-          'z_date' => $_POST['z_date'],
+          'z_date' => (int)$_POST['z_date'],
           'trash' => ($_POST['trash'] === 'true' ? 1 : 0)
         );
         $formatRow = array(
@@ -358,7 +359,7 @@ if(!class_exists('SamZoneEditor')) {
       }
       ?>
 <div class="wrap">
-  <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
+  <form method="post" action="<?php echo esc_url($_SERVER["REQUEST_URI"]); ?>">
     <div class="icon32" style="background: url('<?php echo SAM_IMG_URL.'sam-editor.png'; ?>') no-repeat transparent; "><br/></div>
     <h2><?php echo ( ( ($action === 'new') && ( $row['id'] === __('Undefined', SAM_DOMAIN) ) ) ? __('New Ads Zone', SAM_DOMAIN) : __('Edit Ads Zone', SAM_DOMAIN).' ('.$item.')' ); ?></h2>
     <?php

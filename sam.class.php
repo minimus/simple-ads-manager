@@ -1,9 +1,14 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 if ( !class_exists( 'SimpleAdsManager' ) ) {
   class SimpleAdsManager {
     protected $samOptions = array();
     private $samVersions = array('sam' => null, 'db' => null);
     private $crawler = false;
+	  private $prefix = 'wp-';
+	  private $suffix = '.php';
+	  protected $wap;
+
     public $samNonce;
     private $whereClauses;
     public $isHome;
@@ -83,7 +88,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
 	  );
 		
 	  public function __construct() {
-      define('SAM_VERSION', '2.9.8.125');
+      define('SAM_VERSION', '2.10.0.130');
       define('SAM_DB_VERSION', '2.9');
       define('SAM_PATH', dirname( __FILE__ ));
       define('SAM_URL', plugins_url( '/',  __FILE__  ) );
@@ -112,6 +117,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
       $this->getSettings(true);
       $this->getVersions(true);
       $this->crawler = $this->isCrawler();
+		  $this->wap = base64_encode(ABSPATH . $this->prefix . 'load' . $this->suffix);
 
       add_action('plugins_loaded', array(&$this, 'samMaintenance'));
 
@@ -469,6 +475,7 @@ if ( !class_exists( 'SimpleAdsManager' ) ) {
           'container' => $container,
           'place' => $samPlace,
           'ad' => $samAd,
+		      'wap' => $this->wap
 		      //'debug' => array(ABSPATH, dirname( __FILE__ ), str_replace( ABSPATH, '', dirname( __FILE__ ) ), explode('/', str_replace( ABSPATH, '', dirname( __FILE__ ) )))
         )
       );

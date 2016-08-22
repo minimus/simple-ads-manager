@@ -3,8 +3,8 @@ Contributors: minimus
 Donate link: http://www.simplelib.com/archives/wordpress-plugin-simple-ads-manager/
 Tags: ad, ads, adbrite, adgridwork, adify, admin, adpinion, adroll, ads, adsense, adserver, advertisement, advertising, affiliate, banner, banners, chitika, cj, commercial, commission, crispads, dfp, google, income, junction, link, manager, media, money, plugin, random, referral, revenue, rotator, seo, server, shoppingads, widget, widgetbucks, wptouch
 Requires at least: 4.1
-Tested up to: 4.5
-Stable tag: 2.9.8.125
+Tested up to: 4.6
+Stable tag: 2.10.0.130
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -58,6 +58,7 @@ Simple Ads Manager is easy to use plugin providing a flexible logic of displayin
 * Belarusian by Alexander Ovsov ([Web Geek Sciense](http://webhostinggeeks.com/science/))
 * Spanish by [xiaobai_wp](http://wordpress.org/extend/plugins/profile/xiaobai_wp)
 * Italian by [Alfredo](https://www.transifex.com/user/profile/alfredotranchedone/)
+* Persian by **Reza HosseiniRad**
 
 If you have created your own language pack, or have an update of an existing one, you can send **.po** and **.mo files** to me (minimus AT simplelib.com) so that I can bundle it into **Simple Ads Manager** plugin pack.  Also you can translate SAM on [Transifex](https://www.transifex.com/projects/p/simple-ads-manager/) site.  Just register on Transifex and make your SAM localization.
 
@@ -89,6 +90,10 @@ No questions now...
 
 == Changelog ==
 
+= 2.10.0.130 =
+* Wordpress 4.6 ready
+* Potential vulnerability was excluded
+* All security issues were resolved
 = 2.9.8.125 =
 * Avoiding the use of deprecated functions `add_object_page` and `get_currentuserinfo`.
 = 2.9.8.124 =
@@ -258,6 +263,8 @@ No questions now...
 
 == Upgrade Notice ==
 
+= 2.10.0.130 =
+Wordpress 4.6 ready. Potential vulnerability was excluded. All security issues were resolved.
 = 2.9.8.125 =
 * Avoiding the use of deprecated functions.
 = 2.9.8.124 =

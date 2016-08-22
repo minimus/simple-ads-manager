@@ -76,7 +76,8 @@ var sam = sam || {};
       sPointer, sMonth = 0,
       grid = $('#ads-grid'),
       samStatsUrl = samEditorOptions.samStatsUrl,
-      labels = samEditorOptions.labels;
+      labels = samEditorOptions.labels,
+      wap = samEditorOptions.wap;
 
     sPointer = samEditorOptions.places;
     sPointer.pointer = 'places';
@@ -234,7 +235,8 @@ var sam = sam || {};
     $.post(samStatsUrl, {
       action: 'load_stats',
       id: itemId,
-      sm: sMonth
+      sm: sMonth,
+      wap: wap
     }).done(function(data) {
         plotData = [data.hits, data.clicks];
         $('#total_hits').text(data.total.hits);
@@ -266,7 +268,8 @@ var sam = sam || {};
     $.post(samStatsUrl, {
       action: 'load_ads',
       id: itemId,
-      sm: 0
+      sm: 0,
+      wap: wap
     }).done(function(data) {
         var records = data.records;
         grid.w2grid({
@@ -313,7 +316,8 @@ var sam = sam || {};
             url: ajaxurl,
             data: {
               action: 'close_sam_pointer',
-              pointer: sPointer.pointer
+              pointer: sPointer.pointer,
+              wap: wap
             },
             async: true
           });
@@ -326,7 +330,8 @@ var sam = sam || {};
       $.post(samStatsUrl, {
         action: 'load_stats',
         id: itemId,
-        sm: sMonth
+        sm: sMonth,
+        wap: wap
       }).done(function(data) {
           plotData = [data.hits, data.clicks];
           $('#total_hits').text(data.total.hits);

@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 // Ads Place Widget
 if(!class_exists('simple_ads_manager_widget') && class_exists('WP_Widget')) {
   class simple_ads_manager_widget extends WP_Widget {

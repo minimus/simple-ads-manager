@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') ) ) {
   class SimpleAdsManagerAdmin extends SimpleAdsManager {
     private $editPage;
@@ -811,7 +812,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
             array('parentId' => 2, 'value' => 2, 'text' => __('Ads Zone', SAM_DOMAIN)),
             array('parentId' => 3, 'value' => 3, 'text' => __('Ads Block', SAM_DOMAIN))
           ),
-          'adObjects' => self::getAdsDataX()
+          'adObjects' => self::getAdsDataX(),
+          'wap' => $this->wap
         ));
       }
       elseif($hook == $this->listPage || $hook == $this->listZone || $hook == $this->listBlock) {
@@ -880,6 +882,7 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               array('field' => 'e_cpc', 'caption' => 'CPC', 'size' => '10%', 'render' => 'float:2'),
               array('field' => 'e_ctr', 'caption' => 'CTR', 'size' => '10%', 'render' => 'percent')
             ),
+            'wap' => $this->wap
           ));
         }
         if($mode == 'item') {
@@ -958,7 +961,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
               'superAdmin' => __('Super Admin', SAM_DOMAIN),
               'labels' => array('hits' => __('Hits', SAM_DOMAIN), 'clicks' => __('Clicks', SAM_DOMAIN))
             ),
-	          'action' => ((isset($_GET['action'])) ? $_GET['action'] : 'undefined')
+	          'action' => ((isset($_GET['action'])) ? $_GET['action'] : 'undefined'),
+            'wap' => $this->wap
           ));
         }
       }
@@ -1019,7 +1023,8 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
           'warning' => __('Warning', SAM_DOMAIN),
           'update' => __('Update Error', SAM_DOMAIN),
           'output' => __('Output Error', SAM_DOMAIN),
-          'ajaxurl' => SAM_URL . 'sam-ajax-admin.php'
+          'ajaxurl' => SAM_URL . 'sam-ajax-admin.php',
+          'wap' => $this->wap
         ));
       }
 	    elseif($hook == $this->toolsPage) {

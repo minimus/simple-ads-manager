@@ -8,26 +8,26 @@
 
 define('DOING_AJAX', true);
 
+$body = 'load';
+
 if (!isset( $_REQUEST['action'])) die('-1');
+if (!isset( $_REQUEST['wap'] )) die('-2');
 
-function samCheckLevel() {
-	$level = 0;
-	$upPath = '';
-	$file = 'wp-load.php';
-	$fe = false;
+$prefix = 'wp';
+$suffix = 'php';
 
-	while(!$fe && $level < 6) {
-		$fe = file_exists($upPath . $file);
-		if(!$fe) {
-			$upPath .= '../';
-			$level++;
-		}
-	}
-	if($fe) return realpath($upPath . $file);
-	else return dirname(dirname(dirname(dirname(__FILE__))));
+$wap      = ( isset( $_REQUEST['wap'] ) ) ? base64_decode( $_REQUEST['wap'] ) : null;
+$mlf = "{$prefix}-{$body}.{$suffix}";
+$rightWap = ( is_null( $wap ) ) ? false : strpos( $wap, $mlf );
+if ( $rightWap === false ) {
+	exit;
 }
 
-$wpLoadPath = samCheckLevel();
+$wpLoadPath = ( is_null( $wap ) ) ? false : $wap;
+
+if ( ! $wpLoadPath ) {
+	die( '-3' );
+}
 
 ini_set('html_errors', 0);
 $notShortInit = array('load_combo_data', 'load_users', 'load_authors');
@@ -37,6 +37,8 @@ $validRequest = false;
 if( ! in_array($_REQUEST['action'], $notShortInit)) define('SHORTINIT', true);
 
 require_once( $wpLoadPath );
+
+if ( ! defined( 'ABSPATH' ) ) exit;
 
 function random_string($chars = 12) {
 	$letters = 'abcefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 ';
@@ -159,8 +161,6 @@ if(in_array($action, $allowed_actions)) {
       $sPost = (isset($_REQUEST['sp'])) ? urldecode( $_REQUEST['sp'] ) : 'Post';
       $sPage = (isset($_REQUEST['spg'])) ? urldecode( $_REQUEST['spg'] ) : 'Page';
 
-      //set @row_num = 0;
-      //SELECT @row_num := @row_num + 1 AS recid
       $sql = "SELECT
                 wp.id,
                 wp.post_title AS title,

@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 if(!class_exists('SamBlockList')) {
   class SamBlockList {
     private $settings = array();
@@ -11,15 +12,15 @@ if(!class_exists('SamBlockList')) {
       global $wpdb;
       $bTable = $wpdb->prefix . "sam_blocks";
       
-      if(isset($_GET['mode'])) $mode = $_GET['mode'];
+      if(isset($_GET['mode'])) $mode = sanitize_text_field($_GET['mode']);
       else $mode = 'active';
-      if(isset($_GET["action"])) $action = $_GET['action'];
+      if(isset($_GET["action"])) $action = sanitize_text_field($_GET['action']);
       else $action = 'blocks';
-      if(isset($_GET['item'])) $item = $_GET['item'];
+      if(isset($_GET['item'])) $item = (int)$_GET['item'];
       else $item = null;
-      if(isset($_GET['iaction'])) $iaction = $_GET['iaction'];
+      if(isset($_GET['iaction'])) $iaction = sanitize_text_field($_GET['iaction']);
       else $iaction = null;
-      if(isset($_GET['iitem'])) $iitem = $_GET['iitem'];
+      if(isset($_GET['iitem'])) $iitem = (int)$_GET['iitem'];
       else $iitem = null;
       if(isset($_GET['apage'])) $apage = abs( (int) $_GET['apage'] );
       else $apage = 1;
@@ -31,7 +32,7 @@ if(!class_exists('SamBlockList')) {
       if(!is_null($item)) {
         if($iaction === 'delete') $wpdb->update( $bTable, array( 'trash' => true ), array( 'id' => $item ), array( '%d' ), array( '%d' ) );
         elseif($iaction === 'untrash') $wpdb->update( $bTable, array( 'trash' => false ), array( 'id' => $item ), array( '%d' ), array( '%d' ) );
-        elseif($iaction === 'kill') $wpdb->query("DELETE FROM $bTable WHERE id=$item");
+        elseif($iaction === 'kill') $wpdb->query($wpdb->prepare("DELETE FROM $bTable WHERE id=%d", $item));
       }
       if($iaction === 'kill-em-all') $wpdb->query("DELETE FROM $bTable WHERE trash=true");
       $trash_num = $wpdb->get_var("SELECT COUNT(*) FROM $bTable WHERE trash = TRUE");

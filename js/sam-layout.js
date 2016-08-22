@@ -1,7 +1,7 @@
 (function($) {
   $(document).ready(function() {
     var hits = [], doStats = ('string' == typeof samAjax.doStats) ? Number(samAjax.doStats) : samAjax.doStats;
-    if(samAjax.mailer) $.post(samAjax.ajaxurl, {action: 'sam_maintenance'});
+    if(samAjax.mailer) $.post(samAjax.ajaxurl, {action: 'sam_maintenance', wap: samAjax.wap});
     if(samAjax.load) {
       // Loading Ads
       var ads = [];
@@ -20,7 +20,8 @@
         $.post(samAjax.loadurl, {
           action: 'load_ads',
           ads: ads,
-          wc: samAjax.clauses
+          wc: samAjax.clauses,
+          wap: samAjax.wap
         }).done(function (data) {
           if (data.success) {
             var hits = [];
@@ -31,7 +32,8 @@
                   $.post(samAjax.ajaxurl, {
                     action: 'sam_click',
                     id: ad.id,
-                    pid: ad.pid
+                    pid: ad.pid,
+                    wap: samAjax.wap
                   });
                 });
                 hits.push([ad.pid, ad.id]);
@@ -40,7 +42,8 @@
             if (hits.length > 0 && doStats) {
               $.post(samAjax.ajaxurl, {
                 action: 'sam_hits',
-                hits: hits
+                hits: hits,
+                wap: samAjax.wap
               });
             }
           }
@@ -61,7 +64,8 @@
             $.post(samAjax.ajaxurl, {
               action: 'sam_click',
               id: id,
-              pid: pid
+              pid: pid,
+              wap: samAjax.wap
             });
           });
         });
@@ -69,7 +73,8 @@
         if (hits.length > 0) {
           $.post(samAjax.ajaxurl, {
             action: 'sam_hits',
-            hits: hits
+            hits: hits,
+            wap: samAjax.wap
           });
         }
       }
@@ -88,7 +93,8 @@
             $.post(samAjax.ajaxurl, {
               action: 'sam_click',
               id: id,
-              pid: pid
+              pid: pid,
+              wap: samAjax.wap
             });
           });
         });
@@ -96,7 +102,8 @@
         if (hits.length > 0) {
           $.post(samAjax.ajaxurl, {
             action: 'sam_hits',
-            hits: hits
+            hits: hits,
+            wap: samAjax.wap
           });
         }
       }

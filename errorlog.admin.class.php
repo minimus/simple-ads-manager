@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 if(!class_exists('SamErrorLog')) {
   class SamErrorLog {
     private $settings = array();
@@ -11,15 +12,15 @@ if(!class_exists('SamErrorLog')) {
       global $wpdb;
       $eTable = $wpdb->prefix . 'sam_errors';
 
-      if(isset($_GET['mode'])) $mode = $_GET['mode'];
+      if(isset($_GET['mode'])) $mode = sanitize_text_field($_GET['mode']);
       else $mode = 'active';
-      if(isset($_GET["action"])) $action = $_GET['action'];
+      if(isset($_GET["action"])) $action = sanitize_text_field($_GET['action']);
       else $action = 'errors';
-      if(isset($_GET['item'])) $item = $_GET['item'];
+      if(isset($_GET['item'])) $item = (int)$_GET['item'];
       else $item = null;
-      if(isset($_GET['iaction'])) $iaction = $_GET['iaction'];
+      if(isset($_GET['iaction'])) $iaction = sanitize_text_field($_GET['iaction']);
       else $iaction = null;
-      if(isset($_GET['iitem'])) $iitem = $_GET['iitem'];
+      if(isset($_GET['iitem'])) $iitem = (int)$_GET['iitem'];
       else $iitem = null;
       if(isset($_GET['apage'])) $apage = abs( (int) $_GET['apage'] );
       else $apage = 1;

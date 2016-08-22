@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 if(!class_exists('SamPlaceList')) {
   class SamPlaceList {
     private $settings = array();
@@ -87,15 +88,15 @@ if(!class_exists('SamPlaceList')) {
       $aTable = $wpdb->prefix . "sam_ads";
       $sTable = $wpdb->prefix . 'sam_stats';
 
-      if(isset($_GET['mode'])) $mode = $_GET['mode'];
+      if(isset($_GET['mode'])) $mode = sanitize_text_field($_GET['mode']);
       else $mode = 'active';
-      if(isset($_GET["action"])) $action = $_GET['action'];
+      if(isset($_GET["action"])) $action = sanitize_text_field($_GET['action']);
       else $action = 'places';
-      if(isset($_GET['item'])) $item = $_GET['item'];
+      if(isset($_GET['item'])) $item = (int)$_GET['item'];
       else $item = null;
-      if(isset($_GET['iaction'])) $iaction = $_GET['iaction'];
+      if(isset($_GET['iaction'])) $iaction = sanitize_text_field($_GET['iaction']);
       else $iaction = null;
-      if(isset($_GET['iitem'])) $iitem = $_GET['iitem'];
+      if(isset($_GET['iitem'])) $iitem = (int)$_GET['iitem'];
       else $iitem = null;
       if(isset($_GET['apage'])) $apage = abs( (int) $_GET['apage'] );
       else $apage = 1;
@@ -109,7 +110,7 @@ if(!class_exists('SamPlaceList')) {
           if(!is_null($item)) {
             if($iaction === 'delete') $wpdb->update( $pTable, array( 'trash' => true ), array( 'id' => $item ), array( '%d' ), array( '%d' ) );
             elseif($iaction === 'untrash') $wpdb->update( $pTable, array( 'trash' => false ), array( 'id' => $item ), array( '%d' ), array( '%d' ) );
-            elseif($iaction === 'kill') $wpdb->query("DELETE FROM {$pTable} WHERE id={$item}");
+            elseif($iaction === 'kill') $wpdb->query($wpdb->prepare("DELETE FROM {$pTable} WHERE id=%d", $item));
           }
           if($iaction === 'kill-em-all') $wpdb->query("DELETE FROM {$pTable} WHERE trash=true");
           if($iaction === 'clear-stats') {
@@ -299,7 +300,7 @@ if(!class_exists('SamPlaceList')) {
           if(!is_null($item)) {
             if($iaction === 'delete') $wpdb->update( $aTable, array( 'trash' => true ), array( 'id' => $iitem ), array( '%d' ), array( '%d' ) );
             elseif($iaction === 'untrash') $wpdb->update( $aTable, array( 'trash' => false ), array( 'id' => $iitem ), array( '%d' ), array( '%d' ) );
-            elseif($iaction === 'kill') $wpdb->query("DELETE FROM $aTable WHERE id = $iitem");
+            elseif($iaction === 'kill') $wpdb->query($wpdb->prepare("DELETE FROM $aTable WHERE id = %d", $iitem));
           }
           if($iaction === 'kill-em-all') $wpdb->query("DELETE FROM $aTable WHERE trash=true");
           $trash_num = $wpdb->get_var("SELECT COUNT(*) FROM $aTable WHERE (trash = TRUE) AND (pid = $item)");

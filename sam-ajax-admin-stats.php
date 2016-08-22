@@ -8,32 +8,60 @@
 
 define('DOING_AJAX', true);
 
-if (!isset( $_REQUEST['action'])) die('-1');
+$body = 'load';
 
-function samCheckLevel() {
-	$level = 0;
-	$upPath = '';
-	$file = 'wp-load.php';
-	$out = false;
+if (!isset( $_REQUEST['action'])) die('No action...');
+if (!isset( $_REQUEST['wap'] )) die('No WAP...');
 
-	while(!$out && $level < 6) {
-		$out = file_exists($upPath . $file);
-		if(!$out) {
-			$upPath .= '../';
-			$level++;
-		}
-	}
-	if($out) return realpath($upPath . $file);
-	else return dirname(dirname(dirname(dirname(__FILE__))));
+$prefix = 'wp';
+$suffix = 'php';
+
+$wap      = ( isset( $_REQUEST['wap'] ) ) ? base64_decode( $_REQUEST['wap'] ) : null;
+$mlf = "{$prefix}-{$body}.{$suffix}";
+$rightWap = ( is_null( $wap ) ) ? false : strpos( $wap, $mlf );
+if ( $rightWap === false ) {
+	exit;
 }
 
-$wpLoadPath = samCheckLevel();
+$wpLoadPath = ( is_null( $wap ) ) ? false : $wap;
+
+if ( ! $wpLoadPath ) {
+	die( 'Can not load core...' );
+}
 
 ini_set('html_errors', 0);
 
 define('SHORTINIT', true);
 
 require_once( $wpLoadPath );
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+if ( ! function_exists( 'sanitize_option' ) ) {
+	function sanitize_option( $option, $value ) {
+		return $value;
+	}
+}
+
+if (! function_exists('untrailingslashit')) {
+	function untrailingslashit( $string ) {
+		return rtrim( $string, '/\\' );
+	}
+}
+
+function samIsValidURL() {
+	$out = false;
+
+	$siteUrl = get_option( 'siteurl', '' );
+	if (isset($_SERVER['HTTP_REFERER']) && !empty($siteUrl)) {
+		$referer = $_SERVER['HTTP_REFERER'];
+		$validUrl = strpos($referer, $siteUrl);
+		$out = ($validUrl !== false);
+	}
+
+	return $out;
+}
+
+if (! samIsValidURL()) die('-1');
 
 global $wpdb;
 

@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 if(!class_exists('SAMHelp')) {
   class SAMHelp {
     public $pages;

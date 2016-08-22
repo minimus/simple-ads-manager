@@ -7,35 +7,37 @@
  */
 
 define( 'DOING_AJAX', true );
+$body = 'load';
 
 if ( ! isset( $_POST['action'] ) ) {
 	die( '-1' );
 }
+if (!isset( $_REQUEST['wap'] )) die('-1');
 
-function samCheckLevel() {
-	$level = 0;
-	$upPath = '';
-	$file = 'wp-load.php';
-	$out = false;
+$prefix = 'wp';
+$suffix = 'php';
 
-	while(!$out && $level < 6) {
-		$out = file_exists($upPath . $file);
-		if(!$out) {
-			$upPath .= '../';
-			$level++;
-		}
-	}
-	if($out) return realpath($upPath . $file);
-	else return dirname(dirname(dirname(dirname(__FILE__))));
+$wap      = ( isset( $_REQUEST['wap'] ) ) ? base64_decode( $_REQUEST['wap'] ) : null;
+$mlf = "{$prefix}-{$body}.{$suffix}";
+$rightWap = ( is_null( $wap ) ) ? false : strpos( $wap, $mlf );
+if ( $rightWap === false ) {
+	exit;
 }
 
-$wpLoadPath = samCheckLevel();
+$wpLoadPath = ( is_null( $wap ) ) ? false : $wap;
+
+if ( ! $wpLoadPath ) {
+	die( '-1' );
+}
 
 ini_set( 'html_errors', 0 );
 
 define( 'SHORTINIT', true );
 
 require_once( $wpLoadPath );
+
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 require_once( ABSPATH . WPINC . '/formatting.php' );
 require_once( ABSPATH . WPINC . '/link-template.php' );
 
@@ -65,6 +67,21 @@ if ( ! defined( 'SAM_URL' ) ) {
 if ( ! defined( 'SAM_IMG_URL' ) ) {
 	define( 'SAM_IMG_URL', SAM_URL . 'images/' );
 }
+
+function samIsValidURL() {
+	$out = false;
+
+	$siteUrl = get_option( 'siteurl', '' );
+	if (isset($_SERVER['HTTP_REFERER']) && !empty($siteUrl)) {
+		$referer = $_SERVER['HTTP_REFERER'];
+		$validUrl = strpos($referer, $siteUrl);
+		$out = ($validUrl !== false);
+	}
+
+	return $out;
+}
+
+if (! samIsValidURL()) die('-1');
 
 global $wpdb;
 
@@ -119,7 +136,11 @@ if ( in_array( $action, $allowed_actions ) ) {
 						'id'  => $ad->id,
 						'pid' => $ad->pid,
 						'cid' => $ad->cid,
-						'eid' => $elementId
+						'eid' => $elementId,
+						'request_uri' => $_SERVER['SERVER_PROTOCOL'] . '://' . $_SERVER['SERVER_NAME'] . $_SERVER['REQUEST_URI'],
+						'referrer' => $_SERVER['HTTP_REFERER'],
+						'url' => WP_PLUGIN_URL,
+						'site_url' => get_option( 'siteurl' )
 					) );
 				}
 				echo json_encode( array(

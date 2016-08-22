@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 if(!class_exists('SamPlaceEdit')) {
   class SamPlaceEdit {
     private $settings = array();
@@ -11,8 +12,8 @@ if(!class_exists('SamPlaceEdit')) {
       global $wpdb;
       
       $pTable = $wpdb->prefix . "sam_places";
-      $sql = "SELECT sp.patch_dfp, sp.place_size, sp.place_custom_width, sp.place_custom_height FROM $pTable sp WHERE sp.patch_source = 2";
-      $rows = $wpdb->get_results($sql, ARRAY_A);
+      $sql = "SELECT sp.patch_dfp, sp.place_size, sp.place_custom_width, sp.place_custom_height FROM $pTable sp WHERE sp.patch_source = %d";
+      $rows = $wpdb->get_results($wpdb->prepare($sql, 2), ARRAY_A);
       $blocks = array();
 	    $blocks2 = array();
 	    $pub = explode('-', $input['dfpPub']);
@@ -352,19 +353,19 @@ if(!class_exists('SamPlaceEdit')) {
           if(isset($_POST['update_place'])) {
             $placeId = $_POST['place_id'];
             $updateRow = array(
-              'name' => stripslashes($_POST['place_name']),
-              'description' => stripslashes($_POST['description']),
+              'name' => stripslashes(sanitize_text_field($_POST['place_name'])),
+              'description' => stripslashes(sanitize_text_field($_POST['description'])),
               'code_before' => stripslashes($_POST['code_before']),
               'code_after' => stripslashes($_POST['code_after']),
-              'place_size' => $_POST['place_size'],
-              'place_custom_width' => (isset($_POST['place_custom_width']) ? $_POST['place_custom_width'] : 0),
-              'place_custom_height' => (isset($_POST['place_custom_height']) ? $_POST['place_custom_height'] : 0),
-              'patch_img' => $_POST['patch_img'],
-              'patch_link' => stripslashes($_POST['patch_link']),
+              'place_size' => sanitize_text_field($_POST['place_size']),
+              'place_custom_width' => (isset($_POST['place_custom_width']) ? (int)$_POST['place_custom_width'] : 0),
+              'place_custom_height' => (isset($_POST['place_custom_height']) ? (int)$_POST['place_custom_height'] : 0),
+              'patch_img' => esc_url($_POST['patch_img']),
+              'patch_link' => stripslashes(esc_url($_POST['patch_link'])),
               'patch_code' => stripslashes($_POST['patch_code']),
               'patch_adserver' => (isset($_POST['patch_adserver']) ? 1 : 0),
-              'patch_dfp' => $_POST['patch_dfp'],
-              'patch_source' => $_POST['patch_source'],
+              'patch_dfp' => sanitize_text_field($_POST['patch_dfp']),
+              'patch_source' => (int)$_POST['patch_source'],
               'trash' => ($_POST['trash'] === 'true' ? 1 : 0)
             );
             $formatRow = array( '%s', '%s', '%s', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s', '%d', '%d');
@@ -706,88 +707,88 @@ if(!class_exists('SamPlaceEdit')) {
           $aSize = array();
           
           if(isset($_POST['update_item'])) {
-            $itemId = $_POST['item_id'];
-            $placeId = $_POST['place_id'];
+            $itemId = (int)$_POST['item_id'];
+            $placeId = (int)$_POST['place_id'];
             $viewPages = $this->buildViewPages(array(
-              ((isset($_POST['is_home'])) ? $_POST['is_home'] : 0),
-              ((isset($_POST['is_singular'])) ? $_POST['is_singular'] : 0),
-              ((isset($_POST['is_single'])) ? $_POST['is_single'] : 0),
-              ((isset($_POST['is_page'])) ? $_POST['is_page'] : 0),
-              ((isset($_POST['is_attachment'])) ? $_POST['is_attachment'] : 0),
-              ((isset($_POST['is_search'])) ? $_POST['is_search'] : 0),
-              ((isset($_POST['is_404'])) ? $_POST['is_404'] : 0),
-              ((isset($_POST['is_archive'])) ? $_POST['is_archive'] : 0),
-              ((isset($_POST['is_tax'])) ? $_POST['is_tax'] : 0),
-              ((isset($_POST['is_category'])) ? $_POST['is_category'] : 0),
-              ((isset($_POST['is_tag'])) ? $_POST['is_tag'] : 0),
-              ((isset($_POST['is_author'])) ? $_POST['is_author'] : 0),
-              ((isset($_POST['is_date'])) ? $_POST['is_date'] : 0),
-              ((isset($_POST['is_posttype'])) ? $_POST['is_posttype'] : 0),
-              ((isset($_POST['is_posttype_archive'])) ? $_POST['is_posttype_archive'] : 0)
+              ((isset($_POST['is_home'])) ? (int)$_POST['is_home'] : 0),
+              ((isset($_POST['is_singular'])) ? (int)$_POST['is_singular'] : 0),
+              ((isset($_POST['is_single'])) ? (int)$_POST['is_single'] : 0),
+              ((isset($_POST['is_page'])) ? (int)$_POST['is_page'] : 0),
+              ((isset($_POST['is_attachment'])) ? (int)$_POST['is_attachment'] : 0),
+              ((isset($_POST['is_search'])) ? (int)$_POST['is_search'] : 0),
+              ((isset($_POST['is_404'])) ? (int)$_POST['is_404'] : 0),
+              ((isset($_POST['is_archive'])) ? (int)$_POST['is_archive'] : 0),
+              ((isset($_POST['is_tax'])) ? (int)$_POST['is_tax'] : 0),
+              ((isset($_POST['is_category'])) ? (int)$_POST['is_category'] : 0),
+              ((isset($_POST['is_tag'])) ? (int)$_POST['is_tag'] : 0),
+              ((isset($_POST['is_author'])) ? (int)$_POST['is_author'] : 0),
+              ((isset($_POST['is_date'])) ? (int)$_POST['is_date'] : 0),
+              ((isset($_POST['is_posttype'])) ? (int)$_POST['is_posttype'] : 0),
+              ((isset($_POST['is_posttype_archive'])) ? (int)$_POST['is_posttype_archive'] : 0)
             ));
             $updateRow = array(
-              'pid' => $_POST['place_id'],
-              'name' => stripslashes($_POST['item_name']),
-              'description' => stripslashes($_POST['item_description']),
-              'code_type' => (isset($_POST['code_type']) ? $_POST['code_type'] : 0),
-              'code_mode' => $_POST['code_mode'],
+              'pid' => (int)$_POST['place_id'],
+              'name' => stripslashes(sanitize_text_field($_POST['item_name'])),
+              'description' => stripslashes(sanitize_text_field($_POST['item_description'])),
+              'code_type' => (isset($_POST['code_type']) ? (int)$_POST['code_type'] : 0),
+              'code_mode' => (int)$_POST['code_mode'],
               'ad_code' => stripslashes($_POST['ad_code']),
-              'ad_img' => $_POST['ad_img'],
-              'ad_alt' => $_POST['ad_alt'],
-              'ad_no' => (isset($_POST['ad_no']) ? $_POST['ad_no'] : 0),
-              'ad_target' => stripslashes($_POST['ad_target']),
-              'ad_swf' => (isset($_POST['ad_swf']) ? $_POST['ad_swf'] : 0),
+              'ad_img' => esc_url($_POST['ad_img']),
+              'ad_alt' => sanitize_text_field($_POST['ad_alt']),
+              'ad_no' => (isset($_POST['ad_no']) ? (int)$_POST['ad_no'] : 0),
+              'ad_target' => stripslashes(esc_url($_POST['ad_target'])),
+              'ad_swf' => (isset($_POST['ad_swf']) ? (int)$_POST['ad_swf'] : 0),
               'ad_swf_flashvars' => (!empty($_POST['ad_swf_flashvars'])) ? stripslashes($_POST['ad_swf_flashvars']) : '{}',
               'ad_swf_params' => (!empty($_POST['ad_swf_params'])) ? stripslashes($_POST['ad_swf_params']) : '{}',
               'ad_swf_attributes' => (!empty($_POST['ad_swf_attributes'])) ? stripslashes($_POST['ad_swf_attributes']) : '{}',
 	            'ad_swf_fallback' => ((!empty($_POST['ad_swf_fallback'])) ? stripslashes($_POST['ad_swf_fallback']) : ''),
-              'count_clicks' => (isset($_POST['count_clicks']) ? $_POST['count_clicks'] : 0),
-              'ad_users' => $_POST['ad_users'],
-              'ad_users_unreg' => (isset($_POST['ad_users_unreg']) ? $_POST['ad_users_unreg'] : 0),
-              'ad_users_reg' => (isset($_POST['ad_users_reg']) ? $_POST['ad_users_reg'] : 0),
-              'x_ad_users' => (isset($_POST['x_ad_users']) ? $_POST['x_ad_users'] : 0),
-              'x_view_users' => self::removeTrailingComma( stripcslashes($_POST['x_view_users'])),
-              'ad_users_adv' => (isset($_POST['ad_users_adv']) ? $_POST['ad_users_adv'] : 0),
-              'view_type' => $_POST['view_type'],
+              'count_clicks' => (isset($_POST['count_clicks']) ? (int)$_POST['count_clicks'] : 0),
+              'ad_users' => (int)$_POST['ad_users'],
+              'ad_users_unreg' => (isset($_POST['ad_users_unreg']) ? (int)$_POST['ad_users_unreg'] : 0),
+              'ad_users_reg' => (isset($_POST['ad_users_reg']) ? (int)$_POST['ad_users_reg'] : 0),
+              'x_ad_users' => (isset($_POST['x_ad_users']) ? (int)$_POST['x_ad_users'] : 0),
+              'x_view_users' => self::removeTrailingComma( stripcslashes(sanitize_text_field($_POST['x_view_users']))),
+              'ad_users_adv' => (isset($_POST['ad_users_adv']) ? (int)$_POST['ad_users_adv'] : 0),
+              'view_type' => (int)$_POST['view_type'],
               'view_pages' => $viewPages,
-              'view_id' => $_POST['view_id'],
-              'ad_cats' => (isset($_POST['ad_cats']) ? $_POST['ad_cats'] : 0),
-              'view_cats' => self::removeTrailingComma( stripcslashes( $_POST['view_cats'] )),
-              'ad_authors' => (isset($_POST['ad_authors']) ? $_POST['ad_authors'] : 0),
-              'view_authors' => $this->removeTrailingComma(stripcslashes( $_POST['view_authors'])),
-              'ad_tags' => (isset($_POST['ad_tags']) ? $_POST['ad_tags'] : 0),
-              'view_tags' => self::removeTrailingComma( stripcslashes($_POST['view_tags']) ),
-              'ad_custom' => (isset($_POST['ad_custom']) ? $_POST['ad_custom'] : 0),
-              'view_custom' => self::removeTrailingComma( stripcslashes( $_POST['view_custom'] ) ),
-              'x_id' => (isset($_POST['x_id']) ? $_POST['x_id'] : 0),
-              'x_view_id' => $_POST['x_view_id'],
-              'x_cats' => (isset($_POST['x_cats']) ? $_POST['x_cats'] : 0),
-              'x_view_cats' => self::removeTrailingComma(stripslashes($_POST['x_view_cats'])),
-              'x_authors' => (isset($_POST['x_authors']) ? $_POST['x_authors'] : 0),
-              'x_view_authors' => self::removeTrailingComma(stripcslashes($_POST['x_view_authors'])),
-              'x_tags' => (isset($_POST['x_tags']) ? $_POST['x_tags'] : 0),
-              'x_view_tags' => self::removeTrailingComma(stripcslashes($_POST['x_view_tags'])),
-              'x_custom' => (isset($_POST['x_custom']) ? $_POST['x_custom'] : 0),
-              'x_view_custom' => self::removeTrailingComma(stripcslashes($_POST['x_view_custom'])),
-              'ad_start_date' => (empty($_POST['ad_start_date']) ? '0000-00-00' :$_POST['ad_start_date']),
-              'ad_end_date' => (empty($_POST['ad_end_date']) ? '0000-00-00' : $_POST['ad_end_date']),
-              'ad_schedule' => (isset($_POST['ad_schedule']) ? $_POST['ad_schedule'] : 0),
-              'ad_weight' => $_POST['ad_weight'],
-              'limit_hits' => (isset($_POST['limit_hits']) ? $_POST['limit_hits'] : 0),
-              'hits_limit' => $_POST['hits_limit'],
-              'limit_clicks' => (isset($_POST['limit_clicks']) ? $_POST['limit_clicks'] : 0),
-              'clicks_limit' => $_POST['clicks_limit'],
-              'adv_nick' => $_POST['adv_nick'],
-              'adv_name' => $_POST['adv_name'],
-              'adv_mail' => $_POST['adv_mail'],
-              'cpm' => $_POST['cpm'],
-              'cpc' => $_POST['cpc'],
-              'per_month' => $_POST['per_month'],
+              'view_id' => sanitize_text_field($_POST['view_id']),
+              'ad_cats' => (isset($_POST['ad_cats']) ? (int)$_POST['ad_cats'] : 0),
+              'view_cats' => self::removeTrailingComma( stripcslashes( sanitize_text_field($_POST['view_cats'] ))),
+              'ad_authors' => (isset($_POST['ad_authors']) ? (int)$_POST['ad_authors'] : 0),
+              'view_authors' => $this->removeTrailingComma(stripcslashes( sanitize_text_field($_POST['view_authors']))),
+              'ad_tags' => (isset($_POST['ad_tags']) ? (int)$_POST['ad_tags'] : 0),
+              'view_tags' => self::removeTrailingComma( stripcslashes(sanitize_text_field($_POST['view_tags']) )),
+              'ad_custom' => (isset($_POST['ad_custom']) ? (int)$_POST['ad_custom'] : 0),
+              'view_custom' => self::removeTrailingComma( stripcslashes( sanitize_text_field($_POST['view_custom'] )) ),
+              'x_id' => (isset($_POST['x_id']) ? (int)$_POST['x_id'] : 0),
+              'x_view_id' => sanitize_text_field($_POST['x_view_id']),
+              'x_cats' => (isset($_POST['x_cats']) ? (int)$_POST['x_cats'] : 0),
+              'x_view_cats' => self::removeTrailingComma(stripslashes(sanitize_text_field($_POST['x_view_cats']))),
+              'x_authors' => (isset($_POST['x_authors']) ? (int)$_POST['x_authors'] : 0),
+              'x_view_authors' => self::removeTrailingComma(stripcslashes(sanitize_text_field($_POST['x_view_authors']))),
+              'x_tags' => (isset($_POST['x_tags']) ? (int)$_POST['x_tags'] : 0),
+              'x_view_tags' => self::removeTrailingComma(stripcslashes(sanitize_text_field($_POST['x_view_tags']))),
+              'x_custom' => (isset($_POST['x_custom']) ? (int)$_POST['x_custom'] : 0),
+              'x_view_custom' => self::removeTrailingComma(stripcslashes(sanitize_text_field($_POST['x_view_custom']))),
+              'ad_start_date' => (empty($_POST['ad_start_date']) ? '0000-00-00' :sanitize_text_field($_POST['ad_start_date'])),
+              'ad_end_date' => (empty($_POST['ad_end_date']) ? '0000-00-00' : sanitize_text_field($_POST['ad_end_date'])),
+              'ad_schedule' => (isset($_POST['ad_schedule']) ? (int)$_POST['ad_schedule'] : 0),
+              'ad_weight' => (int)$_POST['ad_weight'],
+              'limit_hits' => (isset($_POST['limit_hits']) ? (int)$_POST['limit_hits'] : 0),
+              'hits_limit' => (int)$_POST['hits_limit'],
+              'limit_clicks' => (isset($_POST['limit_clicks']) ? (int)$_POST['limit_clicks'] : 0),
+              'clicks_limit' => (int)$_POST['clicks_limit'],
+              'adv_nick' => sanitize_text_field($_POST['adv_nick']),
+              'adv_name' => sanitize_text_field($_POST['adv_name']),
+              'adv_mail' => sanitize_email($_POST['adv_mail']),
+              'cpm' => (int)$_POST['cpm'],
+              'cpc' => (int)$_POST['cpc'],
+              'per_month' => (int)$_POST['per_month'],
               'trash' => ($_POST['trash'] === 'true' ? 1 : 0),
-              'ad_custom_tax_terms' => ((isset($_POST['ad_custom_tax_terms'])) ? $_POST['ad_custom_tax_terms'] : 0),
-              'view_custom_tax_terms' => self::removeTrailingComma(stripslashes($_POST['view_custom_tax_terms'])),
-              'x_ad_custom_tax_terms' => ((isset($_POST['x_ad_custom_tax_terms'])) ? $_POST['x_ad_custom_tax_terms'] : 0),
-              'x_view_custom_tax_terms' => self::removeTrailingComma(stripslashes($_POST['x_view_custom_tax_terms']))
+              'ad_custom_tax_terms' => ((isset($_POST['ad_custom_tax_terms'])) ? (int)$_POST['ad_custom_tax_terms'] : 0),
+              'view_custom_tax_terms' => self::removeTrailingComma(stripslashes(sanitize_text_field($_POST['view_custom_tax_terms']))),
+              'x_ad_custom_tax_terms' => ((isset($_POST['x_ad_custom_tax_terms'])) ? (int)$_POST['x_ad_custom_tax_terms'] : 0),
+              'x_view_custom_tax_terms' => self::removeTrailingComma(stripslashes(sanitize_text_field($_POST['x_view_custom_tax_terms'])))
             );
             $formatRow = array(
               '%d', '%s', '%s', '%d', '%d', '%s', '%s', '%s', '%d', '%s',         // pid - ad_target
@@ -976,7 +977,7 @@ if(!class_exists('SamPlaceEdit')) {
           }
           ?>
 <div class="wrap">
-  <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
+  <form method="post" action="<?php echo esc_url($_SERVER["REQUEST_URI"]); ?>">
     <div class="icon32" style="background: url('<?php echo SAM_IMG_URL.'sam-editor.png'; ?>') no-repeat transparent; "><br></div>
     <h2><?php echo ( ( $action === 'new' ) ? __('New advertisement', SAM_DOMAIN) : __('Edit advertisement', SAM_DOMAIN).' ('.$item.')' ); ?></h2>
     <?php

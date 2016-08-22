@@ -5,7 +5,7 @@
  * Date: 20.06.2015
  * Time: 7:08
  */
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 if ( ! class_exists( 'SamToolsPage' ) ) {
 	class SamToolsPage {
 		private $settings;

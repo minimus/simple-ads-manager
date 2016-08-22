@@ -9,7 +9,8 @@
         id: idn,
         wa: options.warning,
         ue: options.update,
-        oe: options.output
+        oe: options.output,
+        wap: options.wap
       }).done(function(data) {
           var
             eType = data.type,

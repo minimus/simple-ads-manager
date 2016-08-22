@@ -5,7 +5,7 @@
  * Date: 13.05.2015
  * Time: 7:27
  */
-
+if ( ! defined( 'ABSPATH' ) ) exit;
 if( ! class_exists( 'SamAdvertisersList' ) ) {
 	class SamAdvertisersList {
 		private $settings;
@@ -18,11 +18,11 @@ if( ! class_exists( 'SamAdvertisersList' ) ) {
 
 		public function __construct( $options ) {
 			$this->settings = $options;
-			$this->mode = (isset($_GET['mode'])) ? $_GET['mode'] : 'list';
-			$this->view = (isset($_GET['view'])) ? $_GET['view'] : 'active';
-			$this->advertiser = (isset($_GET['adv'])) ? $_GET['adv'] : null;
+			$this->mode = (isset($_GET['mode'])) ? sanitize_text_field($_GET['mode']) : 'list';
+			$this->view = (isset($_GET['view'])) ? sanitize_text_field($_GET['view']) : 'active';
+			$this->advertiser = (isset($_GET['adv'])) ? sanitize_text_field($_GET['adv']) : null;
 			$this->apage = (isset($_GET['apage'])) ? absint($_GET['apage']) : 1;
-			$this->action = (isset($_GET['action'])) ? $_GET['action'] : 'view';
+			$this->action = (isset($_GET['action'])) ? sanitize_text_field($_GET['action']) : 'view';
 		}
 
 		public function page() {

@@ -1,4 +1,5 @@
 <?php
+if ( ! defined( 'ABSPATH' ) ) exit;
 if(!class_exists('SamBlockEditor')) {
   class SamBlockEditor {
     private $settings = array();
@@ -138,33 +139,33 @@ if(!class_exists('SamBlockEditor')) {
       
       $options = $this->settings;
       
-      if(isset($_GET['action'])) $action = $_GET['action'];
+      if(isset($_GET['action'])) $action = sanitize_text_field($_GET['action']);
       else $action = 'new';
-      if(isset($_GET['mode'])) $mode = $_GET['mode'];
+      if(isset($_GET['mode'])) $mode = sanitize_text_field($_GET['mode']);
       else $mode = 'block';
-      if(isset($_GET['item'])) $item = $_GET['item'];
+      if(isset($_GET['item'])) $item = (int)$_GET['item'];
       else $item = null;
-      if(isset($_GET['block'])) $zone = $_GET['block'];
+      if(isset($_GET['block'])) $zone = (int)$_GET['block'];
       else $block = null;
       
       $updated = false;
       
       if(isset($_POST['update_block'])) {
-        $blockId = $_POST['block_id'];
+        $blockId = (int)$_POST['block_id'];
         $updateRow = array(
-          'name' => $_POST['block_name'],
-          'description' => $_POST['description'],
-          'b_lines' => $_POST['b_lines'],
-          'b_cols' => $_POST['b_cols'],
-          'block_data' => $this->setData((int)$_POST['b_lines'], (int)$_POST['b_cols'], $_POST),
-          'b_margin' => $_POST['b_margin'],
-          'b_padding' => $_POST['b_padding'],
-          'b_background' => stripcslashes( $_POST['b_background'] ),
-          'b_border' => $_POST['b_border'],
-          'i_margin' => $_POST['i_margin'],
-          'i_padding' => $_POST['i_padding'],
-          'i_background'  => stripcslashes( $_POST['i_background'] ),
-          'i_border' => $_POST['i_border'],
+          'name' => sanitize_text_field($_POST['block_name']),
+          'description' => sanitize_text_field($_POST['description']),
+          'b_lines' => (int)$_POST['b_lines'],
+          'b_cols' => (int)$_POST['b_cols'],
+          'block_data' => $this->setData((int)$_POST['b_lines'], (int)$_POST['b_cols'], (array)$_POST),
+          'b_margin' => sanitize_text_field($_POST['b_margin']),
+          'b_padding' => sanitize_text_field($_POST['b_padding']),
+          'b_background' => stripcslashes( sanitize_text_field($_POST['b_background']) ),
+          'b_border' => sanitize_text_field($_POST['b_border']),
+          'i_margin' => sanitize_text_field($_POST['i_margin']),
+          'i_padding' => sanitize_text_field($_POST['i_padding']),
+          'i_background'  => stripcslashes( sanitize_text_field($_POST['i_background'] )),
+          'i_border' => sanitize_text_field($_POST['i_border']),
           //FIXED 'trash' => ($_POST['trash'] === 'true')
           'trash' => ($_POST['trash'] === 'true' ? 1 : 0)
         );
@@ -238,7 +239,7 @@ if(!class_exists('SamBlockEditor')) {
       }
       ?>
 <div class="wrap">
-  <form method="post" action="<?php echo $_SERVER["REQUEST_URI"]; ?>">
+  <form method="post" action="<?php echo esc_url($_SERVER["REQUEST_URI"]); ?>">
     <div class="icon32" style="background: url('<?php echo SAM_IMG_URL.'sam-editor.png'; ?>') no-repeat transparent; "><br/></div>
     <h2><?php echo ( ( ($action === 'new') && ( $row['id'] === __('Undefined', SAM_DOMAIN) ) ) ? __('New Ads Block', SAM_DOMAIN) : __('Edit Ads Block', SAM_DOMAIN).' ('.$item.')' ); ?></h2>
     <?php

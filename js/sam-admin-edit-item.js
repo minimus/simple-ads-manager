@@ -115,7 +115,8 @@ var sam = sam || {};
       searches = samEditorOptions.searches,
       gData = samEditorOptions.data,
       samStrs = samEditorOptions.strings,
-      sPost = encodeURI(samStrs.posts), sPage = encodeURI(samStrs.page);
+      sPost = encodeURI(samStrs.posts), sPage = encodeURI(samStrs.page),
+      wap = samEditorOptions.wap;
 
     var stats, itemId = $('#item_id').val(), sMonth = 0;
     var plot, plotData = [],
@@ -306,7 +307,8 @@ var sam = sam || {};
     stats = $.post(samStatsUrl, {
       action: 'load_item_stats',
       id: itemId,
-      sm: sMonth
+      sm: sMonth,
+      wap: wap
     }).done(function(data) {
       if(iAction != 'new') {
         $('#total_hits').text(data.total.hits);
@@ -318,7 +320,7 @@ var sam = sam || {};
 
     // Advertiser ComboGrid
     $('#adv_nick').combogrid({
-      url: samAjaxUrl + '?action=load_combo_data',
+      url: samAjaxUrl + '?action=load_combo_data&wap=' + wap,
       datatype: "json",
       munit: 'px',
       alternate: true,
@@ -346,7 +348,7 @@ var sam = sam || {};
       postAjax =
         samAjaxUrl +
         '?action=load_posts&cstr=' + samEditorOptions.data.custList +
-          '&sp=' + sPost + '&spg=' + sPage + '&limit=10000';
+          '&sp=' + sPost + '&spg=' + sPage + '&limit=10000&wap=' + wap;
     buildLGrid('posts-grid', postsGrid, postsIn, 'id', models.posts, postAjax, searches.posts);
     buildLGrid('x-posts-grid', xpostsGrid, xpostsIn, 'id', models.posts, postAjax, searches.posts);
 
@@ -437,7 +439,8 @@ var sam = sam || {};
     var authRequest = $.ajax({
       url:samAjaxUrl,
       data: {
-        action: 'load_authors'
+        action: 'load_authors',
+        wap: wap
       },
       type: 'POST'
     }), authData;
@@ -457,7 +460,8 @@ var sam = sam || {};
         author: encodeURI(samStrs.author),
         editor: encodeURI(samStrs.editor),
         admin: encodeURI(samStrs.admin),
-        sadmin: encodeURI(samStrs.superAdmin)
+        sadmin: encodeURI(samStrs.superAdmin),
+        wap: wap
       },
       type: 'POST'
     }), usersData;
@@ -470,7 +474,8 @@ var sam = sam || {};
     var catsRequest = $.ajax({
       url: samAjaxUrl,
       data: {
-        action: 'load_cats'
+        action: 'load_cats',
+        wap: wap
       },
       type: 'POST'
     }), catsData;
@@ -484,7 +489,8 @@ var sam = sam || {};
     var tagsRequest = $.ajax({
       url: samAjaxUrl,
       data: {
-        action: 'load_tags'
+        action: 'load_tags',
+        wap: wap
       },
       type: 'POST'
     }), tagsData;
@@ -754,7 +760,8 @@ var sam = sam || {};
             url: ajaxurl,
             data: {
               action: 'close_sam_pointer',
-              pointer: sPointer.pointer
+              pointer: sPointer.pointer,
+              wap: wap
             },
             async: true
           });
@@ -825,7 +832,8 @@ var sam = sam || {};
       $.post(samStatsUrl, {
         action: 'load_item_stats',
         id: itemId,
-        sm: sMonth
+        sm: sMonth,
+        wap: wap
       }).done(function(data) {
           $('#total_hits').text(data.total.hits);
           $('#total_clicks').text(data.total.clicks);
