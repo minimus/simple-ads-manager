@@ -69,6 +69,26 @@ Do not upgrade this plugin from Update page! Upgrade it from Plugins page!
 
 Change log
 ==========
+2.10.0.130
+* Wordpress 4.6 ready
+* Potential vulnerability was excluded
+* All security issues were resolved
+
+2.9.8.125
+* Avoiding the use of deprecated functions `add_object_page` and `get_currentuserinfo`.
+
+2.9.8.124
+* Wordpress 4.5 compatibility
+
+2.9.7.123
+* Wordpress 4.4 compatibility tested
+* Some minor bugs resolved
+
+2.9.6.121
+* The problem of arbitrary automatic insertion of ads on the main page is solved.
+* According to numerous requests from users the modern control element "Slider" of the option "Access Level" was changed to the classical control element "Radio Button".
+* Language pack is updated. Italian by Alfredo is added
+
 2.9.5.118
 * Possibility of SQL injection is fixed. Thanks for [Kacper Szurek](http://security.szurek.pl/).
 * Minor bug resolved

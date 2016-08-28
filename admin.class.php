@@ -1029,7 +1029,10 @@ if ( !class_exists( 'SimpleAdsManagerAdmin' && class_exists('SimpleAdsManager') 
       }
 	    elseif($hook == $this->toolsPage) {
 		    wp_enqueue_style('adminListLayout', SAM_URL.'css/sam-tools.css', false, SAM_VERSION);
-	    }
+	    } 
+      elseif ( $hook == 'post.php' || $hook == 'post-new.php' ) {
+				echo "<script type='text/javascript'>var options = {wap: '{$this->wap}'}</script>";
+			}
 	    else {
 		    $pointers = self::getPointerOptions(true);
 		    if((int)$pointers['all'] || (int)$pointers['free']) {

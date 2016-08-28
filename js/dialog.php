@@ -5,12 +5,6 @@
  * @copyright 2010
  */
 
-/*$wpconfig = realpath("../../../../wp-config.php");
-if (!file_exists($wpconfig))  {
-	echo "Could not found wp-config.php. Error in path :\n\n".$wpconfig ;	
-	die;	
-}
-require_once($wpconfig);*/
 require_once('../../../../wp-admin/admin.php');
 
 if ( function_exists( 'load_plugin_textdomain' ) )
